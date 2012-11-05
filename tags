@@ -1,0 +1,1009 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Alpha_Kang	src/InonizationFormula.cpp	/^double Alpha_Kang(double E) {$/;"	f
+Alpha_MorrowAndLowke	src/InonizationFormula.cpp	/^double Alpha_MorrowAndLowke(double E, double N) {$/;"	f
+Alpha_Nikonov	src/InonizationFormula.cpp	/^double Alpha_Nikonov(double E, double P) {$/;"	f
+C	src/orig.cpp	/^double C = 2.99792458E8;$/;"	v
+C	src/test.cpp	/^MyDataF pi, C;$/;"	v
+C	src/testMain.cpp	/^double C = 2.99792458E8;$/;"	v
+C	src/testcpml.cpp	/^MyDataF C = 2.99792458E8;$/;"	v
+CA	src/fdtd.h	/^    MyDataF *CA;$/;"	m	class:fdtd
+CA	src/orig.cpp	/^float *CA;$/;"	v
+CA	src/testMain.cpp	/^float *CA;$/;"	v
+CA	src/testcpml.cpp	/^MyDataF *CA;$/;"	v
+CB	src/fdtd.h	/^    MyDataF *CB;$/;"	m	class:fdtd
+CB	src/orig.cpp	/^float *CB;$/;"	v
+CB	src/testMain.cpp	/^float *CB;$/;"	v
+CB	src/testcpml.cpp	/^MyDataF *CB;$/;"	v
+CPPFLAGS	Makefile	/^CPPFLAGS=-Wall -g -DDEBUG=3$/;"	m
+CXX	Makefile	/^CXX=g++$/;"	m
+CaptData	src/datastruct.h	/^void data3d<DataType>::CaptData(const unsigned num, unsigned leap) {$/;"	f	class:data3d
+CheckStruct	src/datastruct.h	/^bool data3d<DataType>::CheckStruct() {$/;"	f	class:data3d
+ClearSim	src/datastruct.h	/^void data3d<DataType>::ClearSim() {$/;"	f	class:data3d
+CloseEngine	src/datastruct.h	/^int data3d<DataType>::CloseEngine() {$/;"	f	class:data3d
+CreatePMLArrays	src/cpml.cpp	/^int cpml::CreatePMLArrays() {$/;"	f	class:cpml
+CreatePMLArrays	src/cpml2.cpp	/^int cpml::CreatePMLArrays() {$/;"	f	class:cpml
+CreatePMLArrays	src/cpml3.cpp	/^int cpml::CreatePMLArrays() {$/;"	f	class:cpml
+CreateStruct	src/datastruct.h	/^int data3d<DataType>::CreateStruct(const data3d< DataType > &stru) {$/;"	f	class:data3d
+CreateStruct	src/datastruct.h	/^int data3d<DataType>::CreateStruct(const data3d< DataType > &stru, DataType initVal) {$/;"	f	class:data3d
+CreateStruct	src/datastruct.h	/^int data3d<DataType>::CreateStruct(unsigned nnx, unsigned nny, unsigned nnz) {$/;"	f	class:data3d
+CreateStruct	src/datastruct.h	/^int data3d<DataType>::CreateStruct(unsigned nnx, unsigned nny, unsigned nnz, DataType initVal) {$/;"	f	class:data3d
+DA	src/fdtd.h	/^    MyDataF DA;$/;"	m	class:fdtd
+DA	src/orig.cpp	/^float DA;$/;"	v
+DA	src/testMain.cpp	/^float DA;$/;"	v
+DA	src/testcpml.cpp	/^MyDataF DA;$/;"	v
+DATA1D_H	src/data1d.h	9;"	d
+DATASTRUCT_H	src/datastruct.h	27;"	d
+DB	src/fdtd.h	/^    MyDataF DB;$/;"	m	class:fdtd
+DB	src/orig.cpp	/^float DB;$/;"	v
+DB	src/testMain.cpp	/^float DB;$/;"	v
+DB	src/testcpml.cpp	/^MyDataF DB;$/;"	v
+Da	src/fdtd.h	/^    MyDataF Da;$/;"	m	class:fdtd
+De	src/fdtd.h	/^    MyDataF De;$/;"	m	class:fdtd
+Erms	src/fdtd.h	/^    data3d<MyDataF> Erms;$/;"	m	class:fdtd
+Eta_Kang	src/InonizationFormula.cpp	/^double Eta_Kang(double E) {$/;"	f
+Eta_MorrowAndLowke	src/InonizationFormula.cpp	/^double Eta_MorrowAndLowke(double E, double N) {$/;"	f
+Eta_Nikonov	src/InonizationFormula.cpp	/^double Eta_Nikonov(double E, double P) {$/;"	f
+Ex	src/fdtd.h	/^    data3d<MyDataF> Ex;$/;"	m	class:fdtd
+Ex	src/orig.cpp	/^float ***Ex;$/;"	v
+Ex	src/testMain.cpp	/^float ***Ex;$/;"	v
+Ex	src/testcpml.cpp	/^data3d<MyDataF> Ex;$/;"	v
+Ey	src/fdtd.h	/^    data3d<MyDataF> Ey;$/;"	m	class:fdtd
+Ey	src/orig.cpp	/^float ***Ey;$/;"	v
+Ey	src/testMain.cpp	/^float ***Ey;$/;"	v
+Ey	src/testcpml.cpp	/^data3d<MyDataF> Ey;$/;"	v
+Ez	src/fdtd.h	/^    data3d<MyDataF> Ez;$/;"	m	class:fdtd
+Ez	src/orig.cpp	/^float ***Ez;$/;"	v
+Ez	src/testMain.cpp	/^float ***Ez;$/;"	v
+Ez	src/testcpml.cpp	/^data3d<MyDataF> Ez;$/;"	v
+Hx	src/fdtd.h	/^    data3d<MyDataF> Hx;$/;"	m	class:fdtd
+Hx	src/orig.cpp	/^float ***Hx;$/;"	v
+Hx	src/testMain.cpp	/^float ***Hx;$/;"	v
+Hx	src/testcpml.cpp	/^data3d<MyDataF> Hx;$/;"	v
+Hy	src/fdtd.h	/^    data3d<MyDataF> Hy;$/;"	m	class:fdtd
+Hy	src/orig.cpp	/^float ***Hy;$/;"	v
+Hy	src/testMain.cpp	/^float ***Hy;$/;"	v
+Hy	src/testcpml.cpp	/^data3d<MyDataF> Hy;$/;"	v
+Hz	src/fdtd.h	/^    data3d<MyDataF> Hz;$/;"	m	class:fdtd
+Hz	src/orig.cpp	/^float ***Hz;$/;"	v
+Hz	src/testMain.cpp	/^float ***Hz;$/;"	v
+Hz	src/testcpml.cpp	/^data3d<MyDataF> Hz;$/;"	v
+ID1	src/fdtd.h	/^    data3d<unsigned> ID1; \/\/medium definition array for Ex$/;"	m	class:fdtd
+ID1	src/orig.cpp	/^short ***ID1; \/\/medium definition array for Ex$/;"	v
+ID1	src/testMain.cpp	/^short ***ID1; \/\/medium definition array for Ex$/;"	v
+ID1	src/testcpml.cpp	/^data3d<short> ID1; \/\/medium definition array for Ex$/;"	v
+ID2	src/fdtd.h	/^    data3d<unsigned> ID2; \/\/medium definition array for Ey$/;"	m	class:fdtd
+ID2	src/orig.cpp	/^short ***ID2; \/\/medium definition array for Ey$/;"	v
+ID2	src/testMain.cpp	/^short ***ID2; \/\/medium definition array for Ey$/;"	v
+ID2	src/testcpml.cpp	/^data3d<short> ID2; \/\/medium definition array for Ey$/;"	v
+ID3	src/fdtd.h	/^    data3d<unsigned> ID3; \/\/medium definition array for Ez$/;"	m	class:fdtd
+ID3	src/orig.cpp	/^short ***ID3; \/\/medium definition array for Ez$/;"	v
+ID3	src/testMain.cpp	/^short ***ID3; \/\/medium definition array for Ez$/;"	v
+ID3	src/testcpml.cpp	/^data3d<short> ID3; \/\/medium definition array for Ez$/;"	v
+INONIZATION_FORMULA_H	src/InonizationFormula.h	3;"	d
+Imax	src/cpml.h	/^    unsigned Imax;$/;"	m	class:cpml
+Imax	src/cpml2.h	/^    unsigned Imax;$/;"	m	class:cpml
+Imax	src/cpml3.h	/^    unsigned Imax;$/;"	m	class:cpml
+Imax	src/fdtd.h	/^    unsigned Imax;$/;"	m	class:fdtd
+Imax	src/orig.cpp	/^int Imax = 51;$/;"	v
+Imax	src/testMain.cpp	/^int Imax = 51;$/;"	v
+Imax	src/testcpml.cpp	/^int Imax = 51;$/;"	v
+InitMatlabEngine	src/datastruct.h	/^int data3d<DataType>::InitMatlabEngine() {$/;"	f	class:data3d
+InitPlot	src/datastruct.h	/^void data3d<DataType>::InitPlot() {$/;"	f	class:data3d
+InitStructData	src/datastruct.h	/^void data3d<DataType>::InitStructData(DataType initVal) {$/;"	f	class:data3d
+Initial	src/cpml.cpp	/^int cpml::Initial(unsigned nx, unsigned ny, unsigned nz, unsigned ncpml) {$/;"	f	class:cpml
+Initial	src/cpml2.cpp	/^int cpml::Initial(unsigned nx, unsigned ny, unsigned nz, unsigned ncpml) {$/;"	f	class:cpml
+Initial	src/cpml3.cpp	/^int cpml::Initial(unsigned nx, unsigned ny, unsigned nz, unsigned ncpml) {$/;"	f	class:cpml
+InitializeCPML	src/cpml.cpp	/^void cpml::InitializeCPML() {$/;"	f	class:cpml
+InitializeCPML	src/cpml2.cpp	/^void cpml::InitializeCPML() {$/;"	f	class:cpml
+InitializeCPML	src/cpml3.cpp	/^void cpml::InitializeCPML() {$/;"	f	class:cpml
+Jmax	src/cpml.h	/^    unsigned Jmax;$/;"	m	class:cpml
+Jmax	src/cpml2.h	/^    unsigned Jmax;$/;"	m	class:cpml
+Jmax	src/cpml3.h	/^    unsigned Jmax;$/;"	m	class:cpml
+Jmax	src/fdtd.h	/^    unsigned Jmax;$/;"	m	class:fdtd
+Jmax	src/orig.cpp	/^int Jmax = 126;$/;"	v
+Jmax	src/testMain.cpp	/^int Jmax = 126;$/;"	v
+Jmax	src/testcpml.cpp	/^int Jmax = 126;$/;"	v
+Kmax	src/cpml.h	/^    unsigned Kmax;$/;"	m	class:cpml
+Kmax	src/cpml2.h	/^    unsigned Kmax;$/;"	m	class:cpml
+Kmax	src/cpml3.h	/^    unsigned Kmax;$/;"	m	class:cpml
+Kmax	src/fdtd.h	/^    unsigned Kmax;$/;"	m	class:fdtd
+Kmax	src/orig.cpp	/^int Kmax = 26;$/;"	v
+Kmax	src/testMain.cpp	/^int Kmax = 26;$/;"	v
+Kmax	src/testcpml.cpp	/^int Kmax = 26;$/;"	v
+MAX_ARRAY_SIZE	src/datastruct.h	42;"	d
+MyArray	src/datastruct.h	/^    mxArray *MyArray;$/;"	m	class:data3d
+MyDataF	src/datastruct.h	/^typedef double MyDataF;$/;"	t
+Ne	src/fdtd.h	/^    data3d<MyDataF> Ne, Ne_pre;$/;"	m	class:fdtd
+Ne0	src/fdtd.h	/^    MyDataF Ne0;$/;"	m	class:fdtd
+Ne_pre	src/fdtd.h	/^    data3d<MyDataF> Ne, Ne_pre;$/;"	m	class:fdtd
+Niu_Kang	src/InonizationFormula.cpp	/^void Niu_Kang(double *pNiu_i, double *pNiu_a, double E) {$/;"	f
+Niu_MorrowAndLowke	src/InonizationFormula.cpp	/^void Niu_MorrowAndLowke(double *pNiu_i, double *pNiu_a, double E, double N) {$/;"	f
+Niu_Nikonov	src/InonizationFormula.cpp	/^void Niu_Nikonov(double *pNiu_i, double *pNiu_a, double E, double P) {$/;"	f
+Niu_a_Kang	src/InonizationFormula.cpp	/^double Niu_a_Kang(double E) {$/;"	f
+Niu_a_MorrowAndLowke	src/InonizationFormula.cpp	/^double Niu_a_MorrowAndLowke(double E, double N) {$/;"	f
+Niu_a_Nikonov	src/InonizationFormula.cpp	/^double Niu_a_Nikonov(double E, double P) {$/;"	f
+Niu_i_Kang	src/InonizationFormula.cpp	/^double Niu_i_Kang(double E) {$/;"	f
+Niu_i_MorrowAndLowke	src/InonizationFormula.cpp	/^double Niu_i_MorrowAndLowke(double E, double N) {$/;"	f
+Niu_i_Nikonov	src/InonizationFormula.cpp	/^double Niu_i_Nikonov(double E, double P) {$/;"	f
+Number	src/datastruct.h	/^    int Number;$/;"	m	class:data3d
+OBJS	Makefile	/^OBJS=cpml.o test.o datastruct.o fdtd.o InonizationFormula.o$/;"	m
+PlotArrays	src/datastruct.h	/^void data3d<DataType>::PlotArrays() {$/;"	f	class:data3d
+PrintData	src/datastruct.h	/^void data3d<DataType>::PrintData() {$/;"	f	class:data3d
+ResetStructData	src/datastruct.h	/^int data3d<DataType>::ResetStructData(DataType Val) {$/;"	f	class:data3d
+SRC	Makefile	/^SRC=src$/;"	m
+SaveData	src/datastruct.h	/^void data3d<DataType>::SaveData(unsigned leap) {$/;"	f	class:data3d
+SetName	src/datastruct.h	/^    void SetName(const std::string &sn) {$/;"	f	class:data3d
+SetPlasmaVar	src/fdtd.cpp	/^void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {$/;"	f	class:fdtd
+StartUp	src/fdtd.cpp	/^void fdtd::StartUp() {$/;"	f	class:fdtd
+UpdateDensity	src/fdtd.cpp	/^int fdtd::UpdateDensity(void) {$/;"	f	class:fdtd
+UpdateErms	src/fdtd.cpp	/^int fdtd::UpdateErms(void) {$/;"	f	class:fdtd
+UpdatePMLForEx	src/cpml.h	/^    void UpdatePMLForEx(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForEx	src/cpml.h	/^    void UpdatePMLForEx(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForEx	src/cpml2.h	/^    void UpdatePMLForEx(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForEx	src/cpml2.h	/^    void UpdatePMLForEx(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForEx	src/cpml3.h	/^    void UpdatePMLForEx(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForEx	src/cpml3.h	/^    void UpdatePMLForEx(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForExIn	src/cpml.h	/^    void UpdatePMLForExIn(unsigned k, data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForExIn	src/cpml.h	/^    void UpdatePMLForExIn(unsigned k, data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForExIn	src/cpml2.h	/^    void UpdatePMLForExIn(unsigned k, data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForExIn	src/cpml2.h	/^    void UpdatePMLForExIn(unsigned k, data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForExIn	src/cpml3.h	/^    void UpdatePMLForExIn(unsigned k, data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForExIn	src/cpml3.h	/^    void UpdatePMLForExIn(unsigned k, data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForExIn	src/orig.cpp	/^void UpdatePMLForExIn(unsigned k, float***Ex, float*** Hy, float*** Hz, float *CB,short ***ID1){$/;"	f
+UpdatePMLForExOut	src/cpml.h	/^    void UpdatePMLForExOut(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForExOut	src/cpml.h	/^    void UpdatePMLForExOut(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForExOut	src/cpml2.h	/^    void UpdatePMLForExOut(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForExOut	src/cpml2.h	/^    void UpdatePMLForExOut(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForExOut	src/cpml3.h	/^    void UpdatePMLForExOut(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, Type2*** ID1) {$/;"	f	class:cpml
+UpdatePMLForExOut	src/cpml3.h	/^    void UpdatePMLForExOut(data3d<Type1> &ex, const data3d<Type1> &hy, const data3d<Type1> &hz, Type1* CB, data3d<Type2> &ID1) {$/;"	f	class:cpml
+UpdatePMLForExOut	src/orig.cpp	/^void UpdatePMLForExOut(float***Ex, float*** Hy, float*** Hz, float *CB,short ***ID1){$/;"	f
+UpdatePMLForEy	src/cpml.h	/^    void UpdatePMLForEy(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEy	src/cpml.h	/^    void UpdatePMLForEy(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEy	src/cpml2.h	/^    void UpdatePMLForEy(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEy	src/cpml2.h	/^    void UpdatePMLForEy(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEy	src/cpml3.h	/^    void UpdatePMLForEy(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEy	src/cpml3.h	/^    void UpdatePMLForEy(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEyIn	src/cpml.h	/^    void UpdatePMLForEyIn(unsigned k, data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEyIn	src/cpml.h	/^    void UpdatePMLForEyIn(unsigned k, data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEyIn	src/cpml2.h	/^    void UpdatePMLForEyIn(unsigned k, data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEyIn	src/cpml2.h	/^    void UpdatePMLForEyIn(unsigned k, data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEyIn	src/cpml3.h	/^    void UpdatePMLForEyIn(unsigned k, data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEyIn	src/cpml3.h	/^    void UpdatePMLForEyIn(unsigned k, data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEyIn	src/orig.cpp	/^void UpdatePMLForEyIn(unsigned k,float***Ey, float*** Hz, float*** Hx, float *CB,short ***ID2){$/;"	f
+UpdatePMLForEyOut	src/cpml.h	/^    void UpdatePMLForEyOut(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEyOut	src/cpml.h	/^    void UpdatePMLForEyOut(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEyOut	src/cpml2.h	/^    void UpdatePMLForEyOut(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEyOut	src/cpml2.h	/^    void UpdatePMLForEyOut(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEyOut	src/cpml3.h	/^    void UpdatePMLForEyOut(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, Type2*** ID2) {$/;"	f	class:cpml
+UpdatePMLForEyOut	src/cpml3.h	/^    void UpdatePMLForEyOut(data3d<Type1> &ey, const data3d<Type1> &hz, const data3d<Type1> &hx, Type1* CB, data3d<Type2> &ID2) {$/;"	f	class:cpml
+UpdatePMLForEyOut	src/orig.cpp	/^void UpdatePMLForEyOut(float***Ey, float*** Hz, float*** Hx, float *CB,short ***ID2){$/;"	f
+UpdatePMLForEz	src/cpml.h	/^    void UpdatePMLForEz(data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, Type2*** ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml.h	/^    void UpdatePMLForEz(data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, data3d<Type2> &ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml.h	/^    void UpdatePMLForEz(unsigned k, data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, Type2*** ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml.h	/^    void UpdatePMLForEz(unsigned k, data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, data3d<Type2> &ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml2.h	/^    void UpdatePMLForEz(data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, Type2*** ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml2.h	/^    void UpdatePMLForEz(data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, data3d<Type2> &ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml2.h	/^    void UpdatePMLForEz(unsigned k, data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, Type2*** ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml2.h	/^    void UpdatePMLForEz(unsigned k, data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, data3d<Type2> &ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml3.h	/^    void UpdatePMLForEz(data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, Type2*** ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml3.h	/^    void UpdatePMLForEz(data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, data3d<Type2> &ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml3.h	/^    void UpdatePMLForEz(unsigned k, data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, Type2*** ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/cpml3.h	/^    void UpdatePMLForEz(unsigned k, data3d<Type1> &ez, const data3d<Type1> &hx, const data3d<Type1> &hy, Type1* CB, data3d<Type2> &ID3) {$/;"	f	class:cpml
+UpdatePMLForEz	src/orig.cpp	/^void UpdatePMLForEz(unsigned k,float***Ez, float*** Hx, float*** Hy, float *CB,short ***ID3){$/;"	f
+UpdatePMLForHx	src/cpml.h	/^    void UpdatePMLForHx(data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHx	src/cpml2.h	/^    void UpdatePMLForHx(data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHx	src/cpml3.h	/^    void UpdatePMLForHx(data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHxIn	src/cpml.h	/^    void UpdatePMLForHxIn(unsigned k, data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHxIn	src/cpml2.h	/^    void UpdatePMLForHxIn(unsigned k, data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHxIn	src/cpml3.h	/^    void UpdatePMLForHxIn(unsigned k, data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHxIn	src/orig.cpp	/^void UpdatePMLForHxIn(unsigned k, float***Hx, float*** Ey, float*** Ez, float DB) {$/;"	f
+UpdatePMLForHxOut	src/cpml.h	/^    void UpdatePMLForHxOut(data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHxOut	src/cpml2.h	/^    void UpdatePMLForHxOut(data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHxOut	src/cpml3.h	/^    void UpdatePMLForHxOut(data3d<Type1> &hx, const data3d<Type1> &ey, const data3d<Type1> &ez, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHxOut	src/orig.cpp	/^void UpdatePMLForHxOut(float***Hx, float*** Ey, float*** Ez, float DB){$/;"	f
+UpdatePMLForHy	src/cpml.h	/^    void UpdatePMLForHy(data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHy	src/cpml2.h	/^    void UpdatePMLForHy(data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHy	src/cpml3.h	/^    void UpdatePMLForHy(data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHyIn	src/cpml.h	/^    void UpdatePMLForHyIn(unsigned k, data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHyIn	src/cpml2.h	/^    void UpdatePMLForHyIn(unsigned k, data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHyIn	src/cpml3.h	/^    void UpdatePMLForHyIn(unsigned k, data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHyIn	src/orig.cpp	/^void UpdatePMLForHyIn(unsigned k,float*** Hy, float*** Ez, float*** Ex, float DB){$/;"	f
+UpdatePMLForHyOut	src/cpml.h	/^    void UpdatePMLForHyOut(data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHyOut	src/cpml2.h	/^    void UpdatePMLForHyOut(data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHyOut	src/cpml3.h	/^    void UpdatePMLForHyOut(data3d<Type1> &hy, const data3d<Type1> &ez, const data3d<Type1> &ex, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHyOut	src/orig.cpp	/^void UpdatePMLForHyOut(float***Hy, float*** Ez, float*** Ex, float DB){$/;"	f
+UpdatePMLForHz	src/cpml.h	/^    void UpdatePMLForHz(data3d<Type1> &hz, const data3d<Type1> &ex, const data3d<Type1> &ey, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHz	src/cpml.h	/^    void UpdatePMLForHz(unsigned k, data3d<Type1> &hz, const data3d<Type1> &ex, const data3d<Type1> &ey, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHz	src/cpml2.h	/^    void UpdatePMLForHz(data3d<Type1> &hz, const data3d<Type1> &ex, const data3d<Type1> &ey, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHz	src/cpml2.h	/^    void UpdatePMLForHz(unsigned k, data3d<Type1> &hz, const data3d<Type1> &ex, const data3d<Type1> &ey, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHz	src/cpml3.h	/^    void UpdatePMLForHz(data3d<Type1> &hz, const data3d<Type1> &ex, const data3d<Type1> &ey, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHz	src/cpml3.h	/^    void UpdatePMLForHz(unsigned k, data3d<Type1> &hz, const data3d<Type1> &ex, const data3d<Type1> &ey, Type2 DB) {$/;"	f	class:cpml
+UpdatePMLForHz	src/orig.cpp	/^void UpdatePMLForHz(unsigned k,float***Hz, float*** Ex, float*** Ey, float DB){$/;"	f
+UpdateVeloity	src/fdtd.cpp	/^int fdtd::UpdateVeloity(void) {$/;"	f	class:fdtd
+Vx	src/fdtd.h	/^    data3d<MyDataF> Vx;$/;"	m	class:fdtd
+Vy	src/fdtd.h	/^    data3d<MyDataF> Vy;$/;"	m	class:fdtd
+Vz	src/fdtd.h	/^    data3d<MyDataF> Vz;$/;"	m	class:fdtd
+WallCircleBound	src/fdtd.cpp	/^void fdtd::WallCircleBound(data3d &stru) {$/;"	f	class:fdtd
+We_Kang	src/InonizationFormula.cpp	/^double We_Kang(double E) {$/;"	f
+We_MorrowAndLowke	src/InonizationFormula.cpp	/^double We_MorrowAndLowke(double E, double N) {$/;"	f
+We_Nikonov	src/InonizationFormula.cpp	/^double We_Nikonov(double E, double P) {$/;"	f
+_CRT_SECURE_NO_WARNINGS	src/datastruct.cpp	27;"	d	file:
+alpha_x_max	src/cpml.h	/^    MyDataF alpha_x_max;$/;"	m	class:cpml
+alpha_x_max	src/cpml2.h	/^    MyDataF alpha_x_max;$/;"	m	class:cpml
+alpha_x_max	src/cpml3.h	/^    MyDataF alpha_x_max;$/;"	m	class:cpml
+alpha_x_max	src/orig.cpp	/^double alpha_x_max;$/;"	v
+alpha_x_max	src/testMain.cpp	/^double alpha_x_max;$/;"	v
+alpha_y_max	src/cpml.h	/^    MyDataF alpha_y_max;$/;"	m	class:cpml
+alpha_y_max	src/cpml2.h	/^    MyDataF alpha_y_max;$/;"	m	class:cpml
+alpha_y_max	src/cpml3.h	/^    MyDataF alpha_y_max;$/;"	m	class:cpml
+alpha_y_max	src/orig.cpp	/^double alpha_y_max;$/;"	v
+alpha_y_max	src/testMain.cpp	/^double alpha_y_max;$/;"	v
+alpha_z_max	src/cpml.h	/^    MyDataF alpha_z_max;$/;"	m	class:cpml
+alpha_z_max	src/cpml2.h	/^    MyDataF alpha_z_max;$/;"	m	class:cpml
+alpha_z_max	src/cpml3.h	/^    MyDataF alpha_z_max;$/;"	m	class:cpml
+alpha_z_max	src/orig.cpp	/^double alpha_z_max;$/;"	v
+alpha_z_max	src/testMain.cpp	/^double alpha_z_max;$/;"	v
+alphae_x_PML_1	src/cpml.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+alphae_x_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+alphae_x_PML_1	src/cpml3.h	/^    MyDataF *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	m	class:cpml
+alphae_x_PML_1	src/orig.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+alphae_x_PML_1	src/testMain.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+alphae_x_PML_2	src/cpml.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+alphae_x_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+alphae_x_PML_2	src/cpml3.h	/^    MyDataF *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	m	class:cpml
+alphae_x_PML_2	src/orig.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+alphae_x_PML_2	src/testMain.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+alphae_y_PML_1	src/cpml.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+alphae_y_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+alphae_y_PML_1	src/cpml3.h	/^    MyDataF *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	m	class:cpml
+alphae_y_PML_1	src/orig.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+alphae_y_PML_1	src/testMain.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+alphae_y_PML_2	src/cpml.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+alphae_y_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+alphae_y_PML_2	src/cpml3.h	/^    MyDataF *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	m	class:cpml
+alphae_y_PML_2	src/orig.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+alphae_y_PML_2	src/testMain.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+alphae_z_PML_1	src/cpml.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+alphae_z_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+alphae_z_PML_1	src/cpml3.h	/^    MyDataF *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	m	class:cpml
+alphae_z_PML_1	src/orig.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+alphae_z_PML_1	src/testMain.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+alphae_z_PML_2	src/cpml.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+alphae_z_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+alphae_z_PML_2	src/cpml3.h	/^    MyDataF *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	m	class:cpml
+alphae_z_PML_2	src/orig.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+alphae_z_PML_2	src/testMain.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+alphah_x_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+alphah_x_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+alphah_x_PML_1	src/cpml3.h	/^    MyDataF *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	m	class:cpml
+alphah_x_PML_1	src/orig.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+alphah_x_PML_1	src/testMain.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+alphah_x_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+alphah_x_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+alphah_x_PML_2	src/cpml3.h	/^    MyDataF *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	m	class:cpml
+alphah_x_PML_2	src/orig.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+alphah_x_PML_2	src/testMain.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+alphah_y_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+alphah_y_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+alphah_y_PML_1	src/cpml3.h	/^    MyDataF *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	m	class:cpml
+alphah_y_PML_1	src/orig.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+alphah_y_PML_1	src/testMain.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+alphah_y_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+alphah_y_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+alphah_y_PML_2	src/cpml3.h	/^    MyDataF *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	m	class:cpml
+alphah_y_PML_2	src/orig.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+alphah_y_PML_2	src/testMain.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+alphah_z_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+alphah_z_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+alphah_z_PML_1	src/cpml3.h	/^    MyDataF *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	m	class:cpml
+alphah_z_PML_1	src/orig.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+alphah_z_PML_1	src/testMain.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+alphah_z_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+alphah_z_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+alphah_z_PML_2	src/cpml3.h	/^    MyDataF *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	m	class:cpml
+alphah_z_PML_2	src/orig.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+alphah_z_PML_2	src/testMain.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+amp	src/fdtd.h	/^    MyDataF amp; \/\/ Amplitude$/;"	m	class:fdtd
+amp	src/orig.cpp	/^double amp = 1000; \/\/ Amplitude$/;"	v
+amp	src/testMain.cpp	/^double amp = 1000; \/\/ Amplitude$/;"	v
+amp	src/testcpml.cpp	/^MyDataF amp = 1000; \/\/ Amplitude$/;"	v
+be_x_1	src/cpml.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+be_x_1	src/cpml2.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+be_x_1	src/cpml3.h	/^    MyDataF *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	m	class:cpml
+be_x_1	src/orig.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+be_x_1	src/testMain.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+be_x_2	src/cpml.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+be_x_2	src/cpml2.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+be_x_2	src/cpml3.h	/^    MyDataF *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	m	class:cpml
+be_x_2	src/orig.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+be_x_2	src/testMain.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+be_y_1	src/cpml.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+be_y_1	src/cpml2.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+be_y_1	src/cpml3.h	/^    MyDataF *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	m	class:cpml
+be_y_1	src/orig.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+be_y_1	src/testMain.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+be_y_2	src/cpml.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+be_y_2	src/cpml2.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+be_y_2	src/cpml3.h	/^    MyDataF *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	m	class:cpml
+be_y_2	src/orig.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+be_y_2	src/testMain.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+be_z_1	src/cpml.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+be_z_1	src/cpml2.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+be_z_1	src/cpml3.h	/^    MyDataF *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	m	class:cpml
+be_z_1	src/orig.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+be_z_1	src/testMain.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+be_z_2	src/cpml.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+be_z_2	src/cpml2.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+be_z_2	src/cpml3.h	/^    MyDataF *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	m	class:cpml
+be_z_2	src/orig.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+be_z_2	src/testMain.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+bh_x_1	src/cpml.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+bh_x_1	src/cpml2.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+bh_x_1	src/cpml3.h	/^    MyDataF *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	m	class:cpml
+bh_x_1	src/orig.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+bh_x_1	src/testMain.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+bh_x_2	src/cpml.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+bh_x_2	src/cpml2.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+bh_x_2	src/cpml3.h	/^    MyDataF *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	m	class:cpml
+bh_x_2	src/orig.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+bh_x_2	src/testMain.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+bh_y_1	src/cpml.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+bh_y_1	src/cpml2.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+bh_y_1	src/cpml3.h	/^    MyDataF *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	m	class:cpml
+bh_y_1	src/orig.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+bh_y_1	src/testMain.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+bh_y_2	src/cpml.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+bh_y_2	src/cpml2.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+bh_y_2	src/cpml3.h	/^    MyDataF *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	m	class:cpml
+bh_y_2	src/orig.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+bh_y_2	src/testMain.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+bh_z_1	src/cpml.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+bh_z_1	src/cpml2.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+bh_z_1	src/cpml3.h	/^    MyDataF *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	m	class:cpml
+bh_z_1	src/orig.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+bh_z_1	src/testMain.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+bh_z_2	src/cpml.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+bh_z_2	src/cpml2.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+bh_z_2	src/cpml3.h	/^    MyDataF *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	m	class:cpml
+bh_z_2	src/orig.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+bh_z_2	src/testMain.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+buildDipole	src/fdtd.cpp	/^void fdtd::buildDipole() {$/;"	f	class:fdtd
+buildDipole	src/orig.cpp	/^void buildDipole() {$/;"	f
+buildDipole	src/testMain.cpp	/^void buildDipole() {$/;"	f
+buildDipole	src/testcpml.cpp	/^void buildDipole() {$/;"	f
+buildObject	src/fdtd.cpp	/^void fdtd::buildObject() {$/;"	f	class:fdtd
+buildObject	src/orig.cpp	/^void buildObject() {$/;"	f
+buildObject	src/testMain.cpp	/^void buildObject() {$/;"	f
+buildObject	src/testcpml.cpp	/^void buildObject() {$/;"	f
+buildSphere	src/fdtd.cpp	/^void fdtd::buildSphere() {$/;"	f	class:fdtd
+buildSphere	src/orig.cpp	/^void buildSphere() {$/;"	f
+buildSphere	src/testMain.cpp	/^void buildSphere() {$/;"	f
+buildSphere	src/testcpml.cpp	/^void buildSphere() {$/;"	f
+ce_x_1	src/cpml.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+ce_x_1	src/cpml2.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+ce_x_1	src/cpml3.h	/^    MyDataF *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	m	class:cpml
+ce_x_1	src/orig.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+ce_x_1	src/testMain.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+ce_x_2	src/cpml.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+ce_x_2	src/cpml2.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+ce_x_2	src/cpml3.h	/^    MyDataF *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	m	class:cpml
+ce_x_2	src/orig.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+ce_x_2	src/testMain.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+ce_y_1	src/cpml.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+ce_y_1	src/cpml2.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+ce_y_1	src/cpml3.h	/^    MyDataF *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	m	class:cpml
+ce_y_1	src/orig.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+ce_y_1	src/testMain.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+ce_y_2	src/cpml.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+ce_y_2	src/cpml2.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+ce_y_2	src/cpml3.h	/^    MyDataF *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	m	class:cpml
+ce_y_2	src/orig.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+ce_y_2	src/testMain.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+ce_z_1	src/cpml.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+ce_z_1	src/cpml2.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+ce_z_1	src/cpml3.h	/^    MyDataF *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	m	class:cpml
+ce_z_1	src/orig.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+ce_z_1	src/testMain.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+ce_z_2	src/cpml.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+ce_z_2	src/cpml2.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+ce_z_2	src/cpml3.h	/^    MyDataF *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	m	class:cpml
+ce_z_2	src/orig.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+ce_z_2	src/testMain.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+ch_x_1	src/cpml.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+ch_x_1	src/cpml2.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+ch_x_1	src/cpml3.h	/^    MyDataF *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	m	class:cpml
+ch_x_1	src/orig.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+ch_x_1	src/testMain.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+ch_x_2	src/cpml.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+ch_x_2	src/cpml2.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+ch_x_2	src/cpml3.h	/^    MyDataF *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	m	class:cpml
+ch_x_2	src/orig.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+ch_x_2	src/testMain.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+ch_y_1	src/cpml.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+ch_y_1	src/cpml2.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+ch_y_1	src/cpml3.h	/^    MyDataF *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	m	class:cpml
+ch_y_1	src/orig.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+ch_y_1	src/testMain.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+ch_y_2	src/cpml.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+ch_y_2	src/cpml2.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+ch_y_2	src/cpml3.h	/^    MyDataF *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	m	class:cpml
+ch_y_2	src/orig.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+ch_y_2	src/testMain.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+ch_z_1	src/cpml.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+ch_z_1	src/cpml2.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+ch_z_1	src/cpml3.h	/^    MyDataF *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	m	class:cpml
+ch_z_1	src/orig.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+ch_z_1	src/testMain.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+ch_z_2	src/cpml.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+ch_z_2	src/cpml2.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+ch_z_2	src/cpml3.h	/^    MyDataF *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	m	class:cpml
+ch_z_2	src/orig.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+ch_z_2	src/testMain.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+checkReturnCode	nbproject/Package-Default.bash	/^function checkReturnCode$/;"	f
+cnt	src/datastruct.h	/^    static int cnt;$/;"	m	class:data3d
+cnt	src/datastruct.h	/^template<class DataType> int data3d<DataType>::cnt = 0;$/;"	m	class:data3d
+compute	src/fdtd.cpp	/^void fdtd::compute() {$/;"	f	class:fdtd
+compute	src/orig.cpp	/^void compute() {$/;"	f
+compute	src/testMain.cpp	/^void compute() {$/;"	f
+compute	src/testcpml.cpp	/^void compute(cpml &pml) {$/;"	f
+copyFileToTmpDir	nbproject/Package-Default.bash	/^function copyFileToTmpDir$/;"	f
+cpml	src/cpml.h	/^    cpml(int _m, int _ma) : m(_m), ma(_ma) {$/;"	f	class:cpml
+cpml	src/cpml.h	/^class cpml {$/;"	c
+cpml	src/cpml2.h	/^    cpml(int _m, int _ma) : m(_m), ma(_ma) {$/;"	f	class:cpml
+cpml	src/cpml2.h	/^class cpml {$/;"	c
+cpml	src/cpml3.h	/^    cpml(int _m, int _ma) : m(_m), ma(_ma) {$/;"	f	class:cpml
+cpml	src/cpml3.h	/^class cpml {$/;"	c
+createArray	src/datastruct.h	/^    void createArray(unsigned num){$/;"	f	class:data1d
+createArray	src/datastruct.h	/^    void createArray(unsigned num,T val){$/;"	f	class:data1d
+data1d	src/data1d.cpp	/^data1d::data1d() {$/;"	f	class:data1d
+data1d	src/data1d.cpp	/^data1d::data1d(const data1d& orig) {$/;"	f	class:data1d
+data1d	src/data1d.h	/^class data1d {$/;"	c
+data1d	src/datastruct.h	/^    data1d(const data1d& orig):p(NULL),n(orig.n){$/;"	f	class:data1d
+data1d	src/datastruct.h	/^    data1d(unsigned num=0,T val=0):p(NULL),n(num){$/;"	f	class:data1d
+data1d	src/datastruct.h	/^class data1d {$/;"	c
+data3d	src/datastruct.h	/^    data3d() : nx(0), ny(0), nz(0), p(NULL) {$/;"	f	class:data3d
+data3d	src/datastruct.h	/^    data3d(unsigned int cx, unsigned int cy, unsigned cz)$/;"	f	class:data3d
+data3d	src/datastruct.h	/^class data3d {$/;"	c
+data3d	src/datastruct.h	/^data3d<DataType>::data3d(const data3d< DataType >& obj) : p(NULL) {$/;"	f	class:data3d
+den_ex	src/cpml.h	/^    data1d<MyDataF> den_ex;$/;"	m	class:cpml
+den_ex	src/cpml2.h	/^    data1d<MyDataF> den_ex;$/;"	m	class:cpml
+den_ex	src/cpml3.h	/^    pMyDataF den_ex;$/;"	m	class:cpml
+den_ex	src/orig.cpp	/^float *den_ex;$/;"	v
+den_ex	src/testMain.cpp	/^float *den_ex;$/;"	v
+den_ey	src/cpml.h	/^    data1d<MyDataF> den_ey;$/;"	m	class:cpml
+den_ey	src/cpml2.h	/^    data1d<MyDataF> den_ey;$/;"	m	class:cpml
+den_ey	src/cpml3.h	/^    pMyDataF den_ey;$/;"	m	class:cpml
+den_ey	src/orig.cpp	/^float *den_ey;$/;"	v
+den_ey	src/testMain.cpp	/^float *den_ey;$/;"	v
+den_ez	src/cpml.h	/^    data1d<MyDataF> den_ez;$/;"	m	class:cpml
+den_ez	src/cpml2.h	/^    data1d<MyDataF> den_ez;$/;"	m	class:cpml
+den_ez	src/cpml3.h	/^    pMyDataF den_ez;$/;"	m	class:cpml
+den_ez	src/orig.cpp	/^float *den_ez;$/;"	v
+den_ez	src/testMain.cpp	/^float *den_ez;$/;"	v
+den_hx	src/cpml.h	/^    data1d<MyDataF> den_hx;$/;"	m	class:cpml
+den_hx	src/cpml2.h	/^    data1d<MyDataF> den_hx;$/;"	m	class:cpml
+den_hx	src/cpml3.h	/^    pMyDataF den_hx;$/;"	m	class:cpml
+den_hx	src/orig.cpp	/^float *den_hx;$/;"	v
+den_hx	src/testMain.cpp	/^float *den_hx;$/;"	v
+den_hy	src/cpml.h	/^    data1d<MyDataF> den_hy;$/;"	m	class:cpml
+den_hy	src/cpml2.h	/^    data1d<MyDataF> den_hy;$/;"	m	class:cpml
+den_hy	src/cpml3.h	/^    pMyDataF den_hy;$/;"	m	class:cpml
+den_hy	src/orig.cpp	/^float *den_hy;$/;"	v
+den_hy	src/testMain.cpp	/^float *den_hy;$/;"	v
+den_hz	src/cpml.h	/^    data1d<MyDataF> den_hz;$/;"	m	class:cpml
+den_hz	src/cpml2.h	/^    data1d<MyDataF> den_hz;$/;"	m	class:cpml
+den_hz	src/cpml3.h	/^    pMyDataF den_hz;$/;"	m	class:cpml
+den_hz	src/orig.cpp	/^float *den_hz;$/;"	v
+den_hz	src/testMain.cpp	/^float *den_hz;$/;"	v
+dsf	src/fdtd.h	/^    MyDataF dsf;$/;"	m	class:fdtd
+dt	src/fdtd.h	/^    MyDataF dt, dx, dy, dz;$/;"	m	class:fdtd
+dt	src/orig.cpp	/^double dt;$/;"	v
+dt	src/test.cpp	/^MyDataF dt, dx, dy, dz;$/;"	v
+dt	src/testMain.cpp	/^double dt;$/;"	v
+dt	src/testcpml.cpp	/^MyDataF dt;$/;"	v
+dtf	src/fdtd.h	/^    MyDataF dtf;$/;"	m	class:fdtd
+dx	src/fdtd.h	/^    MyDataF dt, dx, dy, dz;$/;"	m	class:fdtd
+dx	src/orig.cpp	/^double dx = 1.0E-3;$/;"	v
+dx	src/test.cpp	/^MyDataF dt, dx, dy, dz;$/;"	v
+dx	src/testMain.cpp	/^double dx = 1.0E-3;$/;"	v
+dx	src/testcpml.cpp	/^MyDataF dx = 1.0E-3;$/;"	v
+dy	src/fdtd.h	/^    MyDataF dt, dx, dy, dz;$/;"	m	class:fdtd
+dy	src/orig.cpp	/^double dy = 1.0E-3;$/;"	v
+dy	src/test.cpp	/^MyDataF dt, dx, dy, dz;$/;"	v
+dy	src/testMain.cpp	/^double dy = 1.0E-3;$/;"	v
+dy	src/testcpml.cpp	/^MyDataF dy = 1.0E-3;$/;"	v
+dz	src/fdtd.h	/^    MyDataF dt, dx, dy, dz;$/;"	m	class:fdtd
+dz	src/orig.cpp	/^double dz = 1.0E-3; \/\/ cell size in each direction$/;"	v
+dz	src/test.cpp	/^MyDataF dt, dx, dy, dz;$/;"	v
+dz	src/testMain.cpp	/^double dz = 1.0E-3; \/\/ cell size in each direction$/;"	v
+dz	src/testcpml.cpp	/^MyDataF dz = 1.0E-3; \/\/ cell size in each direction$/;"	v
+e	src/test.cpp	/^MyDataF me, e;$/;"	v
+ep	src/datastruct.h	/^    static Engine *ep;$/;"	m	class:data3d
+ep	src/datastruct.h	/^Engine* data3d<DataType>::ep = NULL;$/;"	m	class:data3d
+epsR	src/orig.cpp	/^double epsR = 1.0; \/\/free space$/;"	v
+epsR	src/test.cpp	/^MyDataF eps_0, epsR;$/;"	v
+epsR	src/testMain.cpp	/^double epsR = 1.0; \/\/free space$/;"	v
+epsR	src/testcpml.cpp	/^MyDataF epsR = 1.0; \/\/free space$/;"	v
+eps_0	src/orig.cpp	/^double eps_0;$/;"	v
+eps_0	src/test.cpp	/^MyDataF eps_0, epsR;$/;"	v
+eps_0	src/testMain.cpp	/^double eps_0;$/;"	v
+eps_0	src/testcpml.cpp	/^MyDataF eps_0;$/;"	v
+epsilon	src/fdtd.h	/^    MyDataF *epsilon;$/;"	m	class:fdtd
+epsilon	src/orig.cpp	/^double *epsilon;$/;"	v
+epsilon	src/testMain.cpp	/^double *epsilon;$/;"	v
+epsilon	src/testcpml.cpp	/^MyDataF *epsilon;$/;"	v
+fdtd	src/fdtd.cpp	/^fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,$/;"	f	class:fdtd
+fdtd	src/fdtd.h	/^class fdtd {$/;"	c
+i	src/orig.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+i	src/testMain.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+i	src/testcpml.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+iend	src/fdtd.h	/^    unsigned istart, iend, jstart;$/;"	m	class:fdtd
+iend	src/orig.cpp	/^int istart, iend, jstart;$/;"	v
+iend	src/testMain.cpp	/^int istart, iend, jstart;$/;"	v
+iend	src/testcpml.cpp	/^int istart, iend, jstart;$/;"	v
+ii	src/orig.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+ii	src/testMain.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+ii	src/testcpml.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+initArray	src/datastruct.h	/^    void initArray(T initval=0){$/;"	f	class:data1d
+initComData	src/test.cpp	/^void initComData() {$/;"	f
+initialize	src/fdtd.cpp	/^void fdtd::initialize() {$/;"	f	class:fdtd
+initialize	src/orig.cpp	/^void initialize() {$/;"	f
+initialize	src/testMain.cpp	/^void initialize() {$/;"	f
+initialize	src/testcpml.cpp	/^void initialize() {$/;"	f
+initializeCPML	src/orig.cpp	/^void initializeCPML() {$/;"	f
+initializeCPML	src/testMain.cpp	/^void initializeCPML() {$/;"	f
+isp	src/fdtd.h	/^    unsigned isp,jsp,ksp;$/;"	m	class:fdtd
+istart	src/fdtd.h	/^    unsigned istart, iend, jstart;$/;"	m	class:fdtd
+istart	src/orig.cpp	/^int istart, iend, jstart;$/;"	v
+istart	src/testMain.cpp	/^int istart, iend, jstart;$/;"	v
+istart	src/testcpml.cpp	/^int istart, iend, jstart;$/;"	v
+j	src/orig.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+j	src/testMain.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+j	src/testcpml.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+jend	src/fdtd.h	/^    unsigned jend, kstart, kend;$/;"	m	class:fdtd
+jend	src/orig.cpp	/^int jend, kstart, kend;$/;"	v
+jend	src/testMain.cpp	/^int jend, kstart, kend;$/;"	v
+jend	src/testcpml.cpp	/^int jend, kstart, kend;$/;"	v
+jj	src/orig.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+jj	src/testMain.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+jj	src/testcpml.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+jsp	src/fdtd.h	/^    unsigned isp,jsp,ksp;$/;"	m	class:fdtd
+jstart	src/fdtd.h	/^    unsigned istart, iend, jstart;$/;"	m	class:fdtd
+jstart	src/orig.cpp	/^int istart, iend, jstart;$/;"	v
+jstart	src/testMain.cpp	/^int istart, iend, jstart;$/;"	v
+jstart	src/testcpml.cpp	/^int istart, iend, jstart;$/;"	v
+k	src/orig.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+k	src/testMain.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+k	src/testcpml.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+kappa_x_max	src/cpml.h	/^    MyDataF kappa_x_max;$/;"	m	class:cpml
+kappa_x_max	src/cpml2.h	/^    MyDataF kappa_x_max;$/;"	m	class:cpml
+kappa_x_max	src/cpml3.h	/^    MyDataF kappa_x_max;$/;"	m	class:cpml
+kappa_x_max	src/orig.cpp	/^double kappa_x_max;$/;"	v
+kappa_x_max	src/testMain.cpp	/^double kappa_x_max;$/;"	v
+kappa_y_max	src/cpml.h	/^    MyDataF kappa_y_max;$/;"	m	class:cpml
+kappa_y_max	src/cpml2.h	/^    MyDataF kappa_y_max;$/;"	m	class:cpml
+kappa_y_max	src/cpml3.h	/^    MyDataF kappa_y_max;$/;"	m	class:cpml
+kappa_y_max	src/orig.cpp	/^double kappa_y_max;$/;"	v
+kappa_y_max	src/testMain.cpp	/^double kappa_y_max;$/;"	v
+kappa_z_max	src/cpml.h	/^    MyDataF kappa_z_max;$/;"	m	class:cpml
+kappa_z_max	src/cpml2.h	/^    MyDataF kappa_z_max;$/;"	m	class:cpml
+kappa_z_max	src/cpml3.h	/^    MyDataF kappa_z_max;$/;"	m	class:cpml
+kappa_z_max	src/orig.cpp	/^double kappa_z_max;$/;"	v
+kappa_z_max	src/testMain.cpp	/^double kappa_z_max;$/;"	v
+kappae_x_PML_1	src/cpml.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+kappae_x_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+kappae_x_PML_1	src/cpml3.h	/^    MyDataF *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	m	class:cpml
+kappae_x_PML_1	src/orig.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+kappae_x_PML_1	src/testMain.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+kappae_x_PML_2	src/cpml.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+kappae_x_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+kappae_x_PML_2	src/cpml3.h	/^    MyDataF *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	m	class:cpml
+kappae_x_PML_2	src/orig.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+kappae_x_PML_2	src/testMain.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+kappae_y_PML_1	src/cpml.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+kappae_y_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+kappae_y_PML_1	src/cpml3.h	/^    MyDataF *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	m	class:cpml
+kappae_y_PML_1	src/orig.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+kappae_y_PML_1	src/testMain.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+kappae_y_PML_2	src/cpml.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+kappae_y_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+kappae_y_PML_2	src/cpml3.h	/^    MyDataF *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	m	class:cpml
+kappae_y_PML_2	src/orig.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+kappae_y_PML_2	src/testMain.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+kappae_z_PML_1	src/cpml.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+kappae_z_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+kappae_z_PML_1	src/cpml3.h	/^    MyDataF *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	m	class:cpml
+kappae_z_PML_1	src/orig.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+kappae_z_PML_1	src/testMain.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+kappae_z_PML_2	src/cpml.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+kappae_z_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+kappae_z_PML_2	src/cpml3.h	/^    MyDataF *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	m	class:cpml
+kappae_z_PML_2	src/orig.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+kappae_z_PML_2	src/testMain.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+kappah_x_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+kappah_x_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+kappah_x_PML_1	src/cpml3.h	/^    MyDataF *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	m	class:cpml
+kappah_x_PML_1	src/orig.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+kappah_x_PML_1	src/testMain.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+kappah_x_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+kappah_x_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+kappah_x_PML_2	src/cpml3.h	/^    MyDataF *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	m	class:cpml
+kappah_x_PML_2	src/orig.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+kappah_x_PML_2	src/testMain.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+kappah_y_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+kappah_y_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+kappah_y_PML_1	src/cpml3.h	/^    MyDataF *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	m	class:cpml
+kappah_y_PML_1	src/orig.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+kappah_y_PML_1	src/testMain.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+kappah_y_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+kappah_y_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+kappah_y_PML_2	src/cpml3.h	/^    MyDataF *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	m	class:cpml
+kappah_y_PML_2	src/orig.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+kappah_y_PML_2	src/testMain.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+kappah_z_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+kappah_z_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+kappah_z_PML_1	src/cpml3.h	/^    MyDataF *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	m	class:cpml
+kappah_z_PML_1	src/orig.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+kappah_z_PML_1	src/testMain.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+kappah_z_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+kappah_z_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+kappah_z_PML_2	src/cpml3.h	/^    MyDataF *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	m	class:cpml
+kappah_z_PML_2	src/orig.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+kappah_z_PML_2	src/testMain.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+kend	src/fdtd.h	/^    unsigned jend, kstart, kend;$/;"	m	class:fdtd
+kend	src/orig.cpp	/^int jend, kstart, kend;$/;"	v
+kend	src/testMain.cpp	/^int jend, kstart, kend;$/;"	v
+kend	src/testcpml.cpp	/^int jend, kstart, kend;$/;"	v
+kk	src/orig.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+kk	src/testMain.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+kk	src/testcpml.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+ksource	src/fdtd.h	/^    unsigned ksource;$/;"	m	class:fdtd
+ksource	src/orig.cpp	/^int ksource = 12;$/;"	v
+ksource	src/testMain.cpp	/^int ksource = 12;$/;"	v
+ksource	src/testcpml.cpp	/^int ksource = 12;$/;"	v
+ksp	src/fdtd.h	/^    unsigned isp,jsp,ksp;$/;"	m	class:fdtd
+kstart	src/fdtd.h	/^    unsigned jend, kstart, kend;$/;"	m	class:fdtd
+kstart	src/orig.cpp	/^int jend, kstart, kend;$/;"	v
+kstart	src/testMain.cpp	/^int jend, kstart, kend;$/;"	v
+kstart	src/testcpml.cpp	/^int jend, kstart, kend;$/;"	v
+m	src/cpml.h	/^    int m, ma;$/;"	m	class:cpml
+m	src/cpml2.h	/^    int m, ma;$/;"	m	class:cpml
+m	src/cpml3.h	/^    int m, ma;$/;"	m	class:cpml
+m	src/fdtd.h	/^    unsigned m, ma;$/;"	m	class:fdtd
+m	src/orig.cpp	/^int m = 3, ma = 1;$/;"	v
+m	src/testMain.cpp	/^int m = 3, ma = 1;$/;"	v
+m	src/testcpml.cpp	/^int m = 3, ma = 1;$/;"	v
+ma	src/cpml.h	/^    int m, ma;$/;"	m	class:cpml
+ma	src/cpml2.h	/^    int m, ma;$/;"	m	class:cpml
+ma	src/cpml3.h	/^    int m, ma;$/;"	m	class:cpml
+ma	src/fdtd.h	/^    unsigned m, ma;$/;"	m	class:fdtd
+ma	src/orig.cpp	/^int m = 3, ma = 1;$/;"	v
+ma	src/testMain.cpp	/^int m = 3, ma = 1;$/;"	v
+ma	src/testcpml.cpp	/^int m = 3, ma = 1;$/;"	v
+main	src/orig.cpp	/^int main() {$/;"	f
+main	src/test.cpp	/^int main() {$/;"	f
+main	src/testMain.cpp	/^int main() {$/;"	f
+main	src/testcpml.cpp	/^int main() {$/;"	f
+makeDirectory	nbproject/Package-Default.bash	/^function makeDirectory$/;"	f
+me	src/test.cpp	/^MyDataF me, e;$/;"	v
+mu	src/fdtd.h	/^    MyDataF *mu;$/;"	m	class:fdtd
+mu	src/orig.cpp	/^double *mu;$/;"	v
+mu	src/testMain.cpp	/^double *mu;$/;"	v
+mu	src/testcpml.cpp	/^MyDataF *mu;$/;"	v
+mu_0	src/orig.cpp	/^double mu_0;$/;"	v
+mu_0	src/test.cpp	/^MyDataF mu_0;$/;"	v
+mu_0	src/testMain.cpp	/^double mu_0;$/;"	v
+mu_0	src/testcpml.cpp	/^MyDataF mu_0;$/;"	v
+mu_e	src/fdtd.h	/^    MyDataF mu_e; $/;"	m	class:fdtd
+mu_i	src/fdtd.h	/^    MyDataF mu_i;$/;"	m	class:fdtd
+n	src/data1d.h	/^    unsigned n;$/;"	m	class:data1d
+n	src/datastruct.h	/^    unsigned n;$/;"	m	class:data1d
+n	src/orig.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+n	src/testMain.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+n	src/testcpml.cpp	/^int i, j, ii, jj, k, kk, n;$/;"	v
+nMax	src/fdtd.h	/^    unsigned nMax; \/\/ total number of time steps$/;"	m	class:fdtd
+nMax	src/orig.cpp	/^int nMax = 500; \/\/ total number of time steps$/;"	v
+nMax	src/testMain.cpp	/^int nMax = 500; \/\/ total number of time steps$/;"	v
+nMax	src/testcpml.cpp	/^int nMax = 500; \/\/ total number of time steps$/;"	v
+name	src/datastruct.h	/^    std::string name;$/;"	m	class:data3d
+neGrid	src/fdtd.h	/^    unsigned neGrid;$/;"	m	class:fdtd
+niutype	src/fdtd.h	/^    int niutype;$/;"	m	class:fdtd
+num	src/datastruct.h	/^    mxArray *num;$/;"	m	class:data3d
+numMaterials	src/fdtd.h	/^    unsigned numMaterials;$/;"	m	class:fdtd
+numMaterials	src/orig.cpp	/^int numMaterials = 50;$/;"	v
+numMaterials	src/testMain.cpp	/^int numMaterials = 50;$/;"	v
+numMaterials	src/testcpml.cpp	/^int numMaterials = 50;$/;"	v
+nx	src/datastruct.h	/^    unsigned int nx;$/;"	m	class:data3d
+nxPML_1	src/cpml.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nxPML_1	src/cpml2.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nxPML_1	src/cpml3.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nxPML_1	src/orig.cpp	/^int nxPML_1, nxPML_2, nyPML_1;$/;"	v
+nxPML_1	src/testMain.cpp	/^int nxPML_1, nxPML_2, nyPML_1;$/;"	v
+nxPML_2	src/cpml.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nxPML_2	src/cpml2.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nxPML_2	src/cpml3.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nxPML_2	src/orig.cpp	/^int nxPML_1, nxPML_2, nyPML_1;$/;"	v
+nxPML_2	src/testMain.cpp	/^int nxPML_1, nxPML_2, nyPML_1;$/;"	v
+ny	src/datastruct.h	/^    unsigned int ny;$/;"	m	class:data3d
+nyPML_1	src/cpml.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nyPML_1	src/cpml2.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nyPML_1	src/cpml3.h	/^    unsigned nxPML_1, nxPML_2, nyPML_1;$/;"	m	class:cpml
+nyPML_1	src/orig.cpp	/^int nxPML_1, nxPML_2, nyPML_1;$/;"	v
+nyPML_1	src/testMain.cpp	/^int nxPML_1, nxPML_2, nyPML_1;$/;"	v
+nyPML_2	src/cpml.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nyPML_2	src/cpml2.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nyPML_2	src/cpml3.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nyPML_2	src/orig.cpp	/^int nyPML_2, nzPML_1, nzPML_2;$/;"	v
+nyPML_2	src/testMain.cpp	/^int nyPML_2, nzPML_1, nzPML_2;$/;"	v
+nz	src/datastruct.h	/^    unsigned int nz;$/;"	m	class:data3d
+nzPML_1	src/cpml.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nzPML_1	src/cpml2.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nzPML_1	src/cpml3.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nzPML_1	src/orig.cpp	/^int nyPML_2, nzPML_1, nzPML_2;$/;"	v
+nzPML_1	src/testMain.cpp	/^int nyPML_2, nzPML_1, nzPML_2;$/;"	v
+nzPML_2	src/cpml.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nzPML_2	src/cpml2.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nzPML_2	src/cpml3.h	/^    unsigned nyPML_2, nzPML_1, nzPML_2;$/;"	m	class:cpml
+nzPML_2	src/orig.cpp	/^int nyPML_2, nzPML_1, nzPML_2;$/;"	v
+nzPML_2	src/testMain.cpp	/^int nyPML_2, nzPML_1, nzPML_2;$/;"	v
+omega	src/fdtd.h	/^    MyDataF omega; \/\/wave angle frequency$/;"	m	class:fdtd
+operator =	src/datastruct.h	/^void data3d<DataType>::operator =(data3d< DataType > const &other) {$/;"	f	class:data3d
+p	src/data1d.h	/^    T* p;$/;"	m	class:data1d
+p	src/datastruct.h	/^    DataType*** p;$/;"	m	class:data3d
+p	src/datastruct.h	/^    T* p;$/;"	m	class:data1d
+p	src/fdtd.h	/^    MyDataF p;$/;"	m	class:fdtd
+pMyDataF	src/datastruct.h	/^typedef MyDataF* pMyDataF;$/;"	t
+pi	src/orig.cpp	/^double pi = 3.14159265358979;$/;"	v
+pi	src/test.cpp	/^MyDataF pi, C;$/;"	v
+pi	src/testMain.cpp	/^double pi = 3.14159265358979;$/;"	v
+pml	src/fdtd.h	/^    cpml pml;$/;"	m	class:fdtd
+ppMyDataF	src/datastruct.h	/^typedef pMyDataF* ppMyDataF;$/;"	t
+printf	src/datastruct.h	34;"	d
+projects	Makefile	/^projects=origProgram testCPML hpw3d orig$/;"	m
+psi_Exy_1	src/cpml.h	/^    data3d<MyDataF> psi_Exy_1;$/;"	m	class:cpml
+psi_Exy_1	src/cpml2.h	/^    data3d<MyDataF> psi_Exy_1;$/;"	m	class:cpml
+psi_Exy_1	src/cpml3.h	/^    data3d<MyDataF> psi_Exy_1;$/;"	m	class:cpml
+psi_Exy_1	src/orig.cpp	/^float ***psi_Exy_1;$/;"	v
+psi_Exy_1	src/testMain.cpp	/^float ***psi_Exy_1;$/;"	v
+psi_Exy_2	src/cpml.h	/^    data3d<MyDataF> psi_Exy_2;$/;"	m	class:cpml
+psi_Exy_2	src/cpml2.h	/^    data3d<MyDataF> psi_Exy_2;$/;"	m	class:cpml
+psi_Exy_2	src/cpml3.h	/^    data3d<MyDataF> psi_Exy_2;$/;"	m	class:cpml
+psi_Exy_2	src/orig.cpp	/^float ***psi_Exy_2;$/;"	v
+psi_Exy_2	src/testMain.cpp	/^float ***psi_Exy_2;$/;"	v
+psi_Exz_1	src/cpml.h	/^    data3d<MyDataF> psi_Exz_1;$/;"	m	class:cpml
+psi_Exz_1	src/cpml2.h	/^    data3d<MyDataF> psi_Exz_1;$/;"	m	class:cpml
+psi_Exz_1	src/cpml3.h	/^    data3d<MyDataF> psi_Exz_1;$/;"	m	class:cpml
+psi_Exz_1	src/orig.cpp	/^float ***psi_Exz_1;$/;"	v
+psi_Exz_1	src/testMain.cpp	/^float ***psi_Exz_1;$/;"	v
+psi_Exz_2	src/cpml.h	/^    data3d<MyDataF> psi_Exz_2;$/;"	m	class:cpml
+psi_Exz_2	src/cpml2.h	/^    data3d<MyDataF> psi_Exz_2;$/;"	m	class:cpml
+psi_Exz_2	src/cpml3.h	/^    data3d<MyDataF> psi_Exz_2;$/;"	m	class:cpml
+psi_Exz_2	src/orig.cpp	/^float ***psi_Exz_2;$/;"	v
+psi_Exz_2	src/testMain.cpp	/^float ***psi_Exz_2;$/;"	v
+psi_Eyx_1	src/cpml.h	/^    data3d<MyDataF> psi_Eyx_1;$/;"	m	class:cpml
+psi_Eyx_1	src/cpml2.h	/^    data3d<MyDataF> psi_Eyx_1;$/;"	m	class:cpml
+psi_Eyx_1	src/cpml3.h	/^    data3d<MyDataF> psi_Eyx_1;$/;"	m	class:cpml
+psi_Eyx_1	src/orig.cpp	/^float ***psi_Eyx_1;$/;"	v
+psi_Eyx_1	src/testMain.cpp	/^float ***psi_Eyx_1;$/;"	v
+psi_Eyx_2	src/cpml.h	/^    data3d<MyDataF> psi_Eyx_2;$/;"	m	class:cpml
+psi_Eyx_2	src/cpml2.h	/^    data3d<MyDataF> psi_Eyx_2;$/;"	m	class:cpml
+psi_Eyx_2	src/cpml3.h	/^    data3d<MyDataF> psi_Eyx_2;$/;"	m	class:cpml
+psi_Eyx_2	src/orig.cpp	/^float ***psi_Eyx_2;$/;"	v
+psi_Eyx_2	src/testMain.cpp	/^float ***psi_Eyx_2;$/;"	v
+psi_Eyz_1	src/cpml.h	/^    data3d<MyDataF> psi_Eyz_1;$/;"	m	class:cpml
+psi_Eyz_1	src/cpml2.h	/^    data3d<MyDataF> psi_Eyz_1;$/;"	m	class:cpml
+psi_Eyz_1	src/cpml3.h	/^    data3d<MyDataF> psi_Eyz_1;$/;"	m	class:cpml
+psi_Eyz_1	src/orig.cpp	/^float ***psi_Eyz_1;$/;"	v
+psi_Eyz_1	src/testMain.cpp	/^float ***psi_Eyz_1;$/;"	v
+psi_Eyz_2	src/cpml.h	/^    data3d<MyDataF> psi_Eyz_2;$/;"	m	class:cpml
+psi_Eyz_2	src/cpml2.h	/^    data3d<MyDataF> psi_Eyz_2;$/;"	m	class:cpml
+psi_Eyz_2	src/cpml3.h	/^    data3d<MyDataF> psi_Eyz_2;$/;"	m	class:cpml
+psi_Eyz_2	src/orig.cpp	/^float ***psi_Eyz_2;$/;"	v
+psi_Eyz_2	src/testMain.cpp	/^float ***psi_Eyz_2;$/;"	v
+psi_Ezx_1	src/cpml.h	/^    data3d<MyDataF> psi_Ezx_1;$/;"	m	class:cpml
+psi_Ezx_1	src/cpml2.h	/^    data3d<MyDataF> psi_Ezx_1;$/;"	m	class:cpml
+psi_Ezx_1	src/cpml3.h	/^    data3d<MyDataF> psi_Ezx_1;$/;"	m	class:cpml
+psi_Ezx_1	src/orig.cpp	/^float ***psi_Ezx_1;$/;"	v
+psi_Ezx_1	src/testMain.cpp	/^float ***psi_Ezx_1;$/;"	v
+psi_Ezx_2	src/cpml.h	/^    data3d<MyDataF> psi_Ezx_2;$/;"	m	class:cpml
+psi_Ezx_2	src/cpml2.h	/^    data3d<MyDataF> psi_Ezx_2;$/;"	m	class:cpml
+psi_Ezx_2	src/cpml3.h	/^    data3d<MyDataF> psi_Ezx_2;$/;"	m	class:cpml
+psi_Ezx_2	src/orig.cpp	/^float ***psi_Ezx_2;$/;"	v
+psi_Ezx_2	src/testMain.cpp	/^float ***psi_Ezx_2;$/;"	v
+psi_Ezy_1	src/cpml.h	/^    data3d<MyDataF> psi_Ezy_1;$/;"	m	class:cpml
+psi_Ezy_1	src/cpml2.h	/^    data3d<MyDataF> psi_Ezy_1;$/;"	m	class:cpml
+psi_Ezy_1	src/cpml3.h	/^    data3d<MyDataF> psi_Ezy_1;$/;"	m	class:cpml
+psi_Ezy_1	src/orig.cpp	/^float ***psi_Ezy_1;$/;"	v
+psi_Ezy_1	src/testMain.cpp	/^float ***psi_Ezy_1;$/;"	v
+psi_Ezy_2	src/cpml.h	/^    data3d<MyDataF> psi_Ezy_2;$/;"	m	class:cpml
+psi_Ezy_2	src/cpml2.h	/^    data3d<MyDataF> psi_Ezy_2;$/;"	m	class:cpml
+psi_Ezy_2	src/cpml3.h	/^    data3d<MyDataF> psi_Ezy_2;$/;"	m	class:cpml
+psi_Ezy_2	src/orig.cpp	/^float ***psi_Ezy_2;$/;"	v
+psi_Ezy_2	src/testMain.cpp	/^float ***psi_Ezy_2;$/;"	v
+psi_Hxy_1	src/cpml.h	/^    data3d<MyDataF> psi_Hxy_1;$/;"	m	class:cpml
+psi_Hxy_1	src/cpml2.h	/^    data3d<MyDataF> psi_Hxy_1;$/;"	m	class:cpml
+psi_Hxy_1	src/cpml3.h	/^    data3d<MyDataF> psi_Hxy_1;$/;"	m	class:cpml
+psi_Hxy_1	src/orig.cpp	/^float ***psi_Hxy_1;$/;"	v
+psi_Hxy_1	src/testMain.cpp	/^float ***psi_Hxy_1;$/;"	v
+psi_Hxy_2	src/cpml.h	/^    data3d<MyDataF> psi_Hxy_2;$/;"	m	class:cpml
+psi_Hxy_2	src/cpml2.h	/^    data3d<MyDataF> psi_Hxy_2;$/;"	m	class:cpml
+psi_Hxy_2	src/cpml3.h	/^    data3d<MyDataF> psi_Hxy_2;$/;"	m	class:cpml
+psi_Hxy_2	src/orig.cpp	/^float ***psi_Hxy_2;$/;"	v
+psi_Hxy_2	src/testMain.cpp	/^float ***psi_Hxy_2;$/;"	v
+psi_Hxz_1	src/cpml.h	/^    data3d<MyDataF> psi_Hxz_1;$/;"	m	class:cpml
+psi_Hxz_1	src/cpml2.h	/^    data3d<MyDataF> psi_Hxz_1;$/;"	m	class:cpml
+psi_Hxz_1	src/cpml3.h	/^    data3d<MyDataF> psi_Hxz_1;$/;"	m	class:cpml
+psi_Hxz_1	src/orig.cpp	/^float ***psi_Hxz_1;$/;"	v
+psi_Hxz_1	src/testMain.cpp	/^float ***psi_Hxz_1;$/;"	v
+psi_Hxz_2	src/cpml.h	/^    data3d<MyDataF> psi_Hxz_2;$/;"	m	class:cpml
+psi_Hxz_2	src/cpml2.h	/^    data3d<MyDataF> psi_Hxz_2;$/;"	m	class:cpml
+psi_Hxz_2	src/cpml3.h	/^    data3d<MyDataF> psi_Hxz_2;$/;"	m	class:cpml
+psi_Hxz_2	src/orig.cpp	/^float ***psi_Hxz_2;$/;"	v
+psi_Hxz_2	src/testMain.cpp	/^float ***psi_Hxz_2;$/;"	v
+psi_Hyx_1	src/cpml.h	/^    data3d<MyDataF> psi_Hyx_1;$/;"	m	class:cpml
+psi_Hyx_1	src/cpml2.h	/^    data3d<MyDataF> psi_Hyx_1;$/;"	m	class:cpml
+psi_Hyx_1	src/cpml3.h	/^    data3d<MyDataF> psi_Hyx_1;$/;"	m	class:cpml
+psi_Hyx_1	src/orig.cpp	/^float ***psi_Hyx_1;$/;"	v
+psi_Hyx_1	src/testMain.cpp	/^float ***psi_Hyx_1;$/;"	v
+psi_Hyx_2	src/cpml.h	/^    data3d<MyDataF> psi_Hyx_2;$/;"	m	class:cpml
+psi_Hyx_2	src/cpml2.h	/^    data3d<MyDataF> psi_Hyx_2;$/;"	m	class:cpml
+psi_Hyx_2	src/cpml3.h	/^    data3d<MyDataF> psi_Hyx_2;$/;"	m	class:cpml
+psi_Hyx_2	src/orig.cpp	/^float ***psi_Hyx_2;$/;"	v
+psi_Hyx_2	src/testMain.cpp	/^float ***psi_Hyx_2;$/;"	v
+psi_Hyz_1	src/cpml.h	/^    data3d<MyDataF> psi_Hyz_1;$/;"	m	class:cpml
+psi_Hyz_1	src/cpml2.h	/^    data3d<MyDataF> psi_Hyz_1;$/;"	m	class:cpml
+psi_Hyz_1	src/cpml3.h	/^    data3d<MyDataF> psi_Hyz_1;$/;"	m	class:cpml
+psi_Hyz_1	src/orig.cpp	/^float ***psi_Hyz_1;$/;"	v
+psi_Hyz_1	src/testMain.cpp	/^float ***psi_Hyz_1;$/;"	v
+psi_Hyz_2	src/cpml.h	/^    data3d<MyDataF> psi_Hyz_2;$/;"	m	class:cpml
+psi_Hyz_2	src/cpml2.h	/^    data3d<MyDataF> psi_Hyz_2;$/;"	m	class:cpml
+psi_Hyz_2	src/cpml3.h	/^    data3d<MyDataF> psi_Hyz_2;$/;"	m	class:cpml
+psi_Hyz_2	src/orig.cpp	/^float ***psi_Hyz_2;$/;"	v
+psi_Hyz_2	src/testMain.cpp	/^float ***psi_Hyz_2;$/;"	v
+psi_Hzx_1	src/cpml.h	/^    data3d<MyDataF> psi_Hzx_1;$/;"	m	class:cpml
+psi_Hzx_1	src/cpml2.h	/^    data3d<MyDataF> psi_Hzx_1;$/;"	m	class:cpml
+psi_Hzx_1	src/cpml3.h	/^    data3d<MyDataF> psi_Hzx_1;$/;"	m	class:cpml
+psi_Hzx_1	src/orig.cpp	/^float ***psi_Hzx_1;$/;"	v
+psi_Hzx_1	src/testMain.cpp	/^float ***psi_Hzx_1;$/;"	v
+psi_Hzx_2	src/cpml.h	/^    data3d<MyDataF> psi_Hzx_2;$/;"	m	class:cpml
+psi_Hzx_2	src/cpml2.h	/^    data3d<MyDataF> psi_Hzx_2;$/;"	m	class:cpml
+psi_Hzx_2	src/cpml3.h	/^    data3d<MyDataF> psi_Hzx_2;$/;"	m	class:cpml
+psi_Hzx_2	src/orig.cpp	/^float ***psi_Hzx_2;$/;"	v
+psi_Hzx_2	src/testMain.cpp	/^float ***psi_Hzx_2;$/;"	v
+psi_Hzy_1	src/cpml.h	/^    data3d<MyDataF> psi_Hzy_1;$/;"	m	class:cpml
+psi_Hzy_1	src/cpml2.h	/^    data3d<MyDataF> psi_Hzy_1;$/;"	m	class:cpml
+psi_Hzy_1	src/cpml3.h	/^    data3d<MyDataF> psi_Hzy_1;$/;"	m	class:cpml
+psi_Hzy_1	src/orig.cpp	/^float ***psi_Hzy_1;$/;"	v
+psi_Hzy_1	src/testMain.cpp	/^float ***psi_Hzy_1;$/;"	v
+psi_Hzy_2	src/cpml.h	/^    data3d<MyDataF> psi_Hzy_2;$/;"	m	class:cpml
+psi_Hzy_2	src/cpml2.h	/^    data3d<MyDataF> psi_Hzy_2;$/;"	m	class:cpml
+psi_Hzy_2	src/cpml3.h	/^    data3d<MyDataF> psi_Hzy_2;$/;"	m	class:cpml
+psi_Hzy_2	src/orig.cpp	/^float ***psi_Hzy_2;$/;"	v
+psi_Hzy_2	src/testMain.cpp	/^float ***psi_Hzy_2;$/;"	v
+putvars	src/fdtd.cpp	/^void fdtd::putvars() {$/;"	f	class:fdtd
+putvars	src/testcpml.cpp	/^void putvars() {$/;"	f
+rei	src/fdtd.h	/^    MyDataF rei;$/;"	m	class:fdtd
+resetArray	src/datastruct.h	/^    void resetArray(){$/;"	f	class:data1d
+save_modulus	src/fdtd.h	/^    unsigned save_modulus;$/;"	m	class:fdtd
+save_modulus	src/orig.cpp	/^int save_modulus = 10;$/;"	v
+save_modulus	src/testMain.cpp	/^int save_modulus = 10;$/;"	v
+save_modulus	src/testcpml.cpp	/^int save_modulus = 10;$/;"	v
+setUp	src/fdtd.cpp	/^void fdtd::setUp() {$/;"	f	class:fdtd
+setUp	src/orig.cpp	/^void setUp() {$/;"	f
+setUp	src/testMain.cpp	/^void setUp() {$/;"	f
+setUp	src/testcpml.cpp	/^void setUp() {$/;"	f
+sig_x_max	src/cpml.h	/^    MyDataF sig_x_max;$/;"	m	class:cpml
+sig_x_max	src/cpml2.h	/^    MyDataF sig_x_max;$/;"	m	class:cpml
+sig_x_max	src/cpml3.h	/^    MyDataF sig_x_max;$/;"	m	class:cpml
+sig_x_max	src/orig.cpp	/^double sig_x_max;$/;"	v
+sig_x_max	src/testMain.cpp	/^double sig_x_max;$/;"	v
+sig_y_max	src/cpml.h	/^    MyDataF sig_y_max;$/;"	m	class:cpml
+sig_y_max	src/cpml2.h	/^    MyDataF sig_y_max;$/;"	m	class:cpml
+sig_y_max	src/cpml3.h	/^    MyDataF sig_y_max;$/;"	m	class:cpml
+sig_y_max	src/orig.cpp	/^double sig_y_max;$/;"	v
+sig_y_max	src/testMain.cpp	/^double sig_y_max;$/;"	v
+sig_z_max	src/cpml.h	/^    MyDataF sig_z_max;$/;"	m	class:cpml
+sig_z_max	src/cpml2.h	/^    MyDataF sig_z_max;$/;"	m	class:cpml
+sig_z_max	src/cpml3.h	/^    MyDataF sig_z_max;$/;"	m	class:cpml
+sig_z_max	src/orig.cpp	/^double sig_z_max;$/;"	v
+sig_z_max	src/testMain.cpp	/^double sig_z_max;$/;"	v
+sige_x_PML_1	src/cpml.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+sige_x_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_x_1, ce_x_1, alphae_x_PML_1, sige_x_PML_1, kappae_x_PML_1;$/;"	m	class:cpml
+sige_x_PML_1	src/cpml3.h	/^    MyDataF *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	m	class:cpml
+sige_x_PML_1	src/orig.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+sige_x_PML_1	src/testMain.cpp	/^float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;$/;"	v
+sige_x_PML_2	src/cpml.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+sige_x_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_x_2, ce_x_2, alphae_x_PML_2, sige_x_PML_2, kappae_x_PML_2;$/;"	m	class:cpml
+sige_x_PML_2	src/cpml3.h	/^    MyDataF *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	m	class:cpml
+sige_x_PML_2	src/orig.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+sige_x_PML_2	src/testMain.cpp	/^float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;$/;"	v
+sige_y_PML_1	src/cpml.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+sige_y_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_y_1, ce_y_1, alphae_y_PML_1, sige_y_PML_1, kappae_y_PML_1;$/;"	m	class:cpml
+sige_y_PML_1	src/cpml3.h	/^    MyDataF *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	m	class:cpml
+sige_y_PML_1	src/orig.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+sige_y_PML_1	src/testMain.cpp	/^float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;$/;"	v
+sige_y_PML_2	src/cpml.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+sige_y_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_y_2, ce_y_2, alphae_y_PML_2, sige_y_PML_2, kappae_y_PML_2;$/;"	m	class:cpml
+sige_y_PML_2	src/cpml3.h	/^    MyDataF *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	m	class:cpml
+sige_y_PML_2	src/orig.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+sige_y_PML_2	src/testMain.cpp	/^float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;$/;"	v
+sige_z_PML_1	src/cpml.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+sige_z_PML_1	src/cpml2.h	/^    data1d<MyDataF> be_z_1, ce_z_1, alphae_z_PML_1, sige_z_PML_1, kappae_z_PML_1;$/;"	m	class:cpml
+sige_z_PML_1	src/cpml3.h	/^    MyDataF *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	m	class:cpml
+sige_z_PML_1	src/orig.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+sige_z_PML_1	src/testMain.cpp	/^float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;$/;"	v
+sige_z_PML_2	src/cpml.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+sige_z_PML_2	src/cpml2.h	/^    data1d<MyDataF> be_z_2, ce_z_2, alphae_z_PML_2, sige_z_PML_2, kappae_z_PML_2;$/;"	m	class:cpml
+sige_z_PML_2	src/cpml3.h	/^    MyDataF *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	m	class:cpml
+sige_z_PML_2	src/orig.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+sige_z_PML_2	src/testMain.cpp	/^float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;$/;"	v
+sigh_x_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+sigh_x_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_x_1, ch_x_1, alphah_x_PML_1, sigh_x_PML_1, kappah_x_PML_1;$/;"	m	class:cpml
+sigh_x_PML_1	src/cpml3.h	/^    MyDataF *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	m	class:cpml
+sigh_x_PML_1	src/orig.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+sigh_x_PML_1	src/testMain.cpp	/^float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;$/;"	v
+sigh_x_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+sigh_x_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_x_2, ch_x_2, alphah_x_PML_2, sigh_x_PML_2, kappah_x_PML_2;$/;"	m	class:cpml
+sigh_x_PML_2	src/cpml3.h	/^    MyDataF *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	m	class:cpml
+sigh_x_PML_2	src/orig.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+sigh_x_PML_2	src/testMain.cpp	/^float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;$/;"	v
+sigh_y_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+sigh_y_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_y_1, ch_y_1, alphah_y_PML_1, sigh_y_PML_1, kappah_y_PML_1;$/;"	m	class:cpml
+sigh_y_PML_1	src/cpml3.h	/^    MyDataF *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	m	class:cpml
+sigh_y_PML_1	src/orig.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+sigh_y_PML_1	src/testMain.cpp	/^float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;$/;"	v
+sigh_y_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+sigh_y_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_y_2, ch_y_2, alphah_y_PML_2, sigh_y_PML_2, kappah_y_PML_2;$/;"	m	class:cpml
+sigh_y_PML_2	src/cpml3.h	/^    MyDataF *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	m	class:cpml
+sigh_y_PML_2	src/orig.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+sigh_y_PML_2	src/testMain.cpp	/^float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;$/;"	v
+sigh_z_PML_1	src/cpml.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+sigh_z_PML_1	src/cpml2.h	/^    data1d<MyDataF> bh_z_1, ch_z_1, alphah_z_PML_1, sigh_z_PML_1, kappah_z_PML_1;$/;"	m	class:cpml
+sigh_z_PML_1	src/cpml3.h	/^    MyDataF *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	m	class:cpml
+sigh_z_PML_1	src/orig.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+sigh_z_PML_1	src/testMain.cpp	/^float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;$/;"	v
+sigh_z_PML_2	src/cpml.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+sigh_z_PML_2	src/cpml2.h	/^    data1d<MyDataF> bh_z_2, ch_z_2, alphah_z_PML_2, sigh_z_PML_2, kappah_z_PML_2;$/;"	m	class:cpml
+sigh_z_PML_2	src/cpml3.h	/^    MyDataF *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	m	class:cpml
+sigh_z_PML_2	src/orig.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+sigh_z_PML_2	src/testMain.cpp	/^float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;$/;"	v
+sigma	src/fdtd.h	/^    MyDataF *sigma;$/;"	m	class:fdtd
+sigma	src/orig.cpp	/^double *sigma;$/;"	v
+sigma	src/testMain.cpp	/^double *sigma;$/;"	v
+sigma	src/testcpml.cpp	/^MyDataF *sigma;$/;"	v
+sign	src/InonizationFormula.cpp	/^int sign(double val) {$/;"	f
+source	src/fdtd.h	/^    MyDataF source; \/\/Differentiated Gaussian source$/;"	m	class:fdtd
+source	src/orig.cpp	/^double source; \/\/Differentiated Gaussian source$/;"	v
+source	src/testMain.cpp	/^double source; \/\/Differentiated Gaussian source$/;"	v
+source	src/testcpml.cpp	/^MyDataF source; \/\/Differentiated Gaussian source$/;"	v
+t0	src/fdtd.h	/^    MyDataF t0; \/\/delay$/;"	m	class:fdtd
+tO	src/orig.cpp	/^double tO; \/\/delay$/;"	v
+tO	src/testMain.cpp	/^double tO; \/\/delay$/;"	v
+tO	src/testcpml.cpp	/^MyDataF tO; \/\/delay$/;"	v
+tail	src/datastruct.h	/^    static std::string tail;$/;"	m	class:data3d
+tail	src/datastruct.h	/^template<class DataType> string data3d<DataType>::tail = ".dat";$/;"	m	class:data3d
+tw	src/fdtd.h	/^    MyDataF tw; \/\/pulse width$/;"	m	class:fdtd
+tw	src/orig.cpp	/^double tw = 53.0E-12; \/\/pulse width$/;"	v
+tw	src/testMain.cpp	/^double tw = 53.0E-12; \/\/pulse width$/;"	v
+tw	src/testcpml.cpp	/^MyDataF tw = 53.0E-12; \/\/pulse width$/;"	v
+vm	src/fdtd.h	/^    MyDataF vm;$/;"	m	class:fdtd
+writeField	src/fdtd.cpp	/^void fdtd::writeField(unsigned iteration) {$/;"	f	class:fdtd
+writeField	src/orig.cpp	/^void writeField(int iteration) {$/;"	f
+writeField	src/testMain.cpp	/^void writeField(int iteration) {$/;"	f
+writeField	src/testcpml.cpp	/^void writeField(int iteration) {$/;"	f
+yeeCube	src/fdtd.cpp	/^void fdtd::yeeCube(unsigned I, unsigned J, unsigned K, unsigned mType) {$/;"	f	class:fdtd
+yeeCube	src/orig.cpp	/^void yeeCube(int I, int J, int K, short mType) {$/;"	f
+yeeCube	src/testMain.cpp	/^void yeeCube(int I, int J, int K, short mType) {$/;"	f
+yeeCube	src/testcpml.cpp	/^void yeeCube(int I, int J, int K, unsigned mType) {$/;"	f
+~cpml	src/cpml.cpp	/^cpml::~cpml(void) {$/;"	f	class:cpml
+~cpml	src/cpml2.cpp	/^cpml::~cpml(void) {$/;"	f	class:cpml
+~cpml	src/cpml3.cpp	/^cpml::~cpml(void) {$/;"	f	class:cpml
+~data1d	src/data1d.cpp	/^data1d::~data1d() {$/;"	f	class:data1d
+~data1d	src/datastruct.h	/^    ~data1d(){$/;"	f	class:data1d
+~data3d	src/datastruct.h	/^data3d<DataType>::~data3d() {$/;"	f	class:data3d
+~fdtd	src/fdtd.cpp	/^fdtd::~fdtd(void) {$/;"	f	class:fdtd
