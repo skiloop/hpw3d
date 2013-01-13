@@ -38,6 +38,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+using namespace std;
 //#include "microdef.h"
 #define MAX_ARRAY_SIZE 300000
 
