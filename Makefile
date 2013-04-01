@@ -1,4 +1,5 @@
-CXX=g++
+CXX=/opt/intel/bin/icpc
+#CXX=g++
 CPPFLAGS=-Wall -g -DDEBUG=3
 SRC=src
 OBJS=cpml.o test.o datastruct.o fdtd.o InonizationFormula.o

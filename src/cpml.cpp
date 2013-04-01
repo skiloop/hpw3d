@@ -34,7 +34,7 @@ int cpml::Initial(unsigned nx, unsigned ny, unsigned nz, unsigned ncpml) {
 int cpml::CreatePMLArrays() {
     try
     {
-        unsigned i;
+        //unsigned i;
 
         psi_Ezx_1.CreateStruct(nxPML_1, Jmax, Kmax, 0);
         psi_Ezx_2.CreateStruct(nxPML_2, Jmax, Kmax, 0);
@@ -523,6 +523,14 @@ void cpml::InitializeCPML() {
             den_ez.p[k] = 1.0 / dz;
         }
     }
+#if DEBUG>=3
+    den_ez.save("den_ez.dat");
+    den_ex.save("den_ex.dat");
+    den_ey.save("den_ey.dat");
+    den_hz.save("den_hz.dat");
+    den_hx.save("den_hx.dat");
+    den_hy.save("den_hy.dat");    
+#endif
 }
 /*
 void cpml::UpdatePMLForHx(data3d<MyDataF> &hx, const data3d<MyDataF> &ey, const data3d<MyDataF> &ez, MyDataF DB) {

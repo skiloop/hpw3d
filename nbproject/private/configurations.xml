@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="80">
+<configurationDescriptor version="88">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="hpw3d">
+      <df name="Efields">
+        <in>loadAllTxtFile.m</in>
+        <in>playMovieWithRes.m</in>
+        <in>runMyJobs.m</in>
+      </df>
+      <df name="src">
+        <in>InonizationFormula.cpp</in>
+        <in>InonizationFormula.h</in>
+        <in>cpml.cpp</in>
+        <in>cpml.h</in>
+        <in>cpml2.cpp</in>
+        <in>cpml2.h</in>
+        <in>cpml3.cpp</in>
+        <in>cpml3.h</in>
+        <in>data1d.cpp</in>
+        <in>data1d.h</in>
+        <in>datastruct.cpp</in>
+        <in>datastruct.h</in>
+        <in>fdtd.cpp</in>
+        <in>fdtd.h</in>
+        <in>orig.cpp</in>
+        <in>test.cpp</in>
+        <in>testMain.cpp</in>
+        <in>testcpml.cpp</in>
+      </df>
+    </df>
+  </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Default" type="0">

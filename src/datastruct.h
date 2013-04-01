@@ -37,6 +37,7 @@
 #endif// end MATLAB_SIMULATION
 #include <iostream>
 #include <cstdlib>
+#include <fstream>
 #include <string>
 using namespace std;
 //#include "microdef.h"
@@ -45,6 +46,66 @@ using namespace std;
 typedef double MyDataF;
 typedef MyDataF* pMyDataF;
 typedef pMyDataF* ppMyDataF;
+
+template<typename T>
+class data1d {
+public:
+
+    data1d(unsigned num = 0, T val = 0) : p(NULL), n(num) {
+        createArray(num);
+        initArray(val);
+    };
+
+    data1d(const data1d& orig) {
+        if (orig.p != NULL && orig.n != 0) {
+            p = new T[orig.n];
+            for (unsigned i = 0; i < orig.n; i++)p[i] = orig.p[i];
+            this->n = orig.n;
+        } else if (orig.n != 0) {
+            createArray(orig.n, 0);
+            this->n = orig.n;
+        }
+    };
+
+    ~data1d() {
+        if (p != NULL)delete []p;
+        p = NULL;
+        n = 0;
+    };
+
+    void createArray(unsigned num) {
+        if (num > 0) {
+            p = new T[num];
+            n = num;
+        }
+    };
+
+    void initArray(T initval = 0) {
+        if (p == NULL)return;
+        for (unsigned i = 0; i < n; i++)p[i] = initval;
+    };
+
+    void resetArray() {
+        initArray();
+    };
+
+    void createArray(unsigned num, T val) {
+        createArray(num);
+        initArray(val);
+    };
+
+    void save(const string name) {
+        ofstream out;
+        out.open(name.c_str());
+        if (out.is_open()) {
+            for (int i = 0; i < n; i++)out << p[i] << endl;
+            out.close();
+        }
+    };
+public:
+    T* p;
+    unsigned n;
+};
 
 /**
  * nx:point count in x direction
@@ -186,8 +247,6 @@ public:
     static int CloseEngine();
 
 };
-
-using namespace std;
 
 template<class DataType> int data3d<DataType>::cnt = 0;
 template<class DataType> string data3d<DataType>::tail = ".dat";
@@ -486,45 +545,6 @@ void data3d<DataType>::InitPlot() {
     mxDestroyArray(mxStr);
 #endif
 }
-template<typename T>
-class data1d {
-public:
-    data1d(unsigned num=0,T val=0):p(NULL),n(num){
-        createArray(num);
-        initArray(val);
-    };
-    data1d(const data1d& orig):p(NULL),n(orig.n){
-        if(orig.p != NULL && orig.n != 0){
-            p = new T[orig.n];
-            for(unsigned i=0;i<orig.n;i++)p[i]=orig.p[i];
-        }else if(n!=0){
-            createArray(n,0);
-        }
-    };
-    ~data1d(){
-        if(p!=NULL)delete []p;
-        p = NULL;
-        n = 0;
-    };
-    void createArray(unsigned num){
-        if(num>0){
-            p = new T[num];
-            n = num;
-        }
-    };
-    void initArray(T initval=0){
-        if(p == NULL)return;
-        for(unsigned i=0;i<n;i++)p[i]=initval;
-    };
-    void resetArray(){
-        initArray();
-    };
-    void createArray(unsigned num,T val){
-        createArray(num);
-        initArray(val);
-    };
-public:
-    T* p;
-    unsigned n;
-};
+
+
 #endif // DATASTRUCT_H

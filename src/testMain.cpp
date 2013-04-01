@@ -1615,6 +1615,14 @@ void initializeCPML() {
             den_ez[k] = 1.0 / dz;
         }
     }
+#if DEBUG>=3
+    FILE *out=fopen("denezo.txt","w");
+    if(out!=NULL){
+        for( i=0;i<nzPML_1;i++)
+        fprintf(out,"%f\n",den_ez[i]);
+        fclose(out);
+    }
+#endif
 }
 
 void compute() {
