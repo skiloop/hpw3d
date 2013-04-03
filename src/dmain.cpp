@@ -824,54 +824,55 @@ void compute() {
                             (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
                 }
             }
+            pml.updateHyIn(k,Hy,Ez,DB,dx);
 
-            for (j = 0; j < Jmax - 1; ++j) {
-                //.......................................................
-                //  PML for bottom Hy, i-direction
-                //.......................................................
-                for (i = 0; i < pml.nxPML_1 - 1; ++i) {
-
-                    pml.psi_Hyx_1.p[i][j][k] = pml.bh_x_1.p[i] * pml.psi_Hyx_1.p[i][j][k]
-                            + pml.ch_x_1.p[i] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
-                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyx_1.p[i][j][k];
-                }
-                //.........................................................
-                //  PML for top Hy, i-direction
-                //.........................................................
-                ii = pml.nxPML_2 - 2;
-                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
-
-                    pml.psi_Hyx_2.p[ii][j][k] = pml.bh_x_2.p[ii] * pml.psi_Hyx_2.p[ii][j][k]
-                            + pml.ch_x_2.p[ii] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
-                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyx_2.p[ii][j][k];
-                    ii = ii - 1;
-                }
-            }
+//            for (j = 0; j < Jmax - 1; ++j) {
+//                //.......................................................
+//                //  PML for bottom Hy, i-direction
+//                //.......................................................
+//                for (i = 0; i < pml.nxPML_1 - 1; ++i) {
+//
+//                    pml.psi_Hyx_1.p[i][j][k] = pml.bh_x_1.p[i] * pml.psi_Hyx_1.p[i][j][k]
+//                            + pml.ch_x_1.p[i] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
+//                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyx_1.p[i][j][k];
+//                }
+//                //.........................................................
+//                //  PML for top Hy, i-direction
+//                //.........................................................
+//                ii = pml.nxPML_2 - 2;
+//                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
+//
+//                    pml.psi_Hyx_2.p[ii][j][k] = pml.bh_x_2.p[ii] * pml.psi_Hyx_2.p[ii][j][k]
+//                            + pml.ch_x_2.p[ii] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
+//                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyx_2.p[ii][j][k];
+//                    ii = ii - 1;
+//                }
+//            }
         }
-
-        for (i = 0; i < Imax - 1; ++i) {
-            for (j = 0; j < Jmax - 1; ++j) {
-                //.......................................................
-                //  PML for bottom Hy, k-direction
-                //......................................................
-                for (k = 1; k < pml.nzPML_1; ++k) {
-
-                    pml.psi_Hyz_1.p[i][j][k - 1] = pml.bh_z_1.p[k - 1] * pml.psi_Hyz_1.p[i][j][k - 1]
-                            + pml.ch_z_1.p[k - 1] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
-                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyz_1.p[i][j][k - 1];
-                }
-                //.......................................................
-                //  PML for top Hy, k-direction
-                //.........................................................
-                kk = pml.nzPML_2 - 2;
-                for (k = Kmax - pml.nzPML_2; k < Kmax - 1; ++k) {
-                    pml.psi_Hyz_2.p[i][j][kk] = pml.bh_z_2.p[kk] * pml.psi_Hyz_2.p[i][j][kk]
-                            + pml.ch_z_2.p[kk] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
-                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyz_2.p[i][j][kk];
-                    kk = kk - 1;
-                }
-            }
-        }
+        pml.updateHyOut(Hy,Ex,DB,dz);
+//        for (i = 0; i < Imax - 1; ++i) {
+//            for (j = 0; j < Jmax - 1; ++j) {
+//                //.......................................................
+//                //  PML for bottom Hy, k-direction
+//                //......................................................
+//                for (k = 1; k < pml.nzPML_1; ++k) {
+//
+//                    pml.psi_Hyz_1.p[i][j][k - 1] = pml.bh_z_1.p[k - 1] * pml.psi_Hyz_1.p[i][j][k - 1]
+//                            + pml.ch_z_1.p[k - 1] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
+//                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyz_1.p[i][j][k - 1];
+//                }
+//                //.......................................................
+//                //  PML for top Hy, k-direction
+//                //.........................................................
+//                kk = pml.nzPML_2 - 2;
+//                for (k = Kmax - pml.nzPML_2; k < Kmax - 1; ++k) {
+//                    pml.psi_Hyz_2.p[i][j][kk] = pml.bh_z_2.p[kk] * pml.psi_Hyz_2.p[i][j][kk]
+//                            + pml.ch_z_2.p[kk] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
+//                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyz_2.p[i][j][kk];
+//                    kk = kk - 1;
+//                }
+//            }
+//        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hz
@@ -884,52 +885,53 @@ void compute() {
                             (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
                 }
             }
+            pml.updateHz(k,Hz,Ex,Ey,DB,dx,dy);
 
-            for (j = 0; j < Jmax - 1; ++j) {
-                //..........................................................
-                //  PML for bottom Hz, x-direction
-                //..........................................................
-                for (i = 0; i < pml.nxPML_1 - 1; ++i) {
-
-                    pml.psi_Hzx_1.p[i][j][k] = pml.bh_x_1.p[i] * pml.psi_Hzx_1.p[i][j][k]
-                            + pml.ch_x_1.p[i] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
-                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzx_1.p[i][j][k];
-                }
-                //..........................................................
-                //  PML for top Hz, x-direction
-                //..........................................................
-                ii = pml.nxPML_2 - 2;
-                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
-
-                    pml.psi_Hzx_2.p[ii][j][k] = pml.bh_x_2.p[ii] * pml.psi_Hzx_2.p[ii][j][k]
-                            + pml.ch_x_2.p[ii] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
-                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzx_2.p[ii][j][k];
-                    ii = ii - 1;
-                }
-            }
-
-            for (i = 0; i < Imax - 1; ++i) {
-                //........................................................
-                //  PML for bottom Hz, y-direction
-                //.........................................................
-                for (j = 0; j < pml.nyPML_1 - 1; ++j) {
-                    pml.psi_Hzy_1.p[i][j][k] = pml.bh_y_1.p[j] * pml.psi_Hzy_1.p[i][j][k]
-                            + pml.ch_y_1.p[j] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
-                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzy_1.p[i][j][k];
-
-                }
-                //.........................................................
-                //  PML for top Hz, y-direction
-                //..........................................................
-                jj = pml.nyPML_2 - 2;
-                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
-
-                    pml.psi_Hzy_2.p[i][jj][k] = pml.bh_y_2.p[jj] * pml.psi_Hzy_2.p[i][jj][k]
-                            + pml.ch_y_2.p[jj] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
-                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzy_2.p[i][jj][k];
-                    jj = jj - 1;
-                }
-            }
+//            for (j = 0; j < Jmax - 1; ++j) {
+//                //..........................................................
+//                //  PML for bottom Hz, x-direction
+//                //..........................................................
+//                for (i = 0; i < pml.nxPML_1 - 1; ++i) {
+//
+//                    pml.psi_Hzx_1.p[i][j][k] = pml.bh_x_1.p[i] * pml.psi_Hzx_1.p[i][j][k]
+//                            + pml.ch_x_1.p[i] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
+//                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzx_1.p[i][j][k];
+//                }
+//                //..........................................................
+//                //  PML for top Hz, x-direction
+//                //..........................................................
+//                ii = pml.nxPML_2 - 2;
+//                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
+//
+//                    pml.psi_Hzx_2.p[ii][j][k] = pml.bh_x_2.p[ii] * pml.psi_Hzx_2.p[ii][j][k]
+//                            + pml.ch_x_2.p[ii] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
+//                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzx_2.p[ii][j][k];
+//                    ii = ii - 1;
+//                }
+//            }
+//
+//            for (i = 0; i < Imax - 1; ++i) {
+//                //........................................................
+//                //  PML for bottom Hz, y-direction
+//                //.........................................................
+//                for (j = 0; j < pml.nyPML_1 - 1; ++j) {
+//                    pml.psi_Hzy_1.p[i][j][k] = pml.bh_y_1.p[j] * pml.psi_Hzy_1.p[i][j][k]
+//                            + pml.ch_y_1.p[j] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
+//                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzy_1.p[i][j][k];
+//
+//                }
+//                //.........................................................
+//                //  PML for top Hz, y-direction
+//                //..........................................................
+//                jj = pml.nyPML_2 - 2;
+//                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
+//
+//                    pml.psi_Hzy_2.p[i][jj][k] = pml.bh_y_2.p[jj] * pml.psi_Hzy_2.p[i][jj][k]
+//                            + pml.ch_y_2.p[jj] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
+//                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzy_2.p[i][jj][k];
+//                    jj = jj - 1;
+//                }
+//            }
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -954,60 +956,61 @@ void compute() {
                     }
                 }
             }
-
-            for (i = 0; i < Imax - 1; ++i) {
-                //..............................................................
-                //  PML for bottom Ex, j-direction
-                //..............................................................
-                for (j = 1; j < pml.nyPML_1; ++j) {
-
-                    id = ID1.p[i][j][k];
-                    pml.psi_Exy_1.p[i][j][k] = pml.be_y_1.p[j] * pml.psi_Exy_1.p[i][j][k]
-                            + pml.ce_y_1.p[j] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
-                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exy_1.p[i][j][k];
-                }
-                //.............................................................
-                //  PML for top Ex, j-direction
-                //.............................................................
-                jj = pml.nyPML_2 - 1;
-                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
-
-                    id = ID1.p[i][j][k];
-                    pml.psi_Exy_2.p[i][jj][k] = pml.be_y_2.p[jj] * pml.psi_Exy_2.p[i][jj][k]
-                            + pml.ce_y_2.p[jj] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
-                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exy_2.p[i][jj][k];
-                    jj = jj - 1;
-                }
-            }
+            pml.updateExIn(k,Ex,Hz,ID1,CB,dy);
+//            for (i = 0; i < Imax - 1; ++i) {
+//                //..............................................................
+//                //  PML for bottom Ex, j-direction
+//                //..............................................................
+//                for (j = 1; j < pml.nyPML_1; ++j) {
+//
+//                    id = ID1.p[i][j][k];
+//                    pml.psi_Exy_1.p[i][j][k] = pml.be_y_1.p[j] * pml.psi_Exy_1.p[i][j][k]
+//                            + pml.ce_y_1.p[j] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
+//                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exy_1.p[i][j][k];
+//                }
+//                //.............................................................
+//                //  PML for top Ex, j-direction
+//                //.............................................................
+//                jj = pml.nyPML_2 - 1;
+//                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
+//
+//                    id = ID1.p[i][j][k];
+//                    pml.psi_Exy_2.p[i][jj][k] = pml.be_y_2.p[jj] * pml.psi_Exy_2.p[i][jj][k]
+//                            + pml.ce_y_2.p[jj] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
+//                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exy_2.p[i][jj][k];
+//                    jj = jj - 1;
+//                }
+//            }
         }
 
-        for (i = 0; i < Imax - 1; ++i) {
-
-            for (j = 1; j < Jmax - 1; ++j) {
-                //.............................................................
-                //  PML for bottom Ex, k-direction
-                //.............................................................
-                for (k = 0; k < pml.nzPML_1; ++k) {
-
-                    id = ID1.p[i][j][k];
-                    pml.psi_Exz_1.p[i][j][k] = pml.be_z_1.p[k] * pml.psi_Exz_1.p[i][j][k]
-                            + pml.ce_z_1.p[k] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
-                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exz_1.p[i][j][k];
-                }
-                //..............................................................
-                //  PML for top Ex, k-direction
-                //..............................................................
-                kk = pml.nzPML_2 - 1;
-                for (k = Kmax - pml.nzPML_2 - 1; k < Kmax - 1; ++k) {
-
-                    id = ID1.p[i][j][k];
-                    pml.psi_Exz_2.p[i][j][kk] = pml.be_z_2.p[kk] * pml.psi_Exz_2.p[i][j][kk]
-                            + pml.ce_z_2.p[kk] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
-                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exz_2.p[i][j][kk];
-                    kk = kk - 1;
-                }
-            }
-        }
+        pml.updateExOut(Ex,Hy,ID1,CB,dz);
+//        for (i = 0; i < Imax - 1; ++i) {
+//
+//            for (j = 1; j < Jmax - 1; ++j) {
+//                //.............................................................
+//                //  PML for bottom Ex, k-direction
+//                //.............................................................
+//                for (k = 0; k < pml.nzPML_1; ++k) {
+//
+//                    id = ID1.p[i][j][k];
+//                    pml.psi_Exz_1.p[i][j][k] = pml.be_z_1.p[k] * pml.psi_Exz_1.p[i][j][k]
+//                            + pml.ce_z_1.p[k] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
+//                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exz_1.p[i][j][k];
+//                }
+//                //..............................................................
+//                //  PML for top Ex, k-direction
+//                //..............................................................
+//                kk = pml.nzPML_2 - 1;
+//                for (k = Kmax - pml.nzPML_2 - 1; k < Kmax - 1; ++k) {
+//
+//                    id = ID1.p[i][j][k];
+//                    pml.psi_Exz_2.p[i][j][kk] = pml.be_z_2.p[kk] * pml.psi_Exz_2.p[i][j][kk]
+//                            + pml.ce_z_2.p[kk] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
+//                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exz_2.p[i][j][kk];
+//                    kk = kk - 1;
+//                }
+//            }
+//        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ey
@@ -1029,55 +1032,57 @@ void compute() {
                 }
             }
 
-            for (j = 0; j < Jmax - 1; ++j) {
-                //...........................................................
-                //  PML for bottom Ey, i-direction
-                //...........................................................
-                for (i = 1; i < pml.nxPML_1; ++i) {
-                    id = ID2.p[i][j][k];
-                    pml.psi_Eyx_1.p[i][j][k] = pml.be_x_1.p[i] * pml.psi_Eyx_1.p[i][j][k]
-                            + pml.ce_x_1.p[i] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
-                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyx_1.p[i][j][k];
-                }
-                //............................................................
-                //  PML for top Ey, i-direction
-                //............................................................
-                ii = pml.nxPML_2 - 1;
-                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
-                    id = ID2.p[i][j][k];
-                    pml.psi_Eyx_2.p[ii][j][k] = pml.be_x_2.p[ii] * pml.psi_Eyx_2.p[ii][j][k]
-                            + pml.ce_x_2.p[ii] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
-                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyx_2.p[ii][j][k];
-                    ii = ii - 1;
-                }
-            }
+            pml.updateEyIn(k,Ey,Hz,ID2,CB,dx);
+//            for (j = 0; j < Jmax - 1; ++j) {
+//                //...........................................................
+//                //  PML for bottom Ey, i-direction
+//                //...........................................................
+//                for (i = 1; i < pml.nxPML_1; ++i) {
+//                    id = ID2.p[i][j][k];
+//                    pml.psi_Eyx_1.p[i][j][k] = pml.be_x_1.p[i] * pml.psi_Eyx_1.p[i][j][k]
+//                            + pml.ce_x_1.p[i] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
+//                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyx_1.p[i][j][k];
+//                }
+//                //............................................................
+//                //  PML for top Ey, i-direction
+//                //............................................................
+//                ii = pml.nxPML_2 - 1;
+//                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
+//                    id = ID2.p[i][j][k];
+//                    pml.psi_Eyx_2.p[ii][j][k] = pml.be_x_2.p[ii] * pml.psi_Eyx_2.p[ii][j][k]
+//                            + pml.ce_x_2.p[ii] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
+//                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyx_2.p[ii][j][k];
+//                    ii = ii - 1;
+//                }
+//            }
         }
-
-        for (i = 1; i < Imax - 1; ++i) {
-            for (j = 0; j < Jmax - 1; ++j) {
-                //...........................................................
-                //  PML for bottom Ey, k-direction
-                //...........................................................
-                for (k = 0; k < pml.nzPML_1; ++k) {
-                    id = ID2.p[i][j][k];
-                    pml.psi_Eyz_1.p[i][j][k] = pml.be_z_1.p[k] * pml.psi_Eyz_1.p[i][j][k]
-                            + pml.ce_z_1.p[k] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
-                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyz_1.p[i][j][k];
-                }
-                //...........................................................
-                //  PML for top Ey, k-direction
-                //............................................................
-                kk = pml.nzPML_2 - 1;
-                for (k = Kmax - pml.nzPML_2 - 1; k < Kmax - 1; ++k) {
-
-                    id = ID2.p[i][j][k];
-                    pml.psi_Eyz_2.p[i][j][kk] = pml.be_z_2.p[kk] * pml.psi_Eyz_2.p[i][j][kk]
-                            + pml.ce_z_2.p[kk] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
-                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyz_2.p[i][j][kk];
-                    kk = kk - 1;
-                }
-            }
-        }
+        pml.updateEyOut(Ey,Hx,ID2,CB,dz);
+//
+//        for (i = 1; i < Imax - 1; ++i) {
+//            for (j = 0; j < Jmax - 1; ++j) {
+//                //...........................................................
+//                //  PML for bottom Ey, k-direction
+//                //...........................................................
+//                for (k = 0; k < pml.nzPML_1; ++k) {
+//                    id = ID2.p[i][j][k];
+//                    pml.psi_Eyz_1.p[i][j][k] = pml.be_z_1.p[k] * pml.psi_Eyz_1.p[i][j][k]
+//                            + pml.ce_z_1.p[k] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
+//                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyz_1.p[i][j][k];
+//                }
+//                //...........................................................
+//                //  PML for top Ey, k-direction
+//                //............................................................
+//                kk = pml.nzPML_2 - 1;
+//                for (k = Kmax - pml.nzPML_2 - 1; k < Kmax - 1; ++k) {
+//
+//                    id = ID2.p[i][j][k];
+//                    pml.psi_Eyz_2.p[i][j][kk] = pml.be_z_2.p[kk] * pml.psi_Eyz_2.p[i][j][kk]
+//                            + pml.ce_z_2.p[kk] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
+//                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyz_2.p[i][j][kk];
+//                    kk = kk - 1;
+//                }
+//            }
+//        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ez
@@ -1095,52 +1100,53 @@ void compute() {
                     }
                 }
             }
+            pml.updateEz(k,Ez,Hx,Hy,ID3,CB,dx,dy);
 
-            for (j = 1; j < Jmax - 1; ++j) {
-                //............................................................
-                //  PML for bottom Ez, x-direction
-                //.............................................................
-                for (i = 1; i < pml.nxPML_1; ++i) {
-                    id = ID3.p[i][j][k];
-                    pml.psi_Ezx_1.p[i][j][k] = pml.be_x_1.p[i] * pml.psi_Ezx_1.p[i][j][k]
-                            + pml.ce_x_1.p[i] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
-                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezx_1.p[i][j][k];
-                }
-                //............................................................
-                //  PML for top Ez, x-direction
-                //............................................................
-                ii = pml.nxPML_2 - 1;
-                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
-                    id = ID3.p[i][j][k];
-                    pml.psi_Ezx_2.p[ii][j][k] = pml.be_x_2.p[ii] * pml.psi_Ezx_2.p[ii][j][k]
-                            + pml.ce_x_2.p[ii] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
-                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezx_2.p[ii][j][k];
-                    ii = ii - 1;
-                }
-            }
-
-            for (i = 1; i < Imax - 1; ++i) {
-                //..........................................................
-                //  PML for bottom Ez, y-direction
-                //..........................................................
-                for (j = 1; j < pml.nyPML_1; ++j) {
-                    id = ID3.p[i][j][k];
-                    pml.psi_Ezy_1.p[i][j][k] = pml.be_y_1.p[j] * pml.psi_Ezy_1.p[i][j][k]
-                            + pml.ce_y_1.p[j] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
-                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezy_1.p[i][j][k];
-                }
-                //............................................................
-                //  PML for top Ez, y-direction
-                //............................................................
-                jj = pml.nyPML_2 - 1;
-                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
-                    id = ID3.p[i][j][k];
-                    pml.psi_Ezy_2.p[i][jj][k] = pml.be_y_2.p[jj] * pml.psi_Ezy_2.p[i][jj][k]
-                            + pml.ce_y_2.p[jj] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
-                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezy_2.p[i][jj][k];
-                    jj = jj - 1;
-                }
-            }
+//            for (j = 1; j < Jmax - 1; ++j) {
+//                //............................................................
+//                //  PML for bottom Ez, x-direction
+//                //.............................................................
+//                for (i = 1; i < pml.nxPML_1; ++i) {
+//                    id = ID3.p[i][j][k];
+//                    pml.psi_Ezx_1.p[i][j][k] = pml.be_x_1.p[i] * pml.psi_Ezx_1.p[i][j][k]
+//                            + pml.ce_x_1.p[i] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
+//                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezx_1.p[i][j][k];
+//                }
+//                //............................................................
+//                //  PML for top Ez, x-direction
+//                //............................................................
+//                ii = pml.nxPML_2 - 1;
+//                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
+//                    id = ID3.p[i][j][k];
+//                    pml.psi_Ezx_2.p[ii][j][k] = pml.be_x_2.p[ii] * pml.psi_Ezx_2.p[ii][j][k]
+//                            + pml.ce_x_2.p[ii] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
+//                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezx_2.p[ii][j][k];
+//                    ii = ii - 1;
+//                }
+//            }
+//
+//            for (i = 1; i < Imax - 1; ++i) {
+//                //..........................................................
+//                //  PML for bottom Ez, y-direction
+//                //..........................................................
+//                for (j = 1; j < pml.nyPML_1; ++j) {
+//                    id = ID3.p[i][j][k];
+//                    pml.psi_Ezy_1.p[i][j][k] = pml.be_y_1.p[j] * pml.psi_Ezy_1.p[i][j][k]
+//                            + pml.ce_y_1.p[j] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
+//                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezy_1.p[i][j][k];
+//                }
+//                //............................................................
+//                //  PML for top Ez, y-direction
+//                //............................................................
+//                jj = pml.nyPML_2 - 1;
+//                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
+//                    id = ID3.p[i][j][k];
+//                    pml.psi_Ezy_2.p[i][jj][k] = pml.be_y_2.p[jj] * pml.psi_Ezy_2.p[i][jj][k]
+//                            + pml.ce_y_2.p[jj] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
+//                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezy_2.p[i][jj][k];
+//                    jj = jj - 1;
+//                }
+//            }
         }
 
 
