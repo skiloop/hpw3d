@@ -41,7 +41,8 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma)
 , numMaterials(_nmaterial)
-, pml(_m, _ma) {
+ {
+    pml.Initial(Imax,Jmax,Kmax,11);
 }
 #endif
 
@@ -391,8 +392,9 @@ void fdtd::compute() {
                             (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
                 }
             }
+            pml.updateHxIn(k,Hx,Ez,DB,dy);
         }
-        pml.UpdatePMLForHx(Hx, Ey, Ez, DB);
+        pml.updateHxOut(Hx,Ey,DB,dz);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hy
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -407,8 +409,9 @@ void fdtd::compute() {
                             (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
                 }
             }
+            pml.updateHyIn(k,Hy,Ez,DB,dx);
         }
-        pml.UpdatePMLForHy(Hy, Ez, Ex, DB);
+        pml.updateHyOut(Hy,Ex,DB,dz);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hz
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -423,8 +426,9 @@ void fdtd::compute() {
                             (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
                 }
             }
+            pml.updateHz(k,Hz,Ex,Ey,DB,dx,dy);
         }
-        pml.UpdatePMLForHz(Hz, Ex, Ey, DB);
+        
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ex
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -447,8 +451,9 @@ void fdtd::compute() {
                     }
                 }
             }
+            pml.updateExIn(k,Ex,Hz,ID1,CB,dy);
         }
-        pml.UpdatePMLForEx(Ex, Hy, Hz, CB, ID1);
+        pml.updateExOut(Ex,Hy,ID1,CB,dz);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ey
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -471,8 +476,9 @@ void fdtd::compute() {
                     }
                 }
             }
+            pml.updateEyIn(k,Ey,Hz,ID2,CB,dx);
         }
-        pml.UpdatePMLForEy(Ey, Hz, Hx, CB, ID2);
+        pml.updateEyOut(Ey,Hx,ID2,CB,dy);
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ez
@@ -496,8 +502,8 @@ void fdtd::compute() {
                     }
                 }
             }
-        }
-        pml.UpdatePMLForEz(Ez, Hx, Hy, CB, ID3);
+            pml.updateEz(k,Ez,Hx,Hy,ID3,CB,dx,dy);
+        }        
 
         //-----------------------------------------------------------
         //   Apply a point source (Soft)

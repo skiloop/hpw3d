@@ -14,14 +14,16 @@ template<class type1, class type2>
 class cpmld {
 public:
 
-    cpmld() {
-    };
+    //  Fundamental Constants (MKS units)
+    static const double pi = 3.14159265358979;
+    static const double C = 2.99792458E8;
+    static double mu_0;
+    static double eps_0;
 
-    cpmld(const cpmld<type1, type2>& orig) {
-    };
+    // Specify Material Relative Permittivity and Conductivity
+    static double epsR; //free space
 
-    virtual ~cpmld() {
-    };
+
     //  CPML components (Taflove 3rd Edition, Chapter 7)
     data3d<type1> psi_Ezx_1;
     data3d<type1> psi_Ezx_2;
@@ -69,38 +71,14 @@ public:
     data1d<type1> den_ez;
     data1d<type1> den_hz;
 
-    // Specify the CPML Thickness in Each Direction (Value of Zero
-    // Corresponds to No PML, and the Grid is Terminated with a PEC)
-    // PML thickness in each direction
-    int nxPML_1, nxPML_2, nyPML_1;
-    int nyPML_2, nzPML_1, nzPML_2;
+    cpmld() {
+    };
 
-    // grid size corresponding to the number of Ez field components
-    int Imax;
-    int Jmax;
-    int Kmax;
+    cpmld(const cpmld<type1, type2>& orig) {
+    };
 
-    //  Fundamental Constants (MKS units)
-    static const double pi = 3.14159265358979;
-    static const double C = 2.99792458E8;
-    static double mu_0;
-    static double eps_0;
-    // Specify Material Relative Permittivity and Conductivity
-    static double epsR; //free space
-
-    // Specify the CPML Order and Other Parameters:
-    int m, ma;
-
-    double sig_x_max;
-    double sig_y_max;
-    double sig_z_max;
-    double alpha_x_max;
-    double alpha_y_max;
-    double alpha_z_max;
-    double kappa_x_max;
-    double kappa_y_max;
-    double kappa_z_max;
-
+    virtual ~cpmld() {
+    };
     //    void Initial(unsigned nx, unsigned ny, unsigned nz, unsigned ncpml);
     //static void InitialMuEps();
     //    void // <editor-fold defaultstate="collapsed" desc="comment">
@@ -501,6 +479,30 @@ public:
     };
 
 private:
+
+    // Specify the CPML Thickness in Each Direction (Value of Zero
+    // Corresponds to No PML, and the Grid is Terminated with a PEC)
+    // PML thickness in each direction
+    int nxPML_1, nxPML_2, nyPML_1;
+    int nyPML_2, nzPML_1, nzPML_2;
+
+    // grid size corresponding to the number of Ez field components
+    int Imax;
+    int Jmax;
+    int Kmax;
+
+    // Specify the CPML Order and Other Parameters:
+    int m, ma;
+
+    double sig_x_max;
+    double sig_y_max;
+    double sig_z_max;
+    double alpha_x_max;
+    double alpha_y_max;
+    double alpha_z_max;
+    double kappa_x_max;
+    double kappa_y_max;
+    double kappa_z_max;
 
     void initCBKAP(const double dt, const double dx, const double dy, const double dz) {
         int i, j, k;

@@ -14,20 +14,19 @@
 #include<stdio.h>
 #include<math.h>
 #include<string.h>
-#include<iostream>
 #include<stdlib.h>
 
-#include "cpml.h"
+#include"datastruct.h"
+#include"cpmld.h"
 
-using namespace std;
 //  Fundamental Constants (MKS units)
-MyDataF pi = 3.14159265358979;
-MyDataF C = 2.99792458E8;
-MyDataF mu_0;
-MyDataF eps_0;
+double pi = 3.14159265358979;
+double C = 2.99792458E8;
+double mu_0;
+double eps_0;
 
 //  Specify Material Relative Permittivity and Conductivity
-MyDataF epsR = 1.0; //free space
+double epsR = 1.0; //free space
 
 //  Specify Number of Time Steps and Grid Size Parameters
 int nMax = 500; // total number of time steps
@@ -39,17 +38,17 @@ int Kmax = 26;
 
 //  Specify Grid Cell Size in Each Direction and Calculate the
 //  Resulting Courant-Stable Time Step
-MyDataF dx = 1.0E-3;
-MyDataF dy = 1.0E-3;
-MyDataF dz = 1.0E-3; // cell size in each direction
+double dx = 1.0E-3;
+double dy = 1.0E-3;
+double dz = 1.0E-3; // cell size in each direction
 // time step increment
-MyDataF dt;
+double dt;
 
 //  Specify the Impulsive Source (Differentiated Gaussian) parameters
-MyDataF tw = 53.0E-12; //pulse width
-MyDataF tO; //delay
-MyDataF source; //Differentiated Gaussian source
-MyDataF amp = 1000; // Amplitude
+double tw = 53.0E-12; //pulse width
+double tO; //delay
+double source; //Differentiated Gaussian source
+double amp = 1000; // Amplitude
 
 //Specify the Time Step at which the data has to be saved for Visualization
 int save_modulus = 10;
@@ -64,58 +63,70 @@ int ksource = 12;
 //  Specify the CPML Order and Other Parameters:
 int m = 3, ma = 1;
 
+//double pml.sig_x_max;
+//double pml.sig_y_max;
+//double pml.sig_z_max;
+//double pml.alpha_x_max;
+//double pml.alpha_y_max;
+//double pml.alpha_z_max;
+//double pml.kappa_x_max;
+//double pml.kappa_y_max;
+//double pml.kappa_z_max;
+
 //Loop indices
 int i, j, ii, jj, k, kk, n;
 
 
 // H & E Field components
-data3d<MyDataF> Hx;
-data3d<MyDataF> Hy;
-data3d<MyDataF> Hz;
-data3d<MyDataF> Ex;
-data3d<MyDataF> Ey;
-data3d<MyDataF> Ez;
+data3d<float> Hx;
+data3d<float> Hy;
+data3d<float> Hz;
+data3d<float> Ex;
+data3d<float> Ey;
+data3d<float> Ez;
 
 data3d<short> ID1; //medium definition array for Ex
 data3d<short> ID2; //medium definition array for Ey
 data3d<short> ID3; //medium definition array for Ez
 
+// cpml
+cpmld<float, short> pml;
 //Max number of materials allowed
 int numMaterials = 50;
 
 //permittivity, permeability and conductivity of diffrent materials
-MyDataF *epsilon;
-MyDataF *mu;
-MyDataF *sigma;
+double *epsilon;
+double *mu;
+double *sigma;
 
 //E field update coefficients
-MyDataF *CA;
-MyDataF *CB;
+float *CA;
+float *CB;
 
 //H field update coefficients
-MyDataF DA;
-MyDataF DB;
+float DA;
+float DB;
 
 //Function prototype definitions
 void initialize(); //Memeory initialization
 void setUp(); //Coefficients, parameters etc will get computed
-void compute(cpml &pml); //E & H Field update equation
+void initializeCPML(); //CPML coefficient computation
+void compute(); //E & H Field update equation
 void buildObject(); //Creates the object geometry
-void yeeCube(int, int, int, unsigned); //Sets material properties to a cell
+void yeeCube(int, int, int, short); //Sets material properties to a cell
 void writeField(int); //Writes output
 void buildSphere(); //Builds a spherical object
 void buildDipole(); //Builds a dipole
-void putvars();
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 int main() {
-    cpml pml(m, ma);
+
     initialize();
-    pml.Initial(Imax, Jmax, Kmax, 11);
     setUp();
     buildObject();
-    putvars();
-    compute(pml);
+    initializeCPML();
+    compute();
     return 0;
 }
 
@@ -127,55 +138,60 @@ void initialize() {
 
     mu_0 = 4.0 * pi * 1.0E-7;
     eps_0 = 1.0 / (C * C * mu_0);
- 
+
+    pml.InitialMuEps();
+    pml.Initial(Imax, Jmax, Kmax, 11);
+
     //Dynamic memory allocation
-    epsilon = (MyDataF *) malloc((numMaterials) * sizeof (MyDataF));
+    epsilon = (double *) malloc((numMaterials) * sizeof (double));
 
     for (i = 0; i < numMaterials; i++) {
 
         epsilon[i] = eps_0;
     }
 
-    mu = (MyDataF *) malloc((numMaterials) * sizeof (MyDataF));
+    mu = (double *) malloc((numMaterials) * sizeof (double));
 
     for (i = 0; i < numMaterials; i++) {
 
         mu[i] = mu_0;
     }
 
-    sigma = (MyDataF *) malloc((numMaterials) * sizeof (MyDataF));
+    sigma = (double *) malloc((numMaterials) * sizeof (double));
 
     for (i = 0; i < numMaterials; i++) {
 
         sigma[i] = 0.0;
     }
 
-    CA = (MyDataF *) malloc((numMaterials) * sizeof (MyDataF));
+    CA = (float *) malloc((numMaterials) * sizeof (float));
 
     for (i = 0; i < numMaterials; i++) {
 
         CA[i] = 0.0;
     }
 
-    CB = (MyDataF *) malloc((numMaterials) * sizeof (MyDataF));
+    CB = (float *) malloc((numMaterials) * sizeof (float));
 
     for (i = 0; i < numMaterials; i++) {
 
         CB[i] = 0.0;
     }
 
-    Ez.CreateStruct(Imax, Jmax, Kmax,0);
-    Ey.CreateStruct(Imax, Jmax - 1, Kmax - 1,0);
-    Ex.CreateStruct(Imax - 1, Jmax, Kmax - 1,0);
+    Ez.CreateStruct(Imax, Jmax, Kmax, 0);
+    Ey.CreateStruct(Imax, Jmax - 1, Kmax - 1, 0);
+    Ex.CreateStruct(Imax - 1, Jmax, Kmax - 1, 0);
 
-    Hx.CreateStruct(Imax, Jmax - 1, Kmax,0);
-    Hy.CreateStruct(Imax - 1, Jmax, Kmax,0);
-    Hz.CreateStruct((Imax - 1), (Jmax - 1), (Kmax - 1),0);
+    Hx.CreateStruct(Imax, Jmax - 1, Kmax, 0);
+    Hy.CreateStruct(Imax - 1, Jmax, Kmax, 0);
+    Hz.CreateStruct((Imax - 1), (Jmax - 1), (Kmax - 1), 0);
 
-    ID1.CreateStruct(Imax,Jmax,Kmax,0);
-    ID2.CreateStruct(Imax,Jmax,Kmax,0);
-    ID3.CreateStruct(Imax,Jmax,Kmax,0);
+    ID1.CreateStruct(Imax, Jmax, Kmax, 0);
+    ID2.CreateStruct(Imax, Jmax, Kmax, 0);
+    ID3.CreateStruct(Imax, Jmax, Kmax, 0);
 
+
+    pml.createCPMLArray();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,6 +242,12 @@ void setUp() {
 
     }
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  PML parameters
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    pml.initParmeters(dx, dy, dz, m, ma);
+
     printf("\nTIme step = %e", dt);
     printf("\n Number of steps = %d", nMax);
     printf("\n Total Simulation time = %e Seconds", nMax * dt);
@@ -236,9 +258,13 @@ void setUp() {
       SET CPML PARAMETERS IN EACH DIRECTION
       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-void compute(cpml &pml) {
+void initializeCPML() {
+    pml.initCPML(dt, dx, dy, dz);
+}
 
-    unsigned id;
+void compute() {
+
+    short id;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  BEGIN TIME STEP
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -259,40 +285,43 @@ void compute(cpml &pml) {
                             (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
                 }
             }
-            pml.UpdatePMLForHxIn(k,Hx,Ey,Ez,DB);
+            pml.updateHxIn(k, Hx, Ez, DB, dy);
         }
-        pml.UpdatePMLForHxOut(Hx, Ey, Ez, DB);
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        pml.updateHxOut(Hx, Ey, DB, dz);
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hy
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         for (k = 1; k < Kmax - 1; ++k) {
+
             for (i = 0; i < Imax - 1; ++i) {
+
                 for (j = 0; j < Jmax - 1; ++j) {
+
                     Hy.p[i][j][k] = DA * Hy.p[i][j][k] + DB *
                             ((Ez.p[i + 1][j][k] - Ez.p[i][j][k]) * pml.den_hx.p[i] +
                             (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
                 }
             }
-            pml.UpdatePMLForHyIn(k,Hy, Ez, Ex, DB);
+            pml.updateHyIn(k, Hy, Ez, DB, dx);
+
         }
-        pml.UpdatePMLForHyOut(Hy, Ez, Ex, DB);
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        pml.updateHyOut(Hy, Ex, DB, dz);
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hz
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         for (k = 0; k < Kmax - 1; ++k) {
-
             for (i = 0; i < Imax - 1; ++i) {
-
                 for (j = 0; j < Jmax - 1; ++j) {
-
                     Hz.p[i][j][k] = DA * Hz.p[i][j][k] + DB
                             * ((Ey.p[i][j][k] - Ey.p[i + 1][j][k]) * pml.den_hx.p[i] +
                             (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
                 }
             }
-            pml.UpdatePMLForHz(k,Hz, Ex, Ey, DB);
+            pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
         }
-        
+
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ex
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -308,18 +337,20 @@ void compute(cpml &pml) {
                         Ex.p[i][j][k] = 0;
 
                     } else {
+
                         Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] + CB[id] *
                                 ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
                                 (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]);
                     }
                 }
             }
-            pml.UpdatePMLForExIn(k,Ex, Hy, Hz, CB, ID1.p);
+            pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
         }
-        pml.UpdatePMLForExOut(Ex, Hy, Hz, CB, ID1.p);
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        pml.updateExOut(Ex, Hy, ID1, CB, dz);
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ey
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         for (k = 0; k < Kmax - 1; ++k) {
 
             for (i = 1; i < Imax - 1; ++i) {
@@ -328,46 +359,34 @@ void compute(cpml &pml) {
 
                     id = ID2.p[i][j][k];
                     if (id == 1) { // PEC
-
                         Ey.p[i][j][k] = 0;
-
                     } else {
-
                         Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] + CB[id] *
                                 ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
                                 (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]);
                     }
                 }
             }
-            pml.UpdatePMLForEyIn(k,Ey, Hz, Hx, CB, ID2.p);
+            pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
         }
-        pml.UpdatePMLForEyOut(Ey, Hz, Hx, CB, ID2.p);
+        pml.updateEyOut(Ey, Hx, ID2, CB, dz);
 
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //  UPDATE Ez
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         for (k = 1; k < Kmax - 1; ++k) {
-
             for (i = 1; i < Imax - 1; ++i) {
-
                 for (j = 1; j < Jmax - 1; ++j) {
-
                     id = ID3.p[i][j][k];
                     if (id == 1) { // PEC
-
                         Ez.p[i][j][k] = 0;
-
                     } else {
-
                         Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] + CB[id]
                                 * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
                                 (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]);
                     }
                 }
             }
-            pml.UpdatePMLForEz(k,Ez, Hx, Hy, CB, ID3.p);
+            pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
         }
-        
+
 
         //-----------------------------------------------------------
         //   Apply a point source (Soft)
@@ -386,6 +405,7 @@ void compute(cpml &pml) {
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         if ((n % save_modulus) == 0) {
+
             writeField(n);
         }
 
@@ -407,10 +427,10 @@ void buildObject() {
 
 void buildSphere() {
 
-    MyDataF dist; //distance
-    MyDataF rad = 8; //(MyDataF)Imax / 5.0; // sphere radius
-    MyDataF sc = (MyDataF) Imax / 2.0; //sphere centre
-    //MyDataF rad2 = 0.3; //(MyDataF)Imax / 5.0 - 3.0; // sphere radius
+    double dist; //distance
+    double rad = 8; //(double)Imax / 5.0; // sphere radius
+    double sc = (double) Imax / 2.0; //sphere centre
+    //double rad2 = 0.3; //(double)Imax / 5.0 - 3.0; // sphere radius
 
     for (i = 0; i < Imax; ++i) {
 
@@ -459,7 +479,7 @@ void buildDipole() {
 
 //creates a dielctric cube (yee cell) made up of the selected material
 
-void yeeCube(int I, int J, int K, unsigned mType) {
+void yeeCube(int I, int J, int K, short mType) {
 
     //set face 1 (for EX)
     ID1.p[I][J][K] = mType;
@@ -488,7 +508,7 @@ void writeField(int iteration) {
 
     FILE *ptr;
     char step[10];
-    char fileBaseName[100] = "E_Field_";
+    char fileBaseName[] = "E_Field_";
     sprintf(step, "%d", iteration);
     strcat(fileBaseName, step);
     strcat(fileBaseName, ".txt");
@@ -516,38 +536,11 @@ void writeField(int iteration) {
         }
         fprintf(ptr, "\n");
     }
+
     fclose(ptr);
 
 }
 
-void putvars() {
-    cout << "dx = " << dx << endl;
-    cout << "dy = " << dy << endl;
-    cout << "dz = " << dz << endl;
-    cout << "(Imax,Jmax,Kmax) = (" << Imax << "," << Jmax << "," << Kmax << ")" << endl;
-    // time step increment
-    cout << "dt = " << dt << endl;
-
-    //  Specify the Impulsive Source (Differentiated Gaussian) parameters
-    cout << "tw = " << tw << endl; //pulse width
-    cout << "tO = " << tO << endl; //delay
-    cout << "source = " << source << endl; //Differentiated Gaussian source
-    cout << "amp = " << amp << endl; // Amplitude
-
-    //Specify the Time Step at which the data has to be saved for Visualization
-    cout << "save_modulus = " << save_modulus << endl;
-
-    //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
-    cout << "(istart, iend, jstart) = (" << istart << ',' << iend << ',' << jstart << ')' << endl;
-    cout << "(jend, kstart, kend) = (" << jend << ',' << kstart << ',' << kend << ')' << endl;
-
-    //Output recording point
-    cout << "ksource = " << ksource << endl;
-
-    //  Specify the CPML Order and Other Parameters:
-    cout << " m  = " << m << endl;
-    cout << " ma = " << ma << endl;
-}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // END OF PROGRAM CPMLFDTD3D
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

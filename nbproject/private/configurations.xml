@@ -13,6 +13,8 @@
         <in>cmain.cpp</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
+        <in>cpml1.cpp</in>
+        <in>cpml1.h</in>
         <in>cpml2.cpp</in>
         <in>cpml2.h</in>
         <in>cpml3.cpp</in>

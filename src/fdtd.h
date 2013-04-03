@@ -125,7 +125,7 @@ private:
     int UpdateVeloity(void);
     void WallCircleBound(data3d<MyDataF> &stru);
 #endif
-    cpml pml;
+    cpml<MyDataF,unsigned int> pml;
 
 };
 
