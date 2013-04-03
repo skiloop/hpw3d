@@ -27,3 +27,11 @@
 # diff files
 *.diff
 
+# project target
+dmain
+emain
+cmain
+orig
+origProgram
+testCPML
+hpw3d

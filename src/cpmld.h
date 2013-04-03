@@ -107,6 +107,16 @@ public:
     void initCBKAP(double dt, double dx, double dy, double dz);
     void initDen(double dt, double dx, double dy, double dz);
     void initParmeters(double dx, double dy, double dz, int m_, int ma_);
+    void updateHxIn(int k, data3d<float> &Hx, data3d<float> &Ez, float DB, double dy);
+    void updateHxOut(data3d<float> &Hx, data3d<float> &Ey, float DB, double dz);
+    void updateHyIn(int k, data3d<float> &Hy, data3d<float> &Ez, float DB, double dx);
+    void updateHyOut(data3d<float> &Hy, data3d<float> &Ex, float DB, double dz);
+    void updateHz(int k, data3d<float> &Hz, data3d<float>&Ex, data3d<float>&Ey, float DB, double dx, double dy);
+    void updateExIn(int k, data3d<float> &Ex, data3d<float> &Hz, data3d<short>&ID1,float* CB, double dy);
+    void updateExOut(data3d<float> &Ex, data3d<float> &Hy, data3d<short>&ID1,float* CB, double dz);
+    void updateEyIn(int k, data3d<float> &Ey, data3d<float> &Hz, data3d<short>&ID2,float* CB, double dx);
+    void updateEyOut(data3d<float> &Ey, data3d<float> &Hx, data3d<short>&ID2,float* CB, double dz);
+    void updateEz(int k, data3d<float> &Ez, data3d<float>&Hx, data3d<float>&Hy, data3d<short>&ID3,float* CB, double dx, double dy);
 private:
 
 };

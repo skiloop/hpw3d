@@ -19,6 +19,329 @@ cpmld::~cpmld() {
 
 }
 
+void cpmld::updateEz(int k, data3d<float>& Ez, data3d<float>& Hx, data3d<float>& Hy, data3d<short>& ID3, float* CB, double dx, double dy) {
+    int i, j, ii, jj;
+    short id;
+    for (j = 1; j < Jmax - 1; ++j) {
+        //............................................................
+        //  PML for bottom Ez, x-direction
+        //.............................................................
+        for (i = 1; i < nxPML_1; ++i) {
+            id = ID3.p[i][j][k];
+            psi_Ezx_1.p[i][j][k] = be_x_1.p[i] * psi_Ezx_1.p[i][j][k]
+                    + ce_x_1.p[i] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
+            Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * psi_Ezx_1.p[i][j][k];
+        }
+        //............................................................
+        //  PML for top Ez, x-direction
+        //............................................................
+        ii = nxPML_2 - 1;
+        for (i = Imax - nxPML_2; i < Imax - 1; ++i) {
+            id = ID3.p[i][j][k];
+            psi_Ezx_2.p[ii][j][k] = be_x_2.p[ii] * psi_Ezx_2.p[ii][j][k]
+                    + ce_x_2.p[ii] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
+            Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * psi_Ezx_2.p[ii][j][k];
+            ii = ii - 1;
+        }
+    }
+
+    for (i = 1; i < Imax - 1; ++i) {
+        //..........................................................
+        //  PML for bottom Ez, y-direction
+        //..........................................................
+        for (j = 1; j < nyPML_1; ++j) {
+            id = ID3.p[i][j][k];
+            psi_Ezy_1.p[i][j][k] = be_y_1.p[j] * psi_Ezy_1.p[i][j][k]
+                    + ce_y_1.p[j] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
+            Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * psi_Ezy_1.p[i][j][k];
+        }
+        //............................................................
+        //  PML for top Ez, y-direction
+        //............................................................
+        jj = nyPML_2 - 1;
+        for (j = Jmax - nyPML_2; j < Jmax - 1; ++j) {
+            id = ID3.p[i][j][k];
+            psi_Ezy_2.p[i][jj][k] = be_y_2.p[jj] * psi_Ezy_2.p[i][jj][k]
+                    + ce_y_2.p[jj] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
+            Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * psi_Ezy_2.p[i][jj][k];
+            jj = jj - 1;
+        }
+    }
+}
+
+void cpmld::updateEyOut(data3d<float>& Ey, data3d<float>& Hx, data3d<short>& ID2, float* CB, double dz) {
+    int i, j, k, kk;
+    short id;
+    for (i = 1; i < Imax - 1; ++i) {
+        for (j = 0; j < Jmax - 1; ++j) {
+            //...........................................................
+            //  PML for bottom Ey, k-direction
+            //...........................................................
+            for (k = 0; k < nzPML_1; ++k) {
+                id = ID2.p[i][j][k];
+                psi_Eyz_1.p[i][j][k] = be_z_1.p[k] * psi_Eyz_1.p[i][j][k]
+                        + ce_z_1.p[k] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
+                Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * psi_Eyz_1.p[i][j][k];
+            }
+            //...........................................................
+            //  PML for top Ey, k-direction
+            //............................................................
+            kk = nzPML_2 - 1;
+            for (k = Kmax - nzPML_2 - 1; k < Kmax - 1; ++k) {
+
+                id = ID2.p[i][j][k];
+                psi_Eyz_2.p[i][j][kk] = be_z_2.p[kk] * psi_Eyz_2.p[i][j][kk]
+                        + ce_z_2.p[kk] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
+                Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * psi_Eyz_2.p[i][j][kk];
+                kk = kk - 1;
+            }
+        }
+    }
+}
+
+void cpmld::updateEyIn(int k, data3d<float>& Ey, data3d<float>& Hz, data3d<short>& ID2, float* CB, double dx) {
+    int i, j, ii;
+    short id;
+    for (j = 0; j < Jmax - 1; ++j) {
+        //...........................................................
+        //  PML for bottom Ey, i-direction
+        //...........................................................
+        for (i = 1; i < nxPML_1; ++i) {
+            id = ID2.p[i][j][k];
+            psi_Eyx_1.p[i][j][k] = be_x_1.p[i] * psi_Eyx_1.p[i][j][k]
+                    + ce_x_1.p[i] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
+            Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * psi_Eyx_1.p[i][j][k];
+        }
+        //............................................................
+        //  PML for top Ey, i-direction
+        //............................................................
+        ii = nxPML_2 - 1;
+        for (i = Imax - nxPML_2; i < Imax - 1; ++i) {
+            id = ID2.p[i][j][k];
+            psi_Eyx_2.p[ii][j][k] = be_x_2.p[ii] * psi_Eyx_2.p[ii][j][k]
+                    + ce_x_2.p[ii] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
+            Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * psi_Eyx_2.p[ii][j][k];
+            ii = ii - 1;
+        }
+    }
+}
+
+void cpmld::updateExIn(int k, data3d<float>& Ex, data3d<float>& Hz, data3d<short>& ID1, float* CB, double dy) {
+    int i, j, jj;
+    short id;
+    for (i = 0; i < Imax - 1; ++i) {
+        //..............................................................
+        //  PML for bottom Ex, j-direction
+        //..............................................................
+        for (j = 1; j < nyPML_1; ++j) {
+
+            id = ID1.p[i][j][k];
+            psi_Exy_1.p[i][j][k] = be_y_1.p[j] * psi_Exy_1.p[i][j][k]
+                    + ce_y_1.p[j] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
+            Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * psi_Exy_1.p[i][j][k];
+        }
+        //.............................................................
+        //  PML for top Ex, j-direction
+        //.............................................................
+        jj = nyPML_2 - 1;
+        for (j = Jmax - nyPML_2; j < Jmax - 1; ++j) {
+
+            id = ID1.p[i][j][k];
+            psi_Exy_2.p[i][jj][k] = be_y_2.p[jj] * psi_Exy_2.p[i][jj][k]
+                    + ce_y_2.p[jj] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
+            Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * psi_Exy_2.p[i][jj][k];
+            jj = jj - 1;
+        }
+    }
+}
+
+void cpmld::updateExOut(data3d<float>& Ex, data3d<float>& Hy, data3d<short>& ID1, float* CB, double dz) {
+    int i, j, k, kk;
+    short id;
+    for (i = 0; i < Imax - 1; ++i) {
+
+        for (j = 1; j < Jmax - 1; ++j) {
+            //.............................................................
+            //  PML for bottom Ex, k-direction
+            //.............................................................
+            for (k = 0; k < nzPML_1; ++k) {
+
+                id = ID1.p[i][j][k];
+                psi_Exz_1.p[i][j][k] = be_z_1.p[k] * psi_Exz_1.p[i][j][k]
+                        + ce_z_1.p[k] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
+                Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * psi_Exz_1.p[i][j][k];
+            }
+            //..............................................................
+            //  PML for top Ex, k-direction
+            //..............................................................
+            kk = nzPML_2 - 1;
+            for (k = Kmax - nzPML_2 - 1; k < Kmax - 1; ++k) {
+
+                id = ID1.p[i][j][k];
+                psi_Exz_2.p[i][j][kk] = be_z_2.p[kk] * psi_Exz_2.p[i][j][kk]
+                        + ce_z_2.p[kk] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
+                Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * psi_Exz_2.p[i][j][kk];
+                kk = kk - 1;
+            }
+        }
+    }
+}
+
+void cpmld::updateHz(int k, data3d<float>& Hz, data3d<float>& Ex, data3d<float>& Ey, float DB, double dx, double dy) {
+    int i, j, ii, jj;
+    for (j = 0; j < Jmax - 1; ++j) {
+        //..........................................................
+        //  PML for bottom Hz, x-direction
+        //..........................................................
+        for (i = 0; i < nxPML_1 - 1; ++i) {
+
+            psi_Hzx_1.p[i][j][k] = bh_x_1.p[i] * psi_Hzx_1.p[i][j][k]
+                    + ch_x_1.p[i] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
+            Hz.p[i][j][k] = Hz.p[i][j][k] + DB * psi_Hzx_1.p[i][j][k];
+        }
+        //..........................................................
+        //  PML for top Hz, x-direction
+        //..........................................................
+        ii = nxPML_2 - 2;
+        for (i = Imax - nxPML_2; i < Imax - 1; ++i) {
+
+            psi_Hzx_2.p[ii][j][k] = bh_x_2.p[ii] * psi_Hzx_2.p[ii][j][k]
+                    + ch_x_2.p[ii] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
+            Hz.p[i][j][k] = Hz.p[i][j][k] + DB * psi_Hzx_2.p[ii][j][k];
+            ii = ii - 1;
+        }
+    }
+
+    for (i = 0; i < Imax - 1; ++i) {
+        //........................................................
+        //  PML for bottom Hz, y-direction
+        //.........................................................
+        for (j = 0; j < nyPML_1 - 1; ++j) {
+            psi_Hzy_1.p[i][j][k] = bh_y_1.p[j] * psi_Hzy_1.p[i][j][k]
+                    + ch_y_1.p[j] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
+            Hz.p[i][j][k] = Hz.p[i][j][k] + DB * psi_Hzy_1.p[i][j][k];
+
+        }
+        //.........................................................
+        //  PML for top Hz, y-direction
+        //..........................................................
+        jj = nyPML_2 - 2;
+        for (j = Jmax - nyPML_2; j < Jmax - 1; ++j) {
+
+            psi_Hzy_2.p[i][jj][k] = bh_y_2.p[jj] * psi_Hzy_2.p[i][jj][k]
+                    + ch_y_2.p[jj] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
+            Hz.p[i][j][k] = Hz.p[i][j][k] + DB * psi_Hzy_2.p[i][jj][k];
+            jj = jj - 1;
+        }
+    }
+}
+
+void cpmld::updateHyOut(data3d<float>& Hy, data3d<float>& Ex, float DB, double dz) {
+    int i, j, k, kk;
+    for (i = 0; i < Imax - 1; ++i) {
+        for (j = 0; j < Jmax - 1; ++j) {
+            //.......................................................
+            //  PML for bottom Hy, k-direction
+            //......................................................
+            for (k = 1; k < nzPML_1; ++k) {
+
+                psi_Hyz_1.p[i][j][k - 1] = bh_z_1.p[k - 1] * psi_Hyz_1.p[i][j][k - 1]
+                        + ch_z_1.p[k - 1] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
+                Hy.p[i][j][k] = Hy.p[i][j][k] + DB * psi_Hyz_1.p[i][j][k - 1];
+            }
+            //.......................................................
+            //  PML for top Hy, k-direction
+            //.........................................................
+            kk = nzPML_2 - 2;
+            for (k = Kmax - nzPML_2; k < Kmax - 1; ++k) {
+                psi_Hyz_2.p[i][j][kk] = bh_z_2.p[kk] * psi_Hyz_2.p[i][j][kk]
+                        + ch_z_2.p[kk] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
+                Hy.p[i][j][k] = Hy.p[i][j][k] + DB * psi_Hyz_2.p[i][j][kk];
+                kk = kk - 1;
+            }
+        }
+    }
+}
+
+void cpmld::updateHyIn(int k, data3d<float>& Hy, data3d<float>& Ez, float DB, double dx) {
+    int i, j, ii;
+    for (j = 0; j < Jmax - 1; ++j) {
+        //.......................................................
+        //  PML for bottom Hy, i-direction
+        //.......................................................
+        for (i = 0; i < nxPML_1 - 1; ++i) {
+
+            psi_Hyx_1.p[i][j][k] = bh_x_1.p[i] * psi_Hyx_1.p[i][j][k]
+                    + ch_x_1.p[i] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
+            Hy.p[i][j][k] = Hy.p[i][j][k] + DB * psi_Hyx_1.p[i][j][k];
+        }
+        //.........................................................
+        //  PML for top Hy, i-direction
+        //.........................................................
+        ii = nxPML_2 - 2;
+        for (i = Imax - nxPML_2; i < Imax - 1; ++i) {
+
+            psi_Hyx_2.p[ii][j][k] = bh_x_2.p[ii] * psi_Hyx_2.p[ii][j][k]
+                    + ch_x_2.p[ii] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
+            Hy.p[i][j][k] = Hy.p[i][j][k] + DB * psi_Hyx_2.p[ii][j][k];
+            ii = ii - 1;
+        }
+    }
+}
+
+void cpmld::updateHxOut(data3d<float>& Hx, data3d<float>& Ey, float DB, double dz) {
+    int i, j, k, kk;
+    for (i = 0; i < Imax - 1; ++i) {
+
+        for (j = 0; j < Jmax - 1; ++j) {
+            //....................................................
+            //  PML for bottom Hx, k-direction
+            //................................................
+            for (k = 1; k < nzPML_1; ++k) {
+
+                psi_Hxz_1.p[i][j][k - 1] = bh_z_1.p[k - 1] * psi_Hxz_1.p[i][j][k - 1]
+                        + ch_z_1.p[k - 1] * (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) / dz;
+                Hx.p[i][j][k] = Hx.p[i][j][k] + DB * psi_Hxz_1.p[i][j][k - 1];
+            }
+            //....................................................
+            //  PML for top Hx, k-direction
+            //...............................................
+            kk = nzPML_2 - 2;
+            for (k = Kmax - nzPML_2; k < Kmax - 1; ++k) {
+
+                psi_Hxz_2.p[i][j][kk] = bh_z_2.p[kk] * psi_Hxz_2.p[i][j][kk]
+                        + ch_z_2.p[kk] * (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) / dz;
+                Hx.p[i][j][k] = Hx.p[i][j][k] + DB * psi_Hxz_2.p[i][j][kk];
+                kk = kk - 1;
+            }
+        }
+    }
+}
+
+void cpmld::updateHxIn(int k, data3d<float> &Hx, data3d<float> &Ez, float DB, double dy) {
+    int i, j, jj;
+    for (i = 0; i < Imax - 1; ++i) {
+        //...............................................
+        //  PML for bottom Hx, j-direction
+        //...............................................
+        for (j = 0; j < nyPML_1 - 1; ++j) {
+            psi_Hxy_1.p[i][j][k] = bh_y_1.p[j] * psi_Hxy_1.p[i][j][k]
+                    + ch_y_1.p[j] * (Ez.p[i][j][k] - Ez.p[i][j + 1][k]) / dy;
+            Hx.p[i][j][k] = Hx.p[i][j][k] + DB * psi_Hxy_1.p[i][j][k];
+        }
+        //....................................................
+        //  PML for top Hx, j-direction
+        //.....................................................
+        jj = nyPML_2 - 2;
+        for (j = Jmax - nyPML_2; j < Jmax - 1; ++j) {
+            psi_Hxy_2.p[i][jj][k] = bh_y_2.p[jj] * psi_Hxy_2.p[i][jj][k]
+                    + ch_y_2.p[jj] * (Ez.p[i][j][k] - Ez.p[i][j + 1][k]) / dy;
+            Hx.p[i][j][k] = Hx.p[i][j][k] + DB * psi_Hxy_2.p[i][jj][k];
+            jj = jj - 1;
+        }
+    }
+}
+
 void cpmld::initParmeters(double dx, double dy, double dz, int m_, int ma_) {
     m = m_;
     ma = ma_;
@@ -53,6 +376,7 @@ void cpmld::InitialMuEps() {
     mu_0 = 4.0 * pi * 1.0E-7;
     eps_0 = 1.0 / (C * C * mu_0);
 }
+
 double cpmld::eps_0 = 0;
 double cpmld::mu_0 = 0;
 double cpmld::epsR = 1.0;
