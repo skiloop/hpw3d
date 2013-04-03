@@ -19,7 +19,7 @@ cpmld::~cpmld() {
 
 }
 
-void cpmld::updateEz(int k, data3d<float>& Ez, data3d<float>& Hx, data3d<float>& Hy, data3d<short>& ID3, float* CB, double dx, double dy) {
+void cpmld::updateEz(const int k, data3d<float> &Ez, const data3d<float>&Hx, const data3d<float>&Hy, const data3d<short>&ID3, const float* CB, const double dx, const double dy) {
     int i, j, ii, jj;
     short id;
     for (j = 1; j < Jmax - 1; ++j) {
@@ -69,7 +69,7 @@ void cpmld::updateEz(int k, data3d<float>& Ez, data3d<float>& Hx, data3d<float>&
     }
 }
 
-void cpmld::updateEyOut(data3d<float>& Ey, data3d<float>& Hx, data3d<short>& ID2, float* CB, double dz) {
+void cpmld::updateEyOut(data3d<float> &Ey, const data3d<float> &Hx, const data3d<short>&ID2, const float* CB, const double dz) {
     int i, j, k, kk;
     short id;
     for (i = 1; i < Imax - 1; ++i) {
@@ -99,7 +99,7 @@ void cpmld::updateEyOut(data3d<float>& Ey, data3d<float>& Hx, data3d<short>& ID2
     }
 }
 
-void cpmld::updateEyIn(int k, data3d<float>& Ey, data3d<float>& Hz, data3d<short>& ID2, float* CB, double dx) {
+void cpmld::updateEyIn(const int k, data3d<float> &Ey, const data3d<float> &Hz, const data3d<short>&ID2, const float* CB, const double dx) {
     int i, j, ii;
     short id;
     for (j = 0; j < Jmax - 1; ++j) {
@@ -126,7 +126,7 @@ void cpmld::updateEyIn(int k, data3d<float>& Ey, data3d<float>& Hz, data3d<short
     }
 }
 
-void cpmld::updateExIn(int k, data3d<float>& Ex, data3d<float>& Hz, data3d<short>& ID1, float* CB, double dy) {
+void cpmld::updateExIn(const int k, data3d<float> &Ex, const data3d<float> &Hz, const data3d<short>&ID1, const float* CB, const double dy) {
     int i, j, jj;
     short id;
     for (i = 0; i < Imax - 1; ++i) {
@@ -155,7 +155,7 @@ void cpmld::updateExIn(int k, data3d<float>& Ex, data3d<float>& Hz, data3d<short
     }
 }
 
-void cpmld::updateExOut(data3d<float>& Ex, data3d<float>& Hy, data3d<short>& ID1, float* CB, double dz) {
+void cpmld::updateExOut(data3d<float> &Ex, const data3d<float> &Hy, const data3d<short>&ID1, const float* CB, const double dz) {
     int i, j, k, kk;
     short id;
     for (i = 0; i < Imax - 1; ++i) {
@@ -187,7 +187,7 @@ void cpmld::updateExOut(data3d<float>& Ex, data3d<float>& Hy, data3d<short>& ID1
     }
 }
 
-void cpmld::updateHz(int k, data3d<float>& Hz, data3d<float>& Ex, data3d<float>& Ey, float DB, double dx, double dy) {
+void cpmld::updateHz(const int k, data3d<float> &Hz, const data3d<float>&Ex, const data3d<float>&Ey, const float DB, const double dx, const double dy) {
     int i, j, ii, jj;
     for (j = 0; j < Jmax - 1; ++j) {
         //..........................................................
@@ -236,7 +236,7 @@ void cpmld::updateHz(int k, data3d<float>& Hz, data3d<float>& Ex, data3d<float>&
     }
 }
 
-void cpmld::updateHyOut(data3d<float>& Hy, data3d<float>& Ex, float DB, double dz) {
+void cpmld::updateHyOut(data3d<float> &Hy, const data3d<float> &Ex, const float DB, const double dz) {
     int i, j, k, kk;
     for (i = 0; i < Imax - 1; ++i) {
         for (j = 0; j < Jmax - 1; ++j) {
@@ -263,7 +263,7 @@ void cpmld::updateHyOut(data3d<float>& Hy, data3d<float>& Ex, float DB, double d
     }
 }
 
-void cpmld::updateHyIn(int k, data3d<float>& Hy, data3d<float>& Ez, float DB, double dx) {
+void cpmld::updateHyIn(const int k, data3d<float> &Hy, const data3d<float> &Ez, const float DB, const double dx) {
     int i, j, ii;
     for (j = 0; j < Jmax - 1; ++j) {
         //.......................................................
@@ -289,7 +289,7 @@ void cpmld::updateHyIn(int k, data3d<float>& Hy, data3d<float>& Ez, float DB, do
     }
 }
 
-void cpmld::updateHxOut(data3d<float>& Hx, data3d<float>& Ey, float DB, double dz) {
+void cpmld::updateHxOut(data3d<float> &Hx, const data3d<float> &Ey, const float DB, const double dz) {
     int i, j, k, kk;
     for (i = 0; i < Imax - 1; ++i) {
 
@@ -318,7 +318,7 @@ void cpmld::updateHxOut(data3d<float>& Hx, data3d<float>& Ey, float DB, double d
     }
 }
 
-void cpmld::updateHxIn(int k, data3d<float> &Hx, data3d<float> &Ez, float DB, double dy) {
+void cpmld::updateHxIn(const int k, data3d<float> &Hx, const data3d<float> &Ez, const float DB, const double dy) {
     int i, j, jj;
     for (i = 0; i < Imax - 1; ++i) {
         //...............................................
@@ -342,7 +342,7 @@ void cpmld::updateHxIn(int k, data3d<float> &Hx, data3d<float> &Ez, float DB, do
     }
 }
 
-void cpmld::initParmeters(double dx, double dy, double dz, int m_, int ma_) {
+void cpmld::initParmeters(const double dx, const double dy, const double dz, int m_, int ma_) {
     m = m_;
     ma = ma_;
     sig_x_max = 0.75 * (0.8 * (m + 1) / (dx * sqrt(mu_0 / (eps_0 * epsR))));
@@ -503,7 +503,7 @@ void cpmld::createPsi() {
     psi_Exy_2.CreateStruct(Imax - 1, nyPML_2, Kmax - 1, 0);
 }
 
-void cpmld::initCPML(double dt, double dx, double dy, double dz) {
+void cpmld::initCPML(const double dt, const double dx, const double dy, const double dz) {
 
 
     initCBKAP(dt, dx, dy, dz);
@@ -514,7 +514,7 @@ void cpmld::initCPML(double dt, double dx, double dy, double dz) {
 
 }
 
-void cpmld::initCBKAP(double dt, double dx, double dy, double dz) {
+void cpmld::initCBKAP(const double dt, const double dx, const double dy, const double dz) {
     int i, j, k;
     for (i = 0; i < nxPML_1; ++i) {
 
@@ -748,7 +748,7 @@ void cpmld::initCBKAP(double dt, double dx, double dy, double dz) {
     }
 }
 
-void cpmld::initDen(double dt, double dx, double dy, double dz) {
+void cpmld::initDen(const double dt, const double dx, const double dy, const double dz) {
     int i, j, k, ii, jj, kk;
     ii = nxPML_2 - 2;
 

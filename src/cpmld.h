@@ -102,21 +102,21 @@ public:
     void createPsi();
     void createCBKAP();
     void createDen();
-    void initCPML(double dt, double dx, double dy, double dz);
+    void initCPML(const double dt, const double dx, const double dy, const double dz);
     void initPsi();
-    void initCBKAP(double dt, double dx, double dy, double dz);
-    void initDen(double dt, double dx, double dy, double dz);
-    void initParmeters(double dx, double dy, double dz, int m_, int ma_);
-    void updateHxIn(int k, data3d<float> &Hx, data3d<float> &Ez, float DB, double dy);
-    void updateHxOut(data3d<float> &Hx, data3d<float> &Ey, float DB, double dz);
-    void updateHyIn(int k, data3d<float> &Hy, data3d<float> &Ez, float DB, double dx);
-    void updateHyOut(data3d<float> &Hy, data3d<float> &Ex, float DB, double dz);
-    void updateHz(int k, data3d<float> &Hz, data3d<float>&Ex, data3d<float>&Ey, float DB, double dx, double dy);
-    void updateExIn(int k, data3d<float> &Ex, data3d<float> &Hz, data3d<short>&ID1,float* CB, double dy);
-    void updateExOut(data3d<float> &Ex, data3d<float> &Hy, data3d<short>&ID1,float* CB, double dz);
-    void updateEyIn(int k, data3d<float> &Ey, data3d<float> &Hz, data3d<short>&ID2,float* CB, double dx);
-    void updateEyOut(data3d<float> &Ey, data3d<float> &Hx, data3d<short>&ID2,float* CB, double dz);
-    void updateEz(int k, data3d<float> &Ez, data3d<float>&Hx, data3d<float>&Hy, data3d<short>&ID3,float* CB, double dx, double dy);
+    void initCBKAP(const double dt, const double dx, const double dy, const double dz);
+    void initDen(const double dt, const double dx, const double dy, const double dz);
+    void initParmeters(const double dx, const double dy, const double dz, int m_, int ma_);
+    void updateHxIn(const int k, data3d<float> &Hx, const data3d<float> &Ez, const float DB, const double dy);
+    void updateHxOut(data3d<float> &Hx, const data3d<float> &Ey, const float DB, const double dz);
+    void updateHyIn(const int k, data3d<float> &Hy, const data3d<float> &Ez, const float DB, const double dx);
+    void updateHyOut(data3d<float> &Hy, const data3d<float> &Ex, const float DB, const double dz);
+    void updateHz(const int k, data3d<float> &Hz, const data3d<float>&Ex, const data3d<float>&Ey, const float DB, const double dx, const double dy);
+    void updateExIn(const int k, data3d<float> &Ex, const data3d<float> &Hz, const data3d<short>&ID1, const float* CB, const double dy);
+    void updateExOut(data3d<float> &Ex, const data3d<float> &Hy, const data3d<short>&ID1, const float* CB, const double dz);
+    void updateEyIn(const int k, data3d<float> &Ey, const data3d<float> &Hz, const data3d<short>&ID2, const float* CB, const double dx);
+    void updateEyOut(data3d<float> &Ey, const data3d<float> &Hx, const data3d<short>&ID2, const float* CB, const double dz);
+    void updateEz(const int k, data3d<float> &Ez, const data3d<float>&Hx, const data3d<float>&Hy, const data3d<short>&ID3, const float* CB, const double dx, const double dy);
 private:
 
 };
