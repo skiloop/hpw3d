@@ -15,6 +15,7 @@
 #include<math.h>
 #include<string.h>
 #include<stdlib.h>
+#include "datastruct.h"
 
 //  Fundamental Constants (MKS units)
 double pi = 3.14159265358979;
@@ -81,42 +82,42 @@ int i, j, ii, jj, k, kk, n;
 
 
 // H & E Field components
-float ***Hx;
-float ***Hy;
-float ***Hz;
-float ***Ex;
-float ***Ey;
-float ***Ez;
+data3d<float> Hx;
+data3d<float> Hy;
+data3d<float> Hz;
+data3d<float> Ex;
+data3d<float> Ey;
+data3d<float> Ez;
 
-short ***ID1; //medium definition array for Ex
-short ***ID2; //medium definition array for Ey
-short ***ID3; //medium definition array for Ez
+data3d<short> ID1; //medium definition array for Ex
+data3d<short> ID2; //medium definition array for Ey
+data3d<short> ID3; //medium definition array for Ez
 
 //  CPML components (Taflove 3rd Edition, Chapter 7)
-float ***psi_Ezx_1;
-float ***psi_Ezx_2;
-float ***psi_Hyx_1;
-float ***psi_Hyx_2;
-float ***psi_Ezy_1;
-float ***psi_Ezy_2;
-float ***psi_Hxy_1;
-float ***psi_Hxy_2;
-float ***psi_Hxz_1;
-float ***psi_Hxz_2;
-float ***psi_Hyz_1;
-float ***psi_Hyz_2;
-float ***psi_Exz_1;
-float ***psi_Exz_2;
-float ***psi_Eyz_1;
-float ***psi_Eyz_2;
-float ***psi_Hzx_1;
-float ***psi_Eyx_1;
-float ***psi_Hzx_2;
-float ***psi_Eyx_2;
-float ***psi_Hzy_1;
-float ***psi_Exy_1;
-float ***psi_Hzy_2;
-float ***psi_Exy_2;
+data3d<float> psi_Ezx_1;
+data3d<float> psi_Ezx_2;
+data3d<float> psi_Hyx_1;
+data3d<float> psi_Hyx_2;
+data3d<float> psi_Ezy_1;
+data3d<float> psi_Ezy_2;
+data3d<float> psi_Hxy_1;
+data3d<float> psi_Hxy_2;
+data3d<float> psi_Hxz_1;
+data3d<float> psi_Hxz_2;
+data3d<float> psi_Hyz_1;
+data3d<float> psi_Hyz_2;
+data3d<float> psi_Exz_1;
+data3d<float> psi_Exz_2;
+data3d<float> psi_Eyz_1;
+data3d<float> psi_Eyz_2;
+data3d<float> psi_Hzx_1;
+data3d<float> psi_Eyx_1;
+data3d<float> psi_Hzx_2;
+data3d<float> psi_Eyx_2;
+data3d<float> psi_Hzy_1;
+data3d<float> psi_Exy_1;
+data3d<float> psi_Hzy_2;
+data3d<float> psi_Exy_2;
 
 float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;
 float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;
@@ -231,566 +232,118 @@ void initialize() {
         CB[i] = 0.0;
     }
 
-    Ez = (float ***) malloc(Imax * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        Ez[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            Ez[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                Ez[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    Ey = (float ***) malloc((Imax) * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        Ey[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            Ey[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                Ey[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    Ex = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        Ex[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            Ex[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                Ex[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    Hx = (float ***) malloc(Imax * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        Hx[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            Hx[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                Hx[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    Hy = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        Hy[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            Hy[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                Hy[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    Hz = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        Hz[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            Hz[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                Hz[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    ID1 = (short ***) malloc(Imax * sizeof (short **));
-
-    for (i = 0; i < Imax; i++) {
-
-        ID1[i] = (short **) malloc(Jmax * sizeof (short *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            ID1[i][j] = (short *) malloc(Kmax * sizeof (short));
-
-            for (k = 0; k < Kmax; k++) {
-
-                ID1[i][j][k] = 0;
-            }
-        }
-    }
-
-    ID2 = (short ***) malloc(Imax * sizeof (short **));
-
-    for (i = 0; i < Imax; i++) {
-
-        ID2[i] = (short **) malloc(Jmax * sizeof (short *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            ID2[i][j] = (short *) malloc(Kmax * sizeof (short));
-
-            for (k = 0; k < Kmax; k++) {
-
-                ID2[i][j][k] = 0;
-            }
-        }
-    }
-
-    ID3 = (short ***) malloc(Imax * sizeof (short **));
-
-    for (i = 0; i < Imax; i++) {
-
-        ID3[i] = (short **) malloc(Jmax * sizeof (short *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            ID3[i][j] = (short *) malloc(Kmax * sizeof (short));
-
-            for (k = 0; k < Kmax; k++) {
-
-                ID3[i][j][k] = 0;
-            }
-        }
-    }
-
-    psi_Ezx_1 = (float ***) malloc(nxPML_1 * sizeof (float **));
-
-    for (i = 0; i < nxPML_1; i++) {
-
-        psi_Ezx_1[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            psi_Ezx_1[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                psi_Ezx_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Ezx_2 = (float ***) malloc(nxPML_2 * sizeof (float **));
-
-    for (i = 0; i < nxPML_2; i++) {
-
-        psi_Ezx_2[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            psi_Ezx_2[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                psi_Ezx_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hyx_1 = (float ***) malloc((nxPML_1 - 1) * sizeof (float **));
-
-    for (i = 0; i < nxPML_1 - 1; i++) {
-
-        psi_Hyx_1[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            psi_Hyx_1[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                psi_Hyx_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hyx_2 = (float ***) malloc((nxPML_2 - 1) * sizeof (float **));
-
-    for (i = 0; i < nxPML_2 - 1; i++) {
-
-        psi_Hyx_2[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            psi_Hyx_2[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                psi_Hyx_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Ezy_1 = (float ***) malloc(Imax * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        psi_Ezy_1[i] = (float **) malloc(nyPML_1 * sizeof (float *));
-
-        for (j = 0; j < nyPML_1; j++) {
-
-            psi_Ezy_1[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                psi_Ezy_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Ezy_2 = (float ***) malloc(Imax * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        psi_Ezy_2[i] = (float **) malloc(nyPML_2 * sizeof (float *));
-
-        for (j = 0; j < nyPML_2; j++) {
-
-            psi_Ezy_2[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                psi_Ezy_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hxy_1 = (float ***) malloc(Imax * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        psi_Hxy_1[i] = (float **) malloc((nyPML_1 - 1) * sizeof (float *));
-
-        for (j = 0; j < nyPML_1 - 1; j++) {
-
-            psi_Hxy_1[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                psi_Hxy_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hxy_2 = (float ***) malloc(Imax * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        psi_Hxy_2[i] = (float **) malloc((nyPML_2 - 1) * sizeof (float *));
-
-        for (j = 0; j < nyPML_2 - 1; j++) {
-
-            psi_Hxy_2[i][j] = (float *) malloc(Kmax * sizeof (float));
-
-            for (k = 0; k < Kmax; k++) {
-
-                psi_Hxy_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hxz_1 = (float ***) malloc(Imax * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        psi_Hxz_1[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax-1; j++) {
-
-            psi_Hxz_1[i][j] = (float *) malloc((nzPML_1 - 1) * sizeof (float));
-
-            for (k = 0; k < nzPML_1 - 1; k++) {
-
-                psi_Hxz_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hxz_2 = (float ***) malloc(Imax * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        psi_Hxz_2[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax-1; j++) {
-
-            psi_Hxz_2[i][j] = (float *) malloc((nzPML_2 - 1) * sizeof (float));
-
-            for (k = 0; k < nzPML_2 - 1; k++) {
-
-                psi_Hxz_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hyz_1 = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        psi_Hyz_1[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            psi_Hyz_1[i][j] = (float *) malloc((nzPML_1 - 1) * sizeof (float));
-
-            for (k = 0; k < nzPML_1 - 1; k++) {
-
-                psi_Hyz_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hyz_2 = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        psi_Hyz_2[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            psi_Hyz_2[i][j] = (float *) malloc((nzPML_2 - 1) * sizeof (float));
-
-            for (k = 0; k < nzPML_2 - 1; k++) {
-
-                psi_Hyz_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Exz_1 = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        psi_Exz_1[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            psi_Exz_1[i][j] = (float *) malloc(nzPML_1 * sizeof (float));
-
-            for (k = 0; k < nzPML_1; k++) {
-
-                psi_Exz_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Exz_2 = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        psi_Exz_2[i] = (float **) malloc(Jmax * sizeof (float *));
-
-        for (j = 0; j < Jmax; j++) {
-
-            psi_Exz_2[i][j] = (float *) malloc(nzPML_2 * sizeof (float));
-
-            for (k = 0; k < nzPML_2; k++) {
-
-                psi_Exz_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Eyz_1 = (float ***) malloc((Imax) * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        psi_Eyz_1[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            psi_Eyz_1[i][j] = (float *) malloc(nzPML_1 * sizeof (float));
-
-            for (k = 0; k < nzPML_1; k++) {
-
-                psi_Eyz_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Eyz_2 = (float ***) malloc((Imax) * sizeof (float **));
-
-    for (i = 0; i < Imax; i++) {
-
-        psi_Eyz_2[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            psi_Eyz_2[i][j] = (float *) malloc(nzPML_2 * sizeof (float));
-
-            for (k = 0; k < nzPML_2; k++) {
-
-                psi_Eyz_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hzx_1 = (float ***) malloc((nxPML_1 - 1) * sizeof (float **));
-
-    for (i = 0; i < nxPML_1 - 1; i++) {
-
-        psi_Hzx_1[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            psi_Hzx_1[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                psi_Hzx_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hzx_2 = (float ***) malloc((nxPML_2 - 1) * sizeof (float **));
-
-    for (i = 0; i < nxPML_2 - 1; i++) {
-
-        psi_Hzx_2[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            psi_Hzx_2[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                psi_Hzx_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Eyx_1 = (float ***) malloc(nxPML_1 * sizeof (float **));
-
-    for (i = 0; i < nxPML_1; i++) {
-
-        psi_Eyx_1[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            psi_Eyx_1[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                psi_Eyx_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Eyx_2 = (float ***) malloc(nxPML_2 * sizeof (float **));
-
-    for (i = 0; i < nxPML_2; i++) {
-
-        psi_Eyx_2[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
-
-        for (j = 0; j < Jmax - 1; j++) {
-
-            psi_Eyx_2[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                psi_Eyx_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hzy_1 = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        psi_Hzy_1[i] = (float **) malloc((nyPML_1 - 1) * sizeof (float *));
-
-        for (j = 0; j < nyPML_1 - 1; j++) {
-
-            psi_Hzy_1[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                psi_Hzy_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Hzy_2 = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        psi_Hzy_2[i] = (float **) malloc((nyPML_2 - 1) * sizeof (float *));
-
-        for (j = 0; j < nyPML_2 - 1; j++) {
-
-            psi_Hzy_2[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                psi_Hzy_2[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Exy_1 = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        psi_Exy_1[i] = (float **) malloc(nyPML_1 * sizeof (float *));
-
-        for (j = 0; j < nyPML_1; j++) {
-
-            psi_Exy_1[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                psi_Exy_1[i][j][k] = 0.0;
-            }
-        }
-    }
-
-    psi_Exy_2 = (float ***) malloc((Imax - 1) * sizeof (float **));
-
-    for (i = 0; i < Imax - 1; i++) {
-
-        psi_Exy_2[i] = (float **) malloc(nyPML_2 * sizeof (float *));
-
-        for (j = 0; j < nyPML_2; j++) {
-
-            psi_Exy_2[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
-
-            for (k = 0; k < Kmax - 1; k++) {
-
-                psi_Exy_2[i][j][k] = 0.0;
-            }
-        }
-    }
+    psi_Ezx_1.CreateStruct(nxPML_1, Jmax, Kmax, 0);
+    psi_Ezx_2.CreateStruct(nxPML_2, Jmax, Kmax, 0);
+    psi_Hyx_1.CreateStruct(nxPML_1 - 1, Jmax, Kmax, 0);
+    psi_Hyx_2.CreateStruct(nxPML_2 - 1, Jmax, Kmax, 0);
+
+    psi_Ezy_1.CreateStruct(Imax, nyPML_1, Kmax, 0);
+    psi_Ezy_2.CreateStruct(Imax, nyPML_2, Kmax, 0);
+    psi_Hxy_1.CreateStruct(Imax, nyPML_1 - 1, Kmax, 0);
+    psi_Hxy_2.CreateStruct(Imax, nyPML_2 - 1, Kmax, 0);
+
+    psi_Hxz_1.CreateStruct(Imax, Jmax - 1, nzPML_1 - 1, 0);
+    psi_Hxz_2.CreateStruct(Imax, Jmax - 1, nzPML_2 - 1, 0);
+    psi_Eyz_1.CreateStruct(Imax, Jmax - 1, nzPML_1, 0);
+    psi_Eyz_2.CreateStruct(Imax, Jmax - 1, nzPML_2, 0);
+
+    psi_Hyz_1.CreateStruct(Imax - 1, Jmax, nzPML_1 - 1, 0);
+    psi_Hyz_2.CreateStruct(Imax - 1, Jmax, nzPML_2 - 1, 0);
+    psi_Exz_1.CreateStruct(Imax - 1, Jmax, nzPML_1, 0);
+    psi_Exz_2.CreateStruct(Imax - 1, Jmax, nzPML_2, 0);
+
+    psi_Hzx_1.CreateStruct(nxPML_1 - 1, Jmax - 1, Kmax - 1, 0);
+    psi_Hzx_2.CreateStruct(nxPML_2 - 1, Jmax - 1, Kmax - 1, 0);
+    psi_Eyx_1.CreateStruct(nxPML_1, Jmax - 1, Kmax - 1, 0);
+    psi_Eyx_2.CreateStruct(nxPML_2, Jmax - 1, Kmax - 1, 0);
+
+    psi_Hzy_1.CreateStruct(Imax - 1, nyPML_1 - 1, Kmax - 1, 0);
+    psi_Hzy_2.CreateStruct(Imax - 1, nyPML_2 - 1, Kmax - 1, 0);
+    psi_Exy_1.CreateStruct(Imax - 1, nyPML_1, Kmax - 1, 0);
+    psi_Exy_2.CreateStruct(Imax - 1, nyPML_2, Kmax - 1, 0);
+
+    Ez.CreateStruct(Imax, Jmax, Kmax, 0);
+    Ey.CreateStruct(Imax, Jmax - 1, Kmax - 1, 0);
+    Ex.CreateStruct(Imax - 1, Jmax, Kmax - 1, 0);
+
+    Hx.CreateStruct(Imax, Jmax - 1, Kmax, 0);
+    Hy.CreateStruct(Imax - 1, Jmax, Kmax, 0);
+    Hz.CreateStruct((Imax - 1), (Jmax - 1), (Kmax - 1), 0);
+
+    ID1.CreateStruct(Imax, Jmax, Kmax, 0);
+    ID2.CreateStruct(Imax, Jmax, Kmax, 0);
+    ID3.CreateStruct(Imax, Jmax, Kmax, 0);
+    //    be_x_1.createArray(nxPML_1, 0.0);
+    //    ce_x_1.createArray(nxPML_1, 0.0);
+    //    alphae_x_PML_1.createArray(nxPML_1, 0.0);
+    //    sige_x_PML_1.createArray(nxPML_1, 0.0);
+    //    kappae_x_PML_1.createArray(nxPML_1, 0.0);
+    //    bh_x_1.createArray(nxPML_1 - 1, 0.0);
+    //    ch_x_1.createArray(nxPML_1 - 1, 0.0);
+    //    alphah_x_PML_1.createArray(nxPML_1 - 1, 0.0);
+    //    sigh_x_PML_1.createArray(nxPML_1 - 1, 0.0);
+    //    kappah_x_PML_1.createArray(nxPML_1 - 1, 0.0);
+    //
+    //    be_x_2.createArray(nxPML_2, 0.0);
+    //    ce_x_2.createArray(nxPML_2, 0.0);
+    //    alphae_x_PML_2.createArray(nxPML_2, 0.0);
+    //    sige_x_PML_2.createArray(nxPML_2, 0.0);
+    //    kappae_x_PML_2.createArray(nxPML_2, 0.0);
+    //
+    //    bh_x_2.createArray(nxPML_2 - 1, 0.0);
+    //    ch_x_2.createArray(nxPML_2 - 1, 0.0);
+    //    alphah_x_PML_2.createArray(nxPML_2 - 1, 0.0);
+    //    sigh_x_PML_2.createArray(nxPML_2 - 1, 0.0);
+    //    kappah_x_PML_2.createArray(nxPML_2 - 1, 0.0);
+    //
+    //    be_y_1.createArray(nxPML_1, 0.0);
+    //    ce_y_1.createArray(nxPML_1, 0.0);
+    //    kappae_y_PML_1.createArray(nxPML_1, 0.0);
+    //    sige_y_PML_1.createArray(nxPML_1, 0.0);
+    //    alphae_y_PML_1.createArray(nxPML_1, 0.0);
+    //
+    //
+    //    bh_y_1.createArray(nyPML_1 - 1, 0.0);
+    //    ch_y_1.createArray(nyPML_1 - 1, 0.0);
+    //    alphah_y_PML_1.createArray(nyPML_1 - 1, 0.0);
+    //    sigh_y_PML_1.createArray(nyPML_1 - 1, 0.0);
+    //    kappah_y_PML_1.createArray(nyPML_1 - 1, 0.0);
+    //
+    //    be_y_2.createArray(nyPML_2, 0.0);
+    //    ce_y_2.createArray(nyPML_2, 0.0);
+    //    alphae_y_PML_2.createArray(nyPML_2, 0.0);
+    //    sige_y_PML_2.createArray(nyPML_2, 0.0);
+    //    kappae_y_PML_2.createArray(nyPML_2, 0.0);
+    //
+    //    bh_y_2.createArray(nyPML_2 - 1, 0.0);
+    //    ch_y_2.createArray(nyPML_2 - 1, 0.0);
+    //    alphah_y_PML_2.createArray(nyPML_2 - 1, 0.0);
+    //    sigh_y_PML_2.createArray(nyPML_2 - 1, 0.0);
+    //    kappah_y_PML_2.createArray(nyPML_2 - 1, 0.0);
+    //
+    //    be_z_1.createArray(nzPML_1, 0.0);
+    //    ce_z_1.createArray(nzPML_1, 0.0);
+    //    alphae_z_PML_1.createArray(nzPML_1, 0.0);
+    //    sige_z_PML_1.createArray(nzPML_1, 0.0);
+    //    kappae_z_PML_1.createArray(nzPML_1, 0.0);
+    //
+    //    bh_z_1.createArray(nzPML_1 - 1, 0.0);
+    //    ch_z_1.createArray(nzPML_1 - 1, 0.0);
+    //    alphah_z_PML_1.createArray(nzPML_1 - 1, 0.0);
+    //    sigh_z_PML_1.createArray(nzPML_1 - 1, 0.0);
+    //    kappah_z_PML_1.createArray(nzPML_1 - 1, 0.0);
+    //
+    //    be_z_2.createArray(nzPML_2, 0.0);
+    //    ce_z_2.createArray(nzPML_2, 0.0);
+    //    alphae_z_PML_2.createArray(nzPML_2, 0.0);
+    //    sige_z_PML_2.createArray(nzPML_2, 0.0);
+    //    kappae_z_PML_2.createArray(nzPML_2, 0.0);
+    //
+    //    bh_z_2.createArray(nzPML_2 - 1, 0.0);
+    //    ch_z_2.createArray(nzPML_2 - 1, 0.0);
+    //    alphah_z_PML_2.createArray(nzPML_2 - 1, 0.0);
+    //    sigh_z_PML_2.createArray(nzPML_2 - 1, 0.0);
+    //    kappah_z_PML_2.createArray(nzPML_2 - 1, 0.0);
 
     den_ex = (float *) malloc((Imax - 1) * sizeof (float));
     for (i = 0; i < Imax - 1; i++) {
@@ -1627,7 +1180,7 @@ void compute() {
 
     for (n = 1; n <= nMax; ++n) {
 
-        printf("Ez at time step %d at (25, 40, 12) :  %f\n", n, Ez[25][40][12]);
+        printf("Ez at time step %d at (25, 40, 12) :  %f\n", n, Ez.p[25][40][12]);
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hx
@@ -1635,9 +1188,9 @@ void compute() {
         for (k = 1; k < Kmax - 1; ++k) {
             for (i = 0; i < Imax - 1; ++i) {
                 for (j = 0; j < Jmax - 1; ++j) {
-                    Hx[i][j][k] = DA * Hx[i][j][k] + DB *
-                            ((Ez[i][j][k] - Ez[i][j + 1][k]) * den_hy[j] +
-                            (Ey[i][j][k] - Ey[i][j][k - 1]) * den_hz[k]);
+                    Hx.p[i][j][k] = DA * Hx.p[i][j][k] + DB *
+                            ((Ez.p[i][j][k] - Ez.p[i][j + 1][k]) * den_hy[j] +
+                            (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * den_hz[k]);
                 }
             }
 
@@ -1646,18 +1199,18 @@ void compute() {
                 //  PML for bottom Hx, j-direction
                 //...............................................
                 for (j = 0; j < nyPML_1 - 1; ++j) {
-                    psi_Hxy_1[i][j][k] = bh_y_1[j] * psi_Hxy_1[i][j][k]
-                            + ch_y_1[j] * (Ez[i][j][k] - Ez[i][j + 1][k]) / dy;
-                    Hx[i][j][k] = Hx[i][j][k] + DB * psi_Hxy_1[i][j][k];
+                    psi_Hxy_1.p[i][j][k] = bh_y_1[j] * psi_Hxy_1.p[i][j][k]
+                            + ch_y_1[j] * (Ez.p[i][j][k] - Ez.p[i][j + 1][k]) / dy;
+                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * psi_Hxy_1.p[i][j][k];
                 }
                 //....................................................
                 //  PML for top Hx, j-direction
                 //.....................................................
                 jj = nyPML_2 - 2;
                 for (j = Jmax - nyPML_2; j < Jmax - 1; ++j) {
-                    psi_Hxy_2[i][jj][k] = bh_y_2[jj] * psi_Hxy_2[i][jj][k]
-                            + ch_y_2[jj] * (Ez[i][j][k] - Ez[i][j + 1][k]) / dy;
-                    Hx[i][j][k] = Hx[i][j][k] + DB * psi_Hxy_2[i][jj][k];
+                    psi_Hxy_2.p[i][jj][k] = bh_y_2[jj] * psi_Hxy_2.p[i][jj][k]
+                            + ch_y_2[jj] * (Ez.p[i][j][k] - Ez.p[i][j + 1][k]) / dy;
+                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * psi_Hxy_2.p[i][jj][k];
                     jj = jj - 1;
                 }
             }
@@ -1671,9 +1224,9 @@ void compute() {
                 //................................................
                 for (k = 1; k < nzPML_1; ++k) {
 
-                    psi_Hxz_1[i][j][k - 1] = bh_z_1[k - 1] * psi_Hxz_1[i][j][k - 1]
-                            + ch_z_1[k - 1] * (Ey[i][j][k] - Ey[i][j][k - 1]) / dz;
-                    Hx[i][j][k] = Hx[i][j][k] + DB * psi_Hxz_1[i][j][k - 1];
+                    psi_Hxz_1.p[i][j][k - 1] = bh_z_1[k - 1] * psi_Hxz_1.p[i][j][k - 1]
+                            + ch_z_1[k - 1] * (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) / dz;
+                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * psi_Hxz_1.p[i][j][k - 1];
                 }
                 //....................................................
                 //  PML for top Hx, k-direction
@@ -1681,9 +1234,9 @@ void compute() {
                 kk = nzPML_2 - 2;
                 for (k = Kmax - nzPML_2; k < Kmax - 1; ++k) {
 
-                    psi_Hxz_2[i][j][kk] = bh_z_2[kk] * psi_Hxz_2[i][j][kk]
-                            + ch_z_2[kk] * (Ey[i][j][k] - Ey[i][j][k - 1]) / dz;
-                    Hx[i][j][k] = Hx[i][j][k] + DB * psi_Hxz_2[i][j][kk];
+                    psi_Hxz_2.p[i][j][kk] = bh_z_2[kk] * psi_Hxz_2.p[i][j][kk]
+                            + ch_z_2[kk] * (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) / dz;
+                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * psi_Hxz_2.p[i][j][kk];
                     kk = kk - 1;
                 }
             }
@@ -1698,9 +1251,9 @@ void compute() {
 
                 for (j = 0; j < Jmax - 1; ++j) {
 
-                    Hy[i][j][k] = DA * Hy[i][j][k] + DB *
-                            ((Ez[i + 1][j][k] - Ez[i][j][k]) * den_hx[i] +
-                            (Ex[i][j][k - 1] - Ex[i][j][k]) * den_hz[k]);
+                    Hy.p[i][j][k] = DA * Hy.p[i][j][k] + DB *
+                            ((Ez.p[i + 1][j][k] - Ez.p[i][j][k]) * den_hx[i] +
+                            (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * den_hz[k]);
                 }
             }
 
@@ -1710,9 +1263,9 @@ void compute() {
                 //.......................................................
                 for (i = 0; i < nxPML_1 - 1; ++i) {
 
-                    psi_Hyx_1[i][j][k] = bh_x_1[i] * psi_Hyx_1[i][j][k]
-                            + ch_x_1[i] * (Ez[i + 1][j][k] - Ez[i][j][k]) / dx;
-                    Hy[i][j][k] = Hy[i][j][k] + DB * psi_Hyx_1[i][j][k];
+                    psi_Hyx_1.p[i][j][k] = bh_x_1[i] * psi_Hyx_1.p[i][j][k]
+                            + ch_x_1[i] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
+                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * psi_Hyx_1.p[i][j][k];
                 }
                 //.........................................................
                 //  PML for top Hy, i-direction
@@ -1720,9 +1273,9 @@ void compute() {
                 ii = nxPML_2 - 2;
                 for (i = Imax - nxPML_2; i < Imax - 1; ++i) {
 
-                    psi_Hyx_2[ii][j][k] = bh_x_2[ii] * psi_Hyx_2[ii][j][k]
-                            + ch_x_2[ii] * (Ez[i + 1][j][k] - Ez[i][j][k]) / dx;
-                    Hy[i][j][k] = Hy[i][j][k] + DB * psi_Hyx_2[ii][j][k];
+                    psi_Hyx_2.p[ii][j][k] = bh_x_2[ii] * psi_Hyx_2.p[ii][j][k]
+                            + ch_x_2[ii] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
+                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * psi_Hyx_2.p[ii][j][k];
                     ii = ii - 1;
                 }
             }
@@ -1735,18 +1288,18 @@ void compute() {
                 //......................................................
                 for (k = 1; k < nzPML_1; ++k) {
 
-                    psi_Hyz_1[i][j][k - 1] = bh_z_1[k - 1] * psi_Hyz_1[i][j][k - 1]
-                            + ch_z_1[k - 1] * (Ex[i][j][k - 1] - Ex[i][j][k]) / dz;
-                    Hy[i][j][k] = Hy[i][j][k] + DB * psi_Hyz_1[i][j][k - 1];
+                    psi_Hyz_1.p[i][j][k - 1] = bh_z_1[k - 1] * psi_Hyz_1.p[i][j][k - 1]
+                            + ch_z_1[k - 1] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
+                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * psi_Hyz_1.p[i][j][k - 1];
                 }
                 //.......................................................
                 //  PML for top Hy, k-direction
                 //.........................................................
                 kk = nzPML_2 - 2;
                 for (k = Kmax - nzPML_2; k < Kmax - 1; ++k) {
-                    psi_Hyz_2[i][j][kk] = bh_z_2[kk] * psi_Hyz_2[i][j][kk]
-                            + ch_z_2[kk] * (Ex[i][j][k - 1] - Ex[i][j][k]) / dz;
-                    Hy[i][j][k] = Hy[i][j][k] + DB * psi_Hyz_2[i][j][kk];
+                    psi_Hyz_2.p[i][j][kk] = bh_z_2[kk] * psi_Hyz_2.p[i][j][kk]
+                            + ch_z_2[kk] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
+                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * psi_Hyz_2.p[i][j][kk];
                     kk = kk - 1;
                 }
             }
@@ -1758,9 +1311,9 @@ void compute() {
         for (k = 0; k < Kmax - 1; ++k) {
             for (i = 0; i < Imax - 1; ++i) {
                 for (j = 0; j < Jmax - 1; ++j) {
-                    Hz[i][j][k] = DA * Hz[i][j][k] + DB
-                            * ((Ey[i][j][k] - Ey[i + 1][j][k]) * den_hx[i] +
-                            (Ex[i][j + 1][k] - Ex[i][j][k]) * den_hy[j]);
+                    Hz.p[i][j][k] = DA * Hz.p[i][j][k] + DB
+                            * ((Ey.p[i][j][k] - Ey.p[i + 1][j][k]) * den_hx[i] +
+                            (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * den_hy[j]);
                 }
             }
 
@@ -1770,9 +1323,9 @@ void compute() {
                 //..........................................................
                 for (i = 0; i < nxPML_1 - 1; ++i) {
 
-                    psi_Hzx_1[i][j][k] = bh_x_1[i] * psi_Hzx_1[i][j][k]
-                            + ch_x_1[i] * (Ey[i][j][k] - Ey[i + 1][j][k]) / dx;
-                    Hz[i][j][k] = Hz[i][j][k] + DB * psi_Hzx_1[i][j][k];
+                    psi_Hzx_1.p[i][j][k] = bh_x_1[i] * psi_Hzx_1.p[i][j][k]
+                            + ch_x_1[i] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
+                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * psi_Hzx_1.p[i][j][k];
                 }
                 //..........................................................
                 //  PML for top Hz, x-direction
@@ -1780,9 +1333,9 @@ void compute() {
                 ii = nxPML_2 - 2;
                 for (i = Imax - nxPML_2; i < Imax - 1; ++i) {
 
-                    psi_Hzx_2[ii][j][k] = bh_x_2[ii] * psi_Hzx_2[ii][j][k]
-                            + ch_x_2[ii] * (Ey[i][j][k] - Ey[i + 1][j][k]) / dx;
-                    Hz[i][j][k] = Hz[i][j][k] + DB * psi_Hzx_2[ii][j][k];
+                    psi_Hzx_2.p[ii][j][k] = bh_x_2[ii] * psi_Hzx_2.p[ii][j][k]
+                            + ch_x_2[ii] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
+                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * psi_Hzx_2.p[ii][j][k];
                     ii = ii - 1;
                 }
             }
@@ -1792,9 +1345,9 @@ void compute() {
                 //  PML for bottom Hz, y-direction
                 //.........................................................
                 for (j = 0; j < nyPML_1 - 1; ++j) {
-                    psi_Hzy_1[i][j][k] = bh_y_1[j] * psi_Hzy_1[i][j][k]
-                            + ch_y_1[j] * (Ex[i][j + 1][k] - Ex[i][j][k]) / dy;
-                    Hz[i][j][k] = Hz[i][j][k] + DB * psi_Hzy_1[i][j][k];
+                    psi_Hzy_1.p[i][j][k] = bh_y_1[j] * psi_Hzy_1.p[i][j][k]
+                            + ch_y_1[j] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
+                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * psi_Hzy_1.p[i][j][k];
 
                 }
                 //.........................................................
@@ -1803,9 +1356,9 @@ void compute() {
                 jj = nyPML_2 - 2;
                 for (j = Jmax - nyPML_2; j < Jmax - 1; ++j) {
 
-                    psi_Hzy_2[i][jj][k] = bh_y_2[jj] * psi_Hzy_2[i][jj][k]
-                            + ch_y_2[jj] * (Ex[i][j + 1][k] - Ex[i][j][k]) / dy;
-                    Hz[i][j][k] = Hz[i][j][k] + DB * psi_Hzy_2[i][jj][k];
+                    psi_Hzy_2.p[i][jj][k] = bh_y_2[jj] * psi_Hzy_2.p[i][jj][k]
+                            + ch_y_2[jj] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
+                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * psi_Hzy_2.p[i][jj][k];
                     jj = jj - 1;
                 }
             }
@@ -1820,16 +1373,16 @@ void compute() {
 
                 for (j = 1; j < Jmax - 1; ++j) {
 
-                    id = ID1[i][j][k];
+                    id = ID1.p[i][j][k];
                     if (id == 1) { // PEC
 
-                        Ex[i][j][k] = 0;
+                        Ex.p[i][j][k] = 0;
 
                     } else {
 
-                        Ex[i][j][k] = CA[id] * Ex[i][j][k] + CB[id] *
-                                ((Hz[i][j][k] - Hz[i][j - 1][k]) * den_ey[j] +
-                                (Hy[i][j][k] - Hy[i][j][k + 1]) * den_ez[k]);
+                        Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] + CB[id] *
+                                ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * den_ey[j] +
+                                (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * den_ez[k]);
                     }
                 }
             }
@@ -1840,10 +1393,10 @@ void compute() {
                 //..............................................................
                 for (j = 1; j < nyPML_1; ++j) {
 
-                    id = ID1[i][j][k];
-                    psi_Exy_1[i][j][k] = be_y_1[j] * psi_Exy_1[i][j][k]
-                            + ce_y_1[j] * (Hz[i][j][k] - Hz[i][j - 1][k]) / dy;
-                    Ex[i][j][k] = Ex[i][j][k] + CB[id] * psi_Exy_1[i][j][k];
+                    id = ID1.p[i][j][k];
+                    psi_Exy_1.p[i][j][k] = be_y_1[j] * psi_Exy_1.p[i][j][k]
+                            + ce_y_1[j] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
+                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * psi_Exy_1.p[i][j][k];
                 }
                 //.............................................................
                 //  PML for top Ex, j-direction
@@ -1851,10 +1404,10 @@ void compute() {
                 jj = nyPML_2 - 1;
                 for (j = Jmax - nyPML_2; j < Jmax - 1; ++j) {
 
-                    id = ID1[i][j][k];
-                    psi_Exy_2[i][jj][k] = be_y_2[jj] * psi_Exy_2[i][jj][k]
-                            + ce_y_2[jj] * (Hz[i][j][k] - Hz[i][j - 1][k]) / dy;
-                    Ex[i][j][k] = Ex[i][j][k] + CB[id] * psi_Exy_2[i][jj][k];
+                    id = ID1.p[i][j][k];
+                    psi_Exy_2.p[i][jj][k] = be_y_2[jj] * psi_Exy_2.p[i][jj][k]
+                            + ce_y_2[jj] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
+                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * psi_Exy_2.p[i][jj][k];
                     jj = jj - 1;
                 }
             }
@@ -1868,10 +1421,10 @@ void compute() {
                 //.............................................................
                 for (k = 0; k < nzPML_1; ++k) {
 
-                    id = ID1[i][j][k];
-                    psi_Exz_1[i][j][k] = be_z_1[k] * psi_Exz_1[i][j][k]
-                            + ce_z_1[k] * (Hy[i][j][k] - Hy[i][j][k + 1]) / dz;
-                    Ex[i][j][k] = Ex[i][j][k] + CB[id] * psi_Exz_1[i][j][k];
+                    id = ID1.p[i][j][k];
+                    psi_Exz_1.p[i][j][k] = be_z_1[k] * psi_Exz_1.p[i][j][k]
+                            + ce_z_1[k] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
+                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * psi_Exz_1.p[i][j][k];
                 }
                 //..............................................................
                 //  PML for top Ex, k-direction
@@ -1879,10 +1432,10 @@ void compute() {
                 kk = nzPML_2 - 1;
                 for (k = Kmax - nzPML_2 - 1; k < Kmax - 1; ++k) {
 
-                    id = ID1[i][j][k];
-                    psi_Exz_2[i][j][kk] = be_z_2[kk] * psi_Exz_2[i][j][kk]
-                            + ce_z_2[kk] * (Hy[i][j][k] - Hy[i][j][k + 1]) / dz;
-                    Ex[i][j][k] = Ex[i][j][k] + CB[id] * psi_Exz_2[i][j][kk];
+                    id = ID1.p[i][j][k];
+                    psi_Exz_2.p[i][j][kk] = be_z_2[kk] * psi_Exz_2.p[i][j][kk]
+                            + ce_z_2[kk] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
+                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * psi_Exz_2.p[i][j][kk];
                     kk = kk - 1;
                 }
             }
@@ -1897,13 +1450,13 @@ void compute() {
 
                 for (j = 0; j < Jmax - 1; ++j) {
 
-                    id = ID2[i][j][k];
+                    id = ID2.p[i][j][k];
                     if (id == 1) { // PEC
-                        Ey[i][j][k] = 0;
+                        Ey.p[i][j][k] = 0;
                     } else {
-                        Ey[i][j][k] = CA[id] * Ey[i][j][k] + CB[id] *
-                                ((Hz[i - 1][j][k] - Hz[i][j][k]) * den_ex[i] +
-                                (Hx[i][j][k + 1] - Hx[i][j][k]) * den_ez[k]);
+                        Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] + CB[id] *
+                                ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * den_ex[i] +
+                                (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * den_ez[k]);
                     }
                 }
             }
@@ -1913,20 +1466,20 @@ void compute() {
                 //  PML for bottom Ey, i-direction
                 //...........................................................
                 for (i = 1; i < nxPML_1; ++i) {
-                    id = ID2[i][j][k];
-                    psi_Eyx_1[i][j][k] = be_x_1[i] * psi_Eyx_1[i][j][k]
-                            + ce_x_1[i] * (Hz[i - 1][j][k] - Hz[i][j][k]) / dx;
-                    Ey[i][j][k] = Ey[i][j][k] + CB[id] * psi_Eyx_1[i][j][k];
+                    id = ID2.p[i][j][k];
+                    psi_Eyx_1.p[i][j][k] = be_x_1[i] * psi_Eyx_1.p[i][j][k]
+                            + ce_x_1[i] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
+                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * psi_Eyx_1.p[i][j][k];
                 }
                 //............................................................
                 //  PML for top Ey, i-direction
                 //............................................................
                 ii = nxPML_2 - 1;
                 for (i = Imax - nxPML_2; i < Imax - 1; ++i) {
-                    id = ID2[i][j][k];
-                    psi_Eyx_2[ii][j][k] = be_x_2[ii] * psi_Eyx_2[ii][j][k]
-                            + ce_x_2[ii] * (Hz[i - 1][j][k] - Hz[i][j][k]) / dx;
-                    Ey[i][j][k] = Ey[i][j][k] + CB[id] * psi_Eyx_2[ii][j][k];
+                    id = ID2.p[i][j][k];
+                    psi_Eyx_2.p[ii][j][k] = be_x_2[ii] * psi_Eyx_2.p[ii][j][k]
+                            + ce_x_2[ii] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
+                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * psi_Eyx_2.p[ii][j][k];
                     ii = ii - 1;
                 }
             }
@@ -1938,10 +1491,10 @@ void compute() {
                 //  PML for bottom Ey, k-direction
                 //...........................................................
                 for (k = 0; k < nzPML_1; ++k) {
-                    id = ID2[i][j][k];
-                    psi_Eyz_1[i][j][k] = be_z_1[k] * psi_Eyz_1[i][j][k]
-                            + ce_z_1[k] * (Hx[i][j][k + 1] - Hx[i][j][k]) / dz;
-                    Ey[i][j][k] = Ey[i][j][k] + CB[id] * psi_Eyz_1[i][j][k];
+                    id = ID2.p[i][j][k];
+                    psi_Eyz_1.p[i][j][k] = be_z_1[k] * psi_Eyz_1.p[i][j][k]
+                            + ce_z_1[k] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
+                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * psi_Eyz_1.p[i][j][k];
                 }
                 //...........................................................
                 //  PML for top Ey, k-direction
@@ -1949,10 +1502,10 @@ void compute() {
                 kk = nzPML_2 - 1;
                 for (k = Kmax - nzPML_2 - 1; k < Kmax - 1; ++k) {
 
-                    id = ID2[i][j][k];
-                    psi_Eyz_2[i][j][kk] = be_z_2[kk] * psi_Eyz_2[i][j][kk]
-                            + ce_z_2[kk] * (Hx[i][j][k + 1] - Hx[i][j][k]) / dz;
-                    Ey[i][j][k] = Ey[i][j][k] + CB[id] * psi_Eyz_2[i][j][kk];
+                    id = ID2.p[i][j][k];
+                    psi_Eyz_2.p[i][j][kk] = be_z_2[kk] * psi_Eyz_2.p[i][j][kk]
+                            + ce_z_2[kk] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
+                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * psi_Eyz_2.p[i][j][kk];
                     kk = kk - 1;
                 }
             }
@@ -1964,13 +1517,13 @@ void compute() {
         for (k = 1; k < Kmax - 1; ++k) {
             for (i = 1; i < Imax - 1; ++i) {
                 for (j = 1; j < Jmax - 1; ++j) {
-                    id = ID3[i][j][k];
+                    id = ID3.p[i][j][k];
                     if (id == 1) { // PEC
-                        Ez[i][j][k] = 0;
+                        Ez.p[i][j][k] = 0;
                     } else {
-                        Ez[i][j][k] = CA[id] * Ez[i][j][k] + CB[id]
-                                * ((Hy[i][j][k] - Hy[i - 1][j][k]) * den_ex[i] +
-                                (Hx[i][j - 1][k] - Hx[i][j][k]) * den_ey[j]);
+                        Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] + CB[id]
+                                * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * den_ex[i] +
+                                (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * den_ey[j]);
                     }
                 }
             }
@@ -1980,20 +1533,20 @@ void compute() {
                 //  PML for bottom Ez, x-direction
                 //.............................................................
                 for (i = 1; i < nxPML_1; ++i) {
-                    id = ID3[i][j][k];
-                    psi_Ezx_1[i][j][k] = be_x_1[i] * psi_Ezx_1[i][j][k]
-                            + ce_x_1[i] * (Hy[i][j][k] - Hy[i - 1][j][k]) / dx;
-                    Ez[i][j][k] = Ez[i][j][k] + CB[id] * psi_Ezx_1[i][j][k];
+                    id = ID3.p[i][j][k];
+                    psi_Ezx_1.p[i][j][k] = be_x_1[i] * psi_Ezx_1.p[i][j][k]
+                            + ce_x_1[i] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
+                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * psi_Ezx_1.p[i][j][k];
                 }
                 //............................................................
                 //  PML for top Ez, x-direction
                 //............................................................
                 ii = nxPML_2 - 1;
                 for (i = Imax - nxPML_2; i < Imax - 1; ++i) {
-                    id = ID3[i][j][k];
-                    psi_Ezx_2[ii][j][k] = be_x_2[ii] * psi_Ezx_2[ii][j][k]
-                            + ce_x_2[ii] * (Hy[i][j][k] - Hy[i - 1][j][k]) / dx;
-                    Ez[i][j][k] = Ez[i][j][k] + CB[id] * psi_Ezx_2[ii][j][k];
+                    id = ID3.p[i][j][k];
+                    psi_Ezx_2.p[ii][j][k] = be_x_2[ii] * psi_Ezx_2.p[ii][j][k]
+                            + ce_x_2[ii] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
+                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * psi_Ezx_2.p[ii][j][k];
                     ii = ii - 1;
                 }
             }
@@ -2003,20 +1556,20 @@ void compute() {
                 //  PML for bottom Ez, y-direction
                 //..........................................................
                 for (j = 1; j < nyPML_1; ++j) {
-                    id = ID3[i][j][k];
-                    psi_Ezy_1[i][j][k] = be_y_1[j] * psi_Ezy_1[i][j][k]
-                            + ce_y_1[j] * (Hx[i][j - 1][k] - Hx[i][j][k]) / dy;
-                    Ez[i][j][k] = Ez[i][j][k] + CB[id] * psi_Ezy_1[i][j][k];
+                    id = ID3.p[i][j][k];
+                    psi_Ezy_1.p[i][j][k] = be_y_1[j] * psi_Ezy_1.p[i][j][k]
+                            + ce_y_1[j] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
+                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * psi_Ezy_1.p[i][j][k];
                 }
                 //............................................................
                 //  PML for top Ez, y-direction
                 //............................................................
                 jj = nyPML_2 - 1;
                 for (j = Jmax - nyPML_2; j < Jmax - 1; ++j) {
-                    id = ID3[i][j][k];
-                    psi_Ezy_2[i][jj][k] = be_y_2[jj] * psi_Ezy_2[i][jj][k]
-                            + ce_y_2[jj] * (Hx[i][j - 1][k] - Hx[i][j][k]) / dy;
-                    Ez[i][j][k] = Ez[i][j][k] + CB[id] * psi_Ezy_2[i][jj][k];
+                    id = ID3.p[i][j][k];
+                    psi_Ezy_2.p[i][jj][k] = be_y_2[jj] * psi_Ezy_2.p[i][jj][k]
+                            + ce_y_2[jj] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
+                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * psi_Ezy_2.p[i][jj][k];
                     jj = jj - 1;
                 }
             }
@@ -2032,7 +1585,7 @@ void compute() {
         source = amp * -2.0 * ((n * dt - tO) / tw)
                 * exp(-pow(((n * dt - tO) / tw), 2)); //Differentiated Gaussian pulse
 
-        Ez[i][j][k] = Ez[i][j][k] - CB[ID3[i][j][k]] * source;
+        Ez.p[i][j][k] = Ez.p[i][j][k] - CB[ID3.p[i][j][k]] * source;
 
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2117,22 +1670,22 @@ void buildDipole() {
 void yeeCube(int I, int J, int K, short mType) {
 
     //set face 1 (for EX)
-    ID1[I][J][K] = mType;
-    ID1[I][J][K + 1] = mType;
-    ID1[I][J + 1][K + 1] = mType;
-    ID1[I][J + 1][K] = mType;
+    ID1.p[I][J][K] = mType;
+    ID1.p[I][J][K + 1] = mType;
+    ID1.p[I][J + 1][K + 1] = mType;
+    ID1.p[I][J + 1][K] = mType;
 
     //set face 2 (for EY)
-    ID2[I][J][K] = mType;
-    ID2[I + 1][J][K] = mType;
-    ID2[I + 1][J][K + 1] = mType;
-    ID2[I][J][K + 1] = mType;
+    ID2.p[I][J][K] = mType;
+    ID2.p[I + 1][J][K] = mType;
+    ID2.p[I + 1][J][K + 1] = mType;
+    ID2.p[I][J][K + 1] = mType;
 
     //set face 3 (for EZ)
-    ID3[I][J][K] = mType;
-    ID3[I + 1][J][K] = mType;
-    ID3[I + 1][J + 1][K] = mType;
-    ID3[I][J + 1][K] = mType;
+    ID3.p[I][J][K] = mType;
+    ID3.p[I + 1][J][K] = mType;
+    ID3.p[I + 1][J + 1][K] = mType;
+    ID3.p[I][J + 1][K] = mType;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2154,19 +1707,19 @@ void writeField(int iteration) {
 
         for (j = 0; j < Jmax - 1; j++) {
             // |E|
-            fprintf(ptr, "%f\t", sqrt(pow(Ex[i][j][ksource], 2) +
-                    pow(Ey[i][j][ksource], 2) + pow(Ez[i][j][ksource], 2)));
+            fprintf(ptr, "%f\t", sqrt(pow(Ex.p[i][j][ksource], 2) +
+                    pow(Ey.p[i][j][ksource], 2) + pow(Ez.p[i][j][ksource], 2)));
 
-            //	fprintf(ptr, "%f\t", Ex[i][j][ksource]);//Ex
-            //	fprintf(ptr, "%f\t", Ey[i][j][ksource]);//Ey
-            //	fprintf(ptr, "%f\t", Ez[i][j][ksource]);//Ez
-            //	fprintf(ptr, "%f\t", Hx[i][j][ksource]);//Hx
-            //	fprintf(ptr, "%f\t", Hy[i][j][ksource]);//Hy
-            //	fprintf(ptr, "%f\t", Hz[i][j][ksource]);//Hz
+            //	fprintf(ptr, "%f\t", Ex.p[i][j][ksource]);//Ex
+            //	fprintf(ptr, "%f\t", Ey.p[i][j][ksource]);//Ey
+            //	fprintf(ptr, "%f\t", Ez.p[i][j][ksource]);//Ez
+            //	fprintf(ptr, "%f\t", Hx.p[i][j][ksource]);//Hx
+            //	fprintf(ptr, "%f\t", Hy.p[i][j][ksource]);//Hy
+            //	fprintf(ptr, "%f\t", Hz.p[i][j][ksource]);//Hz
 
             // |H|
-            //	fprintf(ptr, "%f\t", sqrt(pow(Hx[i][j][ksource], 2) +
-            //		pow(Hy[i][j][ksource], 2) + pow( Hz[i][j][ksource], 2)));
+            //	fprintf(ptr, "%f\t", sqrt(pow(Hx.p[i][j][ksource], 2) +
+            //		pow(Hy.p[i][j][ksource], 2) + pow( Hz.p[i][j][ksource], 2)));
 
         }
         fprintf(ptr, "\n");

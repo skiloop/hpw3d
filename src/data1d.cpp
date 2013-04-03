@@ -7,12 +7,12 @@
 
 #include "data1d.h"
 
-data1d::data1d() {
-}
-
-data1d::data1d(const data1d& orig) {
-}
-
-data1d::~data1d() {
-}
+//data1d::data1d() {
+//}
+//
+//data1d::data1d(const data1d& orig) {
+//}
+//
+//data1d::~data1d() {
+//}
 

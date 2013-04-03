@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "cpml.h"
+#include "datastruct.h"
 
 using namespace std;
 
@@ -34,8 +35,6 @@ int cpml::Initial(unsigned nx, unsigned ny, unsigned nz, unsigned ncpml) {
 int cpml::CreatePMLArrays() {
     try
     {
-        unsigned i;
-
         psi_Ezx_1.CreateStruct(nxPML_1, Jmax, Kmax, 0);
         psi_Ezx_2.CreateStruct(nxPML_2, Jmax, Kmax, 0);
         psi_Hyx_1.CreateStruct(nxPML_1 - 1, Jmax, Kmax, 0);

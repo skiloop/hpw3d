@@ -1,5 +1,6 @@
 #pragma once
 #include "datastruct.h"
+//#include "data1d.h"
 
 extern MyDataF eps_0, epsR;
 extern MyDataF mu_0;
