@@ -48,10 +48,11 @@
     <conf name="Default" type="0">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>default</compilerSet>
+        <compilerSet>GNU|GNU</compilerSet>
       </toolsSet>
       <codeAssistance>
       </codeAssistance>
+<<<<<<< HEAD
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
@@ -120,6 +121,8 @@
       </toolsSet>
       <codeAssistance>
       </codeAssistance>
+=======
+>>>>>>> 91e26cc64d2ede7b3d5a3c56871c2b3462d8e1f7
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
@@ -136,6 +139,7 @@
           </ccTool>
         </makeTool>
       </makefileType>
+<<<<<<< HEAD
       <item path="Efields/loadAllTxtFile.m" ex="false" tool="0" flavor2="2">
         <cTool>
         </cTool>
@@ -215,6 +219,49 @@
       <item path="src/testcpml.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
         </ccTool>
+=======
+      <item path="Efields/loadAllTxtFile.m" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Efields/playMovieWithRes.m" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Efields/runMyJobs.m" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="src/InonizationFormula.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/InonizationFormula.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/cpml.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/cpml.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/cpml2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/cpml2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/cpml3.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/cpml3.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/data1d.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/data1d.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/datastruct.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/datastruct.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/fdtd.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/fdtd.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/orig.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/test.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/testMain.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/testcpml.cpp" ex="false" tool="1" flavor2="0">
+>>>>>>> 91e26cc64d2ede7b3d5a3c56871c2b3462d8e1f7
       </item>
     </conf>
   </confs>

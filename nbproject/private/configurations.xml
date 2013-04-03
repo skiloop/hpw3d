@@ -10,23 +10,34 @@
       <df name="src">
         <in>InonizationFormula.cpp</in>
         <in>InonizationFormula.h</in>
+<<<<<<< HEAD
         <in>cmain.cpp</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
         <in>cpml1.cpp</in>
         <in>cpml1.h</in>
+=======
+        <in>cpml.cpp</in>
+        <in>cpml.h</in>
+>>>>>>> 91e26cc64d2ede7b3d5a3c56871c2b3462d8e1f7
         <in>cpml2.cpp</in>
         <in>cpml2.h</in>
         <in>cpml3.cpp</in>
         <in>cpml3.h</in>
+<<<<<<< HEAD
         <in>cpmld.cpp</in>
         <in>cpmld.h</in>
+=======
+>>>>>>> 91e26cc64d2ede7b3d5a3c56871c2b3462d8e1f7
         <in>data1d.cpp</in>
         <in>data1d.h</in>
         <in>datastruct.cpp</in>
         <in>datastruct.h</in>
+<<<<<<< HEAD
         <in>dmain.cpp</in>
         <in>emain.cpp</in>
+=======
+>>>>>>> 91e26cc64d2ede7b3d5a3c56871c2b3462d8e1f7
         <in>fdtd.cpp</in>
         <in>fdtd.h</in>
         <in>orig.cpp</in>
