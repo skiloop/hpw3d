@@ -19,7 +19,7 @@ cpmld::~cpmld() {
 
 }
 
-void cpmld::initParmeters(float dx, float dy, float dz, int m_, int ma_) {
+void cpmld::initParmeters(double dx, double dy, double dz, int m_, int ma_) {
     m = m_;
     ma = ma_;
     sig_x_max = 0.75 * (0.8 * (m + 1) / (dx * sqrt(mu_0 / (eps_0 * epsR))));
@@ -179,7 +179,7 @@ void cpmld::createPsi() {
     psi_Exy_2.CreateStruct(Imax - 1, nyPML_2, Kmax - 1, 0);
 }
 
-void cpmld::initCPML(float dt, float dx, float dy, float dz) {
+void cpmld::initCPML(double dt, double dx, double dy, double dz) {
 
 
     initCBKAP(dt, dx, dy, dz);
@@ -190,7 +190,7 @@ void cpmld::initCPML(float dt, float dx, float dy, float dz) {
 
 }
 
-void cpmld::initCBKAP(float dt, float dx, float dy, float dz) {
+void cpmld::initCBKAP(double dt, double dx, double dy, double dz) {
     int i, j, k;
     for (i = 0; i < nxPML_1; ++i) {
 
@@ -424,7 +424,7 @@ void cpmld::initCBKAP(float dt, float dx, float dy, float dz) {
     }
 }
 
-void cpmld::initDen(float dt, float dx, float dy, float dz) {
+void cpmld::initDen(double dt, double dx, double dy, double dz) {
     int i, j, k, ii, jj, kk;
     ii = nxPML_2 - 2;
 

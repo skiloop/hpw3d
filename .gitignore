@@ -10,3 +10,20 @@
 *.lai
 *.la
 *.a
+
+# backup files
+*~
+
+# matlab mat-file
+*.mat
+
+# data file
+*.txt
+*.dat
+
+# vim info
+.viminfo
+
+# diff files
+*.diff
+

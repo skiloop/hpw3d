@@ -102,11 +102,11 @@ public:
     void createPsi();
     void createCBKAP();
     void createDen();
-    void initCPML(float dt, float dx, float dy, float dz);
+    void initCPML(double dt, double dx, double dy, double dz);
     void initPsi();
-    void initCBKAP(float dt, float dx, float dy, float dz);
-    void initDen(float dt, float dx, float dy, float dz);
-    void initParmeters(float dx, float dy, float dz, int m_, int ma_);
+    void initCBKAP(double dt, double dx, double dy, double dz);
+    void initDen(double dt, double dx, double dy, double dz);
+    void initParmeters(double dx, double dy, double dz, int m_, int ma_);
 private:
 
 };
