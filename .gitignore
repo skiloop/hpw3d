@@ -35,3 +35,9 @@ orig
 origProgram
 testCPML
 hpw3d
+# project objects
+origProgram
+
+# backup file
+*~
+
