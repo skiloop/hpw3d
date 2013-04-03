@@ -489,122 +489,6 @@ public:
         createCBKAP();
     };
 
-    void createDen() {
-        den_ex.createArray(Imax - 1, 0.0);
-        den_hx.createArray(Imax - 1, 0.0);
-        den_ey.createArray(Jmax - 1, 0.0);
-        den_hy.createArray(Jmax - 1, 0.0);
-        den_ez.createArray(Kmax - 1, 0.0);
-        den_hz.createArray(Kmax - 1, 0.0);
-    };
-
-    void createCBKAP() {
-
-        be_x_1.createArray(nxPML_1, 0.0);
-        ce_x_1.createArray(nxPML_1, 0.0);
-        alphae_x_PML_1.createArray(nxPML_1, 0.0);
-        sige_x_PML_1.createArray(nxPML_1, 0.0);
-        kappae_x_PML_1.createArray(nxPML_1, 0.0);
-        bh_x_1.createArray(nxPML_1 - 1, 0.0);
-        ch_x_1.createArray(nxPML_1 - 1, 0.0);
-        alphah_x_PML_1.createArray(nxPML_1 - 1, 0.0);
-        sigh_x_PML_1.createArray(nxPML_1 - 1, 0.0);
-        kappah_x_PML_1.createArray(nxPML_1 - 1, 0.0);
-
-        be_x_2.createArray(nxPML_2, 0.0);
-        ce_x_2.createArray(nxPML_2, 0.0);
-        alphae_x_PML_2.createArray(nxPML_2, 0.0);
-        sige_x_PML_2.createArray(nxPML_2, 0.0);
-        kappae_x_PML_2.createArray(nxPML_2, 0.0);
-
-        bh_x_2.createArray(nxPML_2 - 1, 0.0);
-        ch_x_2.createArray(nxPML_2 - 1, 0.0);
-        alphah_x_PML_2.createArray(nxPML_2 - 1, 0.0);
-        sigh_x_PML_2.createArray(nxPML_2 - 1, 0.0);
-        kappah_x_PML_2.createArray(nxPML_2 - 1, 0.0);
-
-        be_y_1.createArray(nxPML_1, 0.0);
-        ce_y_1.createArray(nxPML_1, 0.0);
-        kappae_y_PML_1.createArray(nxPML_1, 0.0);
-        sige_y_PML_1.createArray(nxPML_1, 0.0);
-        alphae_y_PML_1.createArray(nxPML_1, 0.0);
-
-        bh_y_1.createArray(nyPML_1 - 1, 0.0);
-        ch_y_1.createArray(nyPML_1 - 1, 0.0);
-        alphah_y_PML_1.createArray(nyPML_1 - 1, 0.0);
-        sigh_y_PML_1.createArray(nyPML_1 - 1, 0.0);
-        kappah_y_PML_1.createArray(nyPML_1 - 1, 0.0);
-
-        be_y_2.createArray(nyPML_2, 0.0);
-        ce_y_2.createArray(nyPML_2, 0.0);
-        alphae_y_PML_2.createArray(nyPML_2, 0.0);
-        sige_y_PML_2.createArray(nyPML_2, 0.0);
-        kappae_y_PML_2.createArray(nyPML_2, 0.0);
-
-        bh_y_2.createArray(nyPML_2 - 1, 0.0);
-        ch_y_2.createArray(nyPML_2 - 1, 0.0);
-        alphah_y_PML_2.createArray(nyPML_2 - 1, 0.0);
-        sigh_y_PML_2.createArray(nyPML_2 - 1, 0.0);
-        kappah_y_PML_2.createArray(nyPML_2 - 1, 0.0);
-
-        be_z_1.createArray(nzPML_1, 0.0);
-        ce_z_1.createArray(nzPML_1, 0.0);
-        alphae_z_PML_1.createArray(nzPML_1, 0.0);
-        sige_z_PML_1.createArray(nzPML_1, 0.0);
-        kappae_z_PML_1.createArray(nzPML_1, 0.0);
-
-        bh_z_1.createArray(nzPML_1 - 1, 0.0);
-        ch_z_1.createArray(nzPML_1 - 1, 0.0);
-        alphah_z_PML_1.createArray(nzPML_1 - 1, 0.0);
-        sigh_z_PML_1.createArray(nzPML_1 - 1, 0.0);
-        kappah_z_PML_1.createArray(nzPML_1 - 1, 0.0);
-
-        be_z_2.createArray(nzPML_2, 0.0);
-        ce_z_2.createArray(nzPML_2, 0.0);
-        alphae_z_PML_2.createArray(nzPML_2, 0.0);
-        sige_z_PML_2.createArray(nzPML_2, 0.0);
-        kappae_z_PML_2.createArray(nzPML_2, 0.0);
-
-        bh_z_2.createArray(nzPML_2 - 1, 0.0);
-        ch_z_2.createArray(nzPML_2 - 1, 0.0);
-        alphah_z_PML_2.createArray(nzPML_2 - 1, 0.0);
-        sigh_z_PML_2.createArray(nzPML_2 - 1, 0.0);
-        kappah_z_PML_2.createArray(nzPML_2 - 1, 0.0);
-
-    };
-
-    void createPsi() {
-        psi_Ezx_1.CreateStruct(nxPML_1, Jmax, Kmax, 0);
-        psi_Ezx_2.CreateStruct(nxPML_2, Jmax, Kmax, 0);
-        psi_Hyx_1.CreateStruct(nxPML_1 - 1, Jmax, Kmax, 0);
-        psi_Hyx_2.CreateStruct(nxPML_2 - 1, Jmax, Kmax, 0);
-
-        psi_Ezy_1.CreateStruct(Imax, nyPML_1, Kmax, 0);
-        psi_Ezy_2.CreateStruct(Imax, nyPML_2, Kmax, 0);
-        psi_Hxy_1.CreateStruct(Imax, nyPML_1 - 1, Kmax, 0);
-        psi_Hxy_2.CreateStruct(Imax, nyPML_2 - 1, Kmax, 0);
-
-        psi_Hxz_1.CreateStruct(Imax, Jmax - 1, nzPML_1 - 1, 0);
-        psi_Hxz_2.CreateStruct(Imax, Jmax - 1, nzPML_2 - 1, 0);
-        psi_Eyz_1.CreateStruct(Imax, Jmax - 1, nzPML_1, 0);
-        psi_Eyz_2.CreateStruct(Imax, Jmax - 1, nzPML_2, 0);
-
-        psi_Hyz_1.CreateStruct(Imax - 1, Jmax, nzPML_1 - 1, 0);
-        psi_Hyz_2.CreateStruct(Imax - 1, Jmax, nzPML_2 - 1, 0);
-        psi_Exz_1.CreateStruct(Imax - 1, Jmax, nzPML_1, 0);
-        psi_Exz_2.CreateStruct(Imax - 1, Jmax, nzPML_2, 0);
-
-        psi_Hzx_1.CreateStruct(nxPML_1 - 1, Jmax - 1, Kmax - 1, 0);
-        psi_Hzx_2.CreateStruct(nxPML_2 - 1, Jmax - 1, Kmax - 1, 0);
-        psi_Eyx_1.CreateStruct(nxPML_1, Jmax - 1, Kmax - 1, 0);
-        psi_Eyx_2.CreateStruct(nxPML_2, Jmax - 1, Kmax - 1, 0);
-
-        psi_Hzy_1.CreateStruct(Imax - 1, nyPML_1 - 1, Kmax - 1, 0);
-        psi_Hzy_2.CreateStruct(Imax - 1, nyPML_2 - 1, Kmax - 1, 0);
-        psi_Exy_1.CreateStruct(Imax - 1, nyPML_1, Kmax - 1, 0);
-        psi_Exy_2.CreateStruct(Imax - 1, nyPML_2, Kmax - 1, 0);
-    };
-
     void initCPML(const double dt, const double dx, const double dy, const double dz) {
 
 
@@ -615,6 +499,8 @@ public:
         initDen(dt, dx, dy, dz);
 
     };
+
+private:
 
     void initCBKAP(const double dt, const double dx, const double dy, const double dz) {
         int i, j, k;
@@ -966,8 +852,122 @@ public:
             }
         }
     };
-private:
 
+    void createDen() {
+        den_ex.createArray(Imax - 1, 0.0);
+        den_hx.createArray(Imax - 1, 0.0);
+        den_ey.createArray(Jmax - 1, 0.0);
+        den_hy.createArray(Jmax - 1, 0.0);
+        den_ez.createArray(Kmax - 1, 0.0);
+        den_hz.createArray(Kmax - 1, 0.0);
+    };
+
+    void createCBKAP() {
+
+        be_x_1.createArray(nxPML_1, 0.0);
+        ce_x_1.createArray(nxPML_1, 0.0);
+        alphae_x_PML_1.createArray(nxPML_1, 0.0);
+        sige_x_PML_1.createArray(nxPML_1, 0.0);
+        kappae_x_PML_1.createArray(nxPML_1, 0.0);
+        bh_x_1.createArray(nxPML_1 - 1, 0.0);
+        ch_x_1.createArray(nxPML_1 - 1, 0.0);
+        alphah_x_PML_1.createArray(nxPML_1 - 1, 0.0);
+        sigh_x_PML_1.createArray(nxPML_1 - 1, 0.0);
+        kappah_x_PML_1.createArray(nxPML_1 - 1, 0.0);
+
+        be_x_2.createArray(nxPML_2, 0.0);
+        ce_x_2.createArray(nxPML_2, 0.0);
+        alphae_x_PML_2.createArray(nxPML_2, 0.0);
+        sige_x_PML_2.createArray(nxPML_2, 0.0);
+        kappae_x_PML_2.createArray(nxPML_2, 0.0);
+
+        bh_x_2.createArray(nxPML_2 - 1, 0.0);
+        ch_x_2.createArray(nxPML_2 - 1, 0.0);
+        alphah_x_PML_2.createArray(nxPML_2 - 1, 0.0);
+        sigh_x_PML_2.createArray(nxPML_2 - 1, 0.0);
+        kappah_x_PML_2.createArray(nxPML_2 - 1, 0.0);
+
+        be_y_1.createArray(nxPML_1, 0.0);
+        ce_y_1.createArray(nxPML_1, 0.0);
+        kappae_y_PML_1.createArray(nxPML_1, 0.0);
+        sige_y_PML_1.createArray(nxPML_1, 0.0);
+        alphae_y_PML_1.createArray(nxPML_1, 0.0);
+
+        bh_y_1.createArray(nyPML_1 - 1, 0.0);
+        ch_y_1.createArray(nyPML_1 - 1, 0.0);
+        alphah_y_PML_1.createArray(nyPML_1 - 1, 0.0);
+        sigh_y_PML_1.createArray(nyPML_1 - 1, 0.0);
+        kappah_y_PML_1.createArray(nyPML_1 - 1, 0.0);
+
+        be_y_2.createArray(nyPML_2, 0.0);
+        ce_y_2.createArray(nyPML_2, 0.0);
+        alphae_y_PML_2.createArray(nyPML_2, 0.0);
+        sige_y_PML_2.createArray(nyPML_2, 0.0);
+        kappae_y_PML_2.createArray(nyPML_2, 0.0);
+
+        bh_y_2.createArray(nyPML_2 - 1, 0.0);
+        ch_y_2.createArray(nyPML_2 - 1, 0.0);
+        alphah_y_PML_2.createArray(nyPML_2 - 1, 0.0);
+        sigh_y_PML_2.createArray(nyPML_2 - 1, 0.0);
+        kappah_y_PML_2.createArray(nyPML_2 - 1, 0.0);
+
+        be_z_1.createArray(nzPML_1, 0.0);
+        ce_z_1.createArray(nzPML_1, 0.0);
+        alphae_z_PML_1.createArray(nzPML_1, 0.0);
+        sige_z_PML_1.createArray(nzPML_1, 0.0);
+        kappae_z_PML_1.createArray(nzPML_1, 0.0);
+
+        bh_z_1.createArray(nzPML_1 - 1, 0.0);
+        ch_z_1.createArray(nzPML_1 - 1, 0.0);
+        alphah_z_PML_1.createArray(nzPML_1 - 1, 0.0);
+        sigh_z_PML_1.createArray(nzPML_1 - 1, 0.0);
+        kappah_z_PML_1.createArray(nzPML_1 - 1, 0.0);
+
+        be_z_2.createArray(nzPML_2, 0.0);
+        ce_z_2.createArray(nzPML_2, 0.0);
+        alphae_z_PML_2.createArray(nzPML_2, 0.0);
+        sige_z_PML_2.createArray(nzPML_2, 0.0);
+        kappae_z_PML_2.createArray(nzPML_2, 0.0);
+
+        bh_z_2.createArray(nzPML_2 - 1, 0.0);
+        ch_z_2.createArray(nzPML_2 - 1, 0.0);
+        alphah_z_PML_2.createArray(nzPML_2 - 1, 0.0);
+        sigh_z_PML_2.createArray(nzPML_2 - 1, 0.0);
+        kappah_z_PML_2.createArray(nzPML_2 - 1, 0.0);
+
+    };
+
+    void createPsi() {
+        psi_Ezx_1.CreateStruct(nxPML_1, Jmax, Kmax, 0);
+        psi_Ezx_2.CreateStruct(nxPML_2, Jmax, Kmax, 0);
+        psi_Hyx_1.CreateStruct(nxPML_1 - 1, Jmax, Kmax, 0);
+        psi_Hyx_2.CreateStruct(nxPML_2 - 1, Jmax, Kmax, 0);
+
+        psi_Ezy_1.CreateStruct(Imax, nyPML_1, Kmax, 0);
+        psi_Ezy_2.CreateStruct(Imax, nyPML_2, Kmax, 0);
+        psi_Hxy_1.CreateStruct(Imax, nyPML_1 - 1, Kmax, 0);
+        psi_Hxy_2.CreateStruct(Imax, nyPML_2 - 1, Kmax, 0);
+
+        psi_Hxz_1.CreateStruct(Imax, Jmax - 1, nzPML_1 - 1, 0);
+        psi_Hxz_2.CreateStruct(Imax, Jmax - 1, nzPML_2 - 1, 0);
+        psi_Eyz_1.CreateStruct(Imax, Jmax - 1, nzPML_1, 0);
+        psi_Eyz_2.CreateStruct(Imax, Jmax - 1, nzPML_2, 0);
+
+        psi_Hyz_1.CreateStruct(Imax - 1, Jmax, nzPML_1 - 1, 0);
+        psi_Hyz_2.CreateStruct(Imax - 1, Jmax, nzPML_2 - 1, 0);
+        psi_Exz_1.CreateStruct(Imax - 1, Jmax, nzPML_1, 0);
+        psi_Exz_2.CreateStruct(Imax - 1, Jmax, nzPML_2, 0);
+
+        psi_Hzx_1.CreateStruct(nxPML_1 - 1, Jmax - 1, Kmax - 1, 0);
+        psi_Hzx_2.CreateStruct(nxPML_2 - 1, Jmax - 1, Kmax - 1, 0);
+        psi_Eyx_1.CreateStruct(nxPML_1, Jmax - 1, Kmax - 1, 0);
+        psi_Eyx_2.CreateStruct(nxPML_2, Jmax - 1, Kmax - 1, 0);
+
+        psi_Hzy_1.CreateStruct(Imax - 1, nyPML_1 - 1, Kmax - 1, 0);
+        psi_Hzy_2.CreateStruct(Imax - 1, nyPML_2 - 1, Kmax - 1, 0);
+        psi_Exy_1.CreateStruct(Imax - 1, nyPML_1, Kmax - 1, 0);
+        psi_Exy_2.CreateStruct(Imax - 1, nyPML_2, Kmax - 1, 0);
+    };
 };
 template<class type1, class type2>
 double cpmld<type1, type2>::eps_0 = 0;

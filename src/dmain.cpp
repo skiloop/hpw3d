@@ -15,7 +15,8 @@
 #include<math.h>
 #include<string.h>
 #include<stdlib.h>
-#include "datastruct.h"
+
+#include"datastruct.h"
 #include"cpmld.h"
 
 //  Fundamental Constants (MKS units)
@@ -89,7 +90,7 @@ data3d<short> ID2; //medium definition array for Ey
 data3d<short> ID3; //medium definition array for Ez
 
 // cpml
-cpmld<float,short> pml;
+cpmld<float, short> pml;
 //Max number of materials allowed
 int numMaterials = 50;
 
@@ -215,8 +216,6 @@ void initialize() {
     //    pml.psi_Exy_1.CreateStruct(Imax - 1, pml.nyPML_1, Kmax - 1, 0);
     //    pml.psi_Exy_2.CreateStruct(Imax - 1, pml.nyPML_2, Kmax - 1, 0);
 
-    pml.createPsi();
-
     Ez.CreateStruct(Imax, Jmax, Kmax, 0);
     Ey.CreateStruct(Imax, Jmax - 1, Kmax - 1, 0);
     Ex.CreateStruct(Imax - 1, Jmax, Kmax - 1, 0);
@@ -301,9 +300,7 @@ void initialize() {
     //    pml.sigh_z_PML_2.createArray(pml.nzPML_2 - 1, 0.0);
     //    pml.kappah_z_PML_2.createArray(pml.nzPML_2 - 1, 0.0);
 
-    pml.createCBKAP();
-
-    pml.createDen();
+    pml.createCPMLArray();
     //    pml.den_ex.createArray(Imax - 1, 0.0);
     //    pml.den_hx.createArray(Imax - 1, 0.0);
     //    pml.den_ey.createArray(Jmax - 1, 0.0);
@@ -366,15 +363,15 @@ void setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     pml.initParmeters(dx, dy, dz, m, ma);
-//        pml.sig_x_max = 0.75 * (0.8 * (m + 1) / (dx * sqrt(mu_0 / (eps_0 * epsR))));
-//        pml.sig_y_max = 0.75 * (0.8 * (m + 1) / (dy * sqrt(mu_0 / (eps_0 * epsR))));
-//        pml.sig_z_max = 0.75 * (0.8 * (m + 1) / (dz * sqrt(mu_0 / (eps_0 * epsR))));
-//        pml.alpha_x_max = 0.24;
-//        pml.alpha_y_max = pml.alpha_x_max;
-//        pml.alpha_z_max = pml.alpha_x_max;
-//        pml.kappa_x_max = 15.0;
-//        pml.kappa_y_max = pml.kappa_x_max;
-//        pml.kappa_z_max = pml.kappa_x_max;
+    //        pml.sig_x_max = 0.75 * (0.8 * (m + 1) / (dx * sqrt(mu_0 / (eps_0 * epsR))));
+    //        pml.sig_y_max = 0.75 * (0.8 * (m + 1) / (dy * sqrt(mu_0 / (eps_0 * epsR))));
+    //        pml.sig_z_max = 0.75 * (0.8 * (m + 1) / (dz * sqrt(mu_0 / (eps_0 * epsR))));
+    //        pml.alpha_x_max = 0.24;
+    //        pml.alpha_y_max = pml.alpha_x_max;
+    //        pml.alpha_z_max = pml.alpha_x_max;
+    //        pml.kappa_x_max = 15.0;
+    //        pml.kappa_y_max = pml.kappa_x_max;
+    //        pml.kappa_z_max = pml.kappa_x_max;
     printf("\nTIme step = %e", dt);
     printf("\n Number of steps = %d", nMax);
     printf("\n Total Simulation time = %e Seconds", nMax * dt);
@@ -386,355 +383,355 @@ void setUp() {
       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 void initializeCPML() {
-    pml.initCPML(dt,dx,dy,dz);
-//    for (i = 0; i < pml.nxPML_1; ++i) {
-//
-//        pml.sige_x_PML_1.p[i] = pml.sig_x_max * pow(((pml.nxPML_1 - 1 - i)
-//                / (pml.nxPML_1 - 1.0)), m);
-//        pml.alphae_x_PML_1.p[i] = pml.alpha_x_max * pow(((float) i
-//                / (pml.nxPML_1 - 1.0)), ma);
-//        pml.kappae_x_PML_1.p[i] = 1.0 + (pml.kappa_x_max - 1.0) *
-//                pow((pml.nxPML_1 - 1 - i) / (pml.nxPML_1 - 1.0), m);
-//        pml.be_x_1.p[i] = exp(-(pml.sige_x_PML_1.p[i] / pml.kappae_x_PML_1.p[i] +
-//                pml.alphae_x_PML_1.p[i]) * dt / eps_0);
-//
-//        if ((pml.sige_x_PML_1.p[i] == 0.0) &&
-//                (pml.alphae_x_PML_1.p[i] == 0.0) && (i == pml.nxPML_1 - 1)) {
-//            pml.ce_x_1.p[i] = 0.0;
-//
-//        } else {
-//            pml.ce_x_1.p[i] = pml.sige_x_PML_1.p[i] * (pml.be_x_1.p[i] - 1.0) /
-//                    (pml.sige_x_PML_1.p[i] + pml.kappae_x_PML_1.p[i] * pml.alphae_x_PML_1.p[i])
-//                    / pml.kappae_x_PML_1.p[i];
-//        }
-//    }
-//
-//    for (i = 0; i < pml.nxPML_1 - 1; ++i) {
-//
-//        pml.sigh_x_PML_1.p[i] = pml.sig_x_max * pow(((pml.nxPML_1 - 1 - i - 0.5)
-//                / (pml.nxPML_1 - 1.0)), m);
-//        pml.alphah_x_PML_1.p[i] = pml.alpha_x_max * pow(((i + 1 - 0.5)
-//                / (pml.nxPML_1 - 1.0)), ma);
-//        pml.kappah_x_PML_1.p[i] = 1.0 + (pml.kappa_x_max - 1.0) *
-//                pow(((pml.nxPML_1 - 1 - i - 0.5) / (pml.nxPML_1 - 1.0)), m);
-//        pml.bh_x_1.p[i] = exp(-(pml.sigh_x_PML_1.p[i] / pml.kappah_x_PML_1.p[i] +
-//                pml.alphah_x_PML_1.p[i]) * dt / eps_0);
-//        pml.ch_x_1.p[i] = pml.sigh_x_PML_1.p[i] * (pml.bh_x_1.p[i] - 1.0) /
-//                (pml.sigh_x_PML_1.p[i] + pml.kappah_x_PML_1.p[i] * pml.alphah_x_PML_1.p[i])
-//                / pml.kappah_x_PML_1.p[i];
-//    }
-//
-//    for (i = 0; i < pml.nxPML_2; ++i) {
-//
-//        pml.sige_x_PML_2.p[i] = pml.sig_x_max * pow(((pml.nxPML_2 - 1 - i)
-//                / (pml.nxPML_2 - 1.0)), m);
-//        pml.alphae_x_PML_2.p[i] = pml.alpha_x_max * pow(((float) i
-//                / (pml.nxPML_2 - 1.0)), ma);
-//        pml.kappae_x_PML_2.p[i] = 1.0 + (pml.kappa_x_max - 1.0) *
-//                pow((pml.nxPML_2 - 1 - i) / (pml.nxPML_2 - 1.0), m);
-//        pml.be_x_2.p[i] = exp(-(pml.sige_x_PML_2.p[i] / pml.kappae_x_PML_2.p[i] +
-//                pml.alphae_x_PML_2.p[i]) * dt / eps_0);
-//
-//        if ((pml.sige_x_PML_2.p[i] == 0.0) &&
-//                (pml.alphae_x_PML_2.p[i] == 0.0) && (i == pml.nxPML_2 - 1)) {
-//
-//            pml.ce_x_2.p[i] = 0.0;
-//
-//        } else {
-//
-//            pml.ce_x_2.p[i] = pml.sige_x_PML_2.p[i] * (pml.be_x_2.p[i] - 1.0) /
-//                    (pml.sige_x_PML_2.p[i] + pml.kappae_x_PML_2.p[i] * pml.alphae_x_PML_2.p[i])
-//                    / pml.kappae_x_PML_2.p[i];
-//        }
-//
-//    }
-//
-//    for (i = 0; i < pml.nxPML_2 - 1; ++i) {
-//
-//        pml.sigh_x_PML_2.p[i] = pml.sig_x_max * pow(((pml.nxPML_2 - 1 - i - 0.5)
-//                / (pml.nxPML_2 - 1.0)), m);
-//        pml.alphah_x_PML_2.p[i] = pml.alpha_x_max * pow(((i + 1 - 0.5)
-//                / (pml.nxPML_2 - 1.0)), ma);
-//        pml.kappah_x_PML_2.p[i] = 1.0 + (pml.kappa_x_max - 1.0) *
-//                pow(((pml.nxPML_2 - 1 - i - 0.5) / (pml.nxPML_2 - 1.0)), m);
-//        pml.bh_x_2.p[i] = exp(-(pml.sigh_x_PML_2.p[i] / pml.kappah_x_PML_2.p[i] +
-//                pml.alphah_x_PML_2.p[i]) * dt / eps_0);
-//        pml.ch_x_2.p[i] = pml.sigh_x_PML_2.p[i] * (pml.bh_x_2.p[i] - 1.0) /
-//                (pml.sigh_x_PML_2.p[i] + pml.kappah_x_PML_2.p[i] * pml.alphah_x_PML_2.p[i])
-//                / pml.kappah_x_PML_2.p[i];
-//    }
-//
-//    for (j = 0; j < pml.nyPML_1; ++j) {
-//
-//        pml.sige_y_PML_1.p[j] = pml.sig_y_max * pow(((pml.nyPML_1 - 1 - j)
-//                / (pml.nyPML_1 - 1.0)), m);
-//        pml.alphae_y_PML_1.p[j] = pml.alpha_y_max * pow(((float) j
-//                / (pml.nyPML_1 - 1.0)), ma);
-//        pml.kappae_y_PML_1.p[j] = 1.0 + (pml.kappa_y_max - 1.0) *
-//                pow((pml.nyPML_1 - 1 - j) / (pml.nyPML_1 - 1.0), m);
-//        pml.be_y_1.p[j] = exp(-(pml.sige_y_PML_1.p[j] / pml.kappae_y_PML_1.p[j] +
-//                pml.alphae_y_PML_1.p[j]) * dt / eps_0);
-//
-//        if ((pml.sige_y_PML_1.p[j] == 0.0) &&
-//                (pml.alphae_y_PML_1.p[j] == 0.0) && (j == pml.nyPML_1 - 1)) {
-//            pml.ce_y_1.p[j] = 0.0;
-//
-//        } else {
-//            pml.ce_y_1.p[j] = pml.sige_y_PML_1.p[j] * (pml.be_y_1.p[j] - 1.0) /
-//                    (pml.sige_y_PML_1.p[j] + pml.kappae_y_PML_1.p[j] * pml.alphae_y_PML_1.p[j])
-//                    / pml.kappae_y_PML_1.p[j];
-//        }
-//    }
-//
-//    for (j = 0; j < pml.nyPML_1 - 1; ++j) {
-//
-//        pml.sigh_y_PML_1.p[j] = pml.sig_y_max * pow(((pml.nyPML_1 - 1 - j - 0.5)
-//                / (pml.nyPML_1 - 1.0)), m);
-//        pml.alphah_y_PML_1.p[j] = pml.alpha_y_max * pow(((j + 1 - 0.5)
-//                / (pml.nyPML_1 - 1.0)), ma);
-//        pml.kappah_y_PML_1.p[j] = 1.0 + (pml.kappa_y_max - 1.0) *
-//                pow(((pml.nyPML_1 - 1 - j - 0.5) / (pml.nyPML_1 - 1.0)), m);
-//        pml.bh_y_1.p[j] = exp(-(pml.sigh_y_PML_1.p[j] / pml.kappah_y_PML_1.p[j] +
-//                pml.alphah_y_PML_1.p[j]) * dt / eps_0);
-//        pml.ch_y_1.p[j] = pml.sigh_y_PML_1.p[j] * (pml.bh_y_1.p[j] - 1.0) /
-//                (pml.sigh_y_PML_1.p[j] + pml.kappah_y_PML_1.p[j] * pml.alphah_y_PML_1.p[j])
-//                / pml.kappah_y_PML_1.p[j];
-//    }
-//
-//    for (j = 0; j < pml.nyPML_2; ++j) {
-//
-//        pml.sige_y_PML_2.p[j] = pml.sig_y_max * pow(((pml.nyPML_2 - 1 - j)
-//                / (pml.nyPML_2 - 1.0)), m);
-//        pml.alphae_y_PML_2.p[j] = pml.alpha_y_max * pow(((float) j
-//                / (pml.nyPML_2 - 1.0)), ma);
-//        pml.kappae_y_PML_2.p[j] = 1.0 + (pml.kappa_y_max - 1.0) *
-//                pow((pml.nyPML_2 - 1 - j) / (pml.nyPML_2 - 1.0), m);
-//        pml.be_y_2.p[j] = exp(-(pml.sige_y_PML_2.p[j] / pml.kappae_y_PML_2.p[j] +
-//                pml.alphae_y_PML_2.p[j]) * dt / eps_0);
-//
-//        if ((pml.sige_y_PML_2.p[j] == 0.0) &&
-//                (pml.alphae_y_PML_2.p[j] == 0.0) && (j == pml.nyPML_2 - 1)) {
-//
-//            pml.ce_y_2.p[j] = 0.0;
-//
-//        } else {
-//
-//            pml.ce_y_2.p[j] = pml.sige_y_PML_2.p[j] * (pml.be_y_2.p[j] - 1.0) /
-//                    (pml.sige_y_PML_2.p[j] + pml.kappae_y_PML_2.p[j] * pml.alphae_y_PML_2.p[j])
-//                    / pml.kappae_y_PML_2.p[j];
-//        }
-//    }
-//
-//    for (j = 0; j < pml.nyPML_2 - 1; ++j) {
-//
-//        pml.sigh_y_PML_2.p[j] = pml.sig_y_max * pow(((pml.nyPML_2 - 1 - j - 0.5)
-//                / (pml.nyPML_2 - 1.0)), m);
-//        pml.alphah_y_PML_2.p[j] = pml.alpha_y_max * pow(((j + 1 - 0.5)
-//                / (pml.nyPML_2 - 1.0)), ma);
-//        pml.kappah_y_PML_2.p[j] = 1.0 + (pml.kappa_y_max - 1.0) *
-//                pow(((pml.nyPML_2 - 1 - j - 0.5) / (pml.nyPML_2 - 1.0)), m);
-//        pml.bh_y_2.p[j] = exp(-(pml.sigh_y_PML_2.p[j] / pml.kappah_y_PML_2.p[j] +
-//                pml.alphah_y_PML_2.p[j]) * dt / eps_0);
-//        pml.ch_y_2.p[j] = pml.sigh_y_PML_2.p[j] * (pml.bh_y_2.p[j] - 1.0) /
-//                (pml.sigh_y_PML_2.p[j] + pml.kappah_y_PML_2.p[j] * pml.alphah_y_PML_2.p[j])
-//                / pml.kappah_y_PML_2.p[j];
-//    }
-//
-//    for (k = 0; k < pml.nzPML_1; ++k) {
-//
-//        pml.sige_z_PML_1.p[k] = pml.sig_z_max * pow(((pml.nzPML_1 - 1 - k)
-//                / (pml.nzPML_1 - 1.0)), m);
-//        pml.alphae_z_PML_1.p[k] = pml.alpha_z_max * pow(((float) k
-//                / (pml.nzPML_1 - 1.0)), ma);
-//        pml.kappae_z_PML_1.p[k] = 1.0 + (pml.kappa_z_max - 1.0) *
-//                pow((pml.nzPML_1 - 1 - k) / (pml.nzPML_1 - 1.0), m);
-//        pml.be_z_1.p[k] = exp(-(pml.sige_z_PML_1.p[k] / pml.kappae_z_PML_1.p[k] +
-//                pml.alphae_z_PML_1.p[k]) * dt / eps_0);
-//
-//        if ((pml.sige_z_PML_1.p[k] == 0.0) &&
-//                (pml.alphae_z_PML_1.p[k] == 0.0) && (k == pml.nzPML_1 - 1)) {
-//
-//            pml.ce_z_1.p[k] = 0.0;
-//
-//        } else {
-//
-//            pml.ce_z_1.p[k] = pml.sige_z_PML_1.p[k] * (pml.be_z_1.p[k] - 1.0) /
-//                    (pml.sige_z_PML_1.p[k] + pml.kappae_z_PML_1.p[k] * pml.alphae_z_PML_1.p[k])
-//                    / pml.kappae_z_PML_1.p[k];
-//        }
-//    }
-//
-//    for (k = 0; k < pml.nzPML_1 - 1; ++k) {
-//
-//        pml.sigh_z_PML_1.p[k] = pml.sig_z_max * pow(((pml.nzPML_1 - 1 - k - 0.5)
-//                / (pml.nzPML_1 - 1.0)), m);
-//        pml.alphah_z_PML_1.p[k] = pml.alpha_z_max * pow(((k + 1 - 0.5)
-//                / (pml.nzPML_1 - 1.0)), ma);
-//        pml.kappah_z_PML_1.p[k] = 1.0 + (pml.kappa_z_max - 1.0) *
-//                pow(((pml.nzPML_1 - 1 - k - 0.5) / (pml.nzPML_1 - 1.0)), m);
-//        pml.bh_z_1.p[k] = exp(-(pml.sigh_z_PML_1.p[k] / pml.kappah_z_PML_1.p[k] +
-//                pml.alphah_z_PML_1.p[k]) * dt / eps_0);
-//        pml.ch_z_1.p[k] = pml.sigh_z_PML_1.p[k] * (pml.bh_z_1.p[k] - 1.0) /
-//                (pml.sigh_z_PML_1.p[k] + pml.kappah_z_PML_1.p[k] * pml.alphah_z_PML_1.p[k])
-//                / pml.kappah_z_PML_1.p[k];
-//    }
-//
-//    for (k = 0; k < pml.nzPML_2; ++k) {
-//
-//        pml.sige_z_PML_2.p[k] = pml.sig_z_max * pow(((pml.nzPML_2 - 1 - k)
-//                / (pml.nzPML_2 - 1.0)), m);
-//        pml.alphae_z_PML_2.p[k] = pml.alpha_z_max * pow(((float) k
-//                / (pml.nzPML_2 - 1.0)), ma);
-//        pml.kappae_z_PML_2.p[k] = 1.0 + (pml.kappa_z_max - 1.0) *
-//                pow((pml.nzPML_2 - 1 - k) / (pml.nzPML_2 - 1.0), m);
-//        pml.be_z_2.p[k] = exp(-(pml.sige_z_PML_2.p[k] / pml.kappae_z_PML_2.p[k] +
-//                pml.alphae_z_PML_2.p[k]) * dt / eps_0);
-//
-//        if ((pml.sige_z_PML_2.p[k] == 0.0) &&
-//                (pml.alphae_z_PML_2.p[k] == 0.0) && (k == pml.nzPML_2 - 1)) {
-//
-//            pml.ce_z_2.p[k] = 0.0;
-//
-//        } else {
-//
-//            pml.ce_z_2.p[k] = pml.sige_z_PML_2.p[k] * (pml.be_z_2.p[k] - 1.0) /
-//                    (pml.sige_z_PML_2.p[k] + pml.kappae_z_PML_2.p[k] * pml.alphae_z_PML_2.p[k])
-//                    / pml.kappae_z_PML_2.p[k];
-//        }
-//    }
-//
-//    for (k = 0; k < pml.nzPML_2 - 1; ++k) {
-//
-//        pml.sigh_z_PML_2.p[k] = pml.sig_z_max * pow(((pml.nzPML_2 - 1 - k - 0.5)
-//                / (pml.nzPML_2 - 1.0)), m);
-//        pml.alphah_z_PML_2.p[k] = pml.alpha_z_max * pow(((k + 1 - 0.5)
-//                / (pml.nzPML_2 - 1.0)), ma);
-//        pml.kappah_z_PML_2.p[k] = 1.0 + (pml.kappa_z_max - 1.0) *
-//                pow(((pml.nzPML_2 - 1 - k - 0.5) / (pml.nzPML_2 - 1.0)), m);
-//        pml.bh_z_2.p[k] = exp(-(pml.sigh_z_PML_2.p[k] / pml.kappah_z_PML_2.p[k] +
-//                pml.alphah_z_PML_2.p[k]) * dt / eps_0);
-//        pml.ch_z_2.p[k] = pml.sigh_z_PML_2.p[k] * (pml.bh_z_2.p[k] - 1.0) /
-//                (pml.sigh_z_PML_2.p[k] + pml.kappah_z_PML_2.p[k] * pml.alphah_z_PML_2.p[k])
-//                / pml.kappah_z_PML_2.p[k];
-//    }
-//
-//    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//    //  DENOMINATORS FOR FIELD UPDATES
-//    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-//    ii = pml.nxPML_2 - 2;
-//
-//    for (i = 0; i < Imax - 1; ++i) {
-//
-//        if (i < pml.nxPML_1 - 1) {
-//
-//            pml.den_hx.p[i] = 1.0 / (pml.kappah_x_PML_1.p[i] * dx);
-//
-//        } else if (i >= Imax - pml.nxPML_2) {
-//
-//            pml.den_hx.p[i] = 1.0 / (pml.kappah_x_PML_2.p[ii] * dx);
-//            ii = ii - 1;
-//
-//        } else {
-//
-//            pml.den_hx.p[i] = 1.0 / dx;
-//        }
-//    }
-//
-//    jj = pml.nyPML_2 - 2;
-//
-//    for (j = 0; j < Jmax - 1; ++j) {
-//
-//        if (j < pml.nyPML_1 - 1) {
-//
-//            pml.den_hy.p[j] = 1.0 / (pml.kappah_y_PML_1.p[j] * dy);
-//
-//        } else if (j >= Jmax - pml.nyPML_2) {
-//
-//            pml.den_hy.p[j] = 1.0 / (pml.kappah_y_PML_2.p[jj] * dy);
-//            jj = jj - 1;
-//
-//        } else {
-//
-//            pml.den_hy.p[j] = 1.0 / dy;
-//        }
-//    }
-//
-//    kk = pml.nzPML_2 - 2;
-//
-//    for (k = 1; k < Kmax - 1; ++k) {
-//
-//        if (k < pml.nzPML_1) {
-//
-//            pml.den_hz.p[k] = 1.0 / (pml.kappah_z_PML_1.p[k - 1] * dz);
-//
-//        } else if (k >= Kmax - pml.nzPML_2) {
-//
-//            pml.den_hz.p[k] = 1.0 / (pml.kappah_z_PML_2.p[kk] * dz);
-//            kk = kk - 1;
-//
-//        } else {
-//
-//            pml.den_hz.p[k] = 1.0 / dz;
-//        }
-//    }
-//
-//    ii = pml.nxPML_2 - 1;
-//
-//    for (i = 0; i < Imax - 1; ++i) {
-//
-//        if (i < pml.nxPML_1) {
-//
-//            pml.den_ex.p[i] = 1.0 / (pml.kappae_x_PML_1.p[i] * dx);
-//
-//        } else if (i >= Imax - pml.nxPML_2) {
-//
-//            pml.den_ex.p[i] = 1.0 / (pml.kappae_x_PML_2.p[ii] * dx);
-//            ii = ii - 1;
-//
-//        } else {
-//
-//            pml.den_ex.p[i] = 1.0 / dx;
-//        }
-//    }
-//
-//    jj = pml.nyPML_2 - 1;
-//
-//    for (j = 0; j < Jmax - 1; ++j) {
-//
-//        if (j < pml.nyPML_1) {
-//
-//            pml.den_ey.p[j] = 1.0 / (pml.kappae_y_PML_1.p[j] * dy);
-//
-//        } else if (j >= Jmax - pml.nyPML_2) {
-//
-//            pml.den_ey.p[j] = 1.0 / (pml.kappae_y_PML_2.p[jj] * dy);
-//            jj = jj - 1;
-//
-//        } else {
-//
-//            pml.den_ey.p[j] = 1.0 / dy;
-//        }
-//    }
-//
-//    kk = pml.nzPML_2 - 1;
-//
-//    for (k = 0; k < Kmax - 1; ++k) {
-//
-//        if (k < pml.nzPML_1) {
-//
-//            pml.den_ez.p[k] = 1.0 / (pml.kappae_z_PML_1.p[k] * dz);
-//
-//        } else if (k >= Kmax - 1 - pml.nzPML_2) {
-//
-//            pml.den_ez.p[k] = 1.0 / (pml.kappae_z_PML_2.p[kk] * dz);
-//            kk = kk - 1;
-//
-//        } else {
-//
-//            pml.den_ez.p[k] = 1.0 / dz;
-//        }
-//    }
+    pml.initCPML(dt, dx, dy, dz);
+    //    for (i = 0; i < pml.nxPML_1; ++i) {
+    //
+    //        pml.sige_x_PML_1.p[i] = pml.sig_x_max * pow(((pml.nxPML_1 - 1 - i)
+    //                / (pml.nxPML_1 - 1.0)), m);
+    //        pml.alphae_x_PML_1.p[i] = pml.alpha_x_max * pow(((float) i
+    //                / (pml.nxPML_1 - 1.0)), ma);
+    //        pml.kappae_x_PML_1.p[i] = 1.0 + (pml.kappa_x_max - 1.0) *
+    //                pow((pml.nxPML_1 - 1 - i) / (pml.nxPML_1 - 1.0), m);
+    //        pml.be_x_1.p[i] = exp(-(pml.sige_x_PML_1.p[i] / pml.kappae_x_PML_1.p[i] +
+    //                pml.alphae_x_PML_1.p[i]) * dt / eps_0);
+    //
+    //        if ((pml.sige_x_PML_1.p[i] == 0.0) &&
+    //                (pml.alphae_x_PML_1.p[i] == 0.0) && (i == pml.nxPML_1 - 1)) {
+    //            pml.ce_x_1.p[i] = 0.0;
+    //
+    //        } else {
+    //            pml.ce_x_1.p[i] = pml.sige_x_PML_1.p[i] * (pml.be_x_1.p[i] - 1.0) /
+    //                    (pml.sige_x_PML_1.p[i] + pml.kappae_x_PML_1.p[i] * pml.alphae_x_PML_1.p[i])
+    //                    / pml.kappae_x_PML_1.p[i];
+    //        }
+    //    }
+    //
+    //    for (i = 0; i < pml.nxPML_1 - 1; ++i) {
+    //
+    //        pml.sigh_x_PML_1.p[i] = pml.sig_x_max * pow(((pml.nxPML_1 - 1 - i - 0.5)
+    //                / (pml.nxPML_1 - 1.0)), m);
+    //        pml.alphah_x_PML_1.p[i] = pml.alpha_x_max * pow(((i + 1 - 0.5)
+    //                / (pml.nxPML_1 - 1.0)), ma);
+    //        pml.kappah_x_PML_1.p[i] = 1.0 + (pml.kappa_x_max - 1.0) *
+    //                pow(((pml.nxPML_1 - 1 - i - 0.5) / (pml.nxPML_1 - 1.0)), m);
+    //        pml.bh_x_1.p[i] = exp(-(pml.sigh_x_PML_1.p[i] / pml.kappah_x_PML_1.p[i] +
+    //                pml.alphah_x_PML_1.p[i]) * dt / eps_0);
+    //        pml.ch_x_1.p[i] = pml.sigh_x_PML_1.p[i] * (pml.bh_x_1.p[i] - 1.0) /
+    //                (pml.sigh_x_PML_1.p[i] + pml.kappah_x_PML_1.p[i] * pml.alphah_x_PML_1.p[i])
+    //                / pml.kappah_x_PML_1.p[i];
+    //    }
+    //
+    //    for (i = 0; i < pml.nxPML_2; ++i) {
+    //
+    //        pml.sige_x_PML_2.p[i] = pml.sig_x_max * pow(((pml.nxPML_2 - 1 - i)
+    //                / (pml.nxPML_2 - 1.0)), m);
+    //        pml.alphae_x_PML_2.p[i] = pml.alpha_x_max * pow(((float) i
+    //                / (pml.nxPML_2 - 1.0)), ma);
+    //        pml.kappae_x_PML_2.p[i] = 1.0 + (pml.kappa_x_max - 1.0) *
+    //                pow((pml.nxPML_2 - 1 - i) / (pml.nxPML_2 - 1.0), m);
+    //        pml.be_x_2.p[i] = exp(-(pml.sige_x_PML_2.p[i] / pml.kappae_x_PML_2.p[i] +
+    //                pml.alphae_x_PML_2.p[i]) * dt / eps_0);
+    //
+    //        if ((pml.sige_x_PML_2.p[i] == 0.0) &&
+    //                (pml.alphae_x_PML_2.p[i] == 0.0) && (i == pml.nxPML_2 - 1)) {
+    //
+    //            pml.ce_x_2.p[i] = 0.0;
+    //
+    //        } else {
+    //
+    //            pml.ce_x_2.p[i] = pml.sige_x_PML_2.p[i] * (pml.be_x_2.p[i] - 1.0) /
+    //                    (pml.sige_x_PML_2.p[i] + pml.kappae_x_PML_2.p[i] * pml.alphae_x_PML_2.p[i])
+    //                    / pml.kappae_x_PML_2.p[i];
+    //        }
+    //
+    //    }
+    //
+    //    for (i = 0; i < pml.nxPML_2 - 1; ++i) {
+    //
+    //        pml.sigh_x_PML_2.p[i] = pml.sig_x_max * pow(((pml.nxPML_2 - 1 - i - 0.5)
+    //                / (pml.nxPML_2 - 1.0)), m);
+    //        pml.alphah_x_PML_2.p[i] = pml.alpha_x_max * pow(((i + 1 - 0.5)
+    //                / (pml.nxPML_2 - 1.0)), ma);
+    //        pml.kappah_x_PML_2.p[i] = 1.0 + (pml.kappa_x_max - 1.0) *
+    //                pow(((pml.nxPML_2 - 1 - i - 0.5) / (pml.nxPML_2 - 1.0)), m);
+    //        pml.bh_x_2.p[i] = exp(-(pml.sigh_x_PML_2.p[i] / pml.kappah_x_PML_2.p[i] +
+    //                pml.alphah_x_PML_2.p[i]) * dt / eps_0);
+    //        pml.ch_x_2.p[i] = pml.sigh_x_PML_2.p[i] * (pml.bh_x_2.p[i] - 1.0) /
+    //                (pml.sigh_x_PML_2.p[i] + pml.kappah_x_PML_2.p[i] * pml.alphah_x_PML_2.p[i])
+    //                / pml.kappah_x_PML_2.p[i];
+    //    }
+    //
+    //    for (j = 0; j < pml.nyPML_1; ++j) {
+    //
+    //        pml.sige_y_PML_1.p[j] = pml.sig_y_max * pow(((pml.nyPML_1 - 1 - j)
+    //                / (pml.nyPML_1 - 1.0)), m);
+    //        pml.alphae_y_PML_1.p[j] = pml.alpha_y_max * pow(((float) j
+    //                / (pml.nyPML_1 - 1.0)), ma);
+    //        pml.kappae_y_PML_1.p[j] = 1.0 + (pml.kappa_y_max - 1.0) *
+    //                pow((pml.nyPML_1 - 1 - j) / (pml.nyPML_1 - 1.0), m);
+    //        pml.be_y_1.p[j] = exp(-(pml.sige_y_PML_1.p[j] / pml.kappae_y_PML_1.p[j] +
+    //                pml.alphae_y_PML_1.p[j]) * dt / eps_0);
+    //
+    //        if ((pml.sige_y_PML_1.p[j] == 0.0) &&
+    //                (pml.alphae_y_PML_1.p[j] == 0.0) && (j == pml.nyPML_1 - 1)) {
+    //            pml.ce_y_1.p[j] = 0.0;
+    //
+    //        } else {
+    //            pml.ce_y_1.p[j] = pml.sige_y_PML_1.p[j] * (pml.be_y_1.p[j] - 1.0) /
+    //                    (pml.sige_y_PML_1.p[j] + pml.kappae_y_PML_1.p[j] * pml.alphae_y_PML_1.p[j])
+    //                    / pml.kappae_y_PML_1.p[j];
+    //        }
+    //    }
+    //
+    //    for (j = 0; j < pml.nyPML_1 - 1; ++j) {
+    //
+    //        pml.sigh_y_PML_1.p[j] = pml.sig_y_max * pow(((pml.nyPML_1 - 1 - j - 0.5)
+    //                / (pml.nyPML_1 - 1.0)), m);
+    //        pml.alphah_y_PML_1.p[j] = pml.alpha_y_max * pow(((j + 1 - 0.5)
+    //                / (pml.nyPML_1 - 1.0)), ma);
+    //        pml.kappah_y_PML_1.p[j] = 1.0 + (pml.kappa_y_max - 1.0) *
+    //                pow(((pml.nyPML_1 - 1 - j - 0.5) / (pml.nyPML_1 - 1.0)), m);
+    //        pml.bh_y_1.p[j] = exp(-(pml.sigh_y_PML_1.p[j] / pml.kappah_y_PML_1.p[j] +
+    //                pml.alphah_y_PML_1.p[j]) * dt / eps_0);
+    //        pml.ch_y_1.p[j] = pml.sigh_y_PML_1.p[j] * (pml.bh_y_1.p[j] - 1.0) /
+    //                (pml.sigh_y_PML_1.p[j] + pml.kappah_y_PML_1.p[j] * pml.alphah_y_PML_1.p[j])
+    //                / pml.kappah_y_PML_1.p[j];
+    //    }
+    //
+    //    for (j = 0; j < pml.nyPML_2; ++j) {
+    //
+    //        pml.sige_y_PML_2.p[j] = pml.sig_y_max * pow(((pml.nyPML_2 - 1 - j)
+    //                / (pml.nyPML_2 - 1.0)), m);
+    //        pml.alphae_y_PML_2.p[j] = pml.alpha_y_max * pow(((float) j
+    //                / (pml.nyPML_2 - 1.0)), ma);
+    //        pml.kappae_y_PML_2.p[j] = 1.0 + (pml.kappa_y_max - 1.0) *
+    //                pow((pml.nyPML_2 - 1 - j) / (pml.nyPML_2 - 1.0), m);
+    //        pml.be_y_2.p[j] = exp(-(pml.sige_y_PML_2.p[j] / pml.kappae_y_PML_2.p[j] +
+    //                pml.alphae_y_PML_2.p[j]) * dt / eps_0);
+    //
+    //        if ((pml.sige_y_PML_2.p[j] == 0.0) &&
+    //                (pml.alphae_y_PML_2.p[j] == 0.0) && (j == pml.nyPML_2 - 1)) {
+    //
+    //            pml.ce_y_2.p[j] = 0.0;
+    //
+    //        } else {
+    //
+    //            pml.ce_y_2.p[j] = pml.sige_y_PML_2.p[j] * (pml.be_y_2.p[j] - 1.0) /
+    //                    (pml.sige_y_PML_2.p[j] + pml.kappae_y_PML_2.p[j] * pml.alphae_y_PML_2.p[j])
+    //                    / pml.kappae_y_PML_2.p[j];
+    //        }
+    //    }
+    //
+    //    for (j = 0; j < pml.nyPML_2 - 1; ++j) {
+    //
+    //        pml.sigh_y_PML_2.p[j] = pml.sig_y_max * pow(((pml.nyPML_2 - 1 - j - 0.5)
+    //                / (pml.nyPML_2 - 1.0)), m);
+    //        pml.alphah_y_PML_2.p[j] = pml.alpha_y_max * pow(((j + 1 - 0.5)
+    //                / (pml.nyPML_2 - 1.0)), ma);
+    //        pml.kappah_y_PML_2.p[j] = 1.0 + (pml.kappa_y_max - 1.0) *
+    //                pow(((pml.nyPML_2 - 1 - j - 0.5) / (pml.nyPML_2 - 1.0)), m);
+    //        pml.bh_y_2.p[j] = exp(-(pml.sigh_y_PML_2.p[j] / pml.kappah_y_PML_2.p[j] +
+    //                pml.alphah_y_PML_2.p[j]) * dt / eps_0);
+    //        pml.ch_y_2.p[j] = pml.sigh_y_PML_2.p[j] * (pml.bh_y_2.p[j] - 1.0) /
+    //                (pml.sigh_y_PML_2.p[j] + pml.kappah_y_PML_2.p[j] * pml.alphah_y_PML_2.p[j])
+    //                / pml.kappah_y_PML_2.p[j];
+    //    }
+    //
+    //    for (k = 0; k < pml.nzPML_1; ++k) {
+    //
+    //        pml.sige_z_PML_1.p[k] = pml.sig_z_max * pow(((pml.nzPML_1 - 1 - k)
+    //                / (pml.nzPML_1 - 1.0)), m);
+    //        pml.alphae_z_PML_1.p[k] = pml.alpha_z_max * pow(((float) k
+    //                / (pml.nzPML_1 - 1.0)), ma);
+    //        pml.kappae_z_PML_1.p[k] = 1.0 + (pml.kappa_z_max - 1.0) *
+    //                pow((pml.nzPML_1 - 1 - k) / (pml.nzPML_1 - 1.0), m);
+    //        pml.be_z_1.p[k] = exp(-(pml.sige_z_PML_1.p[k] / pml.kappae_z_PML_1.p[k] +
+    //                pml.alphae_z_PML_1.p[k]) * dt / eps_0);
+    //
+    //        if ((pml.sige_z_PML_1.p[k] == 0.0) &&
+    //                (pml.alphae_z_PML_1.p[k] == 0.0) && (k == pml.nzPML_1 - 1)) {
+    //
+    //            pml.ce_z_1.p[k] = 0.0;
+    //
+    //        } else {
+    //
+    //            pml.ce_z_1.p[k] = pml.sige_z_PML_1.p[k] * (pml.be_z_1.p[k] - 1.0) /
+    //                    (pml.sige_z_PML_1.p[k] + pml.kappae_z_PML_1.p[k] * pml.alphae_z_PML_1.p[k])
+    //                    / pml.kappae_z_PML_1.p[k];
+    //        }
+    //    }
+    //
+    //    for (k = 0; k < pml.nzPML_1 - 1; ++k) {
+    //
+    //        pml.sigh_z_PML_1.p[k] = pml.sig_z_max * pow(((pml.nzPML_1 - 1 - k - 0.5)
+    //                / (pml.nzPML_1 - 1.0)), m);
+    //        pml.alphah_z_PML_1.p[k] = pml.alpha_z_max * pow(((k + 1 - 0.5)
+    //                / (pml.nzPML_1 - 1.0)), ma);
+    //        pml.kappah_z_PML_1.p[k] = 1.0 + (pml.kappa_z_max - 1.0) *
+    //                pow(((pml.nzPML_1 - 1 - k - 0.5) / (pml.nzPML_1 - 1.0)), m);
+    //        pml.bh_z_1.p[k] = exp(-(pml.sigh_z_PML_1.p[k] / pml.kappah_z_PML_1.p[k] +
+    //                pml.alphah_z_PML_1.p[k]) * dt / eps_0);
+    //        pml.ch_z_1.p[k] = pml.sigh_z_PML_1.p[k] * (pml.bh_z_1.p[k] - 1.0) /
+    //                (pml.sigh_z_PML_1.p[k] + pml.kappah_z_PML_1.p[k] * pml.alphah_z_PML_1.p[k])
+    //                / pml.kappah_z_PML_1.p[k];
+    //    }
+    //
+    //    for (k = 0; k < pml.nzPML_2; ++k) {
+    //
+    //        pml.sige_z_PML_2.p[k] = pml.sig_z_max * pow(((pml.nzPML_2 - 1 - k)
+    //                / (pml.nzPML_2 - 1.0)), m);
+    //        pml.alphae_z_PML_2.p[k] = pml.alpha_z_max * pow(((float) k
+    //                / (pml.nzPML_2 - 1.0)), ma);
+    //        pml.kappae_z_PML_2.p[k] = 1.0 + (pml.kappa_z_max - 1.0) *
+    //                pow((pml.nzPML_2 - 1 - k) / (pml.nzPML_2 - 1.0), m);
+    //        pml.be_z_2.p[k] = exp(-(pml.sige_z_PML_2.p[k] / pml.kappae_z_PML_2.p[k] +
+    //                pml.alphae_z_PML_2.p[k]) * dt / eps_0);
+    //
+    //        if ((pml.sige_z_PML_2.p[k] == 0.0) &&
+    //                (pml.alphae_z_PML_2.p[k] == 0.0) && (k == pml.nzPML_2 - 1)) {
+    //
+    //            pml.ce_z_2.p[k] = 0.0;
+    //
+    //        } else {
+    //
+    //            pml.ce_z_2.p[k] = pml.sige_z_PML_2.p[k] * (pml.be_z_2.p[k] - 1.0) /
+    //                    (pml.sige_z_PML_2.p[k] + pml.kappae_z_PML_2.p[k] * pml.alphae_z_PML_2.p[k])
+    //                    / pml.kappae_z_PML_2.p[k];
+    //        }
+    //    }
+    //
+    //    for (k = 0; k < pml.nzPML_2 - 1; ++k) {
+    //
+    //        pml.sigh_z_PML_2.p[k] = pml.sig_z_max * pow(((pml.nzPML_2 - 1 - k - 0.5)
+    //                / (pml.nzPML_2 - 1.0)), m);
+    //        pml.alphah_z_PML_2.p[k] = pml.alpha_z_max * pow(((k + 1 - 0.5)
+    //                / (pml.nzPML_2 - 1.0)), ma);
+    //        pml.kappah_z_PML_2.p[k] = 1.0 + (pml.kappa_z_max - 1.0) *
+    //                pow(((pml.nzPML_2 - 1 - k - 0.5) / (pml.nzPML_2 - 1.0)), m);
+    //        pml.bh_z_2.p[k] = exp(-(pml.sigh_z_PML_2.p[k] / pml.kappah_z_PML_2.p[k] +
+    //                pml.alphah_z_PML_2.p[k]) * dt / eps_0);
+    //        pml.ch_z_2.p[k] = pml.sigh_z_PML_2.p[k] * (pml.bh_z_2.p[k] - 1.0) /
+    //                (pml.sigh_z_PML_2.p[k] + pml.kappah_z_PML_2.p[k] * pml.alphah_z_PML_2.p[k])
+    //                / pml.kappah_z_PML_2.p[k];
+    //    }
+    //
+    //    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //    //  DENOMINATORS FOR FIELD UPDATES
+    //    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //
+    //    ii = pml.nxPML_2 - 2;
+    //
+    //    for (i = 0; i < Imax - 1; ++i) {
+    //
+    //        if (i < pml.nxPML_1 - 1) {
+    //
+    //            pml.den_hx.p[i] = 1.0 / (pml.kappah_x_PML_1.p[i] * dx);
+    //
+    //        } else if (i >= Imax - pml.nxPML_2) {
+    //
+    //            pml.den_hx.p[i] = 1.0 / (pml.kappah_x_PML_2.p[ii] * dx);
+    //            ii = ii - 1;
+    //
+    //        } else {
+    //
+    //            pml.den_hx.p[i] = 1.0 / dx;
+    //        }
+    //    }
+    //
+    //    jj = pml.nyPML_2 - 2;
+    //
+    //    for (j = 0; j < Jmax - 1; ++j) {
+    //
+    //        if (j < pml.nyPML_1 - 1) {
+    //
+    //            pml.den_hy.p[j] = 1.0 / (pml.kappah_y_PML_1.p[j] * dy);
+    //
+    //        } else if (j >= Jmax - pml.nyPML_2) {
+    //
+    //            pml.den_hy.p[j] = 1.0 / (pml.kappah_y_PML_2.p[jj] * dy);
+    //            jj = jj - 1;
+    //
+    //        } else {
+    //
+    //            pml.den_hy.p[j] = 1.0 / dy;
+    //        }
+    //    }
+    //
+    //    kk = pml.nzPML_2 - 2;
+    //
+    //    for (k = 1; k < Kmax - 1; ++k) {
+    //
+    //        if (k < pml.nzPML_1) {
+    //
+    //            pml.den_hz.p[k] = 1.0 / (pml.kappah_z_PML_1.p[k - 1] * dz);
+    //
+    //        } else if (k >= Kmax - pml.nzPML_2) {
+    //
+    //            pml.den_hz.p[k] = 1.0 / (pml.kappah_z_PML_2.p[kk] * dz);
+    //            kk = kk - 1;
+    //
+    //        } else {
+    //
+    //            pml.den_hz.p[k] = 1.0 / dz;
+    //        }
+    //    }
+    //
+    //    ii = pml.nxPML_2 - 1;
+    //
+    //    for (i = 0; i < Imax - 1; ++i) {
+    //
+    //        if (i < pml.nxPML_1) {
+    //
+    //            pml.den_ex.p[i] = 1.0 / (pml.kappae_x_PML_1.p[i] * dx);
+    //
+    //        } else if (i >= Imax - pml.nxPML_2) {
+    //
+    //            pml.den_ex.p[i] = 1.0 / (pml.kappae_x_PML_2.p[ii] * dx);
+    //            ii = ii - 1;
+    //
+    //        } else {
+    //
+    //            pml.den_ex.p[i] = 1.0 / dx;
+    //        }
+    //    }
+    //
+    //    jj = pml.nyPML_2 - 1;
+    //
+    //    for (j = 0; j < Jmax - 1; ++j) {
+    //
+    //        if (j < pml.nyPML_1) {
+    //
+    //            pml.den_ey.p[j] = 1.0 / (pml.kappae_y_PML_1.p[j] * dy);
+    //
+    //        } else if (j >= Jmax - pml.nyPML_2) {
+    //
+    //            pml.den_ey.p[j] = 1.0 / (pml.kappae_y_PML_2.p[jj] * dy);
+    //            jj = jj - 1;
+    //
+    //        } else {
+    //
+    //            pml.den_ey.p[j] = 1.0 / dy;
+    //        }
+    //    }
+    //
+    //    kk = pml.nzPML_2 - 1;
+    //
+    //    for (k = 0; k < Kmax - 1; ++k) {
+    //
+    //        if (k < pml.nzPML_1) {
+    //
+    //            pml.den_ez.p[k] = 1.0 / (pml.kappae_z_PML_1.p[k] * dz);
+    //
+    //        } else if (k >= Kmax - 1 - pml.nzPML_2) {
+    //
+    //            pml.den_ez.p[k] = 1.0 / (pml.kappae_z_PML_2.p[kk] * dz);
+    //            kk = kk - 1;
+    //
+    //        } else {
+    //
+    //            pml.den_ez.p[k] = 1.0 / dz;
+    //        }
+    //    }
 }
 
 void compute() {
@@ -760,55 +757,55 @@ void compute() {
                             (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
                 }
             }
-            pml.updateHxIn(k,Hx,Ez,DB,dy);
-//            for (i = 0; i < Imax - 1; ++i) {
-//                //...............................................
-//                //  PML for bottom Hx, j-direction
-//                //...............................................
-//                for (j = 0; j < pml.nyPML_1 - 1; ++j) {
-//                    pml.psi_Hxy_1.p[i][j][k] = pml.bh_y_1.p[j] * pml.psi_Hxy_1.p[i][j][k]
-//                            + pml.ch_y_1.p[j] * (Ez.p[i][j][k] - Ez.p[i][j + 1][k]) / dy;
-//                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * pml.psi_Hxy_1.p[i][j][k];
-//                }
-//                //....................................................
-//                //  PML for top Hx, j-direction
-//                //.....................................................
-//                jj = pml.nyPML_2 - 2;
-//                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
-//                    pml.psi_Hxy_2.p[i][jj][k] = pml.bh_y_2.p[jj] * pml.psi_Hxy_2.p[i][jj][k]
-//                            + pml.ch_y_2.p[jj] * (Ez.p[i][j][k] - Ez.p[i][j + 1][k]) / dy;
-//                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * pml.psi_Hxy_2.p[i][jj][k];
-//                    jj = jj - 1;
-//                }
-//            }
+            pml.updateHxIn(k, Hx, Ez, DB, dy);
+            //            for (i = 0; i < Imax - 1; ++i) {
+            //                //...............................................
+            //                //  PML for bottom Hx, j-direction
+            //                //...............................................
+            //                for (j = 0; j < pml.nyPML_1 - 1; ++j) {
+            //                    pml.psi_Hxy_1.p[i][j][k] = pml.bh_y_1.p[j] * pml.psi_Hxy_1.p[i][j][k]
+            //                            + pml.ch_y_1.p[j] * (Ez.p[i][j][k] - Ez.p[i][j + 1][k]) / dy;
+            //                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * pml.psi_Hxy_1.p[i][j][k];
+            //                }
+            //                //....................................................
+            //                //  PML for top Hx, j-direction
+            //                //.....................................................
+            //                jj = pml.nyPML_2 - 2;
+            //                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
+            //                    pml.psi_Hxy_2.p[i][jj][k] = pml.bh_y_2.p[jj] * pml.psi_Hxy_2.p[i][jj][k]
+            //                            + pml.ch_y_2.p[jj] * (Ez.p[i][j][k] - Ez.p[i][j + 1][k]) / dy;
+            //                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * pml.psi_Hxy_2.p[i][jj][k];
+            //                    jj = jj - 1;
+            //                }
+            //            }
         }
-        pml.updateHxOut(Hx,Ey,DB,dz);
+        pml.updateHxOut(Hx, Ey, DB, dz);
 
-//        for (i = 0; i < Imax - 1; ++i) {
-//
-//            for (j = 0; j < Jmax - 1; ++j) {
-//                //....................................................
-//                //  PML for bottom Hx, k-direction
-//                //................................................
-//                for (k = 1; k < pml.nzPML_1; ++k) {
-//
-//                    pml.psi_Hxz_1.p[i][j][k - 1] = pml.bh_z_1.p[k - 1] * pml.psi_Hxz_1.p[i][j][k - 1]
-//                            + pml.ch_z_1.p[k - 1] * (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) / dz;
-//                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * pml.psi_Hxz_1.p[i][j][k - 1];
-//                }
-//                //....................................................
-//                //  PML for top Hx, k-direction
-//                //...............................................
-//                kk = pml.nzPML_2 - 2;
-//                for (k = Kmax - pml.nzPML_2; k < Kmax - 1; ++k) {
-//
-//                    pml.psi_Hxz_2.p[i][j][kk] = pml.bh_z_2.p[kk] * pml.psi_Hxz_2.p[i][j][kk]
-//                            + pml.ch_z_2.p[kk] * (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) / dz;
-//                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * pml.psi_Hxz_2.p[i][j][kk];
-//                    kk = kk - 1;
-//                }
-//            }
-//        }
+        //        for (i = 0; i < Imax - 1; ++i) {
+        //
+        //            for (j = 0; j < Jmax - 1; ++j) {
+        //                //....................................................
+        //                //  PML for bottom Hx, k-direction
+        //                //................................................
+        //                for (k = 1; k < pml.nzPML_1; ++k) {
+        //
+        //                    pml.psi_Hxz_1.p[i][j][k - 1] = pml.bh_z_1.p[k - 1] * pml.psi_Hxz_1.p[i][j][k - 1]
+        //                            + pml.ch_z_1.p[k - 1] * (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) / dz;
+        //                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * pml.psi_Hxz_1.p[i][j][k - 1];
+        //                }
+        //                //....................................................
+        //                //  PML for top Hx, k-direction
+        //                //...............................................
+        //                kk = pml.nzPML_2 - 2;
+        //                for (k = Kmax - pml.nzPML_2; k < Kmax - 1; ++k) {
+        //
+        //                    pml.psi_Hxz_2.p[i][j][kk] = pml.bh_z_2.p[kk] * pml.psi_Hxz_2.p[i][j][kk]
+        //                            + pml.ch_z_2.p[kk] * (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) / dz;
+        //                    Hx.p[i][j][k] = Hx.p[i][j][k] + DB * pml.psi_Hxz_2.p[i][j][kk];
+        //                    kk = kk - 1;
+        //                }
+        //            }
+        //        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hy
@@ -824,55 +821,55 @@ void compute() {
                             (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
                 }
             }
-            pml.updateHyIn(k,Hy,Ez,DB,dx);
+            pml.updateHyIn(k, Hy, Ez, DB, dx);
 
-//            for (j = 0; j < Jmax - 1; ++j) {
-//                //.......................................................
-//                //  PML for bottom Hy, i-direction
-//                //.......................................................
-//                for (i = 0; i < pml.nxPML_1 - 1; ++i) {
-//
-//                    pml.psi_Hyx_1.p[i][j][k] = pml.bh_x_1.p[i] * pml.psi_Hyx_1.p[i][j][k]
-//                            + pml.ch_x_1.p[i] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
-//                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyx_1.p[i][j][k];
-//                }
-//                //.........................................................
-//                //  PML for top Hy, i-direction
-//                //.........................................................
-//                ii = pml.nxPML_2 - 2;
-//                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
-//
-//                    pml.psi_Hyx_2.p[ii][j][k] = pml.bh_x_2.p[ii] * pml.psi_Hyx_2.p[ii][j][k]
-//                            + pml.ch_x_2.p[ii] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
-//                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyx_2.p[ii][j][k];
-//                    ii = ii - 1;
-//                }
-//            }
+            //            for (j = 0; j < Jmax - 1; ++j) {
+            //                //.......................................................
+            //                //  PML for bottom Hy, i-direction
+            //                //.......................................................
+            //                for (i = 0; i < pml.nxPML_1 - 1; ++i) {
+            //
+            //                    pml.psi_Hyx_1.p[i][j][k] = pml.bh_x_1.p[i] * pml.psi_Hyx_1.p[i][j][k]
+            //                            + pml.ch_x_1.p[i] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
+            //                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyx_1.p[i][j][k];
+            //                }
+            //                //.........................................................
+            //                //  PML for top Hy, i-direction
+            //                //.........................................................
+            //                ii = pml.nxPML_2 - 2;
+            //                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
+            //
+            //                    pml.psi_Hyx_2.p[ii][j][k] = pml.bh_x_2.p[ii] * pml.psi_Hyx_2.p[ii][j][k]
+            //                            + pml.ch_x_2.p[ii] * (Ez.p[i + 1][j][k] - Ez.p[i][j][k]) / dx;
+            //                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyx_2.p[ii][j][k];
+            //                    ii = ii - 1;
+            //                }
+            //            }
         }
-        pml.updateHyOut(Hy,Ex,DB,dz);
-//        for (i = 0; i < Imax - 1; ++i) {
-//            for (j = 0; j < Jmax - 1; ++j) {
-//                //.......................................................
-//                //  PML for bottom Hy, k-direction
-//                //......................................................
-//                for (k = 1; k < pml.nzPML_1; ++k) {
-//
-//                    pml.psi_Hyz_1.p[i][j][k - 1] = pml.bh_z_1.p[k - 1] * pml.psi_Hyz_1.p[i][j][k - 1]
-//                            + pml.ch_z_1.p[k - 1] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
-//                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyz_1.p[i][j][k - 1];
-//                }
-//                //.......................................................
-//                //  PML for top Hy, k-direction
-//                //.........................................................
-//                kk = pml.nzPML_2 - 2;
-//                for (k = Kmax - pml.nzPML_2; k < Kmax - 1; ++k) {
-//                    pml.psi_Hyz_2.p[i][j][kk] = pml.bh_z_2.p[kk] * pml.psi_Hyz_2.p[i][j][kk]
-//                            + pml.ch_z_2.p[kk] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
-//                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyz_2.p[i][j][kk];
-//                    kk = kk - 1;
-//                }
-//            }
-//        }
+        pml.updateHyOut(Hy, Ex, DB, dz);
+        //        for (i = 0; i < Imax - 1; ++i) {
+        //            for (j = 0; j < Jmax - 1; ++j) {
+        //                //.......................................................
+        //                //  PML for bottom Hy, k-direction
+        //                //......................................................
+        //                for (k = 1; k < pml.nzPML_1; ++k) {
+        //
+        //                    pml.psi_Hyz_1.p[i][j][k - 1] = pml.bh_z_1.p[k - 1] * pml.psi_Hyz_1.p[i][j][k - 1]
+        //                            + pml.ch_z_1.p[k - 1] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
+        //                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyz_1.p[i][j][k - 1];
+        //                }
+        //                //.......................................................
+        //                //  PML for top Hy, k-direction
+        //                //.........................................................
+        //                kk = pml.nzPML_2 - 2;
+        //                for (k = Kmax - pml.nzPML_2; k < Kmax - 1; ++k) {
+        //                    pml.psi_Hyz_2.p[i][j][kk] = pml.bh_z_2.p[kk] * pml.psi_Hyz_2.p[i][j][kk]
+        //                            + pml.ch_z_2.p[kk] * (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) / dz;
+        //                    Hy.p[i][j][k] = Hy.p[i][j][k] + DB * pml.psi_Hyz_2.p[i][j][kk];
+        //                    kk = kk - 1;
+        //                }
+        //            }
+        //        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hz
@@ -885,53 +882,53 @@ void compute() {
                             (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
                 }
             }
-            pml.updateHz(k,Hz,Ex,Ey,DB,dx,dy);
+            pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
 
-//            for (j = 0; j < Jmax - 1; ++j) {
-//                //..........................................................
-//                //  PML for bottom Hz, x-direction
-//                //..........................................................
-//                for (i = 0; i < pml.nxPML_1 - 1; ++i) {
-//
-//                    pml.psi_Hzx_1.p[i][j][k] = pml.bh_x_1.p[i] * pml.psi_Hzx_1.p[i][j][k]
-//                            + pml.ch_x_1.p[i] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
-//                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzx_1.p[i][j][k];
-//                }
-//                //..........................................................
-//                //  PML for top Hz, x-direction
-//                //..........................................................
-//                ii = pml.nxPML_2 - 2;
-//                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
-//
-//                    pml.psi_Hzx_2.p[ii][j][k] = pml.bh_x_2.p[ii] * pml.psi_Hzx_2.p[ii][j][k]
-//                            + pml.ch_x_2.p[ii] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
-//                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzx_2.p[ii][j][k];
-//                    ii = ii - 1;
-//                }
-//            }
-//
-//            for (i = 0; i < Imax - 1; ++i) {
-//                //........................................................
-//                //  PML for bottom Hz, y-direction
-//                //.........................................................
-//                for (j = 0; j < pml.nyPML_1 - 1; ++j) {
-//                    pml.psi_Hzy_1.p[i][j][k] = pml.bh_y_1.p[j] * pml.psi_Hzy_1.p[i][j][k]
-//                            + pml.ch_y_1.p[j] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
-//                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzy_1.p[i][j][k];
-//
-//                }
-//                //.........................................................
-//                //  PML for top Hz, y-direction
-//                //..........................................................
-//                jj = pml.nyPML_2 - 2;
-//                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
-//
-//                    pml.psi_Hzy_2.p[i][jj][k] = pml.bh_y_2.p[jj] * pml.psi_Hzy_2.p[i][jj][k]
-//                            + pml.ch_y_2.p[jj] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
-//                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzy_2.p[i][jj][k];
-//                    jj = jj - 1;
-//                }
-//            }
+            //            for (j = 0; j < Jmax - 1; ++j) {
+            //                //..........................................................
+            //                //  PML for bottom Hz, x-direction
+            //                //..........................................................
+            //                for (i = 0; i < pml.nxPML_1 - 1; ++i) {
+            //
+            //                    pml.psi_Hzx_1.p[i][j][k] = pml.bh_x_1.p[i] * pml.psi_Hzx_1.p[i][j][k]
+            //                            + pml.ch_x_1.p[i] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
+            //                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzx_1.p[i][j][k];
+            //                }
+            //                //..........................................................
+            //                //  PML for top Hz, x-direction
+            //                //..........................................................
+            //                ii = pml.nxPML_2 - 2;
+            //                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
+            //
+            //                    pml.psi_Hzx_2.p[ii][j][k] = pml.bh_x_2.p[ii] * pml.psi_Hzx_2.p[ii][j][k]
+            //                            + pml.ch_x_2.p[ii] * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) / dx;
+            //                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzx_2.p[ii][j][k];
+            //                    ii = ii - 1;
+            //                }
+            //            }
+            //
+            //            for (i = 0; i < Imax - 1; ++i) {
+            //                //........................................................
+            //                //  PML for bottom Hz, y-direction
+            //                //.........................................................
+            //                for (j = 0; j < pml.nyPML_1 - 1; ++j) {
+            //                    pml.psi_Hzy_1.p[i][j][k] = pml.bh_y_1.p[j] * pml.psi_Hzy_1.p[i][j][k]
+            //                            + pml.ch_y_1.p[j] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
+            //                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzy_1.p[i][j][k];
+            //
+            //                }
+            //                //.........................................................
+            //                //  PML for top Hz, y-direction
+            //                //..........................................................
+            //                jj = pml.nyPML_2 - 2;
+            //                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
+            //
+            //                    pml.psi_Hzy_2.p[i][jj][k] = pml.bh_y_2.p[jj] * pml.psi_Hzy_2.p[i][jj][k]
+            //                            + pml.ch_y_2.p[jj] * (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) / dy;
+            //                    Hz.p[i][j][k] = Hz.p[i][j][k] + DB * pml.psi_Hzy_2.p[i][jj][k];
+            //                    jj = jj - 1;
+            //                }
+            //            }
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -956,61 +953,61 @@ void compute() {
                     }
                 }
             }
-            pml.updateExIn(k,Ex,Hz,ID1,CB,dy);
-//            for (i = 0; i < Imax - 1; ++i) {
-//                //..............................................................
-//                //  PML for bottom Ex, j-direction
-//                //..............................................................
-//                for (j = 1; j < pml.nyPML_1; ++j) {
-//
-//                    id = ID1.p[i][j][k];
-//                    pml.psi_Exy_1.p[i][j][k] = pml.be_y_1.p[j] * pml.psi_Exy_1.p[i][j][k]
-//                            + pml.ce_y_1.p[j] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
-//                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exy_1.p[i][j][k];
-//                }
-//                //.............................................................
-//                //  PML for top Ex, j-direction
-//                //.............................................................
-//                jj = pml.nyPML_2 - 1;
-//                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
-//
-//                    id = ID1.p[i][j][k];
-//                    pml.psi_Exy_2.p[i][jj][k] = pml.be_y_2.p[jj] * pml.psi_Exy_2.p[i][jj][k]
-//                            + pml.ce_y_2.p[jj] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
-//                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exy_2.p[i][jj][k];
-//                    jj = jj - 1;
-//                }
-//            }
+            pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
+            //            for (i = 0; i < Imax - 1; ++i) {
+            //                //..............................................................
+            //                //  PML for bottom Ex, j-direction
+            //                //..............................................................
+            //                for (j = 1; j < pml.nyPML_1; ++j) {
+            //
+            //                    id = ID1.p[i][j][k];
+            //                    pml.psi_Exy_1.p[i][j][k] = pml.be_y_1.p[j] * pml.psi_Exy_1.p[i][j][k]
+            //                            + pml.ce_y_1.p[j] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
+            //                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exy_1.p[i][j][k];
+            //                }
+            //                //.............................................................
+            //                //  PML for top Ex, j-direction
+            //                //.............................................................
+            //                jj = pml.nyPML_2 - 1;
+            //                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
+            //
+            //                    id = ID1.p[i][j][k];
+            //                    pml.psi_Exy_2.p[i][jj][k] = pml.be_y_2.p[jj] * pml.psi_Exy_2.p[i][jj][k]
+            //                            + pml.ce_y_2.p[jj] * (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) / dy;
+            //                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exy_2.p[i][jj][k];
+            //                    jj = jj - 1;
+            //                }
+            //            }
         }
 
-        pml.updateExOut(Ex,Hy,ID1,CB,dz);
-//        for (i = 0; i < Imax - 1; ++i) {
-//
-//            for (j = 1; j < Jmax - 1; ++j) {
-//                //.............................................................
-//                //  PML for bottom Ex, k-direction
-//                //.............................................................
-//                for (k = 0; k < pml.nzPML_1; ++k) {
-//
-//                    id = ID1.p[i][j][k];
-//                    pml.psi_Exz_1.p[i][j][k] = pml.be_z_1.p[k] * pml.psi_Exz_1.p[i][j][k]
-//                            + pml.ce_z_1.p[k] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
-//                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exz_1.p[i][j][k];
-//                }
-//                //..............................................................
-//                //  PML for top Ex, k-direction
-//                //..............................................................
-//                kk = pml.nzPML_2 - 1;
-//                for (k = Kmax - pml.nzPML_2 - 1; k < Kmax - 1; ++k) {
-//
-//                    id = ID1.p[i][j][k];
-//                    pml.psi_Exz_2.p[i][j][kk] = pml.be_z_2.p[kk] * pml.psi_Exz_2.p[i][j][kk]
-//                            + pml.ce_z_2.p[kk] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
-//                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exz_2.p[i][j][kk];
-//                    kk = kk - 1;
-//                }
-//            }
-//        }
+        pml.updateExOut(Ex, Hy, ID1, CB, dz);
+        //        for (i = 0; i < Imax - 1; ++i) {
+        //
+        //            for (j = 1; j < Jmax - 1; ++j) {
+        //                //.............................................................
+        //                //  PML for bottom Ex, k-direction
+        //                //.............................................................
+        //                for (k = 0; k < pml.nzPML_1; ++k) {
+        //
+        //                    id = ID1.p[i][j][k];
+        //                    pml.psi_Exz_1.p[i][j][k] = pml.be_z_1.p[k] * pml.psi_Exz_1.p[i][j][k]
+        //                            + pml.ce_z_1.p[k] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
+        //                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exz_1.p[i][j][k];
+        //                }
+        //                //..............................................................
+        //                //  PML for top Ex, k-direction
+        //                //..............................................................
+        //                kk = pml.nzPML_2 - 1;
+        //                for (k = Kmax - pml.nzPML_2 - 1; k < Kmax - 1; ++k) {
+        //
+        //                    id = ID1.p[i][j][k];
+        //                    pml.psi_Exz_2.p[i][j][kk] = pml.be_z_2.p[kk] * pml.psi_Exz_2.p[i][j][kk]
+        //                            + pml.ce_z_2.p[kk] * (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) / dz;
+        //                    Ex.p[i][j][k] = Ex.p[i][j][k] + CB[id] * pml.psi_Exz_2.p[i][j][kk];
+        //                    kk = kk - 1;
+        //                }
+        //            }
+        //        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ey
@@ -1032,57 +1029,57 @@ void compute() {
                 }
             }
 
-            pml.updateEyIn(k,Ey,Hz,ID2,CB,dx);
-//            for (j = 0; j < Jmax - 1; ++j) {
-//                //...........................................................
-//                //  PML for bottom Ey, i-direction
-//                //...........................................................
-//                for (i = 1; i < pml.nxPML_1; ++i) {
-//                    id = ID2.p[i][j][k];
-//                    pml.psi_Eyx_1.p[i][j][k] = pml.be_x_1.p[i] * pml.psi_Eyx_1.p[i][j][k]
-//                            + pml.ce_x_1.p[i] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
-//                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyx_1.p[i][j][k];
-//                }
-//                //............................................................
-//                //  PML for top Ey, i-direction
-//                //............................................................
-//                ii = pml.nxPML_2 - 1;
-//                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
-//                    id = ID2.p[i][j][k];
-//                    pml.psi_Eyx_2.p[ii][j][k] = pml.be_x_2.p[ii] * pml.psi_Eyx_2.p[ii][j][k]
-//                            + pml.ce_x_2.p[ii] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
-//                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyx_2.p[ii][j][k];
-//                    ii = ii - 1;
-//                }
-//            }
+            pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
+            //            for (j = 0; j < Jmax - 1; ++j) {
+            //                //...........................................................
+            //                //  PML for bottom Ey, i-direction
+            //                //...........................................................
+            //                for (i = 1; i < pml.nxPML_1; ++i) {
+            //                    id = ID2.p[i][j][k];
+            //                    pml.psi_Eyx_1.p[i][j][k] = pml.be_x_1.p[i] * pml.psi_Eyx_1.p[i][j][k]
+            //                            + pml.ce_x_1.p[i] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
+            //                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyx_1.p[i][j][k];
+            //                }
+            //                //............................................................
+            //                //  PML for top Ey, i-direction
+            //                //............................................................
+            //                ii = pml.nxPML_2 - 1;
+            //                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
+            //                    id = ID2.p[i][j][k];
+            //                    pml.psi_Eyx_2.p[ii][j][k] = pml.be_x_2.p[ii] * pml.psi_Eyx_2.p[ii][j][k]
+            //                            + pml.ce_x_2.p[ii] * (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) / dx;
+            //                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyx_2.p[ii][j][k];
+            //                    ii = ii - 1;
+            //                }
+            //            }
         }
-        pml.updateEyOut(Ey,Hx,ID2,CB,dz);
-//
-//        for (i = 1; i < Imax - 1; ++i) {
-//            for (j = 0; j < Jmax - 1; ++j) {
-//                //...........................................................
-//                //  PML for bottom Ey, k-direction
-//                //...........................................................
-//                for (k = 0; k < pml.nzPML_1; ++k) {
-//                    id = ID2.p[i][j][k];
-//                    pml.psi_Eyz_1.p[i][j][k] = pml.be_z_1.p[k] * pml.psi_Eyz_1.p[i][j][k]
-//                            + pml.ce_z_1.p[k] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
-//                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyz_1.p[i][j][k];
-//                }
-//                //...........................................................
-//                //  PML for top Ey, k-direction
-//                //............................................................
-//                kk = pml.nzPML_2 - 1;
-//                for (k = Kmax - pml.nzPML_2 - 1; k < Kmax - 1; ++k) {
-//
-//                    id = ID2.p[i][j][k];
-//                    pml.psi_Eyz_2.p[i][j][kk] = pml.be_z_2.p[kk] * pml.psi_Eyz_2.p[i][j][kk]
-//                            + pml.ce_z_2.p[kk] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
-//                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyz_2.p[i][j][kk];
-//                    kk = kk - 1;
-//                }
-//            }
-//        }
+        pml.updateEyOut(Ey, Hx, ID2, CB, dz);
+        //
+        //        for (i = 1; i < Imax - 1; ++i) {
+        //            for (j = 0; j < Jmax - 1; ++j) {
+        //                //...........................................................
+        //                //  PML for bottom Ey, k-direction
+        //                //...........................................................
+        //                for (k = 0; k < pml.nzPML_1; ++k) {
+        //                    id = ID2.p[i][j][k];
+        //                    pml.psi_Eyz_1.p[i][j][k] = pml.be_z_1.p[k] * pml.psi_Eyz_1.p[i][j][k]
+        //                            + pml.ce_z_1.p[k] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
+        //                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyz_1.p[i][j][k];
+        //                }
+        //                //...........................................................
+        //                //  PML for top Ey, k-direction
+        //                //............................................................
+        //                kk = pml.nzPML_2 - 1;
+        //                for (k = Kmax - pml.nzPML_2 - 1; k < Kmax - 1; ++k) {
+        //
+        //                    id = ID2.p[i][j][k];
+        //                    pml.psi_Eyz_2.p[i][j][kk] = pml.be_z_2.p[kk] * pml.psi_Eyz_2.p[i][j][kk]
+        //                            + pml.ce_z_2.p[kk] * (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) / dz;
+        //                    Ey.p[i][j][k] = Ey.p[i][j][k] + CB[id] * pml.psi_Eyz_2.p[i][j][kk];
+        //                    kk = kk - 1;
+        //                }
+        //            }
+        //        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ez
@@ -1100,53 +1097,53 @@ void compute() {
                     }
                 }
             }
-            pml.updateEz(k,Ez,Hx,Hy,ID3,CB,dx,dy);
+            pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
 
-//            for (j = 1; j < Jmax - 1; ++j) {
-//                //............................................................
-//                //  PML for bottom Ez, x-direction
-//                //.............................................................
-//                for (i = 1; i < pml.nxPML_1; ++i) {
-//                    id = ID3.p[i][j][k];
-//                    pml.psi_Ezx_1.p[i][j][k] = pml.be_x_1.p[i] * pml.psi_Ezx_1.p[i][j][k]
-//                            + pml.ce_x_1.p[i] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
-//                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezx_1.p[i][j][k];
-//                }
-//                //............................................................
-//                //  PML for top Ez, x-direction
-//                //............................................................
-//                ii = pml.nxPML_2 - 1;
-//                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
-//                    id = ID3.p[i][j][k];
-//                    pml.psi_Ezx_2.p[ii][j][k] = pml.be_x_2.p[ii] * pml.psi_Ezx_2.p[ii][j][k]
-//                            + pml.ce_x_2.p[ii] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
-//                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezx_2.p[ii][j][k];
-//                    ii = ii - 1;
-//                }
-//            }
-//
-//            for (i = 1; i < Imax - 1; ++i) {
-//                //..........................................................
-//                //  PML for bottom Ez, y-direction
-//                //..........................................................
-//                for (j = 1; j < pml.nyPML_1; ++j) {
-//                    id = ID3.p[i][j][k];
-//                    pml.psi_Ezy_1.p[i][j][k] = pml.be_y_1.p[j] * pml.psi_Ezy_1.p[i][j][k]
-//                            + pml.ce_y_1.p[j] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
-//                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezy_1.p[i][j][k];
-//                }
-//                //............................................................
-//                //  PML for top Ez, y-direction
-//                //............................................................
-//                jj = pml.nyPML_2 - 1;
-//                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
-//                    id = ID3.p[i][j][k];
-//                    pml.psi_Ezy_2.p[i][jj][k] = pml.be_y_2.p[jj] * pml.psi_Ezy_2.p[i][jj][k]
-//                            + pml.ce_y_2.p[jj] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
-//                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezy_2.p[i][jj][k];
-//                    jj = jj - 1;
-//                }
-//            }
+            //            for (j = 1; j < Jmax - 1; ++j) {
+            //                //............................................................
+            //                //  PML for bottom Ez, x-direction
+            //                //.............................................................
+            //                for (i = 1; i < pml.nxPML_1; ++i) {
+            //                    id = ID3.p[i][j][k];
+            //                    pml.psi_Ezx_1.p[i][j][k] = pml.be_x_1.p[i] * pml.psi_Ezx_1.p[i][j][k]
+            //                            + pml.ce_x_1.p[i] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
+            //                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezx_1.p[i][j][k];
+            //                }
+            //                //............................................................
+            //                //  PML for top Ez, x-direction
+            //                //............................................................
+            //                ii = pml.nxPML_2 - 1;
+            //                for (i = Imax - pml.nxPML_2; i < Imax - 1; ++i) {
+            //                    id = ID3.p[i][j][k];
+            //                    pml.psi_Ezx_2.p[ii][j][k] = pml.be_x_2.p[ii] * pml.psi_Ezx_2.p[ii][j][k]
+            //                            + pml.ce_x_2.p[ii] * (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) / dx;
+            //                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezx_2.p[ii][j][k];
+            //                    ii = ii - 1;
+            //                }
+            //            }
+            //
+            //            for (i = 1; i < Imax - 1; ++i) {
+            //                //..........................................................
+            //                //  PML for bottom Ez, y-direction
+            //                //..........................................................
+            //                for (j = 1; j < pml.nyPML_1; ++j) {
+            //                    id = ID3.p[i][j][k];
+            //                    pml.psi_Ezy_1.p[i][j][k] = pml.be_y_1.p[j] * pml.psi_Ezy_1.p[i][j][k]
+            //                            + pml.ce_y_1.p[j] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
+            //                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezy_1.p[i][j][k];
+            //                }
+            //                //............................................................
+            //                //  PML for top Ez, y-direction
+            //                //............................................................
+            //                jj = pml.nyPML_2 - 1;
+            //                for (j = Jmax - pml.nyPML_2; j < Jmax - 1; ++j) {
+            //                    id = ID3.p[i][j][k];
+            //                    pml.psi_Ezy_2.p[i][jj][k] = pml.be_y_2.p[jj] * pml.psi_Ezy_2.p[i][jj][k]
+            //                            + pml.ce_y_2.p[jj] * (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) / dy;
+            //                    Ez.p[i][j][k] = Ez.p[i][j][k] + CB[id] * pml.psi_Ezy_2.p[i][jj][k];
+            //                    jj = jj - 1;
+            //                }
+            //            }
         }
 
 
