@@ -89,7 +89,7 @@ data3d<short> ID2; //medium definition array for Ey
 data3d<short> ID3; //medium definition array for Ez
 
 // cpml
-cpmld pml;
+cpmld<float,short> pml;
 //Max number of materials allowed
 int numMaterials = 50;
 
