@@ -304,7 +304,6 @@ void compute() {
                 }
             }
             pml.updateHyIn(k, Hy, Ez, DB, dx);
-
         }
         pml.updateHyOut(Hy, Ex, DB, dz);
 
