@@ -17,7 +17,7 @@
 #include<stdlib.h>
 
 #include"datastruct.h"
-#include"cpmld.h"
+#include"cpml.h"
 
 //  Fundamental Constants (MKS units)
 double pi = 3.14159265358979;
@@ -32,9 +32,14 @@ double epsR = 1.0; //free space
 int nMax = 500; // total number of time steps
 
 // grid size corresponding to the number of Ez field components
-int Imax = 51;
-int Jmax = 126;
-int Kmax = 26;
+int Imax = 50;
+int Jmax = 50;
+int Kmax = 50;
+
+// source position
+int ic, jc, kc;
+// sample position
+int si, sj, sk;
 
 //  Specify Grid Cell Size in Each Direction and Calculate the
 //  Resulting Courant-Stable Time Step
@@ -90,7 +95,7 @@ data3d<short> ID2; //medium definition array for Ey
 data3d<short> ID3; //medium definition array for Ez
 
 // cpml
-cpmld<float, short> pml;
+cpml<float, short> pml;
 //Max number of materials allowed
 int numMaterials = 50;
 
@@ -138,6 +143,16 @@ void initialize() {
 
     mu_0 = 4.0 * pi * 1.0E-7;
     eps_0 = 1.0 / (C * C * mu_0);
+
+    // source position 
+    ic = Imax / 2;
+    jc = Jmax / 2;
+    kc = Kmax / 2;
+
+    // sample position
+    si = ic + 10;
+    sj = jc + 10;
+    sk = kc;
 
     pml.InitialMuEps();
     pml.Initial(Imax, Jmax, Kmax, 11);
@@ -272,7 +287,7 @@ void compute() {
 
     for (n = 1; n <= nMax; ++n) {
 
-        printf("Ez at time step %d at (25, 40, 12) :  %f\n", n, Ez.p[25][40][12]);
+        printf("Ez at time step %d at (%d, %d, %d) :  %f\n", n, si, sj, sk, Ez.p[si][sj][sk]);
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hx
@@ -390,9 +405,9 @@ void compute() {
         //-----------------------------------------------------------
         //   Apply a point source (Soft)
         //-----------------------------------------------------------
-        i = 25;
-        j = 63;
-        k = 12;
+        i = ic;
+        j = jc;
+        k = kc;
         source = amp * -2.0 * ((n * dt - tO) / tw)
                 * exp(-pow(((n * dt - tO) / tw), 2)); //Differentiated Gaussian pulse
 
@@ -419,7 +434,7 @@ void compute() {
 void buildObject() {
 
     //buildSphere();
-    buildDipole();
+    //buildDipole();
 }
 
 //Builds a sphere (Sample code - NOt used in this program)

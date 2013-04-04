@@ -2055,7 +2055,7 @@ void compute() {
 void buildObject() {
 
     //buildSphere();
-    buildDipole();
+    //buildDipole();
 }
 
 //Builds a sphere (Sample code - NOt used in this program)

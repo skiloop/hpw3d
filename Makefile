@@ -4,7 +4,7 @@ CPPFLAGS=-Wall -g -DDEBUG=3
 SRC=src
 OBJS=cpml.o test.o datastruct.o fdtd.o InonizationFormula.o
 
-projects=origProgram testCPML hpw3d orig cmain emain dmain
+projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml
 .PHONY:all clean
 
 all:$(projects)
@@ -42,6 +42,10 @@ cpmld.o:$(SRC)/cpmld.cpp $(SRC)/cpmld.h datastruct.o
 dmain:dmain.o datastruct.o cpmld.o
 	$(CXX) -o $@ dmain.o $(CPPFLAGS) datastruct.o cpmld.o
 dmain.o:$(SRC)/dmain.cpp
+	$(CXX) $(CPPFLAGS) -c $< 
+tcpml:tcpml.o datastruct.o cpml.o
+	$(CXX) -o $@ tcpml.o $(CPPFLAGS) datastruct.o cpml.o
+tcpml.o:$(SRC)/tcpml.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
 %.o:$(SRC)/%.cpp $(SRC)/%.h
 	$(CXX) $(CPPFLAGS) -c $< 
