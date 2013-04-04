@@ -27,7 +27,7 @@
 # diff files
 *.diff
 
-# project target
+# project objects
 dmain
 emain
 cmain
@@ -35,8 +35,8 @@ orig
 origProgram
 testCPML
 hpw3d
-# project objects
 origProgram
+tcpml
 
 # backup file
 *~
