@@ -76,7 +76,7 @@ private:
     data3d<unsigned> ID2; //medium definition array for Ey
     data3d<unsigned> ID3; //medium definition array for Ez
 
-    //permittivity, permeability and conductivity of diffrent materials
+    //permittivity, permeability and conductivity of different materials
     MyDataF *epsilon;
     MyDataF *mu;
     MyDataF *sigma;

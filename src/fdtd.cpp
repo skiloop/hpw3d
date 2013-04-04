@@ -28,7 +28,7 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 , neGrid(_neGrid)
 , numMaterials(_nmaterial)
 , Ne0(1e7)
-, pml(_m, _ma) {
+, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
 #else
 
@@ -40,13 +40,18 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma)
-, numMaterials(_nmaterial)
- {
-    pml.Initial(Imax,Jmax,Kmax,11);
+, numMaterials(_nmaterial), epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
 #endif
 
 fdtd::~fdtd(void) {
+    if (epsilon != NULL) {
+        delete []epsilon;
+    }
+    if (sigma != NULL)delete []sigma;
+    if (mu != NULL)delete[]mu;
+    if (CA != NULL)delete[]CA;
+    if (CB != NULL)delete[]CB;
 }
 
 
@@ -202,40 +207,44 @@ void fdtd::WallCircleBound(data3d &stru) {
 void fdtd::initialize() {
 
     unsigned i, j, k;
+
+    // initial PML
+    pml.InitialMuEps();
+    pml.Initial(Imax, Jmax, Kmax, 11);
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "numMaterials = " << numMaterials << endl;
 #endif
     //Dynamic memory allocation
-    epsilon = (double *) malloc((numMaterials) * sizeof (double));
+    epsilon = new double[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
         epsilon[i] = eps_0;
     }
 
-    mu = (double *) malloc((numMaterials) * sizeof (double));
+    mu = new double[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
         mu[i] = mu_0;
     }
 
-    sigma = (double *) malloc((numMaterials) * sizeof (double));
+    sigma = new double[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
         sigma[i] = 0.0;
     }
 
-    CA = (double *) malloc((numMaterials) * sizeof (double));
+    CA = new double[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
         CA[i] = 0.0;
     }
 
-    CB = (double *) malloc((numMaterials) * sizeof (double));
+    CB = new double[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
@@ -247,13 +256,13 @@ void fdtd::initialize() {
     cout << "Jmax=" << Jmax << endl;
     cout << "Kmax=" << Kmax << endl;
 #endif
-    Ez.CreateStruct(Imax, Jmax, Kmax,0);   
-    Ey.CreateStruct(Imax, Jmax - 1, Kmax - 1,0);
-    Ex.CreateStruct(Imax - 1, Jmax, Kmax - 1,0);
+    Ez.CreateStruct(Imax, Jmax, Kmax, 0);
+    Ey.CreateStruct(Imax, Jmax - 1, Kmax - 1, 0);
+    Ex.CreateStruct(Imax - 1, Jmax, Kmax - 1, 0);
 
-    Hx.CreateStruct(Imax, Jmax - 1, Kmax,0);
-    Hy.CreateStruct(Imax - 1, Jmax, Kmax,0);
-    Hz.CreateStruct((Imax - 1), (Jmax - 1), (Kmax - 1),0);
+    Hx.CreateStruct(Imax, Jmax - 1, Kmax, 0);
+    Hy.CreateStruct(Imax - 1, Jmax, Kmax, 0);
+    Hz.CreateStruct((Imax - 1), (Jmax - 1), (Kmax - 1), 0);
 
 #ifdef WITH_DENSITY
     Vx.CreateStruct(Ex, 0.0);
@@ -272,19 +281,20 @@ void fdtd::initialize() {
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "creating ID1..." << endl;
 #endif
-    ID1.CreateStruct(Imax,Jmax,Kmax,0);
+    ID1.CreateStruct(Imax, Jmax, Kmax, 0);
 
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "creating ID2..." << endl;
 #endif
-    ID2.CreateStruct(Imax,Jmax,Kmax,0);
+    ID2.CreateStruct(Imax, Jmax, Kmax, 0);
 
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "creating ID3..." << endl;
 #endif
-    ID3.CreateStruct(Imax,Jmax,Kmax,0);
+    ID3.CreateStruct(Imax, Jmax, Kmax, 0);
+    pml.createCPMLArray();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -354,9 +364,14 @@ void fdtd::setUp() {
 
     }
 
-    printf("\nTIme step = %e", dt);
-    printf("\n Number of steps = %d", nMax);
-    printf("\n Total Simulation time = %e Seconds", nMax * dt);
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  PML parameters
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    pml.initParmeters(dx, dy, dz, m, ma);
+
+    cout << endl << "TIme step = " << dt << endl;
+    cout << endl << "Number of steps = " << nMax << endl;
+    cout << endl << "Total Simulation time = " << nMax * dt << " Seconds" << endl;
 
 }
 
@@ -372,11 +387,13 @@ void fdtd::compute() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  BEGIN TIME STEP
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    printf("\nBegin time-stepping...\n");
+    cout << endl;
+    cout << "Begin time-stepping..." << endl;
 
     for (n = 1; n <= nMax; ++n) {
 
-        printf("Ez at time step %d at (%d, %d, %d) :  %f\n", n, isp, 40, ksp, Ez.p[isp][40][ksp]);
+        cout << "Ez at time step " << n << " at (" << isp << ", " << 40 << ", " << ksp;
+        cout << ") :  " << Ez.p[isp][40][ksp] << endl;
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hx
@@ -392,9 +409,9 @@ void fdtd::compute() {
                             (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
                 }
             }
-            pml.updateHxIn(k,Hx,Ez,DB,dy);
+            pml.updateHxIn(k, Hx, Ez, DB, dy);
         }
-        pml.updateHxOut(Hx,Ey,DB,dz);
+        pml.updateHxOut(Hx, Ey, DB, dz);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hy
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -409,9 +426,9 @@ void fdtd::compute() {
                             (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
                 }
             }
-            pml.updateHyIn(k,Hy,Ez,DB,dx);
+            pml.updateHyIn(k, Hy, Ez, DB, dx);
         }
-        pml.updateHyOut(Hy,Ex,DB,dz);
+        pml.updateHyOut(Hy, Ex, DB, dz);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hz
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -426,9 +443,9 @@ void fdtd::compute() {
                             (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
                 }
             }
-            pml.updateHz(k,Hz,Ex,Ey,DB,dx,dy);
+            pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
         }
-        
+
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ex
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -451,9 +468,9 @@ void fdtd::compute() {
                     }
                 }
             }
-            pml.updateExIn(k,Ex,Hz,ID1,CB,dy);
+            pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
         }
-        pml.updateExOut(Ex,Hy,ID1,CB,dz);
+        pml.updateExOut(Ex, Hy, ID1, CB, dz);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ey
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -476,9 +493,9 @@ void fdtd::compute() {
                     }
                 }
             }
-            pml.updateEyIn(k,Ey,Hz,ID2,CB,dx);
+            pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
         }
-        pml.updateEyOut(Ey,Hx,ID2,CB,dy);
+        pml.updateEyOut(Ey, Hx, ID2, CB, dy);
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Ez
@@ -502,8 +519,8 @@ void fdtd::compute() {
                     }
                 }
             }
-            pml.updateEz(k,Ez,Hx,Hy,ID3,CB,dx,dy);
-        }        
+            pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
+        }
 
         //-----------------------------------------------------------
         //   Apply a point source (Soft)
@@ -520,13 +537,12 @@ void fdtd::compute() {
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         if ((n % save_modulus) == 0) {
-
             writeField(n);
         }
 
     }
     //  END TIME STEP
-    printf("Done time-stepping...\n");
+    cout << "Done time-stepping..." << endl;
 
 }
 
@@ -535,7 +551,7 @@ void fdtd::compute() {
 void fdtd::buildObject() {
 
     //buildSphere();
-    buildDipole();
+    //buildDipole();
 }
 
 //Builds a sphere (Sample code - NOt used in this program)
@@ -656,17 +672,19 @@ void fdtd::writeField(unsigned iteration) {
 //start up
 
 void fdtd::StartUp() {
-    cout << "initializing(in Statup)..." << endl;
+    cout << "initializing(in Startup)..." << endl;
     initialize();
-    cout << "initial pml (in Statup)" << endl;
-    pml.Initial(Imax, Jmax, Kmax, 11);
-    cout << "setUp (in Statup)" << endl;
+    //    cout << "initial pml (in Statup)" << endl;
+    //    pml.Initial(Imax, Jmax, Kmax, 11);
+    cout << "setUp (in Startup)" << endl;
     setUp();
-    cout << "buildObject (in Statup)" << endl;
+    cout << "buildObject (in Startup)" << endl;
     buildObject();
-    cout << "computing (in Statup)" << endl;
+    cout << "initial CPML (in Startup)" << endl;
+    pml.initCPML(dt, dx, dy, dz);
+    cout << "computing (in Startup)" << endl;
     compute();
-    cout << "exit Statup" << endl;
+    cout << "exit Startup" << endl;
 }
 
 void fdtd::putvars() {
