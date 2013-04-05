@@ -5,6 +5,7 @@
 #ifndef WITH_DENSITY
 #define WITH_DENSITY
 #endif
+
 class fdtd {
 public:
 #ifdef WITH_DENSITY
@@ -12,20 +13,20 @@ public:
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             unsigned _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
             unsigned _m = 3, unsigned _ma = 1, unsigned _nmatrial = 50, unsigned _neGrid = 10);
-    
+
     void SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
 #else
-        fdtd(unsigned _nmax = 500, unsigned _imax = 51, unsigned _jmax = 126, unsigned _kmax = 26,
+    fdtd(unsigned _nmax = 500, unsigned _imax = 51, unsigned _jmax = 126, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             unsigned _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
             unsigned _m = 3, unsigned _ma = 1, unsigned _nmatrial = 50);
 #endif
     ~fdtd(void);
     //Function prototype definitions
-    void initialize(); //Memeory initialization
+    void initialize(); //Memory initialization
     void setUp(); //Coefficients, parameters etc will get computed
     void compute(); //E & H Field update equation
-    void StartUp();    
+    void StartUp();
 private:
     void buildObject(); //Creates the object geometry
     void yeeCube(unsigned, unsigned, unsigned, unsigned); //Sets material properties to a cell
@@ -44,7 +45,7 @@ private:
     //  Specify the Impulsive Source (Differentiated Gaussian) parameters
     MyDataF tw; //pulse width
     MyDataF dt, dx, dy, dz;
-    
+
     MyDataF t0; //delay
     MyDataF source; //Differentiated Gaussian source
     MyDataF amp; // Amplitude
@@ -52,7 +53,7 @@ private:
 
     // Specify the Time Step at which the data has to be saved for Visualization
     unsigned save_modulus;
-    // Output recording pounsigned
+    // Output recording 
     unsigned ksource;
     // Specify the CPML Order and Other Parameters:
     unsigned m, ma;
@@ -60,9 +61,9 @@ private:
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
     unsigned istart, iend, jstart;
     unsigned jend, kstart, kend;
-    
+
     // source position
-    unsigned isp,jsp,ksp;
+    unsigned isp, jsp, ksp;
 
     //Max number of materials allowed
     unsigned numMaterials;
@@ -91,7 +92,7 @@ private:
     //H field update coefficients
     MyDataF DA;
     MyDataF DB;
-    
+
 #ifdef WITH_DENSITY
 
     //how many fine grids per coarse grid 
@@ -101,7 +102,7 @@ private:
     MyDataF dsf;
     //time step of plasma
     MyDataF dtf;
-    
+
     //plasma variables
     MyDataF vm;
     MyDataF p;
@@ -109,26 +110,27 @@ private:
     MyDataF Da;
     MyDataF rei;
     MyDataF mu_i;
-    MyDataF mu_e; 
-    
+    MyDataF mu_e;
+
     //Plasma
     data3d<MyDataF> Ne, Ne_pre;
     //
     data3d<MyDataF> Erms;
-    //intial plasma value
+    //initial plasma value
     MyDataF Ne0;
-    
+
     //
     data3d<MyDataF> Vx;
     data3d<MyDataF> Vy;
     data3d<MyDataF> Vz;
-    
+
     int UpdateErms(void);
+    int InterpErms();
     int UpdateDensity(void);
     int UpdateVeloity(void);
     void WallCircleBound(data3d<MyDataF> &stru);
 #endif
-    cpml<MyDataF,unsigned int> pml;
+    cpml<MyDataF, unsigned int> pml;
 
 };
 

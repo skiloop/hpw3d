@@ -45,9 +45,7 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 #endif
 
 fdtd::~fdtd(void) {
-    if (epsilon != NULL) {
-        delete []epsilon;
-    }
+    if (epsilon != NULL)delete []epsilon;
     if (sigma != NULL)delete []sigma;
     if (mu != NULL)delete[]mu;
     if (CA != NULL)delete[]CA;
@@ -68,6 +66,45 @@ void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
 }
 
 int fdtd::UpdateErms(void) {
+    int i,j,k;
+    int io,jo,ko;
+    for(i=istart,io=istart*neGrid;i<=iend;i++,io+=neGrid){
+        for(j=jstart,jo=jstart*neGrid;j<=jend;j++,jo+=neGrid){
+            for(k=kstart,jo=kstart*neGrid;k<=kend;k++,ko+=neGrid){
+                MyDataF exIJK=(Ex.p[i-1][j][k-1]+Ex.p[i+1][j][k-1]+Ex.p[i-1][j][k+1]+Ex.p[i+1][j][k+1])/4;
+                MyDataF eyIJK=(Ey.p[i][j-1][k-1]+Ey.p[i][j+1][k-1]+Ey.p[i][j-1][k+1]+Ey.p[i][j+1][k+1])/4;
+                Erms.p[io][jo][ko] = sqrt(Ez.p[i][j][k]*Ez.p[i][j][k]+exIJK*exIJK+eyIJK*eyIJK);
+            }
+        }
+    }
+    return 0;
+}
+
+int fdtd::InterpErms() {
+    int is, js, ks;
+    int in, jn, kn;
+    int i, j, k;
+    int im, jm, km;
+    int iu, ju, ku;
+    int ngred = neGrid * neGrid*neGrid;
+    for (is = istart, in = istart + neGrid; is < iend; is = in, in += neGrid) {
+        for (js = jstart, jn = jstart + neGrid; js < jend; js = jn, jn += neGrid) {
+            for (ks = kstart, kn = kstart + neGrid; ks < kend; ks = kn, kn += neGrid) {
+                // integrate Erms
+                for (i = is, im = 0, iu = neGrid; i < in; i++, im++, iu--) {
+                    for (j = js, jm = 0, ju = neGrid; j < jn; j++, jm++, ju--) {
+                        for (k = ks, km = 0, ku = neGrid; k < kn; k++, km++, ku--) {
+                            //if (im == 0 && jm == 0 && km == 0)continue;
+                            Erms.p[i][j][k] = (iu * ju * ku * Erms.p[is][js][ks] + im * ju * ku * Erms.p[in][js][ks] +
+                                    im * jm * ku * Erms.p[in][jn][ks] + im * jm * km * Erms.p[in][jn][kn] +
+                                    iu * jm * ku * Erms.p[is][jn][ks] + iu * jm * km * Erms.p[is][jn][kn] +
+                                    iu * ju * km * Erms.p[is][js][kn] + im * ju * km * Erms.p[in][js][kn]) / ngred;
+                        }
+                    }
+                }
+            }
+        }
+    }
     return 0;
 }
 
@@ -79,14 +116,13 @@ int fdtd::UpdateDensity(void) {
     MyDataF Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1;
     MyDataF Deff;
     MyDataF maxvi = 0, minvi = 0;
-    //MyDataF tmp=0;
     MyDataF vi, va;
 
     int ci = 0, cj = 0, ck = 0;
     Ne_pre = Ne;
-    //printf("\n%4.3e\t",Ne.p[0][0][0]);
-    for (i = mt; i < Ne.nx - mt; i++)
-        for (j = mt; j < Ne.ny - mt; j++)
+
+    for (i = mt; i < Ne.nx - mt; i++) {
+        for (j = mt; j < Ne.ny - mt; j++) {
             for (k = mt; k < Ne.nz - mt; k++) {
 
                 Eeff = Erms.p[i][j][k] / 100 * pow(1 / (1 + omega * omega / vm / vm), 0.5);
@@ -100,11 +136,14 @@ int fdtd::UpdateDensity(void) {
                 Nekm1 = Ne_pre.p[i][j][k - 1];
 
                 switch (niutype) {
-                    case 1:Niu_MorrowAndLowke(&vi, &va, Eeff, Ne_ijk * 1e6);
+                    case 1:
+                        Niu_MorrowAndLowke(&vi, &va, Eeff, Ne_ijk * 1e6);
                         break;
-                    case 2:Niu_Nikonov(&vi, &va, Eeff, p);
+                    case 2:
+                        Niu_Nikonov(&vi, &va, Eeff, p);
                         break;
-                    case 3:Niu_Kang(&vi, &va, Eeff);
+                    case 3:
+                        Niu_Kang(&vi, &va, Eeff);
                         break;
                     default:
                         alpha_t = Eeff / p;
@@ -127,7 +166,6 @@ int fdtd::UpdateDensity(void) {
                         } else {
                             vi = (5.0 + 0.19 * alpha_t)*1e7 * exp(-273.8 / alpha_t) * p;
                         }
-
                         va = 7.6e-4 * pow(alpha_t / (alpha_t + 218), 2) / p;
                 }
                 if (Ne_ijk < 1) {
@@ -137,16 +175,6 @@ int fdtd::UpdateDensity(void) {
                     kasi = vi * tau_m;
                     Deff = (kasi * De + Da) / (kasi + 1);
                 }
-                //				if((i==spx*FiNeGridRatio)&&(j==spy*FiNeGridRatio)&&(k==spz*FiNeGridRatio))
-                //				{
-                //					printf("Deff = %6.5e\n",Deff);
-                //					printf("vi\t=\t%6.5e\n",vi);
-                //					printf("in\t=\t%7.6e\n",Deff*dtf*(Neip1+Neim1+Nejp1+Nejm1+Nekp1+Nekm1-6*Ne_ijk)/dtf/dtf);
-                //					printf("Erms\t=\t%7.6e\n",Erms.p[i][j][k]);
-                //					printf("va\t=\t%6.5e\n",va);
-                //					printf("alpha_t\t=\t%6.5e\n",alpha_t);
-                //				}
-                //printf("%6.4e\t%6.4e\t",Ne.p[spx*FiNeGridRatio][spy*FiNeGridRatio][spz*FiNeGridRatio],Ne.p[nx][ny][nz]);
                 Ne.p[i][j][k] =
                         (
                         Ne_ijk * (1 + dtf * vi)
@@ -160,12 +188,11 @@ int fdtd::UpdateDensity(void) {
                 }
                 if (vi < minvi) minvi = vi;
             }
-    //printf("%4.3e\n",Ne.p[0][0][0]);
+        }
+    }
     WallCircleBound(Ne);
-    //ApplyDensityBound(Ne,mt);
-    //printf("%4.3e\n",Ne.p[0][0][0]);
-    printf("%6.5e\t", Ne.p[Ne.nx / 2][Ne.ny / 2][Ne.nz / 2]);
-    printf("\t%6.4e\t%6.4e\t%6.4e\t%6.4e\n", maxvi, minvi, Ne.p[ci][cj][ck], Erms.p[ci][cj][ck]);
+    cout << Ne.p[Ne.nx / 2][Ne.ny / 2][Ne.nz / 2] << '\t';
+    cout << maxvi << '\t' << minvi << '\t' << Ne.p[ci][cj][ck] << '\t' << Erms.p[ci][cj][ck] << '\t';
     return 0;
 }
 
@@ -181,32 +208,42 @@ void fdtd::WallCircleBound(data3d<MyDataF> &stru) {
     endy = stru.ny - 1;
     endz = stru.nz - 1;
 
-    //Buttom and top
-
-    for (i = 1; i < endx; i++)
+    //bottom and top
+    int endz1 = endz - 1;
+    int endz2 = endz - 2;
+    for (i = 1; i < endx; i++) {
         for (j = 1; j < endy; j++) {
             stru.p[i][j][0] = 2 * stru.p[i][j][1] - stru.p[i][j][2];
-            stru.p[i][j][endz] = 2 * stru.p[i][j][endz - 1] - stru.p[i][j][endz - 2];
+            stru.p[i][j][endz] = 2 * stru.p[i][j][endz1] - stru.p[i][j][endz2];
         }
+    }
+
     //left and right
-    for (j = 1; j < endy; j++)
+    int endx1 = endx - 1;
+    int endx2 = endx - 2;
+    for (j = 1; j < endy; j++) {
         for (k = 1; k < endz; k++) {
             stru.p[0][j][k] = 2 * stru.p[1][j][k] - stru.p[2][j][k];
-            stru.p[endx][j][k] = 2 * stru.p[endx - 1][j][k] - stru.p[endx - 2][j][k];
+            stru.p[endx][j][k] = 2 * stru.p[endx1][j][k] - stru.p[endx2][j][k];
         }
+    }
+
     //front and back
-    for (i = 1; i < endx; i++)
+    int endy1 = endy - 1;
+    int endy2 = endy - 2;
+    for (i = 1; i < endx; i++) {
         for (k = 1; k < endz; k++) {
             stru.p[i][0][k] = 2 * stru.p[i][1][k] - stru.p[i][2][k];
-            stru.p[i][endy][k] = 2 * stru.p[i][endy - 1][k] - stru.p[i][endy - 2][k];
+            stru.p[i][endy][k] = 2 * stru.p[i][endy1][k] - stru.p[i][endy2][k];
         }
+    }
 }
 
 #endif
 
 void fdtd::initialize() {
 
-    unsigned i, j, k;
+    unsigned i;
 
     // initial PML
     pml.InitialMuEps();
@@ -610,7 +647,7 @@ void fdtd::buildDipole() {
 
 }
 
-//creates a dielctric cube (yee cell) made up of the selected material
+//creates a dielectric cube (yee cell) made up of the selected material
 
 void fdtd::yeeCube(unsigned I, unsigned J, unsigned K, unsigned mType) {
 
