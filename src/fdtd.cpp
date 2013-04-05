@@ -173,7 +173,7 @@ int fdtd::UpdateVeloity(void) {
     return 0;
 }
 
-void fdtd::WallCircleBound(data3d &stru) {
+void fdtd::WallCircleBound(data3d<MyDataF> &stru) {
     int i, j, k;
     int endx, endy, endz;
 
