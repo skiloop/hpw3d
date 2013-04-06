@@ -41,3 +41,11 @@ tcpml
 # backup file
 *~
 
+# compress file
+*.gz
+*.bz2
+*.tar
+
+# some dir
+small
+large

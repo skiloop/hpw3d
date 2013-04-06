@@ -7,22 +7,65 @@
         <in>playMovieWithRes.m</in>
         <in>runMyJobs.m</in>
       </df>
+      <df name="large">
+      </df>
+      <df name="osrc">
+        <df name="hpw3d">
+          <df name="src">
+            <in>InonizationFormula.cpp</in>
+            <in>InonizationFormula.h</in>
+            <in>cmain.cpp</in>
+            <in>cpml.cpp</in>
+            <in>cpml.h</in>
+            <in>cpml1.cpp</in>
+            <in>cpml1.h</in>
+            <in>cpml2.cpp</in>
+            <in>cpml2.h</in>
+            <in>cpml3.cpp</in>
+            <in>cpml3.h</in>
+            <in>cpmld.cpp</in>
+            <in>cpmld.h</in>
+            <in>data1d.cpp</in>
+            <in>data1d.h</in>
+            <in>datastruct.cpp</in>
+            <in>datastruct.h</in>
+            <in>dmain.cpp</in>
+            <in>emain.cpp</in>
+            <in>fdtd.cpp</in>
+            <in>fdtd.h</in>
+            <in>orig.cpp</in>
+            <in>test.cpp</in>
+            <in>testMain.cpp</in>
+            <in>testcpml.cpp</in>
+          </df>
+        </df>
+      </df>
+      <df name="small">
+      </df>
       <df name="src">
         <in>InonizationFormula.cpp</in>
         <in>InonizationFormula.h</in>
+        <in>cmain.cpp</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
+        <in>cpml1.cpp</in>
+        <in>cpml1.h</in>
         <in>cpml2.cpp</in>
         <in>cpml2.h</in>
         <in>cpml3.cpp</in>
         <in>cpml3.h</in>
+        <in>cpmld.cpp</in>
+        <in>cpmld.h</in>
         <in>data1d.cpp</in>
         <in>data1d.h</in>
         <in>datastruct.cpp</in>
         <in>datastruct.h</in>
+        <in>dmain.cpp</in>
+        <in>emain.cpp</in>
         <in>fdtd.cpp</in>
         <in>fdtd.h</in>
         <in>orig.cpp</in>
+        <in>tcpml.cpp</in>
         <in>test.cpp</in>
         <in>testMain.cpp</in>
         <in>testcpml.cpp</in>
