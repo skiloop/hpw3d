@@ -1,6 +1,6 @@
 #CXX=g++
 CXX=icpc
-CPPFLAGS=-Wall -g -DDEBUG=3
+CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY
 SRC=src
 OBJS=cpml.o test.o datastruct.o fdtd.o InonizationFormula.o
 
