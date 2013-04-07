@@ -262,15 +262,6 @@ void fdtd::createCoeff() {
 }
 
 void fdtd::initCoeff(const MyDataF dt, const MyDataF dx, const MyDataF dy, const MyDataF dz) {
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Magnetic Coefficients
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Chxey = dt / mu_0 / dz;
-    Chxez = -dt / mu_0 / dy;
-    Chyez = dt / mu_0 / dx;
-    Chyex = -dt / mu_0 / dz;
-    Chzex = dt / mu_0 / dy;
-    Chzey = -dt / mu_0 / dz;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Velocity Coefficients
@@ -282,66 +273,76 @@ void fdtd::initCoeff(const MyDataF dt, const MyDataF dx, const MyDataF dy, const
     Cvxex = Cvyey = Cvzez = e * dt / 2 / me / gamma;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // update beta
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    updateBeta();
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //electricity coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    updateCoeff(dt,dx,dy,dz);
+    updateCoeff();
 
 }
-void fdtd::updateCoeff(const MyDataF dt, const MyDataF dx, const MyDataF dy, const MyDataF dz){
-       
+
+void fdtd::updateCoeff() {
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //electricity coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     int i, j, k;
     int im, jm, km;
-    MyDataF tmp = 0.5 * e * dt * (1 + alpha) / eps_0;
+    MyDataF tmp = 0.5 * e * (1 + alpha);
     for (i = 0; i < Ex.nx; i++) {
         for (j = 0; j < Ex.ny; j++) {
             for (k = 0; k < Ex.nz; k++) {
-                Cexex.p[i][j][k] = (1 - beta.p[im][jm][km]) / (1 + beta.p[im][jm][km]);
-                Cexhy.p[i][j][k] = -dt / (eps_0 + eps_0 * beta.p[im][jm][km]) / dz;
-                Cexhz.p[i][j][k] = dt / (eps_0 + eps_0 * beta.p[im][jm][km]) / dy;
-                Cexvx.p[i][j][k] = tmp * Ne.p[im][jm][km] / (1 + beta.p[im][jm][km]);
+                MyDataF kappa = (1 + beta.p[im][jm][km]);
+                Cexex.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+                Cexhy.p[i][j][k] = -1 / kappa;
+                Cexhz.p[i][j][k] = -Cexhy.p[i][j][k]; //1 / kappa;
+                Cexvx.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
     }
     for (i = 0; i < Ey.nx; i++) {
         for (j = 0; j < Ey.ny; j++) {
             for (k = 0; k < Ey.nz; k++) {
-                Ceyey.p[i][j][k] = (1 - beta.p[im][jm][km]) / (1 + beta.p[im][jm][km]);
-                Ceyhx.p[i][j][k] = dt / (eps_0 + eps_0 * beta.p[im][jm][km]) / dz;
-                Ceyhz.p[i][j][k] = -dt / (eps_0 + eps_0 * beta.p[im][jm][km]) / dx;
-                Ceyvy.p[i][j][k] = tmp * Ne.p[im][jm][km] / (1 + beta.p[im][jm][km]);
+                MyDataF kappa = (1 + beta.p[im][jm][km]);
+                Ceyey.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+                Ceyhx.p[i][j][k] = 1 / kappa;
+                Ceyhz.p[i][j][k] = -Ceyhx.p[i][j][k]; //1 / kappa;
+                Ceyvy.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
     }
     for (i = 0; i < Ez.nx; i++) {
         for (j = 0; j < Ez.ny; j++) {
             for (k = 0; k < Ez.nz; k++) {
-                Cezez.p[i][j][k] = (1 - beta.p[im][jm][km]) / (1 + beta.p[im][jm][km]);
-                Cezhy.p[i][j][k] = dt / (eps_0 + eps_0 * beta.p[im][jm][km]) / dx;
-                Cezhx.p[i][j][k] = -dt / (eps_0 + eps_0 * beta.p[im][jm][km]) / dy;
-                Cezvz.p[i][j][k] = tmp * Ne.p[im][jm][km] / (1 + beta.p[im][jm][km]);
+                MyDataF kappa = (1 + beta.p[im][jm][km]);
+                Cezez.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+                Cezhy.p[i][j][k] = 1 / kappa;
+                Cezhx.p[i][j][k] = -Cezhy.p[i][j][k]; //1 / kappa;
+                Cezvz.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
     }
 }
-void fdtd::updateBeta(){
-    int is=istart*neGrid;
-    int ie=iend*neGrid;
-    int js=jstart*neGrid;
-    int je=jend*neGrid;
-    int ks=kstart*neGrid;
-    int ke=kend*neGrid;
-    MyDataF temp=0.25*e*e*dt*dt/me/eps_0/gamma;
-    for(int i=is;i<ie;i++){
-        for(int j=js;j<je;j++){
-            for(int k=ks;k<ke;k++){
-                beta.p[i][j][k]=temp*Ne.p[i][j][k];
+
+void fdtd::updateBeta() {
+    int is = istart*neGrid;
+    int ie = iend*neGrid;
+    int js = jstart*neGrid;
+    int je = jend*neGrid;
+    int ks = kstart*neGrid;
+    int ke = kend*neGrid;
+    MyDataF temp = 0.25 * e * e * dt * dt / me / eps_0 / gamma;
+    for (int i = is; i < ie; i++) {
+        for (int j = js; j < je; j++) {
+            for (int k = ks; k < ke; k++) {
+                beta.p[i][j][k] = temp * Ne.p[i][j][k];
             }
         }
     }
-    
+
 }
 #endif
 

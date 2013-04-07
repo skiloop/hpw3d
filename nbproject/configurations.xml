@@ -15,7 +15,6 @@
         <in>cpml2.cpp</in>
         <in>cpml2.h</in>
         <in>cpml3.cpp</in>
-        <in>cpml3.h</in>
         <in>data1d.cpp</in>
         <in>data1d.h</in>
         <in>datastruct.cpp</in>
@@ -64,47 +63,76 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="Efields/loadAllTxtFile.m" ex="false" tool="0" flavor2="0">
+      <item path="Efields/loadAllTxtFile.m" ex="false" tool="0" flavor2="2">
+        <cTool>
+        </cTool>
       </item>
-      <item path="Efields/playMovieWithRes.m" ex="false" tool="0" flavor2="0">
+      <item path="Efields/playMovieWithRes.m" ex="false" tool="0" flavor2="2">
+        <cTool>
+        </cTool>
       </item>
-      <item path="Efields/runMyJobs.m" ex="false" tool="0" flavor2="0">
+      <item path="Efields/runMyJobs.m" ex="false" tool="0" flavor2="2">
+        <cTool>
+        </cTool>
       </item>
-      <item path="src/InonizationFormula.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/InonizationFormula.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="src/InonizationFormula.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/cpml.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/cpml.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="src/cpml.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/cpml2.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/cpml2.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="src/cpml2.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/cpml3.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/cpml3.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
-      <item path="src/cpml3.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/data1d.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/data1d.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="src/data1d.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/datastruct.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/datastruct.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="src/datastruct.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/fdtd.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/fdtd.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="src/fdtd.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/orig.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/orig.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
-      <item path="src/test.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/test.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="src/testMain.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
+          </preprocessorList>
+        </ccTool>
       </item>
-      <item path="src/testcpml.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/testcpml.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
     </conf>
   </confs>

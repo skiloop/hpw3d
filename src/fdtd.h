@@ -114,13 +114,13 @@ private:
     MyDataF gamma;
     MyDataF a;
     MyDataF alpha;
-    
+
     // update coefficients
-    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
-    data3d<MyDataF> Cexex,Ceyey,Cezez,Cezvz,Ceyvy,Cexvx;
-    data3d<MyDataF> Cexhy,Cexhz,Ceyhx,Ceyhz,Cezhy,Cezhx;
-//    data3d<MyDataF> Cvxex,Cvyey,Cvzez;
-    MyDataF Cvxex,Cvyey,Cvzez;
+    //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
+    data3d<MyDataF> Cexex, Ceyey, Cezez, Cezvz, Ceyvy, Cexvx;
+    data3d<MyDataF> Cexhy, Cexhz, Ceyhx, Ceyhz, Cezhy, Cezhx;
+    //    data3d<MyDataF> Cvxex,Cvyey,Cvzez;
+    MyDataF Cvxex, Cvyey, Cvzez;
 
     //Plasma
     data3d<MyDataF> Ne, Ne_pre;
@@ -128,7 +128,7 @@ private:
     data3d<MyDataF> Erms;
     // Beta
     data3d<MyDataF> beta;
-    
+
     //initial plasma value
     MyDataF Ne0;
 
@@ -138,11 +138,11 @@ private:
     data3d<MyDataF> Vz;
 
     //initials
-    void initCoeff(const MyDataF dt,const MyDataF dx,const MyDataF dy,const MyDataF dz);
+    void initCoeff(const MyDataF dt, const MyDataF dx, const MyDataF dy, const MyDataF dz);
     void createCoeff();
-    void updateCoeff(const MyDataF dt, const MyDataF dx, const MyDataF dy, const MyDataF dz);
+    void updateCoeff();
     void updateBeta();
-    
+
     int UpdateErms(void);
     int InterpErms();
     int UpdateDensity(void);
