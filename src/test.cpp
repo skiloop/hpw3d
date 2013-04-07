@@ -7,6 +7,7 @@ MyDataF mu_0;
 MyDataF dt, dx, dy, dz;
 MyDataF pi, C;
 MyDataF me, e;
+MyDataF T;
 void initComData();
 
 int main() {

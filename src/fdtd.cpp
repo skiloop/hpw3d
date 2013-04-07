@@ -12,7 +12,7 @@
 extern MyDataF eps_0, epsR;
 extern MyDataF mu_0;
 extern MyDataF dt, dx, dy, dz;
-extern MyDataF pi, C, me, e;
+extern MyDataF pi, C, me, e,T;
 
 using namespace std;
 #ifdef WITH_DENSITY
@@ -248,12 +248,9 @@ void fdtd::createCoeff() {
     Cexex.CreateStruct(Ex, 0.0);
     Ceyey.CreateStruct(Ey, 0.0);
     Cezez.CreateStruct(Ez, 0.0);
-    Cexhy.CreateStruct(Ex, 0.0);
-    Cexhz.CreateStruct(Ex, 0.0);
-    Ceyhx.CreateStruct(Ey, 0.0);
-    Ceyhz.CreateStruct(Ey, 0.0);
-    Cezhx.CreateStruct(Ez, 0.0);
-    Cezhy.CreateStruct(Ez, 0.0);
+    Cexh.CreateStruct(Ex, 0.0);
+    Ceyh.CreateStruct(Ey, 0.0);
+    Cezh.CreateStruct(Ez, 0.0);
     Cexvx.CreateStruct(Ex, 0.0);
     Ceyvy.CreateStruct(Ey, 0.0);
     Cezvz.CreateStruct(Ez, 0.0);
@@ -261,7 +258,7 @@ void fdtd::createCoeff() {
     beta.CreateStruct(Ne, 0.0);
 }
 
-void fdtd::initCoeff(const MyDataF dt, const MyDataF dx, const MyDataF dy, const MyDataF dz) {
+void fdtd::initCoeff() {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Velocity Coefficients
@@ -286,41 +283,40 @@ void fdtd::initCoeff(const MyDataF dt, const MyDataF dx, const MyDataF dy, const
 
 void fdtd::updateCoeff() {
 
+    updateBeta();
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //electricity coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     int i, j, k;
     int im, jm, km;
+    int halfNeGrid=neGrid/2;
     MyDataF tmp = 0.5 * e * (1 + alpha);
-    for (i = 0; i < Ex.nx; i++) {
-        for (j = 0; j < Ex.ny; j++) {
-            for (k = 0; k < Ex.nz; k++) {
+    for (i = 0,im=halfNeGrid; i < Ex.nx; i++,im+=neGrid) {
+        for (j = 0,jm=0; j < Ex.ny; j++,jm+=neGrid) {
+            for (k = 0,km=halfNeGrid; k < Ex.nz; k++,km+=neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Cexex.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Cexhy.p[i][j][k] = -1 / kappa;
-                Cexhz.p[i][j][k] = -Cexhy.p[i][j][k]; //1 / kappa;
+                Cexh.p[i][j][k] = 1 / kappa;
                 Cexvx.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
     }
-    for (i = 0; i < Ey.nx; i++) {
-        for (j = 0; j < Ey.ny; j++) {
-            for (k = 0; k < Ey.nz; k++) {
+    for (i = 0,im=0; i < Ey.nx; i++,im+=neGrid) {
+        for (j = 0,jm=halfNeGrid; j < Ey.ny; j++,jm+=neGrid) {
+            for (k = 0,km=halfNeGrid; k < Ey.nz; k++,km+=neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Ceyey.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Ceyhx.p[i][j][k] = 1 / kappa;
-                Ceyhz.p[i][j][k] = -Ceyhx.p[i][j][k]; //1 / kappa;
+                Ceyh.p[i][j][k] = 1 / kappa;
                 Ceyvy.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
     }
-    for (i = 0; i < Ez.nx; i++) {
-        for (j = 0; j < Ez.ny; j++) {
-            for (k = 0; k < Ez.nz; k++) {
+    for (i = 0,im=0; i < Ez.nx; i++,im+=neGrid) {
+        for (j = 0,jm=0; j < Ez.ny; j++,jm+=neGrid) {
+            for (k = 0,km=0; k < Ez.nz; k++,km+=neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Cezez.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Cezhy.p[i][j][k] = 1 / kappa;
-                Cezhx.p[i][j][k] = -Cezhy.p[i][j][k]; //1 / kappa;
+                Cezh.p[i][j][k] = 1 / kappa;
                 Cezvz.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
@@ -452,13 +448,14 @@ void fdtd::setUp() {
     //Fine Grid size
     dsf = dx / neGrid;
 
-    //Fine Time Step Size
-    dtf = dt / neGrid;
-
     mu_e = e / me / vm; //3.7e-2;
     mu_i = mu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
     De = mu_e * 2 * 1.602e-19 / e; //
     Da = De * mu_i / mu_e;
+    MyDataF Dmax=(De>Da?De:Da);
+        //Fine Time Step Size
+    dtf = 0.6*dsf*dsf/2/Dmax;
+    neTotalStep=dtf/dt;
 #endif
     //  Specify the dipole size 
     istart = 24;
@@ -531,7 +528,6 @@ void fdtd::compute() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     cout << endl;
     cout << "Begin time-stepping..." << endl;
-
     for (n = 1; n <= nMax; ++n) {
 
         cout << "Ez at time step " << n << " at (" << isp << ", " << 40 << ", " << ksp;
@@ -596,18 +592,29 @@ void fdtd::compute() {
             for (i = 0; i < Imax - 1; ++i) {
 
                 for (j = 1; j < Jmax - 1; ++j) {
-
+#ifdef WITH_DENSITY
+                    MyDataF Exp = Ex.p[i][j][k];
+#endif
                     id = ID1.p[i][j][k];
                     if (id == 1) { // PEC
 
                         Ex.p[i][j][k] = 0;
 
                     } else {
-
+#ifdef WITH_DENSITY
+                        Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] * Cexex.p[i][j][k] + CB[id] * Cexh.p[i][j][k]*
+                                ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
+                                (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]) +
+                                Cexvx.p[i][j][k] * Vx.p[i][j][k];
+#else
                         Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] + CB[id] *
                                 ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
                                 (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]);
+#endif                                  
                     }
+#ifdef WITH_DENSITY
+                    Vx.p[i][j][k] = alpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
+#endif
                 }
             }
             pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
@@ -621,18 +628,29 @@ void fdtd::compute() {
             for (i = 1; i < Imax - 1; ++i) {
 
                 for (j = 0; j < Jmax - 1; ++j) {
-
+#ifdef WITH_DENSITY
+                    MyDataF Eyp = Ey.p[i][j][k];
+#endif
                     id = ID2.p[i][j][k];
                     if (id == 1) { // PEC
 
                         Ey.p[i][j][k] = 0;
 
                     } else {
-
+#ifdef WITH_DENSITY
+                        Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
+                                ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
+                                (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]) +
+                                Ceyvy.p[i][j][k] * Vy.p[i][j][k];
+#else
                         Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] + CB[id] *
                                 ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
                                 (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]);
+#endif
                     }
+#ifdef WITH_DENSITY
+                    Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+#endif
                 }
             }
             pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
@@ -647,18 +665,29 @@ void fdtd::compute() {
             for (i = 1; i < Imax - 1; ++i) {
 
                 for (j = 1; j < Jmax - 1; ++j) {
-
+#ifdef WITH_DENSITY
+                    MyDataF Ezp = Ez.p[i][j][k];
+#endif
                     id = ID3.p[i][j][k];
                     if (id == 1) { // PEC
 
                         Ez.p[i][j][k] = 0;
 
                     } else {
-
+#ifdef WITH_DENSITY
+                        Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] * Cezez.p[i][j][k] + CB[id] * Cezh.p[i][j][k]
+                                * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
+                                (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]) +
+                                Cezvz.p[i][j][k] * Vz.p[i][j][k];
+#else
                         Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] + CB[id]
                                 * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
                                 (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]);
+#endif
                     }
+#ifdef WITH_DENSITY
+                    Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+#endif
                 }
             }
             pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
@@ -677,7 +706,14 @@ void fdtd::compute() {
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  WRITE TO OUTPUT FILES
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+#ifdef WITH_DENSITY
+        UpdateErms();
+        if(n%neTotalStep==0){
+            InterpErms();
+            UpdateDensity();
+            updateCoeff();
+        }
+#endif
         if ((n % save_modulus) == 0) {
             writeField(n);
         }

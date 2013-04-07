@@ -102,6 +102,7 @@ private:
     MyDataF dsf;
     //time step of plasma
     MyDataF dtf;
+    int neTotalStep;
 
     //plasma variables
     MyDataF vm;
@@ -118,7 +119,7 @@ private:
     // update coefficients
     //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
     data3d<MyDataF> Cexex, Ceyey, Cezez, Cezvz, Ceyvy, Cexvx;
-    data3d<MyDataF> Cexhy, Cexhz, Ceyhx, Ceyhz, Cezhy, Cezhx;
+    data3d<MyDataF> Cexh, Ceyh, Cezh;
     //    data3d<MyDataF> Cvxex,Cvyey,Cvzez;
     MyDataF Cvxex, Cvyey, Cvzez;
 
@@ -138,7 +139,7 @@ private:
     data3d<MyDataF> Vz;
 
     //initials
-    void initCoeff(const MyDataF dt, const MyDataF dx, const MyDataF dy, const MyDataF dz);
+    void initCoeff();
     void createCoeff();
     void updateCoeff();
     void updateBeta();
