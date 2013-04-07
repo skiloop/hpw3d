@@ -1,0 +1,132 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\title{3D Format}
+\author{Baofeng Shi}
+
+\begin{document}
+\maketitle
+\section{Orignal functions}
+\begin{equation}
+\nabla \times \vec{E}=-\mu_{0}\frac{\partial \vec{H}}{\partial t}
+\end{equation}
+\begin{equation}
+\nabla \times \vec{H}=\epsilon_{0}\frac{\partial \vec{E}}{\partial t}-e n_{e}\vec{v}_{e}
+\end{equation}
+\begin{equation}
+\frac{\partial\vec{v}_{e}}{\partial t}=-\frac{e\vec{E}}{m_{e}}-\nu_{m}\vec{v}_{e}
+\end{equation}
+
+%Expand to seperated equations
+Expand to seperated equations:
+\begin{equation}\label{eqHx}
+\frac{\partial H_{x}}{\partial t}=\frac{1}{\mu_{0}}\left[\frac{\partial E_{y}}{\partial z}-\frac{\partial E_{z}}{\partial y}\right]
+\end{equation}
+\begin{equation}\label{eqHy}
+\frac{\partial H_{y}}{\partial t}=\frac{1}{\mu_{0}}\left[\frac{\partial E_{z}}{\partial x}-\frac{\partial E_{x}}{\partial z}\right]
+\end{equation}
+\begin{equation}\label{eqHz}
+\frac{\partial H_{z}}{\partial t}=\frac{1}{\mu_{0}}\left[\frac{\partial E_{x}}{\partial y}-\frac{\partial E_{y}}{\partial x}\right]
+\end{equation}
+
+% E equation
+\begin{equation}\label{eqEx}
+\frac{\partial E_{x}}{\partial t}=\frac{1}{\epsilon_{0}}\left[\frac{\partial H_{z}}{\partial y}-\frac{\partial H_{y}}{\partial z}+e n_{e}v_{ex}\right]
+\end{equation}
+\begin{equation}\label{eqEy}
+\frac{\partial E_{y}}{\partial t}=\frac{1}{\epsilon_{0}}\left[\frac{\partial H_{x}}{\partial z}-\frac{\partial H_{z}}{\partial x}+e n_{e}v_{ey}\right]
+\end{equation}
+\begin{equation}\label{eqEz}
+\frac{\partial E_{z}}{\partial t}=\frac{1}{\epsilon_{0}}\left[\frac{\partial H_{y}}{\partial x}-\frac{\partial H_{x}}{\partial y}+e n_{e}v_{ez}\right]
+\end{equation}
+
+% Velocity equations
+\begin{equation}\label{eqVx}
+\frac{\partial v_{ex}}{\partial t}=-\frac{e E_{x}}{m_{e}}-\nu_{m}v_{ex}
+\end{equation}
+
+\begin{equation}\label{eqVy}
+\frac{\partial v_{ey}}{\partial t}=-\frac{e E_{y}}{m_{e}}-\nu_{m}v_{ey}
+\end{equation}
+
+\begin{equation}\label{eqVz}
+\frac{\partial v_{ez}}{\partial t}=-\frac{e E_{z}}{m_{e}}-\nu_{m}v_{ez}
+\end{equation}
+\section{Approximations}
+First solve velocity equations:
+\begin{equation}
+\frac{v_{e}^{n+1}-v_{e}^{n}}{\Delta t}=
+-\frac{e}{2m_{e}}\left[E^{n+1}+E^{n}\right]
+-\frac{\nu_{m}}{2}\left[v_{e}^{n+1}+v_{e}^{n}\right]
+\end{equation}
+after adjusting we get
+\begin{equation}\label{velSol}
+v_{e}^{n+1}=\alpha v_{e}^{n}-\frac{e\Delta t}{2m_{e}\gamma}\left[E^{n+1}+E^{n}\right]
+\end{equation}
+\begin{equation}\label{tempEqu}
+\alpha=\frac{1-a}{1+a},\beta=\frac{\omega_{p}^{2}{\Delta t}^{2}}{4\gamma},\gamma=1+a,a=\frac{\nu_{m}\Delta t}{2}
+\end{equation}
+% Solving E equations
+Solving E-equations.
+\begin{equation}\label{EsTemp}
+\frac{\epsilon_{0}}{\Delta t}\left[E^{n+1}-E^{n}\right]
+-\frac{e n_{e}}{2}\left[v_{e}^{n+1}+v_{e}^{n}\right]=\nabla H
+\end{equation}
+put (\ref{velSol}) into (\ref{EsTemp}) we get
+\begin{equation}
+E^{n+1}=E^{n}\frac{1-\beta}{1+\beta}+\frac{e n_{e}\Delta t}{2\epsilon_{0}}\frac{1+\alpha}{1+\beta}v_{e}^{n}+\frac{\Delta t}{(1+\beta)\epsilon_{0}}\nabla H
+\end{equation}
+\section{Full iteration equations}
+H-equations
+% Hx
+\begin{equation}
+H_{x}^{n+1/2}(i,j+1/2,k+1/2)=H_{x}^{n-1/2}(i,j+1/2,k+1/2)
++C_{hxey}\left[E_{y}^{n}(i,j+1/2,k+1)-E_{y}^{n}(i,j+1/2,k+1)\right]
++C_{hxez}\left[E_{z}^{n}(i,j+1,k+1/2)-E_{z}^{n}(i,j,k+1/2)\right]
+\end{equation}
+where $C_{hxey}=\frac{\Delta t}{\mu_{0}\Delta z},C_{hxez}=-\frac{\Delta t}{\mu_{0}\Delta y}$
+% Hy
+\begin{equation}
+H_{y}^{n+1/2}(i+1/2,j,k+1/2)=H_{y}^{n-1/2}(i+1/2,j,k+1/2)
++C_{hyez}\left[E_{z}^{n}(i+1,j,k+1/2)-E_{z}^{n}(i,j,k+1/2)\right]
++C_{hyex}\left[E_{x}^{n}(i+1/2,j,k+1)-E_{x}^{n}(i+1/2,j,k)\right]
+\end{equation}
+where $C_{hyez}=\frac{\Delta t}{\mu_{0}\Delta x},C_{hyex}=-\frac{\Delta t}{\mu_{0}\Delta z}$
+% Hz
+\begin{equation}
+H_{z}^{n+1/2}(i+1/2,j+1/2,k)=H_{z}^{n-1/2}(i+1/2,j+1/2,k)
++C_{hzex}\left[E_{x}^{n}(i+1/2,j+1,k)-E_{x}^{n}(i+1/2,j,k)\right]
++C_{hzey}\left[E_{z}^{n}(i+1,j+1/2,k)-E_{z}^{n}(i,j+1/2,k)\right]
+\end{equation}
+where $C_{hzex}=\frac{\Delta t}{\mu_{0}\Delta x},C_{hzey}=-\frac{\Delta t}{\mu_{0}\Delta z}$
+
+E-equations
+
+\begin{eqnarray}
+%Ex
+&& E_{x}^{n+1}(i+1/2,j,k)=C_{exex} E_{x}^{n}(i+1/2,j,k)+C_{exvx} V_{ex}^{n}(i+1/2,j,k)\nonumber\\
+&& +C_{exhy}\left[H_{y}^{n+1/2}(i+1/2,j,k+1/2)-H_{y}^{n+1/2}(i+1/2,j,k-1/2)\right]\nonumber\\
+&& +C_{exhz}\left[H_{z}^{n+1/2}(i+1/2,j+1/2,k)-H_{z}^{n+1/2}(i+1/2,j-1/2,k)\right]
+\end{eqnarray}
+%Ey
+\begin{eqnarray}
+&& E_{y}^{n+1}(i,j+1/2,k)=C_{eyey} E_{y}^{n}(i,j+1/2,k)+C_{eyvy} V_{ey}^{n}(i,j+1/2,k)\nonumber\\
+&& +C_{eyhz}\left[H_{z}^{n+1/2}(i+1/2,j+1/2,k)-H_{z}^{n+1/2}(i-1/2,j+1/2,k)\right]\nonumber\\
+&& +C_{eyhx}\left[H_{x}^{n+1/2}(i,j+1/2,k+1/2)-H_{x}^{n+1/2}(i,j+1/2,k-1/2)\right]
+\end{eqnarray}
+%Ez
+\begin{eqnarray}
+&& E_{z}^{n+1}(i,j,k+1/2)=C_{ezez} E_{z}^{n}(i,j,k+1/2)+C_{ezvz} V_{ez}^{n}(i,j,k+1/2)\nonumber\\
+&& +C_{ezhx}\left[H_{x}^{n+1/2}(i,j+1/2,k+1/2)-H_{x}^{n+1/2}(i,j-1/2,k+1/2)\right]\nonumber\\
+&& +C_{ezhy}\left[H_{y}^{n+1/2}(i+1/2,j,k+1/2)-H_{y}^{n+1/2}(i-1/2,j,k+1/2)\right]
+\end{eqnarray}
+Velocity Equations
+\begin{equation}
+V_{ex}^{n+1}(i+1/2,j,k)=\alpha V_{ex}^{n}(i+1/2,j,k)-C_{vxex}\left[E_{ex}^{n+1}(i+1/2,j,k)+E_{ex}^{n}(i+1/2,j,k)\right]
+\end{equation}
+\begin{equation}
+V_{ey}^{n+1}(i,j+1/2,k)=\alpha V_{ey}^{n}(i,j+1/2,k)-C_{vyey}\left[E_{ey}^{n+1}(i,j+1/2,k)+E_{ey}^{n}(i,j+1/2,k)\right]
+\end{equation}
+\begin{equation}
+V_{ez}^{n+1}(i,j,k+1/2)=\alpha V_{ez}^{n}(i,j,k+1/2)-C_{vzez}\left[E_{ez}^{n+1}(i,j,k+1/2)+E_{ez}^{n}(i,j,k+1/2)\right]
+\end{equation}
+\end{document}
