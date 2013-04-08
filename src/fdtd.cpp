@@ -272,7 +272,7 @@ void fdtd::initCoeff() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // update beta
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    updateBeta();
+    //updateBeta();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //electricity coefficients
@@ -413,6 +413,7 @@ void fdtd::initialize() {
     Ne.CreateStruct(Imax*neGrid, Jmax*neGrid, Kmax*neGrid, Ne0);
     Erms.CreateStruct(Ne, 0.0);
     Ne_pre.CreateStruct(Ne, 0.0);
+	createCoeff();
 #endif
 
 #if(DEBUG>=3)
@@ -507,6 +508,11 @@ void fdtd::setUp() {
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     pml.initParmeters(dx, dy, dz, m, ma);
+
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// Initial Coefficients
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	initCoeff();
 
     cout << endl << "TIme step = " << dt << endl;
     cout << endl << "Number of steps = " << nMax << endl;

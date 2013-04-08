@@ -1,6 +1,6 @@
 
 #include<iostream>
-#define WITH_DENSITY
+//#define WITH_DENSITY
 #include "fdtd.h"
 MyDataF eps_0, epsR;
 MyDataF mu_0;
