@@ -15,8 +15,8 @@ class cpml {
 public:
 
     //  Fundamental Constants (MKS units)
-    static const double pi = 3.14159265358979;
-    static const double C = 2.99792458E8;
+    const static double pi;
+    const static double C;
     static double mu_0;
     static double eps_0;
 
@@ -79,30 +79,7 @@ public:
 
     virtual ~cpml() {
     };
-    //    void Initial(unsigned nx, unsigned ny, unsigned nz, unsigned ncpml);
-    //static void InitialMuEps();
-    //    void // <editor-fold defaultstate="collapsed" desc="comment">
-    //    createCPMLArray()// </editor-fold>
-    //    ;
-    //    void createPsi();
-    //    void createCBKAP();
-    //    void createDen();
-    //    void initCPML(const double dt, const double dx, const double dy, const double dz);
-    //    void initPsi();
-    //    void initCBKAP(const double dt, const double dx, const double dy, const double dz);
-    //    void initDen(const double dt, const double dx, const double dy, const double dz);
-    //void initParmeters(const double dx, const double dy, const double dz, int m_, int ma_);
-    //    void updateHxIn(const int k, data3d<type1> &Hx, const data3d<type1> &Ez, const float DB, const double dy);
-    //    void updateHxOut(data3d<type1> &Hx, const data3d<type1> &Ey, const float DB, const double dz);
-    //    void updateHyIn(const int k, data3d<type1> &Hy, const data3d<type1> &Ez, const float DB, const double dx);
-    //    void updateHyOut(data3d<type1> &Hy, const data3d<type1> &Ex, const float DB, const double dz);
-    //    void updateHz(const int k, data3d<type1> &Hz, const data3d<type1>&Ex, const data3d<type1>&Ey, const float DB, const double dx, const double dy);
-    //    void updateExIn(const int k, data3d<type1> &Ex, const data3d<type1> &Hz, const data3d<type2>&ID1, const type1* CB, const double dy);
-    //    void updateExOut(data3d<type1> &Ex, const data3d<type1> &Hy, const data3d<type2>&ID1, const type1* CB, const double dz);
-    //    void updateEyIn(const int k, data3d<type1> &Ey, const data3d<type1> &Hz, const data3d<type2>&ID2, const type1* CB, const double dx);
-    //    void updateEyOut(data3d<type1> &Ey, const data3d<type1> &Hx, const data3d<type2>&ID2, const type1* CB, const double dz);
-    //    void updateEz(const int k, data3d<type1> &Ez, const data3d<type1>&Hx, const data3d<type1>&Hy, const data3d<type2>&ID3, const type1* CB, const double dx, const double dy);
-
+   
     void updateEz(const int k, data3d<type1> &Ez, const data3d<type1>&Hx, const data3d<type1>&Hy, const data3d<type2>&ID3, const type1* CB, const double dx, const double dy) {
         int i, j, ii, jj;
         short id;
@@ -977,5 +954,9 @@ template<class type1, class type2>
 double cpml<type1, type2>::mu_0 = 0;
 template<class type1, class type2>
 double cpml<type1, type2>::epsR = 1.0;
+template<class type1, class type2>
+const double cpml<type1, type2>::C = 2.99792458E8;
+template<class type1, class type2>
+const double cpml<type1, type2>::pi = 3.14159265358979;
 #endif	/* CPML_H */
 

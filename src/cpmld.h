@@ -15,8 +15,8 @@ class cpmld {
 public:
 
     //  Fundamental Constants (MKS units)
-    static const double pi = 3.14159265358979;
-    static const double C = 2.99792458E8;
+    static const double pi;
+    static const double C;
     static double mu_0;
     static double eps_0;
 
@@ -977,5 +977,9 @@ template<class type1, class type2>
 double cpmld<type1, type2>::mu_0 = 0;
 template<class type1, class type2>
 double cpmld<type1, type2>::epsR = 1.0;
+template<class type1, class type2>
+const double cpmld<type1, type2>::C = 2.99792458E8;
+template<class type1, class type2>
+const double cpmld<type1, type2>::pi = 3.14159265358979;
 #endif	/* CPMLD_H */
 

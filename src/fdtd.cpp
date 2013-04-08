@@ -66,11 +66,11 @@ void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
 }
 
 int fdtd::UpdateErms(void) {
-    int i, j, k;
-    int io, jo, ko;
+    unsigned i, j, k;
+    unsigned io, jo, ko;
     for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
         for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
-            for (k = kstart, jo = kstart * neGrid; k <= kend; k++, ko += neGrid) {
+            for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
                 MyDataF exIJK = (Ex.p[i - 1][j][k - 1] + Ex.p[i + 1][j][k - 1] + Ex.p[i - 1][j][k + 1] + Ex.p[i + 1][j][k + 1]) / 4;
                 MyDataF eyIJK = (Ey.p[i][j - 1][k - 1] + Ey.p[i][j + 1][k - 1] + Ey.p[i][j - 1][k + 1] + Ey.p[i][j + 1][k + 1]) / 4;
                 Erms.p[io][jo][ko] = sqrt(Ez.p[i][j][k] * Ez.p[i][j][k] + exIJK * exIJK + eyIJK * eyIJK);
@@ -81,12 +81,12 @@ int fdtd::UpdateErms(void) {
 }
 
 int fdtd::InterpErms() {
-    int is, js, ks;
-    int in, jn, kn;
-    int i, j, k;
-    int im, jm, km;
-    int iu, ju, ku;
-    int ngred = neGrid * neGrid*neGrid;
+    unsigned is, js, ks;
+    unsigned in, jn, kn;
+    unsigned i, j, k;
+    unsigned im, jm, km;
+    unsigned iu, ju, ku;
+    unsigned ngred = neGrid * neGrid*neGrid;
     for (is = istart, in = istart + neGrid; is < iend; is = in, in += neGrid) {
         for (js = jstart, jn = jstart + neGrid; js < jend; js = jn, jn += neGrid) {
             for (ks = kstart, kn = kstart + neGrid; ks < kend; ks = kn, kn += neGrid) {
@@ -118,7 +118,7 @@ int fdtd::UpdateDensity(void) {
     MyDataF maxvi = 0, minvi = 0;
     MyDataF vi, va;
 
-    int ci = 0, cj = 0, ck = 0;
+    unsigned ci = 0, cj = 0, ck = 0;
     Ne_pre = Ne;
 
     for (i = mt; i < Ne.nx - mt; i++) {
@@ -201,16 +201,16 @@ int fdtd::UpdateVeloity(void) {
 }
 
 void fdtd::WallCircleBound(data3d<MyDataF> &stru) {
-    int i, j, k;
-    int endx, endy, endz;
+    unsigned i, j, k;
+    unsigned endx, endy, endz;
 
     endx = stru.nx - 1;
     endy = stru.ny - 1;
     endz = stru.nz - 1;
 
     //bottom and top
-    int endz1 = endz - 1;
-    int endz2 = endz - 2;
+    unsigned endz1 = endz - 1;
+    unsigned endz2 = endz - 2;
     for (i = 1; i < endx; i++) {
         for (j = 1; j < endy; j++) {
             stru.p[i][j][0] = 2 * stru.p[i][j][1] - stru.p[i][j][2];
@@ -219,8 +219,8 @@ void fdtd::WallCircleBound(data3d<MyDataF> &stru) {
     }
 
     //left and right
-    int endx1 = endx - 1;
-    int endx2 = endx - 2;
+    unsigned endx1 = endx - 1;
+    unsigned endx2 = endx - 2;
     for (j = 1; j < endy; j++) {
         for (k = 1; k < endz; k++) {
             stru.p[0][j][k] = 2 * stru.p[1][j][k] - stru.p[2][j][k];
@@ -229,8 +229,8 @@ void fdtd::WallCircleBound(data3d<MyDataF> &stru) {
     }
 
     //front and back
-    int endy1 = endy - 1;
-    int endy2 = endy - 2;
+    unsigned endy1 = endy - 1;
+    unsigned endy2 = endy - 2;
     for (i = 1; i < endx; i++) {
         for (k = 1; k < endz; k++) {
             stru.p[i][0][k] = 2 * stru.p[i][1][k] - stru.p[i][2][k];
@@ -287,9 +287,9 @@ void fdtd::updateCoeff() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //electricity coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int i, j, k;
-    int im, jm, km;
-    int halfNeGrid=neGrid/2;
+    unsigned i, j, k;
+    unsigned im, jm, km;
+    unsigned halfNeGrid=neGrid/2;
     MyDataF tmp = 0.5 * e * (1 + alpha);
     for (i = 0,im=halfNeGrid; i < Ex.nx; i++,im+=neGrid) {
         for (j = 0,jm=0; j < Ex.ny; j++,jm+=neGrid) {
@@ -324,16 +324,16 @@ void fdtd::updateCoeff() {
 }
 
 void fdtd::updateBeta() {
-    int is = istart*neGrid;
-    int ie = iend*neGrid;
-    int js = jstart*neGrid;
-    int je = jend*neGrid;
-    int ks = kstart*neGrid;
-    int ke = kend*neGrid;
+    unsigned is = istart*neGrid;
+    unsigned ie = iend*neGrid;
+    unsigned js = jstart*neGrid;
+    unsigned je = jend*neGrid;
+    unsigned ks = kstart*neGrid;
+    unsigned ke = kend*neGrid;
     MyDataF temp = 0.25 * e * e * dt * dt / me / eps_0 / gamma;
-    for (int i = is; i < ie; i++) {
-        for (int j = js; j < je; j++) {
-            for (int k = ks; k < ke; k++) {
+    for (unsigned i = is; i < ie; i++) {
+        for (unsigned j = js; j < je; j++) {
+            for (unsigned k = ks; k < ke; k++) {
                 beta.p[i][j][k] = temp * Ne.p[i][j][k];
             }
         }
