@@ -341,8 +341,9 @@ void fdtd::updateBeta() {
     }
 
 }
-void fdtd::initDensity(){
-			
+
+void fdtd::initDensity() {
+
 }
 #endif
 
@@ -533,9 +534,9 @@ void fdtd::compute() {
     unsigned id, n;
     unsigned i, j, k;
     unsigned ic, jc, kc; //capture field
-    ic = isp;
-    jc = jsp + 5;
-    kc = ksp;
+    ic = isp + 1;
+    jc = jsp + 1;
+    kc = ksp + 2;
 
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -664,8 +665,8 @@ void fdtd::compute() {
 #endif
                     }
 #ifdef WITH_DENSITY
-                    if(isnan(Ey.p[i][j][k])){
-                        cout<<"("<<i<<","<<j<<","<<k<<")"<<endl;
+                    if (isnan(Ey.p[i][j][k])) {
+                        cout << "(" << i << "," << j << "," << k << ")" << endl;
                     }
                     Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
 #endif

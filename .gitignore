@@ -53,3 +53,4 @@ large
 # tex files
 *.log
 *.aux
+*.pdf
