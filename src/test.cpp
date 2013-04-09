@@ -25,4 +25,6 @@ void initComData() {
     mu_0 = 4.0 * pi * 1.0E-7;
     eps_0 = 1.0 / (C * C * mu_0);
     epsR = 1.0;
+    me=9.110e-31;
+    e=1.602e-19;
 }
