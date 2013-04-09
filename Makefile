@@ -4,7 +4,7 @@ CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY
 SRC=src
 OBJS=cpml.o test.o datastruct.o fdtd.o InonizationFormula.o
 
-projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml
+projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml 3DFormulaTransforming.pdf
 .PHONY:all clean
 
 all:$(projects)
@@ -49,6 +49,11 @@ tcpml.o:$(SRC)/tcpml.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
 %.o:$(SRC)/%.cpp $(SRC)/%.h
 	$(CXX) $(CPPFLAGS) -c $< 
+# ==========================================
+# 3DFormulaTransforming.pdf
+# ==========================================
+3DFormulaTransforming.pdf:3DFormulaTransforming.tex
+	texi2pdf 3DFormulaTransforming.tex
 clean:
 	-rm -f *.o $(projects)
 	sh clean.sh

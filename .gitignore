@@ -49,3 +49,7 @@ tcpml
 # some dir
 small
 large
+
+# tex files
+*.log
+*.aux
