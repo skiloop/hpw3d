@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
+#include <assert.h>
 
 #include "fdtd.h"
 #include "InonizationFormula.h"
@@ -12,7 +13,7 @@
 extern MyDataF eps_0, epsR;
 extern MyDataF mu_0;
 extern MyDataF dt, dx, dy, dz;
-extern MyDataF pi, C, me, e,T;
+extern MyDataF pi, C, me, e, T;
 
 using namespace std;
 #ifdef WITH_DENSITY
@@ -20,11 +21,11 @@ using namespace std;
 fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         unsigned _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned _nmaterial, unsigned _neGrid)
+        unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial, unsigned _neGrid)
 : nMax(_nmax), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
-, m(_m), ma(_ma)
+, m(_m), ma(_ma), pmlWith(pmlw)
 , neGrid(_neGrid)
 , numMaterials(_nmaterial)
 , Ne0(1e7)
@@ -35,11 +36,11 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         unsigned _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned _nmaterial)
+        unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial)
 : nMax(_nmax), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
-, m(_m), ma(_ma)
+, m(_m), ma(_ma), pmlWith(pmlw)
 , numMaterials(_nmaterial), epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
 #endif
@@ -289,11 +290,11 @@ void fdtd::updateCoeff() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     unsigned i, j, k;
     unsigned im, jm, km;
-    unsigned halfNeGrid=neGrid/2;
+    unsigned halfNeGrid = neGrid / 2;
     MyDataF tmp = 0.5 * e * (1 + alpha);
-    for (i = 0,im=halfNeGrid; i < Ex.nx; i++,im+=neGrid) {
-        for (j = 0,jm=0; j < Ex.ny; j++,jm+=neGrid) {
-            for (k = 0,km=halfNeGrid; k < Ex.nz; k++,km+=neGrid) {
+    for (i = 0, im = halfNeGrid; i < Ex.nx; i++, im += neGrid) {
+        for (j = 0, jm = 0; j < Ex.ny; j++, jm += neGrid) {
+            for (k = 0, km = halfNeGrid; k < Ex.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Cexex.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
                 Cexh.p[i][j][k] = 1 / kappa;
@@ -301,9 +302,9 @@ void fdtd::updateCoeff() {
             }
         }
     }
-    for (i = 0,im=0; i < Ey.nx; i++,im+=neGrid) {
-        for (j = 0,jm=halfNeGrid; j < Ey.ny; j++,jm+=neGrid) {
-            for (k = 0,km=halfNeGrid; k < Ey.nz; k++,km+=neGrid) {
+    for (i = 0, im = 0; i < Ey.nx; i++, im += neGrid) {
+        for (j = 0, jm = halfNeGrid; j < Ey.ny; j++, jm += neGrid) {
+            for (k = 0, km = halfNeGrid; k < Ey.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Ceyey.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
                 Ceyh.p[i][j][k] = 1 / kappa;
@@ -311,9 +312,9 @@ void fdtd::updateCoeff() {
             }
         }
     }
-    for (i = 0,im=0; i < Ez.nx; i++,im+=neGrid) {
-        for (j = 0,jm=0; j < Ez.ny; j++,jm+=neGrid) {
-            for (k = 0,km=0; k < Ez.nz; k++,km+=neGrid) {
+    for (i = 0, im = 0; i < Ez.nx; i++, im += neGrid) {
+        for (j = 0, jm = 0; j < Ez.ny; j++, jm += neGrid) {
+            for (k = 0, km = 0; k < Ez.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Cezez.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
                 Cezh.p[i][j][k] = 1 / kappa;
@@ -340,6 +341,9 @@ void fdtd::updateBeta() {
     }
 
 }
+void fdtd::initDensity(){
+			
+}
 #endif
 
 void fdtd::initialize() {
@@ -348,7 +352,7 @@ void fdtd::initialize() {
 
     // initial PML
     pml.InitialMuEps();
-    pml.Initial(Imax, Jmax, Kmax, 11);
+    pml.Initial(Imax, Jmax, Kmax, pmlWith);
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "numMaterials = " << numMaterials << endl;
@@ -413,7 +417,7 @@ void fdtd::initialize() {
     Ne.CreateStruct(Imax*neGrid, Jmax*neGrid, Kmax*neGrid, Ne0);
     Erms.CreateStruct(Ne, 0.0);
     Ne_pre.CreateStruct(Ne, 0.0);
-	createCoeff();
+    createCoeff();
 #endif
 
 #if(DEBUG>=3)
@@ -453,27 +457,27 @@ void fdtd::setUp() {
     mu_i = mu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
     De = mu_e * 2 * 1.602e-19 / e; //
     Da = De * mu_i / mu_e;
-    MyDataF Dmax=(De>Da?De:Da);
-        //Fine Time Step Size
-    dtf = 0.6*dsf*dsf/2/Dmax;
-    neTotalStep=dtf/dt;
+    MyDataF Dmax = (De > Da ? De : Da);
+    //Fine Time Step Size
+    dtf = 0.6 * dsf * dsf / 2 / Dmax;
+    neTotalStep = dtf / dt;
 #endif
     //  Specify the dipole size 
-    istart = 24;
-    iend = 26;
-    jstart = 55;
-    jend = 71;
-    kstart = 11;
-    kend = 13;
+    istart = pmlWith;
+    iend = Imax - pmlWith;
+    jstart = pmlWith;
+    jend = Jmax - pmlWith;
+    kstart = pmlWith;
+    kend = Kmax - pmlWith;
 
     // source position
-    isp = 25;
-    jsp = 63;
-    ksp = 12;
+    isp = Imax / 2;
+    jsp = Jmax / 2;
+    ksp = Kmax / 2;
 
-    if (iend > Imax)iend = Imax - 1;
-    if (jend > Jmax)jend = Jmax - 1;
-    if (kend > Kmax)kend = Kmax - 1;
+    if (iend < istart)iend = istart + 1;
+    if (jend < jstart)jend = jstart + 1;
+    if (kend < kstart)kend = kstart + 1;
     //Material properties
     //Location '0' is for free space and '1' is for PEC
     epsilon[2] = 4.0 * eps_0;
@@ -509,10 +513,10 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     pml.initParmeters(dx, dy, dz, m, ma);
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	// Initial Coefficients
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	initCoeff();
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Initial Coefficients
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    initCoeff();
 
     cout << endl << "TIme step = " << dt << endl;
     cout << endl << "Number of steps = " << nMax << endl;
@@ -528,7 +532,12 @@ void fdtd::compute() {
 
     unsigned id, n;
     unsigned i, j, k;
+    unsigned ic, jc, kc; //capture field
+    ic = isp;
+    jc = jsp + 5;
+    kc = ksp;
 
+    assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  BEGIN TIME STEP
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -536,8 +545,8 @@ void fdtd::compute() {
     cout << "Begin time-stepping..." << endl;
     for (n = 1; n <= nMax; ++n) {
 
-        cout << "Ez at time step " << n << " at (" << isp << ", " << 40 << ", " << ksp;
-        cout << ") :  " << Ez.p[isp][40][ksp] << endl;
+        cout << "Ez at time step " << n << " at (" << ic << ", " << jc << ", " << kc;
+        cout << ") :  " << Ez.p[ic][jc][kc] << endl;
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hx
@@ -655,6 +664,9 @@ void fdtd::compute() {
 #endif
                     }
 #ifdef WITH_DENSITY
+                    if(isnan(Ey.p[i][j][k])){
+                        cout<<"("<<i<<","<<j<<","<<k<<")"<<endl;
+                    }
                     Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
 #endif
                 }
@@ -714,7 +726,7 @@ void fdtd::compute() {
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef WITH_DENSITY
         UpdateErms();
-        if(n%neTotalStep==0){
+        if (n % neTotalStep == 0) {
             InterpErms();
             UpdateDensity();
             updateCoeff();

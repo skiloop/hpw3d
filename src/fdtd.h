@@ -9,17 +9,17 @@
 class fdtd {
 public:
 #ifdef WITH_DENSITY
-    fdtd(unsigned _nmax = 500, unsigned _imax = 51, unsigned _jmax = 126, unsigned _kmax = 26,
+    fdtd(unsigned _nmax = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             unsigned _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned _nmatrial = 50, unsigned _neGrid = 10);
+            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 11, unsigned _nmatrial = 50, unsigned _neGrid = 10);
 
     void SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
 #else
-    fdtd(unsigned _nmax = 500, unsigned _imax = 51, unsigned _jmax = 126, unsigned _kmax = 26,
+    fdtd(unsigned _nmax = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             unsigned _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned _nmatrial = 50);
+            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 11, unsigned _nmatrial = 50);
 #endif
     ~fdtd(void);
     //Function prototype definitions
@@ -56,7 +56,7 @@ private:
     // Output recording 
     unsigned ksource;
     // Specify the CPML Order and Other Parameters:
-    unsigned m, ma;
+    unsigned m, ma, pmlWith;
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
     unsigned istart, iend, jstart;
@@ -140,6 +140,7 @@ private:
 
     //initials
     void initCoeff();
+    void initDensity();
     void createCoeff();
     void updateCoeff();
     void updateBeta();
