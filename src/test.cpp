@@ -13,7 +13,10 @@ void initComData();
 int main() {
 
     initComData();
-    fdtd hpw(500,40,20,20);
+    fdtd hpw(100,40,20,20);
+#ifdef WITH_DENSITY
+    hpw.SetPlasmaVar(0,760*5.3E9,760,0);
+#endif
     //hpw.initialize();
     hpw.StartUp();
     return 0;

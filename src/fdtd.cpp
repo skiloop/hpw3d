@@ -7,7 +7,7 @@
 #include <iostream>
 #include <assert.h>
 #include <fstream>
-#include <strstream>
+#include <sstream>
 
 #include "fdtd.h"
 #include "InonizationFormula.h"
@@ -71,11 +71,12 @@ void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
 int fdtd::UpdateErms(void) {
     unsigned i, j, k;
     unsigned io, jo, ko;
+    MyDataF exIJK,eyIJK;
     for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
         for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
             for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
-                MyDataF exIJK = (Ex.p[i - 1][j][k - 1] + Ex.p[i + 1][j][k - 1] + Ex.p[i - 1][j][k + 1] + Ex.p[i + 1][j][k + 1]) / 4;
-                MyDataF eyIJK = (Ey.p[i][j - 1][k - 1] + Ey.p[i][j + 1][k - 1] + Ey.p[i][j - 1][k + 1] + Ey.p[i][j + 1][k + 1]) / 4;
+                exIJK = (Ex.p[i - 1][j][k - 1] + Ex.p[i + 1][j][k - 1] + Ex.p[i - 1][j][k + 1] + Ex.p[i + 1][j][k + 1]) / 4;
+                eyIJK = (Ey.p[i][j - 1][k - 1] + Ey.p[i][j + 1][k - 1] + Ey.p[i][j - 1][k + 1] + Ey.p[i][j + 1][k + 1]) / 4;
                 Erms.p[io][jo][ko] = sqrt(Ez.p[i][j][k] * Ez.p[i][j][k] + exIJK * exIJK + eyIJK * eyIJK);
             }
         }
@@ -459,8 +460,8 @@ void fdtd::setUp() {
     mu_e = e / me / vm; //3.7e-2;
     mu_i = mu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
     De = mu_e * 2 * 1.602e-19 / e; //
-    Da = De * mu_i / mu_e;
-    MyDataF Dmax = (De > Da ? De : Da);
+    Da = mu_i * 2 * 1.602e-19 / e; //
+    MyDataF Dmax = De > Da ? De : Da;
     //Fine Time Step Size
     dtf = 0.6 * dsf * dsf / 2 / Dmax;
     neTotalStep = dtf / dt;
@@ -547,7 +548,9 @@ void fdtd::compute() {
     cout << endl;
     cout << "Begin time-stepping..." << endl;
 #ifdef MATLAB_SIMULATION
-    initMatlabSimulation();
+    if(initMatlabSimulation()<0){
+        return;
+    }
 #endif
     for (n = 1; n <= nMax; ++n) {
 
@@ -848,12 +851,12 @@ void fdtd::yeeCube(unsigned I, unsigned J, unsigned K, unsigned mType) {
 void fdtd::writeField(unsigned iteration) {
     unsigned i, j;
     ofstream out;
-    strstream ss;
+    stringstream ss;
     // form file name
     ss << "E_Field_" << iteration << ".txt";
-    //string fileBaseName(ss.str());
+    string fileBaseName(ss.str());
     // open file
-    out.open(ss.str());
+    out.open(fileBaseName.c_str());
     if (out.is_open()) {
 
         for (i = 0; i < Imax - 1; i++) {
@@ -918,9 +921,10 @@ void fdtd::putvars() {
 // =================================================================
 #ifdef MATLAB_SIMULATION
 
-void fdtd::initMatlabSimulation() {
-    Ez.InitMatlabEngine();
+int fdtd::initMatlabSimulation() {
+    if(Ez.InitMatlabEngine()<0)return -1;
     Ez.InitPlot();
+    return 0;
 
 }
 

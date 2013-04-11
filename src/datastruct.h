@@ -51,10 +51,11 @@ template<typename T>
 class data1d {
 public:
 
-    data1d(unsigned num , T val = 0) : p(NULL), n(num) {
+    data1d(unsigned num, T val = 0) : p(NULL), n(num) {
         createArray(num);
         initArray(val);
     };
+
     data1d() : p(NULL), n(0) {
     };
 
@@ -81,9 +82,10 @@ public:
             n = num;
         }
     };
-	void CreateStruct(unsigned num){
-		createArray(num);
-	};
+
+    void CreateStruct(unsigned num) {
+        createArray(num);
+    };
 
     void initArray(T initval = 0) {
         if (p == NULL)return;
@@ -103,7 +105,7 @@ public:
         ofstream out;
         out.open(name.c_str());
         if (out.is_open()) {
-            for (int i = 0; i < n; i++){
+            for (int i = 0; i < n; i++) {
                 out.setf(ios::fixed);
                 out << p[i] << endl;
             }
@@ -133,6 +135,8 @@ public:
     static std::string tail;
 #ifdef MATLAB_SIMULATION
     static Engine *ep;
+private:
+    static bool isMatlabEngineStarted;
 #endif
 private:
     std::string name;
@@ -261,6 +265,7 @@ template<class DataType> string data3d<DataType>::tail = ".dat";
 
 #ifdef MATLAB_SIMULATION
 template<class DataType> Engine* data3d<DataType>::ep = NULL;
+template<class DataType> bool data3d<DataType>::isMatlabEngineStarted = false;
 #endif
 
 template<class DataType>
@@ -465,12 +470,19 @@ void data3d<DataType>::SaveData(unsigned leap) {
 
 template<class DataType>
 int data3d<DataType>::InitMatlabEngine() {
+
 #ifdef MATLAB_SIMULATION
-    if (ep != NULL)return -2;
+    if (isMatlabEngineStarted) {
+        return 0;
+    }
+    if (ep != NULL) {
+        return -2;
+    }
     if ((ep = engOpen(NULL)) == NULL) {
         cerr << "Can't start matlab engine!" << endl;
-        exit(-1);
+        return -1;
     }
+    isMatlabEngineStarted = true;
 #endif
     return 0;
 
@@ -479,8 +491,10 @@ int data3d<DataType>::InitMatlabEngine() {
 template<class DataType>
 int data3d<DataType>::CloseEngine() {
 #ifdef MATLAB_SIMULATION
-    engEvalString(ep, "close all;clear;");
-    engClose(ep);
+    if (isMatlabEngineStarted) {
+        engEvalString(ep, "close all;clear;");
+        engClose(ep);
+    }
 #endif
     return 0;
 }
@@ -498,6 +512,7 @@ int data3d<DataType>::CreateStruct(const data3d< DataType > &stru, DataType init
 template<class DataType>
 void data3d<DataType>::ClearSim() {
 #ifdef MATLAB_SIMULATION
+    if (!isMatlabEngineStarted)return;
     mxDestroyArray(MyArray);
     mxDestroyArray(num);
 #endif
@@ -505,12 +520,13 @@ void data3d<DataType>::ClearSim() {
 
 template<class DataType>
 void data3d<DataType>::PlotArrays() {
-
 #ifdef MATLAB_SIMULATION
+    if (!isMatlabEngineStarted)return;
+
     DataType *pData = (DataType*) malloc(nx * ny * sizeof (DataType));
     for (unsigned i = 0; i < nx; i++)
         for (unsigned j = 0; j < ny; j++)
-            pData[i * ny + j] = p[i][j][nz/2];
+            pData[i * ny + j] = p[i][j][nz / 2];
     engPutVariable(ep, "ind", num);
     engEvalString(ep, "ind=int32(ind);");
     memcpy(mxGetPr(MyArray), pData, nx * ny * sizeof (DataType));
@@ -523,10 +539,14 @@ void data3d<DataType>::PlotArrays() {
 
 template<class DataType>
 void data3d<DataType>::InitPlot() {
+#ifdef MATLAB_SIMULATION
+    if (!isMatlabEngineStarted)return;
+#endif
     cnt++;
     string filename = name + tail;
     Number = cnt;
 #ifdef MATLAB_SIMULATION
+
     mxArray *mxStr = mxCreateString(filename.c_str());
     DataType *pData = (DataType*) malloc(nx * ny * sizeof (DataType));
     if (pData == NULL)return;
@@ -542,7 +562,7 @@ void data3d<DataType>::InitPlot() {
 
     for (unsigned i = 0; i < nx; i++)
         for (unsigned j = 0; j < ny; j++)
-            pData[i * ny + j] = p[i][j][nz/2];
+            pData[i * ny + j] = p[i][j][nz / 2];
     memcpy(mxGetPr(MyArray), pData, nx * ny * sizeof (DataType));
     engPutVariable(ep, "array", MyArray);
 

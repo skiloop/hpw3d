@@ -28,7 +28,7 @@ public:
     void compute(); //E & H Field update equation
     void StartUp();
 #ifdef MATLAB_SIMULATION
-    void initMatlabSimulation();
+    int initMatlabSimulation();
     void doMatlabSimulation();
     void finishMatlabSimulation();
 #endif
@@ -111,7 +111,7 @@ private:
 
     //plasma variables
     MyDataF vm;
-    MyDataF p;
+    MyDataF p;// air pressure
     MyDataF De;
     MyDataF Da;
     MyDataF rei;
