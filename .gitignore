@@ -54,3 +54,6 @@ large
 *.log
 *.aux
 *.pdf
+
+# out file
+*.out
