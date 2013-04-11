@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <assert.h>
+#include <fstream>
+#include <strstream>
 
 #include "fdtd.h"
 #include "InonizationFormula.h"
@@ -845,34 +847,24 @@ void fdtd::yeeCube(unsigned I, unsigned J, unsigned K, unsigned mType) {
 
 void fdtd::writeField(unsigned iteration) {
     unsigned i, j;
-    FILE *ptr;
-    char step[10];
-    char fileBaseName[100] = "E_Field_";
-    sprintf(step, "%d", iteration);
-    strcat(fileBaseName, step);
-    strcat(fileBaseName, ".txt");
+    ofstream out;
+    strstream ss;
+    // form file name
+    ss << "E_Field_" << iteration << ".txt";
+    //string fileBaseName(ss.str());
+    // open file
+    out.open(ss.str());
+    if (out.is_open()) {
 
-    ptr = fopen(fileBaseName, "wt");
-
-    for (i = 0; i < Imax - 1; i++) {
-        for (j = 0; j < Jmax - 1; j++) { // |E|
-            fprintf(ptr, "%f\t", sqrt(pow(Ex.p[i][j][ksource], 2) +
-                    pow(Ey.p[i][j][ksource], 2) + pow(Ez.p[i][j][ksource], 2)));
-            //	fprintf(ptr, "%f\t", Ex.p[i][j][ksource]);//Ex
-            //	fprintf(ptr, "%f\t", Ey.p[i][j][ksource]);//Ey
-            //	fprintf(ptr, "%f\t", Ez.p[i][j][ksource]);//Ez
-            //	fprintf(ptr, "%f\t", Hx.p[i][j][ksource]);//Hx
-            //	fprintf(ptr, "%f\t", Hy.p[i][j][ksource]);//Hy
-            //	fprintf(ptr, "%f\t", Hz.p[i][j][ksource]);//Hz
-
-            // |H|
-            //	fprintf(ptr, "%f\t", sqrt(pow(Hx.p[i][j][ksource], 2) +
-            //		pow(Hy.p[i][j][ksource], 2) + pow( Hz.p[i][j][ksource], 2)));
-
+        for (i = 0; i < Imax - 1; i++) {
+            for (j = 0; j < Jmax - 1; j++) { // |E|
+                out<<sqrt(pow(Ex.p[i][j][ksource], 2) +
+                        pow(Ey.p[i][j][ksource], 2) + pow(Ez.p[i][j][ksource], 2))<<'\t';
+            }
+            out<<endl;
         }
-        fprintf(ptr, "\n");
+        out.close();
     }
-    fclose(ptr);
 }
 
 //start up
