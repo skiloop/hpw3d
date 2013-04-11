@@ -64,6 +64,8 @@ tcpml:tcpml.o datastruct.o cpml.o
 	$(CXX) -o $@ tcpml.o $(CPPFLAGS) datastruct.o cpml.o $(LIB)
 tcpml.o:$(SRC)/tcpml.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
+datastruct.o:$(SRC)/datastruct.h $(SRC)/datastruct.cpp
+	$(CXX) $(CPPFLAGS) -c $< 
 %.o:$(SRC)/%.cpp $(SRC)/%.h
 	$(CXX) $(CPPFLAGS) -c $< 
 # ==========================================

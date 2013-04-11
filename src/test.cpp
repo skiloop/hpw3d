@@ -32,4 +32,5 @@ void initComData() {
     me=9.110e-31;
     e=1.602e-19;
     dx=dy=dz=1e-3;
+    omika=2*pi*C/100/dx;
 }
