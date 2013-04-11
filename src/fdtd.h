@@ -3,7 +3,7 @@
 #include "cpml.h"
 
 #ifndef WITH_DENSITY
-#define WITH_DENSITY
+//#define WITH_DENSITY
 #endif
 
 class fdtd {

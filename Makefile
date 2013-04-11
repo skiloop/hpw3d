@@ -15,13 +15,13 @@ MATLIB=$(MATLINK) -L$(MATPATH)/bin/glnxa64 -lmx -leng
 MATINC=-I$(MATPATH)/extern/include
 
 SRC=src
-#CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY #-DMATLAB_SIMULATION $(MATINC)
-CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY -DMATLAB_SIMULATION $(MATINC)
-LIB= $(MATLIB)
+CPPFLAGS=-Wall -g -DDEBUG=3 #-DWITH_DENSITY #-DMATLAB_SIMULATION $(MATINC)
+#CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY -DMATLAB_SIMULATION $(MATINC)
+#LIB= $(MATLIB)
 
 OBJS=cpml.o test.o datastruct.o fdtd.o InonizationFormula.o
 
-projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml 3DFormulaTransforming.pdf
+projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml #3DFormulaTransforming.pdf
 .PHONY:all clean
 
 all:$(projects)

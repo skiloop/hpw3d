@@ -14,8 +14,9 @@
 
 extern MyDataF eps_0, epsR;
 extern MyDataF mu_0;
-extern MyDataF dt, dx, dy, dz;
+//extern MyDataF dt, dx, dy, dz;
 extern MyDataF pi, C, me, e, T;
+extern MyDataF omika;
 
 using namespace std;
 #ifdef WITH_DENSITY
@@ -393,7 +394,6 @@ void fdtd::initialize() {
     CB = new double[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
-
         CB[i] = 0.0;
     }
 #if(DEBUG>=3)
@@ -520,7 +520,9 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef WITH_DENSITY
     initCoeff();
+#endif
 
     cout << endl << "TIme step = " << dt << endl;
     cout << endl << "Number of steps = " << nMax << endl;
@@ -724,8 +726,9 @@ void fdtd::compute() {
         //   Apply a point source (Soft)
         //-----------------------------------------------------------
 
-        source = amp * -2.0 * ((n * dt - t0) / tw)
-                * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
+        //source = amp * -2.0 * ((n * dt - t0) / tw)
+        //        * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
+		source = amp * sin((n*dt-t0)*2*pi*omika);
 
         Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] - CB[ID3.p[isp][jsp][ksp]] * source;
 
