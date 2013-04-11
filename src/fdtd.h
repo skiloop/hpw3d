@@ -12,14 +12,14 @@ public:
     fdtd(unsigned _nmax = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             unsigned _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 11, unsigned _nmatrial = 50, unsigned _neGrid = 10);
+            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, unsigned _nmatrial = 50, unsigned _neGrid = 10);
 
     void SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
 #else
     fdtd(unsigned _nmax = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             unsigned _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 11, unsigned _nmatrial = 50);
+            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, unsigned _nmatrial = 50);
 #endif
     ~fdtd(void);
     //Function prototype definitions
@@ -27,6 +27,11 @@ public:
     void setUp(); //Coefficients, parameters etc will get computed
     void compute(); //E & H Field update equation
     void StartUp();
+#ifdef MATLAB_SIMULATION
+    void initMatlabSimulation();
+    void doMatlabSimulation();
+    void finishMatlabSimulation();
+#endif
 private:
     void buildObject(); //Creates the object geometry
     void yeeCube(unsigned, unsigned, unsigned, unsigned); //Sets material properties to a cell
@@ -150,6 +155,8 @@ private:
     int UpdateDensity(void);
     int UpdateVeloity(void);
     void WallCircleBound(data3d<MyDataF> &stru);
+    
+    
 #endif
     cpml<MyDataF, unsigned int> pml;
 

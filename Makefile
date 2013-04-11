@@ -1,7 +1,24 @@
 #CXX=g++
 CXX=icpc
-CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY
+
+# matlab path 
+MATPATH=/opt/Matlab/R2011a# for local server
+#MATPATH=/opt2/Matlab/R2011a# for servers of college
+
+# Matlab link path
+MATLINK=-Wl,-rpath=$(MATPATH)/bin/glnxa64
+
+# Matlab link option
+MATLIB=$(MATLINK) -L$(MATPATH)/bin/glnxa64 -lmx -leng
+
+# Matlab link path
+MATINC=-I$(MATPATH)/extern/include
+
 SRC=src
+CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY #-DMATLAB_SIMULATION $(MATINC)
+#CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY -DMATLAB_SIMULATION $(MATINC)
+#LIB= $(MATLIB)
+
 OBJS=cpml.o test.o datastruct.o fdtd.o InonizationFormula.o
 
 projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml 3DFormulaTransforming.pdf
@@ -10,17 +27,17 @@ projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml 3DFormulaTransf
 all:$(projects)
 
 hpw3d:$(OBJS)
-	$(CXX) -o $@ $(OBJS)
+	$(CXX) -o $@ $(OBJS) $(LIB)
 origProgram:testMain.o
-	$(CXX) -o $@ testMain.o $(CPPFLAGS)
+	$(CXX) -o $@ testMain.o $(CPPFLAGS) $(LIB)
 cmain:cmain.o datastruct.o
-	$(CXX) -o $@ cmain.o $(CPPFLAGS) datastruct.o
+	$(CXX) -o $@ cmain.o $(CPPFLAGS) datastruct.o $(LIB)
 emain:emain.o datastruct.o
-	$(CXX) -o $@ emain.o $(CPPFLAGS) datastruct.o
+	$(CXX) -o $@ emain.o $(CPPFLAGS) datastruct.o $(LIB)
 orig:orig.o
-	$(CXX) -o $@ orig.o $(CPPFLAGS)
+	$(CXX) -o $@ orig.o $(CPPFLAGS) $(LIB)
 testCPML:testcpml.o cpml.o datastruct.o
-	$(CXX) $(CPPFLAGS) -o $@  datastruct.o cpml.o testcpml.o
+	$(CXX) $(CPPFLAGS) -o $@  datastruct.o cpml.o testcpml.o $(LIB)
 testcpml.o:$(SRC)/testcpml.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
 testMain.o:$(SRC)/testMain.cpp
@@ -40,11 +57,11 @@ cpml.o:$(SRC)/cpml.cpp $(SRC)/cpml.h datastruct.o
 cpmld.o:$(SRC)/cpmld.cpp $(SRC)/cpmld.h datastruct.o
 	$(CXX) $(CPPFLAGS) -c $< 
 dmain:dmain.o datastruct.o cpmld.o
-	$(CXX) -o $@ dmain.o $(CPPFLAGS) datastruct.o cpmld.o
+	$(CXX) -o $@ dmain.o $(CPPFLAGS) datastruct.o cpmld.o $(LIB)
 dmain.o:$(SRC)/dmain.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
 tcpml:tcpml.o datastruct.o cpml.o
-	$(CXX) -o $@ tcpml.o $(CPPFLAGS) datastruct.o cpml.o
+	$(CXX) -o $@ tcpml.o $(CPPFLAGS) datastruct.o cpml.o $(LIB)
 tcpml.o:$(SRC)/tcpml.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
 %.o:$(SRC)/%.cpp $(SRC)/%.h

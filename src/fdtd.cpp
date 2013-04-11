@@ -544,6 +544,9 @@ void fdtd::compute() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     cout << endl;
     cout << "Begin time-stepping..." << endl;
+#ifdef MATLAB_SIMULATION
+    initMatlabSimulation();
+#endif
     for (n = 1; n <= nMax; ++n) {
 
         cout << "Ez at time step " << n << " at (" << ic << ", " << jc << ", " << kc;
@@ -736,8 +739,14 @@ void fdtd::compute() {
         if ((n % save_modulus) == 0) {
             writeField(n);
         }
+#ifdef MATLAB_SIMULATION
+        doMatlabSimulation();
+#endif
 
     }
+#ifdef MATLAB_SIMULATION
+    finishMatlabSimulation();
+#endif
     //  END TIME STEP
     cout << "Done time-stepping..." << endl;
 
@@ -912,6 +921,26 @@ void fdtd::putvars() {
     cout << " m = " << m << endl;
     cout << " ma = " << ma << endl;
 }
+// =================================================================
+// MATLAB SIMULATION
+// =================================================================
+#ifdef MATLAB_SIMULATION
+
+void fdtd::initMatlabSimulation() {
+    Ez.InitMatlabEngine();
+    Ez.InitPlot();
+
+}
+
+void fdtd::doMatlabSimulation() {
+    Ez.PlotArrays();
+}
+
+void fdtd::finishMatlabSimulation() {
+    Ez.ClearSim();
+    Ez.CloseEngine();
+}
+#endif
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // END OF PROGRAM CPMLFDTD3D
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -13,7 +13,7 @@ void initComData();
 int main() {
 
     initComData();
-    fdtd hpw;
+    fdtd hpw(500,40,20,20);
     //hpw.initialize();
     hpw.StartUp();
     return 0;
