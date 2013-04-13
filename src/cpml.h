@@ -409,10 +409,10 @@ public:
         sig_x_max = 0.75 * (0.8 * (m + 1) / (dx * sqrt(mu_0 / (eps_0 * epsR))));
         sig_y_max = 0.75 * (0.8 * (m + 1) / (dy * sqrt(mu_0 / (eps_0 * epsR))));
         sig_z_max = 0.75 * (0.8 * (m + 1) / (dz * sqrt(mu_0 / (eps_0 * epsR))));
-        alpha_x_max = 0.24;
+        alpha_x_max = 0.03;
         alpha_y_max = alpha_x_max;
         alpha_z_max = alpha_x_max;
-        kappa_x_max = 15.0;
+        kappa_x_max = 8.0;
         kappa_y_max = kappa_x_max;
         kappa_z_max = kappa_x_max;
     };

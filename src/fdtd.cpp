@@ -23,7 +23,7 @@ using namespace std;
 
 fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
-        unsigned _amp, unsigned _savemodulus, unsigned _ksource,
+        MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial, unsigned _neGrid)
 : nMax(_nmax), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
@@ -38,7 +38,7 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 
 fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
-        unsigned _amp, unsigned _savemodulus, unsigned _ksource,
+        MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial)
 : nMax(_nmax), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
@@ -72,7 +72,7 @@ void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
 int fdtd::UpdateErms(void) {
     unsigned i, j, k;
     unsigned io, jo, ko;
-    MyDataF exIJK,eyIJK;
+    MyDataF exIJK, eyIJK;
     for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
         for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
             for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
@@ -451,8 +451,11 @@ void fdtd::setUp() {
     //Time step
     dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
             1.0 / (dz * dz)));
+    //dt = dx/2/C;
+    
     //delay
     t0 = 4.0 * tw;
+//    t0 = 6e-9;
 #ifdef WITH_DENSITY
     //Fine Grid size
     dsf = dx / neGrid;
@@ -539,10 +542,12 @@ void fdtd::compute() {
     unsigned id, n;
     unsigned i, j, k;
     unsigned ic, jc, kc; //capture field
-    ic = isp + 1;
-    jc = jsp + 1;
-    kc = ksp + 2;
-
+    //    ic = isp + 1;
+    //    jc = jsp + 1;
+    //    kc = ksp + 2;
+    ic = 25;
+    jc = 40;
+    kc = 12;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  BEGIN TIME STEP
@@ -550,7 +555,7 @@ void fdtd::compute() {
     cout << endl;
     cout << "Begin time-stepping..." << endl;
 #ifdef MATLAB_SIMULATION
-    if(initMatlabSimulation()<0){
+    if (initMatlabSimulation() < 0) {
         return;
     }
 #endif
@@ -726,11 +731,11 @@ void fdtd::compute() {
         //   Apply a point source (Soft)
         //-----------------------------------------------------------
 
-        //source = amp * -2.0 * ((n * dt - t0) / tw)
-        //        * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
-		source = amp * sin((n*dt-t0)*2*pi*omika);
+        source = amp * -2.0 * ((n * dt - t0) / tw/tw)
+                * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
+        //source = amp * sin((n*dt-t0)*2*pi*omika);
 
-        Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] - CB[ID3.p[isp][jsp][ksp]] * source;
+        Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + CB[ID3.p[isp][jsp][ksp]] * source/dx/dy/dz;
 
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -864,10 +869,10 @@ void fdtd::writeField(unsigned iteration) {
 
         for (i = 0; i < Imax - 1; i++) {
             for (j = 0; j < Jmax - 1; j++) { // |E|
-                out<<sqrt(pow(Ex.p[i][j][ksource], 2) +
-                        pow(Ey.p[i][j][ksource], 2) + pow(Ez.p[i][j][ksource], 2))<<'\t';
+                out << sqrt(pow(Ex.p[i][j][ksource], 2) +
+                        pow(Ey.p[i][j][ksource], 2) + pow(Ez.p[i][j][ksource], 2)) << '\t';
             }
-            out<<endl;
+            out << endl;
         }
         out.close();
     }
@@ -925,7 +930,7 @@ void fdtd::putvars() {
 #ifdef MATLAB_SIMULATION
 
 int fdtd::initMatlabSimulation() {
-    if(Ez.InitMatlabEngine()<0)return -1;
+    if (Ez.InitMatlabEngine() < 0)return -1;
     Ez.InitPlot();
     return 0;
 

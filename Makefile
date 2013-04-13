@@ -44,7 +44,7 @@ testMain.o:$(SRC)/testMain.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
 orig.o:$(SRC)/orig.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
-test.o:$(SRC)/test.cpp
+test.o:$(SRC)/test.cpp fdtd.o 
 	$(CXX) $(CPPFLAGS) -c $< 
 cmain.o:$(SRC)/cmain.cpp
 	$(CXX) $(CPPFLAGS) -c $< 

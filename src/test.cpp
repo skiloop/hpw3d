@@ -7,14 +7,16 @@ MyDataF mu_0;
 MyDataF dx, dy, dz;
 MyDataF pi, C;
 MyDataF me, e;
-MyDataF T;
+MyDataF tw;
 MyDataF omika;
+MyDataF T;// ns
+MyDataF Amp;
 void initComData();
 
 int main() {
 
     initComData();
-    fdtd hpw(500,150,150,150,53.0e-12,dx,dy,dz,1000,10,12,3,1,6);
+    fdtd hpw(500,50,126,26,tw,dx,dy,dz,Amp,10,12,4,1,11);
 #ifdef WITH_DENSITY
     hpw.SetPlasmaVar(0,760*5.3E9,760,0);
 #endif
@@ -31,6 +33,8 @@ void initComData() {
     epsR = 1.0;
     me=9.110e-31;
     e=1.602e-19;
-    dx=dy=dz=1e-3;
-    omika=2*pi*C/100/dx;
+    dx=dy=dz=50e-3;
+    Amp=1e-10;
+    tw=2e-9;
+    omika=2*pi*C/150/dx;
 }

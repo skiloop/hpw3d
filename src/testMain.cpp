@@ -35,17 +35,19 @@ int Kmax = 26;
 
 //  Specify Grid Cell Size in Each Direction and Calculate the
 //  Resulting Courant-Stable Time Step
-double dx = 1.0E-3;
-double dy = 1.0E-3;
-double dz = 1.0E-3; // cell size in each direction
+double dx = 50.0E-3;
+double dy = 50.0E-3;
+double dz = 50.0E-3; // cell size in each direction
 // time step increment
 double dt;
 
 //  Specify the Impulsive Source (Differentiated Gaussian) parameters
-double tw = 53.0E-12; //pulse width
+//double tw = 53e-12; //pulse width
+double tw = 2e-9; //pulse width
+//double T=2e-9;// ns
 double tO; //delay
 double source; //Differentiated Gaussian source
-double amp = 1000; // Amplitude
+double amp = 1e-10; // Amplitude
 
 //Specify the Time Step at which the data has to be saved for Visualization
 int save_modulus = 10;
@@ -53,6 +55,9 @@ int save_modulus = 10;
 //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
 int istart, iend, jstart;
 int jend, kstart, kend;
+
+// omega
+float omega;
 
 //Output recording point
 int ksource = 12;
@@ -1201,8 +1206,13 @@ void setUp() {
     //Time step
     dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
             1.0 / (dz * dz)));
+//    dt = dx/2/C;
     //delay
     tO = 4.0 * tw;
+//    tO = 6e-9;
+    
+    // omega
+    omega = 2*pi*C/300/dx;
 
     //  Specify the dipole size 
     istart = 24;
@@ -2029,10 +2039,11 @@ void compute() {
         i = 25;
         j = 63;
         k = 12;
-        source = amp * -2.0 * ((n * dt - tO) / tw)
+        source = amp * -2.0 * ((n * dt - tO) / tw/tw)
                 * exp(-pow(((n * dt - tO) / tw), 2)); //Differentiated Gaussian pulse
+        //source = amp*sin((n*dt-tO)*2*omega*pi);
 
-        Ez[i][j][k] = Ez[i][j][k] - CB[ID3[i][j][k]] * source;
+        Ez[i][j][k] = Ez[i][j][k] + CB[ID3[i][j][k]] * source/dx/dy/dz;
 
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
