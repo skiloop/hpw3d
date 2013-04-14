@@ -449,9 +449,9 @@ void fdtd::initialize() {
 void fdtd::setUp() {
     unsigned i;
     //Time step
-//    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
-//            1.0 / (dz * dz)));
-    dt = dx/2/C;
+    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
+            1.0 / (dz * dz)));
+//    dt = dx/2/C;
     
     //delay
     t0 = 4.0 * tw;
@@ -546,7 +546,7 @@ void fdtd::compute() {
     //    jc = jsp + 1;
     //    kc = ksp + 2;
     ic = isp;
-    jc = jsp+1;
+    jc = jsp+13;
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
