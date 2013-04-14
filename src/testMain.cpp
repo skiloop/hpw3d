@@ -69,7 +69,7 @@ int nxPML_1, nxPML_2, nyPML_1;
 int nyPML_2, nzPML_1, nzPML_2;
 
 //  Specify the CPML Order and Other Parameters:
-int m = 3, ma = 1;
+int m = 4, ma = 1;
 
 double sig_x_max;
 double sig_y_max;
@@ -1204,9 +1204,9 @@ void initialize() {
 void setUp() {
 
     //Time step
-    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
-            1.0 / (dz * dz)));
-//    dt = dx/2/C;
+//    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
+//            1.0 / (dz * dz)));
+    dt = dx/2/C;
     //delay
     tO = 4.0 * tw;
 //    tO = 6e-9;
@@ -1259,10 +1259,10 @@ void setUp() {
     sig_x_max = 0.75 * (0.8 * (m + 1) / (dx * sqrt(mu_0 / (eps_0 * epsR))));
     sig_y_max = 0.75 * (0.8 * (m + 1) / (dy * sqrt(mu_0 / (eps_0 * epsR))));
     sig_z_max = 0.75 * (0.8 * (m + 1) / (dz * sqrt(mu_0 / (eps_0 * epsR))));
-    alpha_x_max = 0.24;
+    alpha_x_max = 0.03;
     alpha_y_max = alpha_x_max;
     alpha_z_max = alpha_x_max;
-    kappa_x_max = 15.0;
+    kappa_x_max = 8.0;
     kappa_y_max = kappa_x_max;
     kappa_z_max = kappa_x_max;
     printf("\nTIme step = %e", dt);
@@ -1273,7 +1273,7 @@ void setUp() {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SET CPML PARAMETERS IN EACH DIRECTION
-      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 void initializeCPML() {
 
@@ -1637,7 +1637,7 @@ void compute() {
 
     for (n = 1; n <= nMax; ++n) {
 
-        printf("Ez at time step %d at (25, 40, 12) :  %f\n", n, Ez[25][40][12]);
+        printf("Ez at time step %d at (25, 76, 12) :  %f\n", n, Ez[25][64][12]);
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hx

@@ -39,7 +39,13 @@
         <in>testMain.cpp</in>
         <in>testcpml.cpp</in>
       </df>
+      <in>analysis.m</in>
+      <in>demoErr2.m</in>
+      <in>errDemo.m</in>
+      <in>fun.m</in>
       <in>loadData.m</in>
+      <in>makeomovie.m</in>
+      <in>plain.m</in>
     </df>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
