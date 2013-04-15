@@ -1,5 +1,6 @@
-#CXX=g++
-CXX=icpc
+CXX=g++
+#CXX=icpc
+CC=gcc
 
 # matlab path 
 MATPATH=/opt/Matlab/R2011a# for local server
@@ -19,7 +20,7 @@ CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY #-DMATLAB_SIMULATION $(MATINC)
 #CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY -DMATLAB_SIMULATION $(MATINC)
 #LIB= $(MATLIB)
 
-OBJS=cpml.o test.o datastruct.o fdtd.o InonizationFormula.o
+OBJS=cpml.o test.o  fdtd.o InonizationFormula.o #datastruct.o
 
 projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml #3DFormulaTransforming.pdf
 .PHONY:all clean
@@ -50,11 +51,11 @@ cmain.o:$(SRC)/cmain.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
 emain.o:$(SRC)/emain.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
-fdtd.o:$(SRC)/fdtd.cpp $(SRC)/fdtd.h cpml.o datastruct.o
+fdtd.o:$(SRC)/fdtd.cpp $(SRC)/fdtd.h cpml.o $(SRC)/datastruct.h
 	$(CXX) $(CPPFLAGS) -c $< 
-cpml.o:$(SRC)/cpml.cpp $(SRC)/cpml.h datastruct.o
+cpml.o:$(SRC)/cpml.cpp $(SRC)/cpml.h $(SRC)/datastruct.h
 	$(CXX) $(CPPFLAGS) -c $< 
-cpmld.o:$(SRC)/cpmld.cpp $(SRC)/cpmld.h datastruct.o
+cpmld.o:$(SRC)/cpmld.cpp $(SRC)/cpmld.h $(SRC)/datastruct.h
 	$(CXX) $(CPPFLAGS) -c $< 
 dmain:dmain.o datastruct.o cpmld.o
 	$(CXX) -o $@ dmain.o $(CPPFLAGS) datastruct.o cpmld.o $(LIB)
@@ -64,10 +65,14 @@ tcpml:tcpml.o datastruct.o cpml.o
 	$(CXX) -o $@ tcpml.o $(CPPFLAGS) datastruct.o cpml.o $(LIB)
 tcpml.o:$(SRC)/tcpml.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
-datastruct.o:$(SRC)/datastruct.h $(SRC)/datastruct.cpp
+datastruct.o:$(SRC)/datastruct.cpp $(SRC)/datastruct.h
 	$(CXX) $(CPPFLAGS) -c $< 
-%.o:$(SRC)/%.cpp $(SRC)/%.h
+InonizationFormula.o:$(SRC)/InonizationFormula.cpp $(SRC)/InonizationFormula.h
 	$(CXX) $(CPPFLAGS) -c $< 
+.cpp.o:
+	$(CC) $(CPPFLAGS) -c $(SRC)/$< 
+.c.o:$(SRC)/%.c $(SRC)/%.h
+	$(CC) $(CPPFLAGS) -c $< 
 # ==========================================
 # 3DFormulaTransforming.pdf
 # ==========================================

@@ -8,6 +8,7 @@
 #ifndef CPML_H
 #define	CPML_H
 
+#include <math.h>
 #include "datastruct.h"
 
 template<class type1, class type2>

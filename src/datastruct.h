@@ -22,7 +22,6 @@
  * @author skiloop ( skiloop@126.com )
  * @date 31/08/2011 0.0.0 created, by skiloop
  */
-#pragma once
 #ifndef DATASTRUCT_H
 #define DATASTRUCT_H
 
