@@ -107,7 +107,7 @@ private:
     MyDataF dsf;
     //time step of plasma
     MyDataF dtf;
-    int neTotalStep;
+    int neSkipStep;
 
     //plasma variables
     MyDataF vm;

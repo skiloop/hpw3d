@@ -410,7 +410,16 @@ void fdtd::initialize() {
     Hy.CreateStruct(Imax - 1, Jmax, Kmax, 0);
     Hz.CreateStruct((Imax - 1), (Jmax - 1), (Kmax - 1), 0);
 
+	Ez.setName("Ez");
+	Ex.setName("Ex");
+	Ey.setName("Ey");
+	Hz.setName("Hz");
+	Hx.setName("Hx");
+	Hy.setName("Hy");
 #ifdef WITH_DENSITY
+	Vz.setName("Vz");
+	Vx.setName("Vx");
+	Vy.setName("Vy");
     Vx.CreateStruct(Ex, 0.0);
     Vy.CreateStruct(Ey, 0.0);
     Vz.CreateStruct(Ez, 0.0);
@@ -422,6 +431,7 @@ void fdtd::initialize() {
     Erms.CreateStruct(Ne, 0.0);
     Ne_pre.CreateStruct(Ne, 0.0);
     createCoeff();
+	Ne.setName("Ne");
 #endif
 
 #if(DEBUG>=3)
@@ -466,8 +476,11 @@ void fdtd::setUp() {
     Da = mu_i * 2 * 1.602e-19 / e; //
     MyDataF Dmax = De > Da ? De : Da;
     //Fine Time Step Size
-    dtf = 0.6 * dsf * dsf / 2 / Dmax;
-    neTotalStep = dtf / dt;
+    dtf = 0.001 * dsf * dsf / 2 / Dmax;
+    neSkipStep = dtf / dt;
+	cout<<"neSkipStep="<<neSkipStep<<endl;
+	cout<<tw/dt/neSkipStep<<endl;
+	//exit(0);
 #endif
     //  Specify the dipole size 
     istart = pmlWith;
@@ -743,7 +756,7 @@ void fdtd::compute() {
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef WITH_DENSITY
         UpdateErms();
-        if (n % neTotalStep == 0) {
+        if (n % neSkipStep == 0) {
             InterpErms();
             UpdateDensity();
             updateCoeff();
@@ -751,6 +764,10 @@ void fdtd::compute() {
 #endif
         if ((n % save_modulus) == 0) {
             writeField(n);
+#ifdef WITH_DENSITY
+            Ne.save(Ne.nz/2,neGrid,n,2);
+            Ez.save(ksp,1,n,2);
+#endif
         }
 #ifdef MATLAB_SIMULATION
         doMatlabSimulation();

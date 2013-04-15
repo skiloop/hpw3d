@@ -232,7 +232,13 @@ public:
 
     void operator=(data3d< DataType > const &other);
     void InitStructData(DataType initVal = 0);
-    void SaveData(unsigned leap = 0);
+    void SaveData(unsigned leap,unsigned step);
+    void SaveData(unsigned k ,unsigned leap,unsigned step);
+    void SaveXPlain(unsigned i,unsigned leap,unsigned step);
+    void SaveYPlain(unsigned j,unsigned leap,unsigned step);
+    void SaveZPlain(unsigned k,unsigned leap,unsigned step);
+	void SaveData(unsigned k,unsigned leap,unsigned step,int type);
+	void save(unsigned k,unsigned leap,unsigned step,int type);
 
     /**
      * @brief Create a data3d with the same size;
@@ -248,7 +254,7 @@ public:
 
     //set name
 
-    void SetName(const std::string &sn) {
+    void setName(const std::string &sn) {
         name = sn;
     }
 public:
