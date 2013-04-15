@@ -83,6 +83,9 @@
       </item>
       <item path="src/InonizationFormula.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/InonizationFormula.h" ex="false" tool="3" flavor2="0">
@@ -96,6 +99,9 @@
       </item>
       <item path="src/cpml.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/cpml.h" ex="false" tool="3" flavor2="0">
@@ -129,7 +135,9 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="src/datastruct.h" ex="false" tool="1" flavor2="0">
+      <item path="src/datastruct.h" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="src/dmain.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
@@ -147,6 +155,9 @@
       </item>
       <item path="src/fdtd.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/fdtd.h" ex="false" tool="3" flavor2="0">
@@ -167,6 +178,9 @@
       </item>
       <item path="src/test.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/testMain.cpp" ex="false" tool="1" flavor2="4">

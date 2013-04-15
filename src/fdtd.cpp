@@ -29,8 +29,8 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWith(pmlw)
-, neGrid(_neGrid)
 , numMaterials(_nmaterial)
+, neGrid(_neGrid)
 , Ne0(1e7)
 , epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }

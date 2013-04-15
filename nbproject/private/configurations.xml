@@ -39,6 +39,8 @@
         <in>testMain.cpp</in>
         <in>testcpml.cpp</in>
       </df>
+      <df name="testrun">
+      </df>
       <in>analysis.m</in>
       <in>demoErr2.m</in>
       <in>errDemo.m</in>

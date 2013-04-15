@@ -51,17 +51,36 @@ private:
     MyDataF tw; //pulse width
     MyDataF dt, dx, dy, dz;
 
-    MyDataF t0; //delay
-    MyDataF source; //Differentiated Gaussian source
     MyDataF amp; // Amplitude
-    MyDataF omega; //wave angle frequency
-
     // Specify the Time Step at which the data has to be saved for Visualization
     unsigned save_modulus;
+
     // Output recording 
     unsigned ksource;
     // Specify the CPML Order and Other Parameters:
-    unsigned m, ma, pmlWith;
+    unsigned m;
+    unsigned ma;
+    unsigned pmlWith;
+
+    //Max number of materials allowed
+    unsigned numMaterials;
+#ifdef WITH_DENSITY
+    //how many fine grids per coarse grid 
+    unsigned neGrid;
+    //initial plasma value
+    MyDataF Ne0;
+#endif
+    //permittivity, permeability and conductivity of different materials
+    MyDataF *epsilon;
+    MyDataF *sigma;
+    MyDataF *mu;
+
+
+    MyDataF t0; //delay
+    MyDataF source; //Differentiated Gaussian source    
+    MyDataF omega; //wave angle frequency
+
+
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
     unsigned istart, iend, jstart;
@@ -69,9 +88,6 @@ private:
 
     // source position
     unsigned isp, jsp, ksp;
-
-    //Max number of materials allowed
-    unsigned numMaterials;
 
     // H & E Field components
     data3d<MyDataF> Hx;
@@ -85,11 +101,6 @@ private:
     data3d<unsigned> ID2; //medium definition array for Ey
     data3d<unsigned> ID3; //medium definition array for Ez
 
-    //permittivity, permeability and conductivity of different materials
-    MyDataF *epsilon;
-    MyDataF *mu;
-    MyDataF *sigma;
-
     //E field update coefficients
     MyDataF *CA;
     MyDataF *CB;
@@ -100,8 +111,6 @@ private:
 
 #ifdef WITH_DENSITY
 
-    //how many fine grids per coarse grid 
-    unsigned neGrid;
     int niutype;
     //Fine Grid size
     MyDataF dsf;
@@ -111,7 +120,7 @@ private:
 
     //plasma variables
     MyDataF vm;
-    MyDataF p;// air pressure
+    MyDataF p; // air pressure
     MyDataF De;
     MyDataF Da;
     MyDataF rei;
@@ -135,9 +144,6 @@ private:
     // Beta
     data3d<MyDataF> beta;
 
-    //initial plasma value
-    MyDataF Ne0;
-
     //
     data3d<MyDataF> Vx;
     data3d<MyDataF> Vy;
@@ -155,8 +161,8 @@ private:
     int UpdateDensity(void);
     int UpdateVeloity(void);
     void WallCircleBound(data3d<MyDataF> &stru);
-    
-    
+
+
 #endif
     cpml<MyDataF, unsigned int> pml;
 
