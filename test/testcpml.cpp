@@ -16,15 +16,15 @@
 #include<string.h>
 #include<stdlib.h>
 
-#include"datastruct.h"
-#include"cpml.h"
+#include"../src/datastruct.h"
+#include"../src/cpml.h"
 
 //  Fundamental Constants (MKS units)
 double pi = 3.14159265358979;
 double C = 2.99792458E8;
 double mu_0;
 double eps_0;
-
+double me, e;
 //  Specify Material Relative Permittivity and Conductivity
 double epsR = 1.0; //free space
 
@@ -32,9 +32,9 @@ double epsR = 1.0; //free space
 int nMax = 500; // total number of time steps
 
 // grid size corresponding to the number of Ez field components
-int Imax = 572;
-int Jmax = 572;
-int Kmax = 572;
+int Imax = 50;
+int Jmax = 50;
+int Kmax = 50;
 
 // source position
 int ic, jc, kc;
@@ -83,19 +83,19 @@ int i, j, ii, jj, k, kk, n;
 
 
 // H & E Field components
-data3d<float> Hx;
-data3d<float> Hy;
-data3d<float> Hz;
-data3d<float> Ex;
-data3d<float> Ey;
-data3d<float> Ez;
+data3d<MyDataF> Hx;
+data3d<MyDataF> Hy;
+data3d<MyDataF> Hz;
+data3d<MyDataF> Ex;
+data3d<MyDataF> Ey;
+data3d<MyDataF> Ez;
 
 data3d<short> ID1; //medium definition array for Ex
 data3d<short> ID2; //medium definition array for Ey
 data3d<short> ID3; //medium definition array for Ez
 
 // cpml
-cpml<float, short> pml;
+cpml<MyDataF, short> pml;
 //Max number of materials allowed
 int numMaterials = 50;
 
@@ -105,12 +105,12 @@ double *mu;
 double *sigma;
 
 //E field update coefficients
-float *CA;
-float *CB;
+MyDataF *CA;
+MyDataF *CB;
 
 //H field update coefficients
-float DA;
-float DB;
+MyDataF DA;
+MyDataF DB;
 
 //Function prototype definitions
 void initialize(); //Memeory initialization
@@ -179,14 +179,14 @@ void initialize() {
         sigma[i] = 0.0;
     }
 
-    CA = (float *) malloc((numMaterials) * sizeof (float));
+    CA = (MyDataF *) malloc((numMaterials) * sizeof (MyDataF));
 
     for (i = 0; i < numMaterials; i++) {
 
         CA[i] = 0.0;
     }
 
-    CB = (float *) malloc((numMaterials) * sizeof (float));
+    CB = (MyDataF *) malloc((numMaterials) * sizeof (MyDataF));
 
     for (i = 0; i < numMaterials; i++) {
 
@@ -204,6 +204,7 @@ void initialize() {
     ID1.CreateStruct(Imax, Jmax, Kmax, 0);
     ID2.CreateStruct(Imax, Jmax, Kmax, 0);
     ID3.CreateStruct(Imax, Jmax, Kmax, 0);
+
 
     pml.createCPMLArray();
 }
