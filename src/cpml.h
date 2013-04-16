@@ -16,13 +16,13 @@ class cpml {
 public:
 
     //  Fundamental Constants (MKS units)
-    const static double pi;
-    const static double C;
-    static double mu_0;
-    static double eps_0;
+    const static type1 pi;
+    const static type1 C;
+    static type1 mu_0;
+    static type1 eps_0;
 
     // Specify Material Relative Permittivity and Conductivity
-    static double epsR; //free space
+    static type1 epsR; //free space
 
 
     //  CPML components (Taflove 3rd Edition, Chapter 7)
@@ -81,7 +81,7 @@ public:
     virtual ~cpml() {
     };
    
-    void updateEz(const int k, data3d<type1> &Ez, const data3d<type1>&Hx, const data3d<type1>&Hy, const data3d<type2>&ID3, const type1* CB, const double dx, const double dy) {
+    void updateEz(const int k, data3d<type1> &Ez, const data3d<type1>&Hx, const data3d<type1>&Hy, const data3d<type2>&ID3, const type1* CB, const type1 dx, const type1 dy) {
         int i, j, ii, jj;
         short id;
         for (j = 1; j < Jmax - 1; ++j) {
@@ -131,7 +131,7 @@ public:
         }
     };
 
-    void updateEyOut(data3d<type1> &Ey, const data3d<type1> &Hx, const data3d<type2>&ID2, const type1* CB, const double dz) {
+    void updateEyOut(data3d<type1> &Ey, const data3d<type1> &Hx, const data3d<type2>&ID2, const type1* CB, const type1 dz) {
         int i, j, k, kk;
         short id;
         for (i = 1; i < Imax - 1; ++i) {
@@ -161,7 +161,7 @@ public:
         }
     };
 
-    void updateEyIn(const int k, data3d<type1> &Ey, const data3d<type1> &Hz, const data3d<type2>&ID2, const type1* CB, const double dx) {
+    void updateEyIn(const int k, data3d<type1> &Ey, const data3d<type1> &Hz, const data3d<type2>&ID2, const type1* CB, const type1 dx) {
         int i, j, ii;
         short id;
         for (j = 0; j < Jmax - 1; ++j) {
@@ -188,7 +188,7 @@ public:
         }
     };
 
-    void updateExIn(const int k, data3d<type1> &Ex, const data3d<type1> &Hz, const data3d<type2>&ID1, const type1* CB, const double dy) {
+    void updateExIn(const int k, data3d<type1> &Ex, const data3d<type1> &Hz, const data3d<type2>&ID1, const type1* CB, const type1 dy) {
         int i, j, jj;
         short id;
         for (i = 0; i < Imax - 1; ++i) {
@@ -217,7 +217,7 @@ public:
         }
     };
 
-    void updateExOut(data3d<type1> &Ex, const data3d<type1> &Hy, const data3d<type2>&ID1, const type1* CB, const double dz) {
+    void updateExOut(data3d<type1> &Ex, const data3d<type1> &Hy, const data3d<type2>&ID1, const type1* CB, const type1 dz) {
         int i, j, k, kk;
         short id;
         for (i = 0; i < Imax - 1; ++i) {
@@ -249,7 +249,7 @@ public:
         }
     };
 
-    void updateHz(const int k, data3d<type1> &Hz, const data3d<type1>&Ex, const data3d<type1>&Ey, const type1 DB, const double dx, const double dy) {
+    void updateHz(const int k, data3d<type1> &Hz, const data3d<type1>&Ex, const data3d<type1>&Ey, const type1 DB, const type1 dx, const type1 dy) {
         int i, j, ii, jj;
         for (j = 0; j < Jmax - 1; ++j) {
             //..........................................................
@@ -298,7 +298,7 @@ public:
         }
     };
 
-    void updateHyOut(data3d<type1> &Hy, const data3d<type1> &Ex, const type1 DB, const double dz) {
+    void updateHyOut(data3d<type1> &Hy, const data3d<type1> &Ex, const type1 DB, const type1 dz) {
         int i, j, k, kk;
         for (i = 0; i < Imax - 1; ++i) {
             for (j = 0; j < Jmax - 1; ++j) {
@@ -325,7 +325,7 @@ public:
         }
     };
 
-    void updateHyIn(const int k, data3d<type1> &Hy, const data3d<type1> &Ez, const type1 DB, const double dx) {
+    void updateHyIn(const int k, data3d<type1> &Hy, const data3d<type1> &Ez, const type1 DB, const type1 dx) {
         int i, j, ii;
         for (j = 0; j < Jmax - 1; ++j) {
             //.......................................................
@@ -351,7 +351,7 @@ public:
         }
     };
 
-    void updateHxOut(data3d<type1> &Hx, const data3d<type1> &Ey, const type1 DB, const double dz) {
+    void updateHxOut(data3d<type1> &Hx, const data3d<type1> &Ey, const type1 DB, const type1 dz) {
         int i, j, k, kk;
         for (i = 0; i < Imax - 1; ++i) {
 
@@ -380,7 +380,7 @@ public:
         }
     };
 
-    void updateHxIn(const int k, data3d<type1> &Hx, const data3d<type1> &Ez, const type1 DB, const double dy) {
+    void updateHxIn(const int k, data3d<type1> &Hx, const data3d<type1> &Ez, const type1 DB, const type1 dy) {
         int i, j, jj;
         for (i = 0; i < Imax - 1; ++i) {
             //...............................................
@@ -404,7 +404,7 @@ public:
         }
     };
 
-    void initParmeters(const double dx, const double dy, const double dz, int m_, int ma_) {
+    void initParmeters(const type1 dx, const type1 dy, const type1 dz, int m_, int ma_) {
         m = m_;
         ma = ma_;
         sig_x_max = 0.75 * (0.8 * (m + 1) / (dx * sqrt(mu_0 / (eps_0 * epsR))));
@@ -445,7 +445,7 @@ public:
         createCBKAP();
     };
 
-    void initCPML(const double dt, const double dx, const double dy, const double dz) {
+    void initCPML(const type1 dt, const type1 dx, const type1 dy, const type1 dz) {
 
 
         initCBKAP(dt, dx, dy, dz);
@@ -472,17 +472,17 @@ private:
     // Specify the CPML Order and Other Parameters:
     int m, ma;
 
-    double sig_x_max;
-    double sig_y_max;
-    double sig_z_max;
-    double alpha_x_max;
-    double alpha_y_max;
-    double alpha_z_max;
-    double kappa_x_max;
-    double kappa_y_max;
-    double kappa_z_max;
+    type1 sig_x_max;
+    type1 sig_y_max;
+    type1 sig_z_max;
+    type1 alpha_x_max;
+    type1 alpha_y_max;
+    type1 alpha_z_max;
+    type1 kappa_x_max;
+    type1 kappa_y_max;
+    type1 kappa_z_max;
 
-    void initCBKAP(const double dt, const double dx, const double dy, const double dz) {
+    void initCBKAP(const type1 dt, const type1 dx, const type1 dy, const type1 dz) {
         int i, j, k;
         for (i = 0; i < nxPML_1; ++i) {
 
@@ -716,7 +716,7 @@ private:
         }
     };
 
-    void initDen(const double dt, const double dx, const double dy, const double dz) {
+    void initDen(const type1 dt, const type1 dx, const type1 dy, const type1 dz) {
         int i, j, k, ii, jj, kk;
         ii = nxPML_2 - 2;
 
@@ -950,14 +950,14 @@ private:
     };
 };
 template<class type1, class type2>
-double cpml<type1, type2>::eps_0 = 0;
+type1 cpml<type1, type2>::eps_0 = 0;
 template<class type1, class type2>
-double cpml<type1, type2>::mu_0 = 0;
+type1 cpml<type1, type2>::mu_0 = 0;
 template<class type1, class type2>
-double cpml<type1, type2>::epsR = 1.0;
+type1 cpml<type1, type2>::epsR = 1.0;
 template<class type1, class type2>
-const double cpml<type1, type2>::C = 2.99792458E8;
+const type1 cpml<type1, type2>::C = 2.99792458E8;
 template<class type1, class type2>
-const double cpml<type1, type2>::pi = 3.14159265358979;
+const type1 cpml<type1, type2>::pi = 3.14159265358979;
 #endif	/* CPML_H */
 
