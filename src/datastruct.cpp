@@ -81,7 +81,7 @@ data3d<DataType>::~data3d() {
 
 template<class DataType>
 int data3d<DataType>::CreateStruct(unsigned nnx, unsigned nny, unsigned nnz) {
-#if(DEBUG>=3)
+#if(DEBUG>=6)
     cout << "(" << nnx << ',' << nny << ',' << nnz << ')' << endl;
 #endif
     if (p != NULL) {

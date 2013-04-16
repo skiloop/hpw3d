@@ -488,7 +488,7 @@ private:
 
             sige_x_PML_1.p[i] = sig_x_max * pow(((nxPML_1 - 1 - i)
                     / (nxPML_1 - 1.0)), m);
-            alphae_x_PML_1.p[i] = alpha_x_max * pow(((float) i
+            alphae_x_PML_1.p[i] = alpha_x_max * pow(((MyDataF) i
                     / (nxPML_1 - 1.0)), ma);
             kappae_x_PML_1.p[i] = 1.0 + (kappa_x_max - 1.0) *
                     pow((nxPML_1 - 1 - i) / (nxPML_1 - 1.0), m);
@@ -525,7 +525,7 @@ private:
 
             sige_x_PML_2.p[i] = sig_x_max * pow(((nxPML_2 - 1 - i)
                     / (nxPML_2 - 1.0)), m);
-            alphae_x_PML_2.p[i] = alpha_x_max * pow(((float) i
+            alphae_x_PML_2.p[i] = alpha_x_max * pow(((MyDataF) i
                     / (nxPML_2 - 1.0)), ma);
             kappae_x_PML_2.p[i] = 1.0 + (kappa_x_max - 1.0) *
                     pow((nxPML_2 - 1 - i) / (nxPML_2 - 1.0), m);
@@ -565,7 +565,7 @@ private:
 
             sige_y_PML_1.p[j] = sig_y_max * pow(((nyPML_1 - 1 - j)
                     / (nyPML_1 - 1.0)), m);
-            alphae_y_PML_1.p[j] = alpha_y_max * pow(((float) j
+            alphae_y_PML_1.p[j] = alpha_y_max * pow(((MyDataF) j
                     / (nyPML_1 - 1.0)), ma);
             kappae_y_PML_1.p[j] = 1.0 + (kappa_y_max - 1.0) *
                     pow((nyPML_1 - 1 - j) / (nyPML_1 - 1.0), m);
@@ -602,7 +602,7 @@ private:
 
             sige_y_PML_2.p[j] = sig_y_max * pow(((nyPML_2 - 1 - j)
                     / (nyPML_2 - 1.0)), m);
-            alphae_y_PML_2.p[j] = alpha_y_max * pow(((float) j
+            alphae_y_PML_2.p[j] = alpha_y_max * pow(((MyDataF) j
                     / (nyPML_2 - 1.0)), ma);
             kappae_y_PML_2.p[j] = 1.0 + (kappa_y_max - 1.0) *
                     pow((nyPML_2 - 1 - j) / (nyPML_2 - 1.0), m);
@@ -641,7 +641,7 @@ private:
 
             sige_z_PML_1.p[k] = sig_z_max * pow(((nzPML_1 - 1 - k)
                     / (nzPML_1 - 1.0)), m);
-            alphae_z_PML_1.p[k] = alpha_z_max * pow(((float) k
+            alphae_z_PML_1.p[k] = alpha_z_max * pow(((MyDataF) k
                     / (nzPML_1 - 1.0)), ma);
             kappae_z_PML_1.p[k] = 1.0 + (kappa_z_max - 1.0) *
                     pow((nzPML_1 - 1 - k) / (nzPML_1 - 1.0), m);
@@ -680,7 +680,7 @@ private:
 
             sige_z_PML_2.p[k] = sig_z_max * pow(((nzPML_2 - 1 - k)
                     / (nzPML_2 - 1.0)), m);
-            alphae_z_PML_2.p[k] = alpha_z_max * pow(((float) k
+            alphae_z_PML_2.p[k] = alpha_z_max * pow(((MyDataF) k
                     / (nzPML_2 - 1.0)), ma);
             kappae_z_PML_2.p[k] = 1.0 + (kappa_z_max - 1.0) *
                     pow((nzPML_2 - 1 - k) / (nzPML_2 - 1.0), m);

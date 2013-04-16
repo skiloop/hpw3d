@@ -18,7 +18,7 @@ MATINC=-I$(MATPATH)/extern/include
 SRC=src
 CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY #-DMATLAB_SIMULATION $(MATINC)
 #CPPFLAGS=-Wall -g -DDEBUG=3 -DWETH_DENSITY -DMATLAB_SIMULATION $(MATINC)
-LIB= $(MATLIB)
+#LIB= $(MATLIB)
 
 OBJS=cpml.o test.o  fdtd.o InonizationFormula.o #datastruct.o
 
