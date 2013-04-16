@@ -25,7 +25,7 @@ OBJS=cpml.o test.o  fdtd.o InonizationFormula.o #datastruct.o
 projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml #3DFormulaTransforming.pdf
 .PHONY:all clean
 
-all:hpw3d
+all:hpw3d testCPML
 
 hpw3d:$(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LIB)
@@ -37,8 +37,8 @@ emain:emain.o datastruct.o
 	$(CXX) -o $@ emain.o $(CPPFLAGS) datastruct.o $(LIB)
 orig:orig.o
 	$(CXX) -o $@ orig.o $(CPPFLAGS) $(LIB)
-testCPML:testcpml.o cpml.o datastruct.o
-	$(CXX) $(CPPFLAGS) -o $@  datastruct.o cpml.o testcpml.o $(LIB)
+testCPML:testcpml.o cpml.o $(SRC)/datastruct.h
+	$(CXX) $(CPPFLAGS) -o $@  cpml.o testcpml.o $(LIB)
 testcpml.o:$(SRC)/testcpml.cpp
 	$(CXX) $(CPPFLAGS) -c $< 
 testMain.o:$(SRC)/testMain.cpp
