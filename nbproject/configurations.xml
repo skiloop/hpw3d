@@ -14,18 +14,17 @@
         <in>cpml.cpp</in>
         <in>cpml.h</in>
         <in>cpml2.cpp</in>
-        <in>cpml2.h</in>
         <in>cpml3.cpp</in>
         <in>cpmld.cpp</in>
         <in>cpmld.h</in>
         <in>data1d.cpp</in>
-        <in>data1d.h</in>
         <in>datastruct.cpp</in>
         <in>datastruct.h</in>
         <in>dmain.cpp</in>
         <in>emain.cpp</in>
         <in>fdtd.cpp</in>
         <in>fdtd.h</in>
+        <in>hpw3d.cpp</in>
         <in>orig.cpp</in>
         <in>tcpml.cpp</in>
         <in>test.cpp</in>
@@ -60,9 +59,6 @@
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>hpw3d</executablePath>
           <ccTool>
-            <incDir>
-              <pElem>.</pElem>
-            </incDir>
             <preprocessorList>
               <Elem>DEBUG=3</Elem>
             </preprocessorList>
@@ -92,6 +88,9 @@
       </item>
       <item path="src/cmain.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
@@ -108,16 +107,23 @@
       </item>
       <item path="src/cpml2.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
-      </item>
-      <item path="src/cpml2.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/cpml3.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/cpmld.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
@@ -127,20 +133,30 @@
       </item>
       <item path="src/data1d.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
-      </item>
-      <item path="src/data1d.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/datastruct.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/datastruct.h" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/dmain.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
@@ -148,6 +164,9 @@
       </item>
       <item path="src/emain.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
@@ -162,8 +181,18 @@
       </item>
       <item path="src/fdtd.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/hpw3d.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="src/orig.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
@@ -171,6 +200,9 @@
       </item>
       <item path="src/tcpml.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
@@ -178,6 +210,9 @@
       </item>
       <item path="src/test.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
@@ -185,6 +220,9 @@
       </item>
       <item path="src/testMain.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
@@ -192,6 +230,9 @@
       </item>
       <item path="src/testcpml.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>

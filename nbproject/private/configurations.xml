@@ -17,12 +17,9 @@
         <in>cmain.cpp</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
-        <in>cpml1.cpp</in>
-        <in>cpml1.h</in>
         <in>cpml2.cpp</in>
         <in>cpml2.h</in>
         <in>cpml3.cpp</in>
-        <in>cpml3.h</in>
         <in>cpmld.cpp</in>
         <in>cpmld.h</in>
         <in>data1d.cpp</in>
@@ -33,9 +30,15 @@
         <in>emain.cpp</in>
         <in>fdtd.cpp</in>
         <in>fdtd.h</in>
+        <in>hpw3d.cpp</in>
         <in>orig.cpp</in>
         <in>tcpml.cpp</in>
         <in>test.cpp</in>
+        <in>testMain.cpp</in>
+        <in>testcpml.cpp</in>
+      </df>
+      <df name="test">
+        <in>sine.cpp</in>
         <in>testMain.cpp</in>
         <in>testcpml.cpp</in>
       </df>
