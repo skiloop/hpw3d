@@ -363,35 +363,35 @@ void fdtd::initialize() {
     cout << "numMaterials = " << numMaterials << endl;
 #endif
     //Dynamic memory allocation
-    epsilon = new double[numMaterials];
+    epsilon = new MyDataF[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
         epsilon[i] = eps_0;
     }
 
-    mu = new double[numMaterials];
+    mu = new MyDataF[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
         mu[i] = mu_0;
     }
 
-    sigma = new double[numMaterials];
+    sigma = new MyDataF[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
         sigma[i] = 0.0;
     }
 
-    CA = new double[numMaterials];
+    CA = new MyDataF[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
 
         CA[i] = 0.0;
     }
 
-    CB = new double[numMaterials];
+    CB = new MyDataF[numMaterials];
 
     for (i = 0; i < numMaterials; i++) {
         CB[i] = 0.0;
@@ -476,7 +476,7 @@ void fdtd::setUp() {
     Da = mu_i * 2 * 1.602e-19 / e; //
     MyDataF Dmax = De > Da ? De : Da;
     //Fine Time Step Size
-    dtf = 0.001 * dsf * dsf / 2 / Dmax;
+    dtf = 0.05 * dsf * dsf / 2 / Dmax;
     neSkipStep = dtf / dt;
     cout << "neSkipStep=" << neSkipStep << endl;
     cout << tw / dt / neSkipStep << endl;
@@ -797,10 +797,10 @@ void fdtd::buildObject() {
 
 void fdtd::buildSphere() {
 
-    double dist; //distance
-    double rad = 8; //(double)Imax / 5.0; // sphere radius
-    double sc = (double) Imax / 2.0; //sphere centre
-    //double rad2 = 0.3; //(double)Imax / 5.0 - 3.0; // sphere radius
+    MyDataF dist; //distance
+    MyDataF rad = 8; //(MyDataF)Imax / 5.0; // sphere radius
+    MyDataF sc = (MyDataF) Imax / 2.0; //sphere centre
+    //MyDataF rad2 = 0.3; //(MyDataF)Imax / 5.0 - 3.0; // sphere radius
 
     unsigned i, j, k;
 

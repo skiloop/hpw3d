@@ -3,51 +3,53 @@
 #define INONIZATION_FORMULA_H
 
 #pragma once
+#include "common.h"
+
 //////////////////////////////////////////////////////////////////////////
 // Nikonov formula
 //////////////////////////////////////////////////////////////////////////
 // Calculate alpha by Nikonov formula
-double Alpha_Nikonov(double E, double P);
+MyDataF Alpha_Nikonov(MyDataF E, MyDataF P);
 // Calculate Eta by Nikonov formula
-double Eta_Nikonov(double E, double P);
+MyDataF Eta_Nikonov(MyDataF E, MyDataF P);
 // Calculate We by Nikonov formula
-double We_Nikonov(double E, double P);
+MyDataF We_Nikonov(MyDataF E, MyDataF P);
 // Niu_a
-double Niu_a_Nikonov(double E, double P);
+MyDataF Niu_a_Nikonov(MyDataF E, MyDataF P);
 // Niu_i
-double Niu_i_Nikonov(double E, double P);
+MyDataF Niu_i_Nikonov(MyDataF E, MyDataF P);
 
 //////////////////////////////////////////////////////////////////////////
 //Morrow and Lowke formula
 //////////////////////////////////////////////////////////////////////////
 // Calculate alpha by Morrow and Lowke formula
-double Alpha_MorrowAndLowke(double E, double N);
+MyDataF Alpha_MorrowAndLowke(MyDataF E, MyDataF N);
 // Calculate Eta by Morrow and Lowke formula
-double Eta_MorrowAndLowke(double E, double N);
+MyDataF Eta_MorrowAndLowke(MyDataF E, MyDataF N);
 // Calculate We by Morrow and Lowke formula
-double We_MorrowAndLowke(double E, double N);
+MyDataF We_MorrowAndLowke(MyDataF E, MyDataF N);
 // Niu_a
-double Niu_a_MorrowAndLowke(double E, double N);
+MyDataF Niu_a_MorrowAndLowke(MyDataF E, MyDataF N);
 // Niu_i
-double Niu_i_MorrowAndLowke(double E, double N);
+MyDataF Niu_i_MorrowAndLowke(MyDataF E, MyDataF N);
 
 //////////////////////////////////////////////////////////////////////////
 //Kang formula
 //////////////////////////////////////////////////////////////////////////
 // Calculate alpha by Kang formula
-double Alpha_Kang(double E);
+MyDataF Alpha_Kang(MyDataF E);
 // Calculate Eta by Kang formula
-double Eta_Kang(double E);
+MyDataF Eta_Kang(MyDataF E);
 // Calculate We by Kang formula
-double We_Kang(double E);
+MyDataF We_Kang(MyDataF E);
 // Niu_a
-double Niu_a_Kang(double E);
+MyDataF Niu_a_Kang(MyDataF E);
 // Niu_i
-double Niu_i_Kang(double E);
+MyDataF Niu_i_Kang(MyDataF E);
 
 //Calculate Niu_i and Niu_a together
-void Niu_Kang(double *pNiu_i, double *pNiu_a, double E);
-void Niu_Nikonov(double *pNiu_i, double *pNiu_a, double E, double P);
-void Niu_MorrowAndLowke(double *pNiu_i, double *pNiu_a, double E, double N);
+void Niu_Kang(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E);
+void Niu_Nikonov(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E, MyDataF P);
+void Niu_MorrowAndLowke(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E, MyDataF N);
 
 #endif
