@@ -115,7 +115,7 @@ int data3d<DataType>::CreateStruct(unsigned nnx, unsigned nny, unsigned nnz) {
         cerr << "Exception in " << __FUNCTION__ << e.what() << endl;
         exit(-1);
     }
-#if(DEBUG>=3)
+#if(DEBUG>=9)
     cout << "create successfully" << endl;
 #endif
     return 0;

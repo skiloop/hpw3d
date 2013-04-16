@@ -2,12 +2,12 @@
 #include "InonizationFormula.h"
 #include <math.h>
 //////////////////////////////////////////////////////////////////////////
-//int sign(double val)
+//int sign(MyDataF val)
 //if val>0 return 1
 //if val<0 return -1
 //return 0 if val==0
 
-int sign(double val) {
+int sign(MyDataF val) {
     return (val < 0 ? -1 : (val > 0 ? 1 : 0));
 }
 
@@ -16,8 +16,8 @@ int sign(double val) {
 //////////////////////////////////////////////////////////////////////////
 // Calculate alpha by Nikonov formula
 
-double Alpha_Nikonov(double E, double P) {
-    double EDivP = fabs(E) / P;
+MyDataF Alpha_Nikonov(MyDataF E, MyDataF P) {
+    MyDataF EDivP = fabs(E) / P;
     if (EDivP < 108.0) {
         return 3.9 * P * exp(-213 / EDivP);
     }
@@ -27,38 +27,38 @@ double Alpha_Nikonov(double E, double P) {
 }
 // Calculate Eta by Nikonov formula
 
-double Eta_Nikonov(double E, double P) {
-    double EDivP;
+MyDataF Eta_Nikonov(MyDataF E, MyDataF P) {
+    MyDataF EDivP;
     EDivP = fabs(E) / P;
     if (EDivP < 50.0) {
-        double val1 = 4.47e-3 * (EDivP)*(EDivP);
+        MyDataF val1 = 4.47e-3 * (EDivP)*(EDivP);
         if (EDivP >= 10.0) {
             return val1;
         }
         else {
-            double val2 = 4.47 / EDivP;
+            MyDataF val2 = 4.47 / EDivP;
             return (val1 > val2 ? val1 : val2);
         }
     }
     else {
-        double temp = sqrt(EDivP);
+        MyDataF temp = sqrt(EDivP);
         return (EDivP <= 90 ? 1.58 * temp : 142 / temp);
     }
 
 }
 // Calculate We by Nikonov formula
 
-double We_Nikonov(double E, double P) {
+MyDataF We_Nikonov(MyDataF E, MyDataF P) {
     return -0.0382 * E - 2.9e5 * E / P;
 }
 // Niu_a
 
-double Niu_a_Nikonov(double E, double P) {
+MyDataF Niu_a_Nikonov(MyDataF E, MyDataF P) {
     return Eta_Nikonov(E, P) * fabs(We_Nikonov(E, P));
 }
 // Niu_i
 
-double Niu_i_Nikonov(double E, double P) {
+MyDataF Niu_i_Nikonov(MyDataF E, MyDataF P) {
     return Alpha_Nikonov(E, P) * fabs(We_Nikonov(E, P));
 }
 
@@ -67,8 +67,8 @@ double Niu_i_Nikonov(double E, double P) {
 //////////////////////////////////////////////////////////////////////////
 // Calculate alpha by Morrow and Lowke formula
 
-double Alpha_MorrowAndLowke(double E, double N) {
-    double edn = fabs(E) / N / 1e-15;
+MyDataF Alpha_MorrowAndLowke(MyDataF E, MyDataF N) {
+    MyDataF edn = fabs(E) / N / 1e-15;
 
     if (edn > 1.5) {
         return 2e-16 * N * exp(-7.248 / edn);
@@ -79,8 +79,8 @@ double Alpha_MorrowAndLowke(double E, double N) {
 }
 // Calculate Eta by Morrow and Lowke formula
 
-double Eta_MorrowAndLowke(double E, double N) {
-    double edn;
+MyDataF Eta_MorrowAndLowke(MyDataF E, MyDataF N) {
+    MyDataF edn;
     edn = fabs(E) / N / 1e-16;
 
     if (edn > 0.12) {
@@ -98,8 +98,8 @@ double Eta_MorrowAndLowke(double E, double N) {
 }
 // Calculate We by Morrow and Lowke formula
 
-double We_MorrowAndLowke(double E, double N) {
-    double edn = fabs(E) / N / 1e-16;
+MyDataF We_MorrowAndLowke(MyDataF E, MyDataF N) {
+    MyDataF edn = fabs(E) / N / 1e-16;
 
     if (edn > 1.0) {
         if (edn <= 20.00)
@@ -117,12 +117,12 @@ double We_MorrowAndLowke(double E, double N) {
 }
 // Niu_a
 
-double Niu_a_MorrowAndLowke(double E, double N) {
+MyDataF Niu_a_MorrowAndLowke(MyDataF E, MyDataF N) {
     return Eta_MorrowAndLowke(E, N) * fabs(We_MorrowAndLowke(E, N));
 }
 // Niu_i
 
-double Niu_i_MorrowAndLowke(double E, double N) {
+MyDataF Niu_i_MorrowAndLowke(MyDataF E, MyDataF N) {
     return Alpha_MorrowAndLowke(E, N) * fabs(We_MorrowAndLowke(E, N));
 }
 
@@ -131,17 +131,17 @@ double Niu_i_MorrowAndLowke(double E, double N) {
 //////////////////////////////////////////////////////////////////////////
 // Calculate alpha by Kang formula
 
-double Alpha_Kang(double E) {
+MyDataF Alpha_Kang(MyDataF E) {
     return 0.0035 * exp(-1.65e5 / E);
 }
 // Calculate Eta by Kang formula
 
-double Eta_Kang(double E) {
+MyDataF Eta_Kang(MyDataF E) {
     return 0.15 * exp(-2.5e4 / E);
 }
 // Calculate We by Kang formula
 
-double We_Kang(double E) {
+MyDataF We_Kang(MyDataF E) {
     return -6060 * pow(E, 0.75);
 }
 
@@ -149,33 +149,33 @@ double We_Kang(double E) {
 
 // Niu_a
 
-double Niu_a_Kang(double E) {
+MyDataF Niu_a_Kang(MyDataF E) {
     return Eta_Kang(E) * fabs(We_Kang(E));
 }
 // Niu_i
 
-double Niu_i_Kang(double E) {
+MyDataF Niu_i_Kang(MyDataF E) {
     return Alpha_Kang(E) * fabs(We_Kang(E));
 }
 
 //Calculate Niu_i and Niu_a together
 
-void Niu_Kang(double *pNiu_i, double *pNiu_a, double E) {
-    double We;
+void Niu_Kang(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E) {
+    MyDataF We;
     We = fabs(We_Kang(E));
     *pNiu_a = Eta_Kang(E) * We;
     *pNiu_i = Alpha_Kang(E) * We;
 }
 
-void Niu_Nikonov(double *pNiu_i, double *pNiu_a, double E, double P) {
-    double we;
+void Niu_Nikonov(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E, MyDataF P) {
+    MyDataF we;
     we = fabs(We_Nikonov(E, P));
     *pNiu_a = Eta_Nikonov(E, P) * we;
     *pNiu_i = Alpha_Nikonov(E, P) * we;
 }
 
-void Niu_MorrowAndLowke(double *pNiu_i, double *pNiu_a, double E, double N) {
-    double we;
+void Niu_MorrowAndLowke(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E, MyDataF N) {
+    MyDataF we;
     we = fabs(We_MorrowAndLowke(E, N));
     *pNiu_a = Eta_MorrowAndLowke(E, N) * we;
     *pNiu_i = Alpha_MorrowAndLowke(E, N) * we;

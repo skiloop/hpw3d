@@ -42,10 +42,7 @@
 using namespace std;
 //#include "microdef.h"
 #define MAX_ARRAY_SIZE 300000
-
-typedef double MyDataF;
-typedef MyDataF* pMyDataF;
-typedef pMyDataF* ppMyDataF;
+#include "common.h"
 
 template<typename T>
 class data1d {
