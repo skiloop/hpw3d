@@ -16,7 +16,6 @@ extern MyDataF eps_0, epsR;
 extern MyDataF mu_0;
 //extern MyDataF dt, dx, dy, dz;
 extern MyDataF pi, C, me, e, T;
-extern MyDataF omika;
 
 using namespace std;
 #ifdef WITH_DENSITY
@@ -926,6 +925,7 @@ void fdtd::putvars() {
     cout << "t0 = " << t0 << endl; //delay
     cout << "source = " << source << endl; //Differentiated Gaussian source
     cout << "amp = " << amp << endl; // Amplitude
+    cout << "omega = " << omega << endl; // angle speed for sine wave
 
     //Specify the Time Step at which the data has to be saved for Visualization
     cout << "save_modulus = " << save_modulus << endl;
@@ -953,6 +953,9 @@ void fdtd::putvars() {
     cout << endl << "TIme step = " << dt << endl;
     cout << endl << "Number of steps = " << nMax << endl;
     cout << endl << "Total Simulation time = " << nMax * dt << " Seconds" << endl;
+}
+void fdtd::SetSineSource(MyDataF omega_){
+	omega=omega_;
 }
 // =================================================================
 // MATLAB SIMULATION

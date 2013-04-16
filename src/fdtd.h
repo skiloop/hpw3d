@@ -27,6 +27,7 @@ public:
     void setUp(); //Coefficients, parameters etc will get computed
     void compute(); //E & H Field update equation
     void StartUp();
+	void SetSineSource(MyDataF omega_);
 #ifdef MATLAB_SIMULATION
     int initMatlabSimulation();
     void doMatlabSimulation();
@@ -79,8 +80,6 @@ private:
     MyDataF t0; //delay
     MyDataF source; //Differentiated Gaussian source    
     MyDataF omega; //wave angle frequency
-
-
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
     unsigned istart, iend, jstart;
