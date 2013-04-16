@@ -1,26 +1,7 @@
-CXX=g++
-#CXX=icpc
-CC=gcc
 
-# matlab path 
-MATPATH=/opt/Matlab/R2011a# for local server
-#MATPATH=/opt2/Matlab/R2011a# for servers of college
-
-# Matlab link path
-MATLINK=-Wl,-rpath=$(MATPATH)/bin/glnxa64
-
-# Matlab link option
-MATLIB=$(MATLINK) -L$(MATPATH)/bin/glnxa64 -lmx -leng
-
-# Matlab link path
-MATINC=-I$(MATPATH)/extern/include
+include makefile.in
 
 SRC=src
-CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY #-DMATLAB_SIMULATION $(MATINC)
-#CPPFLAGS=-Wall -g -DDEBUG=3 -DWETH_DENSITY -DMATLAB_SIMULATION $(MATINC)
-LIB= -lm #$(MATLIB)
-
-
 TEST=testCPML sine testMain
 TEST_SRC_DIR=./test/
 OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o #datastruct.o
