@@ -20,59 +20,36 @@ CPPFLAGS=-Wall -g -DDEBUG=3 -DWITH_DENSITY #-DMATLAB_SIMULATION $(MATINC)
 #CPPFLAGS=-Wall -g -DDEBUG=3 -DWETH_DENSITY -DMATLAB_SIMULATION $(MATINC)
 #LIB= $(MATLIB)
 
-OBJS=cpml.o test.o  fdtd.o InonizationFormula.o #datastruct.o
 
-projects=origProgram testCPML hpw3d orig cmain emain dmain tcpml #3DFormulaTransforming.pdf
-.PHONY:all clean
+TEST=testCPML sine tcpml testMain
+TEST_SRC_DIR=./test/
+OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o #datastruct.o
+TEST_OBJ=sine.o testMain.o testcpml.o tcpml.o
+projects=$(TEST) origProgram testCPML hpw3d orig cmain emain dmain tcpml sine#3DFormulaTransforming.pdf
+.PHONY:all clean test
 
-all:hpw3d testCPML
+all:hpw3d 
 
 hpw3d:$(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LIB)
-origProgram:testMain.o
+
+
+# ==================================================
+# test
+# ==================================================
+
+test: $(TEST)
+sine:sine.o fdtd.o InonizationFormula.o
+	$(CXX) -o $@ $? $(CPPFLAGS) $(LIB)
+testMain:testMain.o
 	$(CXX) -o $@ testMain.o $(CPPFLAGS) $(LIB)
-cmain:cmain.o datastruct.o
-	$(CXX) -o $@ cmain.o $(CPPFLAGS) datastruct.o $(LIB)
-emain:emain.o datastruct.o
-	$(CXX) -o $@ emain.o $(CPPFLAGS) datastruct.o $(LIB)
-orig:orig.o
-	$(CXX) -o $@ orig.o $(CPPFLAGS) $(LIB)
-testCPML:testcpml.o cpml.o $(SRC)/datastruct.h
+testCPML:testcpml.o cpml.o
 	$(CXX) $(CPPFLAGS) -o $@  cpml.o testcpml.o $(LIB)
-testcpml.o:$(SRC)/testcpml.cpp
-	$(CXX) $(CPPFLAGS) -c $< 
-testMain.o:$(SRC)/testMain.cpp
-	$(CXX) $(CPPFLAGS) -c $< 
-orig.o:$(SRC)/orig.cpp
-	$(CXX) $(CPPFLAGS) -c $< 
-test.o:$(SRC)/test.cpp fdtd.o 
-	$(CXX) $(CPPFLAGS) -c $< 
-cmain.o:$(SRC)/cmain.cpp
-	$(CXX) $(CPPFLAGS) -c $< 
-emain.o:$(SRC)/emain.cpp
-	$(CXX) $(CPPFLAGS) -c $< 
-fdtd.o:$(SRC)/fdtd.cpp $(SRC)/fdtd.h cpml.o $(SRC)/datastruct.h
-	$(CXX) $(CPPFLAGS) -c $< 
-cpml.o:$(SRC)/cpml.cpp $(SRC)/cpml.h $(SRC)/datastruct.h
-	$(CXX) $(CPPFLAGS) -c $< 
-cpmld.o:$(SRC)/cpmld.cpp $(SRC)/cpmld.h $(SRC)/datastruct.h
-	$(CXX) $(CPPFLAGS) -c $< 
-dmain:dmain.o datastruct.o cpmld.o
-	$(CXX) -o $@ dmain.o $(CPPFLAGS) datastruct.o cpmld.o $(LIB)
-dmain.o:$(SRC)/dmain.cpp
-	$(CXX) $(CPPFLAGS) -c $< 
-tcpml:tcpml.o datastruct.o cpml.o
-	$(CXX) -o $@ tcpml.o $(CPPFLAGS) datastruct.o cpml.o $(LIB)
-tcpml.o:$(SRC)/tcpml.cpp
-	$(CXX) $(CPPFLAGS) -c $< 
-datastruct.o:$(SRC)/datastruct.cpp $(SRC)/datastruct.h
-	$(CXX) $(CPPFLAGS) -c $< 
-InonizationFormula.o:$(SRC)/InonizationFormula.cpp $(SRC)/InonizationFormula.h
-	$(CXX) $(CPPFLAGS) -c $< 
-.cpp.o:
-	$(CC) $(CPPFLAGS) -c $(SRC)/$< 
-.c.o:$(SRC)/%.c $(SRC)/%.h
-	$(CC) $(CPPFLAGS) -c $< 
+$(TEST_OBJ):
+	cd $(TEST_SRC_DIR) && make $@
+$(OBJS):
+	cd $(SRC) && make $@
+
 # ==========================================
 # 3DFormulaTransforming.pdf
 # ==========================================
@@ -81,3 +58,5 @@ InonizationFormula.o:$(SRC)/InonizationFormula.cpp $(SRC)/InonizationFormula.h
 clean:
 	-rm -f *.o $(projects)
 	sh clean.sh
+	cd $(TEST_SRC_DIR) && make clean
+	cd $(SRC) && make clean

@@ -13,6 +13,7 @@
 
 # backup files
 *~
+*.bk
 
 # matlab mat-file
 *.mat

@@ -410,16 +410,16 @@ void fdtd::initialize() {
     Hy.CreateStruct(Imax - 1, Jmax, Kmax, 0);
     Hz.CreateStruct((Imax - 1), (Jmax - 1), (Kmax - 1), 0);
 
-	Ez.setName("Ez");
-	Ex.setName("Ex");
-	Ey.setName("Ey");
-	Hz.setName("Hz");
-	Hx.setName("Hx");
-	Hy.setName("Hy");
+    Ez.setName("Ez");
+    Ex.setName("Ex");
+    Ey.setName("Ey");
+    Hz.setName("Hz");
+    Hx.setName("Hx");
+    Hy.setName("Hy");
 #ifdef WITH_DENSITY
-	Vz.setName("Vz");
-	Vx.setName("Vx");
-	Vy.setName("Vy");
+    Vz.setName("Vz");
+    Vx.setName("Vx");
+    Vy.setName("Vy");
     Vx.CreateStruct(Ex, 0.0);
     Vy.CreateStruct(Ey, 0.0);
     Vz.CreateStruct(Ez, 0.0);
@@ -431,7 +431,7 @@ void fdtd::initialize() {
     Erms.CreateStruct(Ne, 0.0);
     Ne_pre.CreateStruct(Ne, 0.0);
     createCoeff();
-	Ne.setName("Ne");
+    Ne.setName("Ne");
 #endif
 
 #if(DEBUG>=3)
@@ -461,11 +461,11 @@ void fdtd::setUp() {
     //Time step
     dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
             1.0 / (dz * dz)));
-//    dt = dx/2/C;
-    
+    //    dt = dx/2/C;
+
     //delay
     t0 = 4.0 * tw;
-//    t0 = 6e-9;
+    //    t0 = 6e-9;
 #ifdef WITH_DENSITY
     //Fine Grid size
     dsf = dx / neGrid;
@@ -478,9 +478,9 @@ void fdtd::setUp() {
     //Fine Time Step Size
     dtf = 0.001 * dsf * dsf / 2 / Dmax;
     neSkipStep = dtf / dt;
-	cout<<"neSkipStep="<<neSkipStep<<endl;
-	cout<<tw/dt/neSkipStep<<endl;
-	//exit(0);
+    cout << "neSkipStep=" << neSkipStep << endl;
+    cout << tw / dt / neSkipStep << endl;
+    //exit(0);
 #endif
     //  Specify the dipole size 
     istart = pmlWith;
@@ -559,7 +559,7 @@ void fdtd::compute() {
     //    jc = jsp + 1;
     //    kc = ksp + 2;
     ic = isp;
-    jc = jsp+13;
+    jc = jsp + 13;
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -746,12 +746,12 @@ void fdtd::compute() {
 
         //source = amp * -2.0 * ((n * dt - t0) / tw/tw)
         //        * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
-        
-		// sine wave
-		source = 2*pi * omega*amp*cos((n*dt-t0)*2*pi*omega);
+
+        // sine wave
+        source = 2 * pi * omega * amp * cos((n * dt - t0)*2 * pi * omega);
 
 
-        Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + CB[ID3.p[isp][jsp][ksp]] * source/dx/dy/dz;
+        Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + CB[ID3.p[isp][jsp][ksp]] * source / dx / dy / dz;
 
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -768,8 +768,8 @@ void fdtd::compute() {
         if ((n % save_modulus) == 0) {
             writeField(n);
 #ifdef WITH_DENSITY
-            Ne.save(Ne.nz/2,neGrid,n,2);
-            Ez.save(ksp,1,n,2);
+            Ne.save(Ne.nz / 2, neGrid, n, 2);
+            Ez.save(ksp, 1, n, 2);
 #endif
         }
 #ifdef MATLAB_SIMULATION
