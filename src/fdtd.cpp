@@ -744,9 +744,12 @@ void fdtd::compute() {
         //   Apply a point source (Soft)
         //-----------------------------------------------------------
 
-        source = amp * -2.0 * ((n * dt - t0) / tw/tw)
-                * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
-        //source = amp * sin((n*dt-t0)*2*pi*omika);
+        //source = amp * -2.0 * ((n * dt - t0) / tw/tw)
+        //        * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
+        
+		// sine wave
+		source = 2*pi * omega*amp*cos((n*dt-t0)*2*pi*omega);
+
 
         Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + CB[ID3.p[isp][jsp][ksp]] * source/dx/dy/dz;
 

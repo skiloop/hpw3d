@@ -8,7 +8,7 @@ MyDataF dx, dy, dz;
 MyDataF pi, C;
 MyDataF me, e;
 MyDataF tw;
-MyDataF omika;
+MyDataF omega;
 MyDataF T;// ns
 MyDataF Amp;
 unsigned pmlw;
@@ -38,5 +38,5 @@ void initComData() {
     Amp=1e10;
     tw=20e-9;
     pmlw=12;
-    omika=2*pi*C/150/dx;
+    omega=2*pi*C/150/dx;
 }
