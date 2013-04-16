@@ -37,7 +37,7 @@ using namespace std;
 
 //#include"datastruct.h"
 
-template<class DataType> int data3d<DataType>::cnt = 0;
+template<class DataType> unsigned int data3d<DataType>::cnt = 0;
 template<class DataType> string data3d<DataType>::tail = ".dat";
 
 #ifdef MATLAB_SIMULATION

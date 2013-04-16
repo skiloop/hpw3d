@@ -131,7 +131,7 @@ public:
     DataType*** p;
 
 public:
-    static int cnt;
+    static unsigned int cnt;
     static std::string tail;
 #ifdef MATLAB_SIMULATION
     static Engine *ep;

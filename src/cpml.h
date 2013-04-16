@@ -81,9 +81,9 @@ public:
     virtual ~cpml() {
     };
    
-    void updateEz(const int k, data3d<type1> &Ez, const data3d<type1>&Hx, const data3d<type1>&Hy, const data3d<type2>&ID3, const type1* CB, const type1 dx, const type1 dy) {
-        int i, j, ii, jj;
-        short id;
+    void updateEz(const unsigned k, data3d<type1> &Ez, const data3d<type1>&Hx, const data3d<type1>&Hy, const data3d<type2>&ID3, const type1* CB, const type1 dx, const type1 dy) {
+        unsigned i, j, ii, jj;
+        type2 id;
         for (j = 1; j < Jmax - 1; ++j) {
             //............................................................
             //  PML for bottom Ez, x-direction
@@ -132,8 +132,8 @@ public:
     };
 
     void updateEyOut(data3d<type1> &Ey, const data3d<type1> &Hx, const data3d<type2>&ID2, const type1* CB, const type1 dz) {
-        int i, j, k, kk;
-        short id;
+        unsigned i, j, k, kk;
+        type2 id;
         for (i = 1; i < Imax - 1; ++i) {
             for (j = 0; j < Jmax - 1; ++j) {
                 //...........................................................
@@ -161,9 +161,9 @@ public:
         }
     };
 
-    void updateEyIn(const int k, data3d<type1> &Ey, const data3d<type1> &Hz, const data3d<type2>&ID2, const type1* CB, const type1 dx) {
-        int i, j, ii;
-        short id;
+    void updateEyIn(const unsigned k, data3d<type1> &Ey, const data3d<type1> &Hz, const data3d<type2>&ID2, const type1* CB, const type1 dx) {
+        unsigned i, j, ii;
+        type2 id;
         for (j = 0; j < Jmax - 1; ++j) {
             //...........................................................
             //  PML for bottom Ey, i-direction
@@ -188,9 +188,9 @@ public:
         }
     };
 
-    void updateExIn(const int k, data3d<type1> &Ex, const data3d<type1> &Hz, const data3d<type2>&ID1, const type1* CB, const type1 dy) {
-        int i, j, jj;
-        short id;
+    void updateExIn(const unsigned k, data3d<type1> &Ex, const data3d<type1> &Hz, const data3d<type2>&ID1, const type1* CB, const type1 dy) {
+        unsigned i, j, jj;
+        type2 id;
         for (i = 0; i < Imax - 1; ++i) {
             //..............................................................
             //  PML for bottom Ex, j-direction
@@ -218,8 +218,8 @@ public:
     };
 
     void updateExOut(data3d<type1> &Ex, const data3d<type1> &Hy, const data3d<type2>&ID1, const type1* CB, const type1 dz) {
-        int i, j, k, kk;
-        short id;
+        unsigned i, j, k, kk;
+        type2 id;
         for (i = 0; i < Imax - 1; ++i) {
 
             for (j = 1; j < Jmax - 1; ++j) {
@@ -249,8 +249,8 @@ public:
         }
     };
 
-    void updateHz(const int k, data3d<type1> &Hz, const data3d<type1>&Ex, const data3d<type1>&Ey, const type1 DB, const type1 dx, const type1 dy) {
-        int i, j, ii, jj;
+    void updateHz(const unsigned k, data3d<type1> &Hz, const data3d<type1>&Ex, const data3d<type1>&Ey, const type1 DB, const type1 dx, const type1 dy) {
+        unsigned i, j, ii, jj;
         for (j = 0; j < Jmax - 1; ++j) {
             //..........................................................
             //  PML for bottom Hz, x-direction
@@ -299,7 +299,7 @@ public:
     };
 
     void updateHyOut(data3d<type1> &Hy, const data3d<type1> &Ex, const type1 DB, const type1 dz) {
-        int i, j, k, kk;
+        unsigned i, j, k, kk;
         for (i = 0; i < Imax - 1; ++i) {
             for (j = 0; j < Jmax - 1; ++j) {
                 //.......................................................
@@ -325,8 +325,8 @@ public:
         }
     };
 
-    void updateHyIn(const int k, data3d<type1> &Hy, const data3d<type1> &Ez, const type1 DB, const type1 dx) {
-        int i, j, ii;
+    void updateHyIn(const unsigned k, data3d<type1> &Hy, const data3d<type1> &Ez, const type1 DB, const type1 dx) {
+        unsigned i, j, ii;
         for (j = 0; j < Jmax - 1; ++j) {
             //.......................................................
             //  PML for bottom Hy, i-direction
@@ -352,7 +352,7 @@ public:
     };
 
     void updateHxOut(data3d<type1> &Hx, const data3d<type1> &Ey, const type1 DB, const type1 dz) {
-        int i, j, k, kk;
+        unsigned i, j, k, kk;
         for (i = 0; i < Imax - 1; ++i) {
 
             for (j = 0; j < Jmax - 1; ++j) {
@@ -380,8 +380,8 @@ public:
         }
     };
 
-    void updateHxIn(const int k, data3d<type1> &Hx, const data3d<type1> &Ez, const type1 DB, const type1 dy) {
-        int i, j, jj;
+    void updateHxIn(const unsigned k, data3d<type1> &Hx, const data3d<type1> &Ez, const type1 DB, const type1 dy) {
+        unsigned i, j, jj;
         for (i = 0; i < Imax - 1; ++i) {
             //...............................................
             //  PML for bottom Hx, j-direction
@@ -404,7 +404,7 @@ public:
         }
     };
 
-    void initParmeters(const type1 dx, const type1 dy, const type1 dz, int m_, int ma_) {
+    void initParmeters(const type1 dx, const type1 dy, const type1 dz, unsigned m_, unsigned ma_) {
         m = m_;
         ma = ma_;
         sig_x_max = 0.75 * (0.8 * (m + 1) / (dx * sqrt(mu_0 / (eps_0 * epsR))));
@@ -461,13 +461,13 @@ private:
     // Specify the CPML Thickness in Each Direction (Value of Zero
     // Corresponds to No PML, and the Grid is Terminated with a PEC)
     // PML thickness in each direction
-    int nxPML_1, nxPML_2, nyPML_1;
-    int nyPML_2, nzPML_1, nzPML_2;
+    unsigned nxPML_1, nxPML_2, nyPML_1;
+    unsigned nyPML_2, nzPML_1, nzPML_2;
 
     // grid size corresponding to the number of Ez field components
-    int Imax;
-    int Jmax;
-    int Kmax;
+    unsigned Imax;
+    unsigned Jmax;
+    unsigned Kmax;
 
     // Specify the CPML Order and Other Parameters:
     int m, ma;
@@ -483,7 +483,7 @@ private:
     type1 kappa_z_max;
 
     void initCBKAP(const type1 dt, const type1 dx, const type1 dy, const type1 dz) {
-        int i, j, k;
+        unsigned i, j, k;
         for (i = 0; i < nxPML_1; ++i) {
 
             sige_x_PML_1.p[i] = sig_x_max * pow(((nxPML_1 - 1 - i)
@@ -717,7 +717,7 @@ private:
     };
 
     void initDen(const type1 dt, const type1 dx, const type1 dy, const type1 dz) {
-        int i, j, k, ii, jj, kk;
+        unsigned i, j, k, ii, jj, kk;
         ii = nxPML_2 - 2;
 
         for (i = 0; i < Imax - 1; ++i) {
