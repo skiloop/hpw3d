@@ -539,11 +539,8 @@ void fdtd::setUp() {
 #ifdef WITH_DENSITY
     initCoeff();
 #endif
-
-    cout << endl << "TIme step = " << dt << endl;
-    cout << endl << "Number of steps = " << nMax << endl;
-    cout << endl << "Total Simulation time = " << nMax * dt << " Seconds" << endl;
-
+	putvars();
+	
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -943,6 +940,19 @@ void fdtd::putvars() {
     //  Specify the CPML Order and Other Parameters:
     cout << " m = " << m << endl;
     cout << " ma = " << ma << endl;
+#ifdef WITH_DENSITY 
+	cout<<"neGrid="<<neGrid<<endl;
+	cout<<"neSkipStep="<<neSkipStep<<endl;
+	cout<<"dtf="<<dtf<<endl;
+	cout<<"dsf="<<dsf<<endl;
+	cout<<"mu_i="<<mu_i<<endl;
+	cout<<"mu_e="<<mu_e<<endl;
+	cout<<"Da="<<Da<<endl;
+	cout<<"De="<<De<<endl;
+#endif
+    cout << endl << "TIme step = " << dt << endl;
+    cout << endl << "Number of steps = " << nMax << endl;
+    cout << endl << "Total Simulation time = " << nMax * dt << " Seconds" << endl;
 }
 // =================================================================
 // MATLAB SIMULATION
