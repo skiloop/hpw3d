@@ -249,7 +249,7 @@ public:
         }
     };
 
-    void updateHz(const int k, data3d<type1> &Hz, const data3d<type1>&Ex, const data3d<type1>&Ey, const float DB, const double dx, const double dy) {
+    void updateHz(const int k, data3d<type1> &Hz, const data3d<type1>&Ex, const data3d<type1>&Ey, const type1 DB, const double dx, const double dy) {
         int i, j, ii, jj;
         for (j = 0; j < Jmax - 1; ++j) {
             //..........................................................
@@ -298,7 +298,7 @@ public:
         }
     };
 
-    void updateHyOut(data3d<type1> &Hy, const data3d<type1> &Ex, const float DB, const double dz) {
+    void updateHyOut(data3d<type1> &Hy, const data3d<type1> &Ex, const type1 DB, const double dz) {
         int i, j, k, kk;
         for (i = 0; i < Imax - 1; ++i) {
             for (j = 0; j < Jmax - 1; ++j) {
@@ -325,7 +325,7 @@ public:
         }
     };
 
-    void updateHyIn(const int k, data3d<type1> &Hy, const data3d<type1> &Ez, const float DB, const double dx) {
+    void updateHyIn(const int k, data3d<type1> &Hy, const data3d<type1> &Ez, const type1 DB, const double dx) {
         int i, j, ii;
         for (j = 0; j < Jmax - 1; ++j) {
             //.......................................................
@@ -351,7 +351,7 @@ public:
         }
     };
 
-    void updateHxOut(data3d<type1> &Hx, const data3d<type1> &Ey, const float DB, const double dz) {
+    void updateHxOut(data3d<type1> &Hx, const data3d<type1> &Ey, const type1 DB, const double dz) {
         int i, j, k, kk;
         for (i = 0; i < Imax - 1; ++i) {
 
@@ -380,7 +380,7 @@ public:
         }
     };
 
-    void updateHxIn(const int k, data3d<type1> &Hx, const data3d<type1> &Ez, const float DB, const double dy) {
+    void updateHxIn(const int k, data3d<type1> &Hx, const data3d<type1> &Ez, const type1 DB, const double dy) {
         int i, j, jj;
         for (i = 0; i < Imax - 1; ++i) {
             //...............................................
