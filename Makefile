@@ -6,7 +6,7 @@ TEST=testCPML sine testMain
 TEST_SRC_DIR=./test/
 OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o #datastruct.o
 TEST_OBJ=sine.o testMain.o testcpml.o
-projects=$(TEST) origProgram testCPML hpw3d orig cmain emain dmain tcpml sine#3DFormulaTransforming.pdf
+projects=$(TEST) hpw3d#3DFormulaTransforming.pdf
 .PHONY:all clean test
 
 all:hpw3d 
