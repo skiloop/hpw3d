@@ -31,6 +31,7 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 , numMaterials(_nmaterial)
 , neGrid(_neGrid)
 , Ne0(1e7)
+, srcType(SOURCE_GAUSSIAN)
 , epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
 #else
@@ -43,7 +44,9 @@ fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWith(pmlw)
-, numMaterials(_nmaterial), epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
+, numMaterials(_nmaterial)
+, srcType(SOURCE_GAUSSIAN)
+, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
 #endif
 
@@ -740,12 +743,18 @@ void fdtd::compute() {
         //   Apply a point source (Soft)
         //-----------------------------------------------------------
 
-        //source = amp * -2.0 * ((n * dt - t0) / tw/tw)
-        //        * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
-
-        // sine wave
-        source = 2 * pi * omega * amp * cos((n * dt - t0)*2 * pi * omega);
-
+		switch(srcType){
+			case SOURCE_GAUSSIAN:
+				source = amp * -2.0 * ((n * dt - t0) / tw/tw)
+				        * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
+				break;
+			case SOURCE_SINE:
+				// sine wave
+				source = 2 * pi * omega * amp * cos((n * dt - t0)*2 * pi * omega);
+				break;
+			default:
+				source=0;
+		}
 
         Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + CB[ID3.p[isp][jsp][ksp]] * source / dx / dy / dz;
 
@@ -954,7 +963,11 @@ void fdtd::putvars() {
     cout << endl << "Number of steps = " << nMax << endl;
     cout << endl << "Total Simulation time = " << nMax * dt << " Seconds" << endl;
 }
+void fdtd::setSourceType(int sourceType){
+	srcType=sourceType;
+}
 void fdtd::SetSineSource(MyDataF omega_){
+	srcType=SOURCE_SINE;
 	omega=omega_;
 }
 // =================================================================
