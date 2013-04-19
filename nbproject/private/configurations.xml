@@ -3,46 +3,32 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="hpw3d">
       <df name="Efields">
-        <in>loadAllTxtFile.m</in>
-        <in>playMovieWithRes.m</in>
-        <in>runMyJobs.m</in>
       </df>
       <df name="new">
       </df>
       <df name="old">
       </df>
+      <df name="run">
+      </df>
       <df name="src">
         <in>InonizationFormula.cpp</in>
         <in>InonizationFormula.h</in>
-        <in>cmain.cpp</in>
+        <in>common.h</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
-        <in>cpml2.cpp</in>
-        <in>cpml2.h</in>
-        <in>cpml3.cpp</in>
         <in>cpmld.cpp</in>
         <in>cpmld.h</in>
-        <in>data1d.cpp</in>
-        <in>data1d.h</in>
         <in>datastruct.cpp</in>
         <in>datastruct.h</in>
-        <in>dmain.cpp</in>
-        <in>emain.cpp</in>
         <in>fdtd.cpp</in>
         <in>fdtd.h</in>
         <in>hpw3d.cpp</in>
-        <in>orig.cpp</in>
-        <in>tcpml.cpp</in>
-        <in>test.cpp</in>
-        <in>testMain.cpp</in>
-        <in>testcpml.cpp</in>
       </df>
       <df name="test">
+        <in>gaussian.cpp</in>
         <in>sine.cpp</in>
         <in>testMain.cpp</in>
         <in>testcpml.cpp</in>
-      </df>
-      <df name="testrun">
       </df>
       <in>analysis.m</in>
       <in>demoErr2.m</in>
@@ -80,7 +66,40 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
         </runcommandpicklist>
         <runcommand>"${OUTPUT_PATH}"</runcommand>
-        <rundir>.</rundir>
+        <rundir>/home/skiloop/workspace/hpw3d/run</rundir>
+        <buildfirst>true</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+    <conf name="sine" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>/home/skiloop/workspace/hpw3d/run</rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>
         <remove-instrumentation>0</remove-instrumentation>

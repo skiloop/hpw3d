@@ -541,8 +541,8 @@ void fdtd::setUp() {
 #ifdef WITH_DENSITY
     initCoeff();
 #endif
-	putvars();
-	
+    putvars();
+
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -743,18 +743,18 @@ void fdtd::compute() {
         //   Apply a point source (Soft)
         //-----------------------------------------------------------
 
-		switch(srcType){
-			case SOURCE_GAUSSIAN:
-				source = amp * -2.0 * ((n * dt - t0) / tw/tw)
-				        * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
-				break;
-			case SOURCE_SINE:
-				// sine wave
-				source = 2 * pi * omega * amp * cos((n * dt - t0)*2 * pi * omega);
-				break;
-			default:
-				source=0;
-		}
+        switch (srcType) {
+            case SOURCE_GAUSSIAN:
+                source = amp * -2.0 * ((n * dt - t0) / tw / tw)
+                        * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
+                break;
+            case SOURCE_SINE:
+                // sine wave
+                source = 2 * pi * omega * amp * cos((n * dt - t0)*2 * pi * omega);
+                break;
+            default:
+                source = 0;
+        }
 
         Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + CB[ID3.p[isp][jsp][ksp]] * source / dx / dy / dz;
 
@@ -950,25 +950,27 @@ void fdtd::putvars() {
     cout << " m = " << m << endl;
     cout << " ma = " << ma << endl;
 #ifdef WITH_DENSITY 
-	cout<<"neGrid="<<neGrid<<endl;
-	cout<<"neSkipStep="<<neSkipStep<<endl;
-	cout<<"dtf="<<dtf<<endl;
-	cout<<"dsf="<<dsf<<endl;
-	cout<<"mu_i="<<mu_i<<endl;
-	cout<<"mu_e="<<mu_e<<endl;
-	cout<<"Da="<<Da<<endl;
-	cout<<"De="<<De<<endl;
+    cout << "neGrid=" << neGrid << endl;
+    cout << "neSkipStep=" << neSkipStep << endl;
+    cout << "dtf=" << dtf << endl;
+    cout << "dsf=" << dsf << endl;
+    cout << "mu_i=" << mu_i << endl;
+    cout << "mu_e=" << mu_e << endl;
+    cout << "Da=" << Da << endl;
+    cout << "De=" << De << endl;
 #endif
     cout << endl << "TIme step = " << dt << endl;
     cout << endl << "Number of steps = " << nMax << endl;
     cout << endl << "Total Simulation time = " << nMax * dt << " Seconds" << endl;
 }
-void fdtd::setSourceType(int sourceType){
-	srcType=sourceType;
+
+void fdtd::setSourceType(int sourceType) {
+    srcType = sourceType;
 }
-void fdtd::SetSineSource(MyDataF omega_){
-	srcType=SOURCE_SINE;
-	omega=omega_;
+
+void fdtd::SetSineSource(MyDataF omega_) {
+    srcType = SOURCE_SINE;
+    omega = omega_;
 }
 // =================================================================
 // MATLAB SIMULATION

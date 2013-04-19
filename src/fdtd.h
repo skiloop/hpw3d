@@ -22,17 +22,18 @@ public:
             unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, unsigned _nmatrial = 50);
 #endif
     ~fdtd(void);
-	static const int SINE_SOURCE=1;
-	static const int SINE_GAUSSIAN=0;
-	static const int SINE_DERIVE_GAUSSION=2;
-	static const int SINE_ZERO=0;
+    
+    static const int SOURCE_GAUSSIAN = 0;
+    static const int SOURCE_SINE = 1;
+    static const int SOURCE_DERIVE_GAUSSIAN = 2;
+    static const int SOURCE_ZERO = 3;
     //Function prototype definitions
     void initialize(); //Memory initialization
     void setUp(); //Coefficients, parameters etc will get computed
     void compute(); //E & H Field update equation
     void StartUp();
-	void SetSineSource(MyDataF omega_);
-	void setSourceType(int sourceType);
+    void SetSineSource(MyDataF omega_);
+    void setSourceType(int sourceType);
 #ifdef MATLAB_SIMULATION
     int initMatlabSimulation();
     void doMatlabSimulation();
@@ -86,8 +87,8 @@ private:
     MyDataF source; //Differentiated Gaussian source    
     MyDataF omega; //wave angle frequency
 
-	// source type
-	int srcType;
+    // source type
+    int srcType;
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
     unsigned istart, iend, jstart;

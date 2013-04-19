@@ -2,10 +2,10 @@
 include makefile.in
 
 SRC=src
-TEST=testCPML sine testMain
+TEST=testCPML sine testMain gaussian
 TEST_SRC_DIR=./test/
 OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o #datastruct.o
-TEST_OBJ=sine.o testMain.o testcpml.o
+TEST_OBJ=sine.o testMain.o testcpml.o gaussian.o
 projects=$(TEST) hpw3d#3DFormulaTransforming.pdf
 .PHONY:all clean test
 
@@ -20,6 +20,8 @@ hpw3d:$(OBJS)
 # ==================================================
 
 test: $(TEST)
+gaussian:gaussian.o fdtd.o InonizationFormula.o
+	$(CXX) -o $@ $? $(CPPFLAGS) $(LIB)
 sine:sine.o fdtd.o InonizationFormula.o
 	$(CXX) -o $@ $? $(CPPFLAGS) $(LIB)
 testMain:testMain.o
