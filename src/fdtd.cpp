@@ -558,7 +558,7 @@ void fdtd::compute() {
     //    jc = jsp + 1;
     //    kc = ksp + 2;
     ic = isp;
-    jc = jsp + 13;
+    jc = jsp + (Imax - jsp) / 2;
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -588,8 +588,16 @@ void fdtd::compute() {
                     Hx.p[i][j][k] = DA * Hx.p[i][j][k] + DB *
                             ((Ez.p[i][j][k] - Ez.p[i][j + 1][k]) * pml.den_hy.p[j] +
                             (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
+#ifdef WITH_DENSITY
+#if DEBUG>=4
+                    if (isnan(Hx.p[i][j][k])) {
+                        cout << "(" << i << "," << j << "," << k << ")" << endl;
+                    }
+#endif
+#endif
                 }
             }
+
             pml.updateHxIn(k, Hx, Ez, DB, dy);
         }
         pml.updateHxOut(Hx, Ey, DB, dz);
@@ -605,6 +613,13 @@ void fdtd::compute() {
                     Hy.p[i][j][k] = DA * Hy.p[i][j][k] + DB *
                             ((Ez.p[i + 1][j][k] - Ez.p[i][j][k]) * pml.den_hx.p[i] +
                             (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
+#ifdef WITH_DENSITY
+#if DEBUG>=4
+                    if (isnan(Hy.p[i][j][k])) {
+                        cout << "(" << i << "," << j << "," << k << ")" << endl;
+                    }
+#endif
+#endif
                 }
             }
             pml.updateHyIn(k, Hy, Ez, DB, dx);
@@ -622,6 +637,13 @@ void fdtd::compute() {
                     Hz.p[i][j][k] = DA * Hz.p[i][j][k] + DB
                             * ((Ey.p[i][j][k] - Ey.p[i + 1][j][k]) * pml.den_hx.p[i] +
                             (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
+#ifdef WITH_DENSITY
+#if DEBUG>=4
+                    if (isnan(Hz.p[i][j][k])) {
+                        cout << "(" << i << "," << j << "," << k << ")" << endl;
+                    }
+#endif
+#endif
                 }
             }
             pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
@@ -692,9 +714,11 @@ void fdtd::compute() {
 #endif
                     }
 #ifdef WITH_DENSITY
+#if DEBUG>=4
                     if (isnan(Ey.p[i][j][k])) {
                         cout << "(" << i << "," << j << "," << k << ")" << endl;
                     }
+#endif
                     Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
 #endif
                 }

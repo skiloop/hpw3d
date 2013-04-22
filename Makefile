@@ -21,13 +21,13 @@ hpw3d:$(OBJS)
 
 test: $(TEST)
 gaussian:gaussian.o fdtd.o InonizationFormula.o
-	$(CXX) -o $@ $? $(CPPFLAGS) $(LIB)
+	$(CXX) -o $@ $? $(CXXFLAGS) $(LIB)
 sine:sine.o fdtd.o InonizationFormula.o
-	$(CXX) -o $@ $? $(CPPFLAGS) $(LIB)
+	$(CXX) -o $@ $? $(CXXFLAGS) $(LIB)
 testMain:testMain.o
-	$(CXX) -o $@ testMain.o $(CPPFLAGS) $(LIB)
+	$(CXX) -o $@ testMain.o $(CXXFLAGS) $(LIB)
 testCPML:testcpml.o cpml.o
-	$(CXX) $(CPPFLAGS) -o $@  cpml.o testcpml.o $(LIB)
+	$(CXX) $(CXXFLAGS) -o $@  cpml.o testcpml.o $(LIB)
 $(TEST_OBJ):
 	cd $(TEST_SRC_DIR) && make $@
 $(OBJS):

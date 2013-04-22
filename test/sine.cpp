@@ -17,7 +17,7 @@ void initComData();
 int main() {
 
     initComData();
-    fdtd hpw(500, 30, 30, 30, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
+    fdtd hpw(500, 20, 20, 20, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
     hpw.SetSineSource(omega);
 #ifdef WITH_DENSITY
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
