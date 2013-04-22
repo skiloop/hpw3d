@@ -169,7 +169,14 @@ private:
     int UpdateDensity(void);
     int UpdateVeloity(void);
     void WallCircleBound(data3d<MyDataF> &stru);
-
+    void updateHx();
+    void updateHy();
+    void updateHz();
+    void updateMagneitcFields();
+    void updateEx();
+    void updateEy();
+    void updateEz();
+    void updateElectricAndVeloityFields();
 
 #endif
     cpml<MyDataF, unsigned int> pml;

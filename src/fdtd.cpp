@@ -576,197 +576,198 @@ void fdtd::compute() {
         cout << "Ez at time step " << n << " at (" << ic << ", " << jc << ", " << kc;
         cout << ") :  " << Ez.p[ic][jc][kc] << endl;
 
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //  UPDATE Hx
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        for (k = 1; k < Kmax - 1; ++k) {
-
-            for (i = 0; i < Imax - 1; ++i) {
-
-                for (j = 0; j < Jmax - 1; ++j) {
-
-                    Hx.p[i][j][k] = DA * Hx.p[i][j][k] + DB *
-                            ((Ez.p[i][j][k] - Ez.p[i][j + 1][k]) * pml.den_hy.p[j] +
-                            (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
-#ifdef WITH_DENSITY
-#if DEBUG>=4
-                    if (isnan(Hx.p[i][j][k])) {
-                        cout << "(" << i << "," << j << "," << k << ")" << endl;
-                    }
-#endif
-#endif
-                }
-            }
-
-            pml.updateHxIn(k, Hx, Ez, DB, dy);
-        }
-        pml.updateHxOut(Hx, Ey, DB, dz);
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //  UPDATE Hy
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        for (k = 1; k < Kmax - 1; ++k) {
-
-            for (i = 0; i < Imax - 1; ++i) {
-
-                for (j = 0; j < Jmax - 1; ++j) {
-
-                    Hy.p[i][j][k] = DA * Hy.p[i][j][k] + DB *
-                            ((Ez.p[i + 1][j][k] - Ez.p[i][j][k]) * pml.den_hx.p[i] +
-                            (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
-#ifdef WITH_DENSITY
-#if DEBUG>=4
-                    if (isnan(Hy.p[i][j][k])) {
-                        cout << "(" << i << "," << j << "," << k << ")" << endl;
-                    }
-#endif
-#endif
-                }
-            }
-            pml.updateHyIn(k, Hy, Ez, DB, dx);
-        }
-        pml.updateHyOut(Hy, Ex, DB, dz);
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //  UPDATE Hz
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        for (k = 0; k < Kmax - 1; ++k) {
-
-            for (i = 0; i < Imax - 1; ++i) {
-
-                for (j = 0; j < Jmax - 1; ++j) {
-
-                    Hz.p[i][j][k] = DA * Hz.p[i][j][k] + DB
-                            * ((Ey.p[i][j][k] - Ey.p[i + 1][j][k]) * pml.den_hx.p[i] +
-                            (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
-#ifdef WITH_DENSITY
-#if DEBUG>=4
-                    if (isnan(Hz.p[i][j][k])) {
-                        cout << "(" << i << "," << j << "," << k << ")" << endl;
-                    }
-#endif
-#endif
-                }
-            }
-            pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
-        }
-
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //  UPDATE Ex
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        for (k = 0; k < Kmax - 1; ++k) {
-
-            for (i = 0; i < Imax - 1; ++i) {
-
-                for (j = 1; j < Jmax - 1; ++j) {
-#ifdef WITH_DENSITY
-                    MyDataF Exp = Ex.p[i][j][k];
-#endif
-                    id = ID1.p[i][j][k];
-                    if (id == 1) { // PEC
-
-                        Ex.p[i][j][k] = 0;
-
-                    } else {
-#ifdef WITH_DENSITY
-                        Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] * Cexex.p[i][j][k] + CB[id] * Cexh.p[i][j][k]*
-                                ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
-                                (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]) +
-                                Cexvx.p[i][j][k] * Vx.p[i][j][k];
-#else
-                        Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] + CB[id] *
-                                ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
-                                (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]);
-#endif                                  
-                    }
-#ifdef WITH_DENSITY
-                    Vx.p[i][j][k] = alpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
-#endif
-                }
-            }
-            pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
-        }
-        pml.updateExOut(Ex, Hy, ID1, CB, dz);
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //  UPDATE Ey
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        for (k = 0; k < Kmax - 1; ++k) {
-
-            for (i = 1; i < Imax - 1; ++i) {
-
-                for (j = 0; j < Jmax - 1; ++j) {
-#ifdef WITH_DENSITY
-                    MyDataF Eyp = Ey.p[i][j][k];
-#endif
-                    id = ID2.p[i][j][k];
-                    if (id == 1) { // PEC
-
-                        Ey.p[i][j][k] = 0;
-
-                    } else {
-#ifdef WITH_DENSITY
-                        Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
-                                ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
-                                (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]) +
-                                Ceyvy.p[i][j][k] * Vy.p[i][j][k];
-#else
-                        Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] + CB[id] *
-                                ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
-                                (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]);
-#endif
-                    }
-#ifdef WITH_DENSITY
-#if DEBUG>=4
-                    if (isnan(Ey.p[i][j][k])) {
-                        cout << "(" << i << "," << j << "," << k << ")" << endl;
-                    }
-#endif
-                    Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
-#endif
-                }
-            }
-            pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
-        }
-        pml.updateEyOut(Ey, Hx, ID2, CB, dy);
-
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //  UPDATE Ez
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        for (k = 1; k < Kmax - 1; ++k) {
-
-            for (i = 1; i < Imax - 1; ++i) {
-
-                for (j = 1; j < Jmax - 1; ++j) {
-#ifdef WITH_DENSITY
-                    MyDataF Ezp = Ez.p[i][j][k];
-#endif
-                    id = ID3.p[i][j][k];
-                    if (id == 1) { // PEC
-
-                        Ez.p[i][j][k] = 0;
-
-                    } else {
-#ifdef WITH_DENSITY
-                        Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] * Cezez.p[i][j][k] + CB[id] * Cezh.p[i][j][k]
-                                * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
-                                (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]) +
-                                Cezvz.p[i][j][k] * Vz.p[i][j][k];
-#else
-                        Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] + CB[id]
-                                * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
-                                (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]);
-#endif
-                    }
-#ifdef WITH_DENSITY
-                    Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
-#endif
-                }
-            }
-            pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
-        }
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        //  UPDATE Hx
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        for (k = 1; k < Kmax - 1; ++k) {
+//
+//            for (i = 0; i < Imax - 1; ++i) {
+//
+//                for (j = 0; j < Jmax - 1; ++j) {
+//
+//                    Hx.p[i][j][k] = DA * Hx.p[i][j][k] + DB *
+//                            ((Ez.p[i][j][k] - Ez.p[i][j + 1][k]) * pml.den_hy.p[j] +
+//                            (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
+//#ifdef WITH_DENSITY
+//#if DEBUG>=4
+//                    if (isnan(Hx.p[i][j][k])) {
+//                        cout << "(" << i << "," << j << "," << k << ")" << endl;
+//                    }
+//#endif
+//#endif
+//                }
+//            }
+//
+//            pml.updateHxIn(k, Hx, Ez, DB, dy);
+//        }
+//        pml.updateHxOut(Hx, Ey, DB, dz);
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        //  UPDATE Hy
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        for (k = 1; k < Kmax - 1; ++k) {
+//
+//            for (i = 0; i < Imax - 1; ++i) {
+//
+//                for (j = 0; j < Jmax - 1; ++j) {
+//
+//                    Hy.p[i][j][k] = DA * Hy.p[i][j][k] + DB *
+//                            ((Ez.p[i + 1][j][k] - Ez.p[i][j][k]) * pml.den_hx.p[i] +
+//                            (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
+//#ifdef WITH_DENSITY
+//#if DEBUG>=4
+//                    if (isnan(Hy.p[i][j][k])) {
+//                        cout << "(" << i << "," << j << "," << k << ")" << endl;
+//                    }
+//#endif
+//#endif
+//                }
+//            }
+//            pml.updateHyIn(k, Hy, Ez, DB, dx);
+//        }
+//        pml.updateHyOut(Hy, Ex, DB, dz);
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        //  UPDATE Hz
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        for (k = 0; k < Kmax - 1; ++k) {
+//
+//            for (i = 0; i < Imax - 1; ++i) {
+//
+//                for (j = 0; j < Jmax - 1; ++j) {
+//
+//                    Hz.p[i][j][k] = DA * Hz.p[i][j][k] + DB
+//                            * ((Ey.p[i][j][k] - Ey.p[i + 1][j][k]) * pml.den_hx.p[i] +
+//                            (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
+//#ifdef WITH_DENSITY
+//#if DEBUG>=4
+//                    if (isnan(Hz.p[i][j][k])) {
+//                        cout << "(" << i << "," << j << "," << k << ")" << endl;
+//                    }
+//#endif
+//#endif
+//                }
+//            }
+//            pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
+//        }
+//
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        //  UPDATE Ex
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        for (k = 0; k < Kmax - 1; ++k) {
+//
+//            for (i = 0; i < Imax - 1; ++i) {
+//
+//                for (j = 1; j < Jmax - 1; ++j) {
+//#ifdef WITH_DENSITY
+//                    MyDataF Exp = Ex.p[i][j][k];
+//#endif
+//                    id = ID1.p[i][j][k];
+//                    if (id == 1) { // PEC
+//
+//                        Ex.p[i][j][k] = 0;
+//
+//                    } else {
+//#ifdef WITH_DENSITY
+//                        Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] * Cexex.p[i][j][k] + CB[id] * Cexh.p[i][j][k]*
+//                                ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
+//                                (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]) +
+//                                Cexvx.p[i][j][k] * Vx.p[i][j][k];
+//#else
+//                        Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] + CB[id] *
+//                                ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
+//                                (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]);
+//#endif                                  
+//                    }
+//#ifdef WITH_DENSITY
+//                    Vx.p[i][j][k] = alpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
+//#endif
+//                }
+//            }
+//            pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
+//        }
+//        pml.updateExOut(Ex, Hy, ID1, CB, dz);
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        //  UPDATE Ey
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        for (k = 0; k < Kmax - 1; ++k) {
+//
+//            for (i = 1; i < Imax - 1; ++i) {
+//
+//                for (j = 0; j < Jmax - 1; ++j) {
+//#ifdef WITH_DENSITY
+//                    MyDataF Eyp = Ey.p[i][j][k];
+//#endif
+//                    id = ID2.p[i][j][k];
+//                    if (id == 1) { // PEC
+//
+//                        Ey.p[i][j][k] = 0;
+//
+//                    } else {
+//#ifdef WITH_DENSITY
+//                        Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
+//                                ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
+//                                (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]) +
+//                                Ceyvy.p[i][j][k] * Vy.p[i][j][k];
+//#else
+//                        Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] + CB[id] *
+//                                ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
+//                                (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]);
+//#endif
+//                    }
+//#ifdef WITH_DENSITY
+//#if DEBUG>=4
+//                    if (isnan(Ey.p[i][j][k])) {
+//                        cout << "(" << i << "," << j << "," << k << ")" << endl;
+//                    }
+//#endif
+//                    Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+//#endif
+//                }
+//            }
+//            pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
+//        }
+//        pml.updateEyOut(Ey, Hx, ID2, CB, dy);
+//
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        //  UPDATE Ez
+//        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//        for (k = 1; k < Kmax - 1; ++k) {
+//
+//            for (i = 1; i < Imax - 1; ++i) {
+//
+//                for (j = 1; j < Jmax - 1; ++j) {
+//#ifdef WITH_DENSITY
+//                    MyDataF Ezp = Ez.p[i][j][k];
+//#endif
+//                    id = ID3.p[i][j][k];
+//                    if (id == 1) { // PEC
+//
+//                        Ez.p[i][j][k] = 0;
+//
+//                    } else {
+//#ifdef WITH_DENSITY
+//                        Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] * Cezez.p[i][j][k] + CB[id] * Cezh.p[i][j][k]
+//                                * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
+//                                (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]) +
+//                                Cezvz.p[i][j][k] * Vz.p[i][j][k];
+//#else
+//                        Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] + CB[id]
+//                                * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
+//                                (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]);
+//#endif
+//                    }
+//#ifdef WITH_DENSITY
+//                    Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+//#endif
+//                }
+//            }
+//            pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
+//        }
 
         //-----------------------------------------------------------
         //   Apply a point source (Soft)
         //-----------------------------------------------------------
-
+        fdtd::updateMagneitcFields();
+        fdtd::updateElectricAndVeloityFields();
         switch (srcType) {
             case SOURCE_GAUSSIAN:
                 source = amp * -2.0 * ((n * dt - t0) / tw / tw)
@@ -995,6 +996,264 @@ void fdtd::setSourceType(int sourceType) {
 void fdtd::SetSineSource(MyDataF omega_) {
     srcType = SOURCE_SINE;
     omega = omega_;
+}
+
+void fdtd::updateHx() {
+    unsigned i, jk;
+    for (k = 1; k < Kmax - 1; ++k) {
+
+        for (i = 0; i < Imax - 1; ++i) {
+
+            for (j = 0; j < Jmax - 1; ++j) {
+
+                Hx.p[i][j][k] = DA * Hx.p[i][j][k] + DB *
+                        ((Ez.p[i][j][k] - Ez.p[i][j + 1][k]) * pml.den_hy.p[j] +
+                        (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
+#ifdef WITH_DENSITY
+#if DEBUG>=4
+                if (isnan(Hx.p[i][j][k])) {
+                    cout << "(" << i << "," << j << "," << k << ")" << endl;
+                }
+#endif
+#endif
+            }
+        }
+        pml.updateHxIn(k, Hx, Ez, DB, dy);
+    }
+}
+
+void fdtd::updateHy() {
+    unsigned i, j, k;
+    for (k = 1; k < Kmax - 1; ++k) {
+
+        for (i = 0; i < Imax - 1; ++i) {
+
+            for (j = 0; j < Jmax - 1; ++j) {
+
+                Hy.p[i][j][k] = DA * Hy.p[i][j][k] + DB *
+                        ((Ez.p[i + 1][j][k] - Ez.p[i][j][k]) * pml.den_hx.p[i] +
+                        (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
+#ifdef WITH_DENSITY
+#if DEBUG>=4
+                if (isnan(Hy.p[i][j][k])) {
+                    cout << "(" << i << "," << j << "," << k << ")" << endl;
+                }
+#endif
+#endif
+            }
+        }
+        pml.updateHyIn(k, Hy, Ez, DB, dx);
+    }
+    pml.updateHyOut(Hy, Ex, DB, dz);
+}
+
+void fdtd::updateHz() {
+    unsigned i, j, k;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  UPDATE Hz
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    for (k = 0; k < Kmax - 1; ++k) {
+
+        for (i = 0; i < Imax - 1; ++i) {
+
+            for (j = 0; j < Jmax - 1; ++j) {
+
+                Hz.p[i][j][k] = DA * Hz.p[i][j][k] + DB
+                        * ((Ey.p[i][j][k] - Ey.p[i + 1][j][k]) * pml.den_hx.p[i] +
+                        (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
+#ifdef WITH_DENSITY
+#if DEBUG>=4
+                if (isnan(Hz.p[i][j][k])) {
+                    cout << "(" << i << "," << j << "," << k << ")" << endl;
+                }
+#endif
+#endif
+            }
+        }
+        pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
+    }
+
+
+}
+
+void fdtd::updateEx() {
+    unsigned i, j, k;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  UPDATE Ex
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    for (k = 0; k < Kmax - 1; ++k) {
+
+        for (i = 0; i < Imax - 1; ++i) {
+
+            for (j = 1; j < Jmax - 1; ++j) {
+#ifdef WITH_DENSITY
+                MyDataF Exp = Ex.p[i][j][k];
+#endif
+                id = ID1.p[i][j][k];
+                if (id == 1) { // PEC
+
+                    Ex.p[i][j][k] = 0;
+
+                } else {
+#ifdef WITH_DENSITY
+                    Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] * Cexex.p[i][j][k] + CB[id] * Cexh.p[i][j][k]*
+                            ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
+                            (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]) +
+                            Cexvx.p[i][j][k] * Vx.p[i][j][k];
+#else
+                    Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] + CB[id] *
+                            ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
+                            (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]);
+#endif                                  
+                }
+#ifdef WITH_DENSITY
+                Vx.p[i][j][k] = alpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
+#endif
+            }
+        }
+        pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
+    }
+    pml.updateExOut(Ex, Hy, ID1, CB, dz);
+
+}
+
+void fdtd::updateEy() {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  UPDATE Ey
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    for (k = 0; k < Kmax - 1; ++k) {
+
+        for (i = 1; i < Imax - 1; ++i) {
+
+            for (j = 0; j < Jmax - 1; ++j) {
+#ifdef WITH_DENSITY
+                MyDataF Eyp = Ey.p[i][j][k];
+#endif
+                id = ID2.p[i][j][k];
+                if (id == 1) { // PEC
+
+                    Ey.p[i][j][k] = 0;
+
+                } else {
+#ifdef WITH_DENSITY
+                    Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
+                            ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
+                            (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]) +
+                            Ceyvy.p[i][j][k] * Vy.p[i][j][k];
+#else
+                    Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] + CB[id] *
+                            ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
+                            (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]);
+#endif
+                }
+#ifdef WITH_DENSITY
+#if DEBUG>=4
+                if (isnan(Ey.p[i][j][k])) {
+                    cout << "(" << i << "," << j << "," << k << ")" << endl;
+                }
+#endif
+                Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+#endif
+            }
+        }
+        pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
+    }
+    pml.updateEyOut(Ey, Hx, ID2, CB, dy);
+
+
+}
+
+void fdtd::updateEz() {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  UPDATE Ey
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    for (k = 0; k < Kmax - 1; ++k) {
+
+        for (i = 1; i < Imax - 1; ++i) {
+
+            for (j = 0; j < Jmax - 1; ++j) {
+#ifdef WITH_DENSITY
+                MyDataF Eyp = Ey.p[i][j][k];
+#endif
+                id = ID2.p[i][j][k];
+                if (id == 1) { // PEC
+
+                    Ey.p[i][j][k] = 0;
+
+                } else {
+#ifdef WITH_DENSITY
+                    Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
+                            ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
+                            (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]) +
+                            Ceyvy.p[i][j][k] * Vy.p[i][j][k];
+#else
+                    Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] + CB[id] *
+                            ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
+                            (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]);
+#endif
+                }
+#ifdef WITH_DENSITY
+#if DEBUG>=4
+                if (isnan(Ey.p[i][j][k])) {
+                    cout << "(" << i << "," << j << "," << k << ")" << endl;
+                }
+#endif
+                Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+#endif
+            }
+        }
+        pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
+    }
+    pml.updateEyOut(Ey, Hx, ID2, CB, dy);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  UPDATE Ez
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    for (k = 1; k < Kmax - 1; ++k) {
+
+        for (i = 1; i < Imax - 1; ++i) {
+
+            for (j = 1; j < Jmax - 1; ++j) {
+#ifdef WITH_DENSITY
+                MyDataF Ezp = Ez.p[i][j][k];
+#endif
+                id = ID3.p[i][j][k];
+                if (id == 1) { // PEC
+
+                    Ez.p[i][j][k] = 0;
+
+                } else {
+#ifdef WITH_DENSITY
+                    Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] * Cezez.p[i][j][k] + CB[id] * Cezh.p[i][j][k]
+                            * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
+                            (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]) +
+                            Cezvz.p[i][j][k] * Vz.p[i][j][k];
+#else
+                    Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] + CB[id]
+                            * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
+                            (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]);
+#endif
+                }
+#ifdef WITH_DENSITY
+                Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+#endif
+            }
+        }
+        pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
+    }
+
+}
+
+void fdtd::updateMagneitcFields() {
+    updateHx();
+    updateHy();
+    updateHz();
+}
+
+void fdtd::updateElectricAndVeloityFields() {
+    updateEx();
+    updateEy();
+    updateEz();
 }
 // =================================================================
 // MATLAB SIMULATION
