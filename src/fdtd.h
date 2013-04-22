@@ -177,7 +177,7 @@ private:
     void updateEy();
     void updateEz();
     void updateElectricAndVeloityFields();
-
+    void updateSource();
 #endif
     cpml<MyDataF, unsigned int> pml;
 
