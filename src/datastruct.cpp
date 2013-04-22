@@ -140,7 +140,6 @@ int data3d<DataType>::ResetStructData(DataType Val) {
             }
         }
     }
-
     return 0;
 }
 
@@ -220,9 +219,9 @@ void data3d<DataType>::InitStructData(DataType initVal) {
 }
 
 template<class DataType>
-void data3d<DataType>::SaveData(unsigned leap,unsigned step) {
-	stringstream ss;
-	ss<<name<<"_"<<step<<tail;
+void data3d<DataType>::SaveData(unsigned leap, unsigned step) {
+    stringstream ss;
+    ss << name << "_" << step << tail;
     string fname = ss.str();
     if (leap >= nx || leap >= ny || leap >= nz) {
         cerr << "Invalid leap for saving p!" << endl;
@@ -233,7 +232,7 @@ void data3d<DataType>::SaveData(unsigned leap,unsigned step) {
         cerr << "File " << fname << "cannot be opened!" << endl;
         return;
     }
-	if(leap<=0)leap=1;
+    if (leap <= 0)leap = 1;
     unsigned i, j, k;
     for (i = 0; i < nx; i += leap) {
         for (j = 0; j < ny; j += leap) {
@@ -246,14 +245,15 @@ void data3d<DataType>::SaveData(unsigned leap,unsigned step) {
     }
     out.close();
 }
+
 /**
  * 
  * @param k
  * @param leap
  */
 template<class DataType>
-void data3d<DataType>::save(unsigned k,unsigned leap,unsigned step,int type) {
-	SaveData(k,leap,step,type);
+void data3d<DataType>::save(unsigned k, unsigned leap, unsigned step, int type) {
+    SaveData(k, leap, step, type);
 }
 
 /**
@@ -262,30 +262,32 @@ void data3d<DataType>::save(unsigned k,unsigned leap,unsigned step,int type) {
  * @param leap
  */
 template<class DataType>
-void data3d<DataType>::SaveData(unsigned k,unsigned leap,unsigned step,int type) {
-	switch(type){
-		case 1:
-			SaveXPlain(k,leap,step);
-			break;
-		case 2:
-			SaveYPlain(k,leap,step);
-			break;
-		case 3:
-			SaveZPlain(k,leap,step);
-			break;
-		default:
-			SaveZPlain(k,leap,step);
-	}
+void data3d<DataType>::SaveData(unsigned k, unsigned leap, unsigned step, int type) {
+    switch (type) {
+        case 1:
+            SaveXPlain(k, leap, step);
+            break;
+        case 2:
+            SaveYPlain(k, leap, step);
+            break;
+        case 3:
+            SaveZPlain(k, leap, step);
+            break;
+        default:
+            SaveZPlain(k, leap, step);
+    }
 }
+
 /**
  * 
  * @param k
  * @param leap
  */
 template<class DataType>
-void data3d<DataType>::SaveData(unsigned k,unsigned leap,unsigned step) {
-    SaveZPlain(k,leap,step);
+void data3d<DataType>::SaveData(unsigned k, unsigned leap, unsigned step) {
+    SaveZPlain(k, leap, step);
 }
+
 /**
  * 
  * @param k
@@ -293,30 +295,31 @@ void data3d<DataType>::SaveData(unsigned k,unsigned leap,unsigned step) {
  * @param step
  */
 template<class DataType>
-void data3d<DataType>::SaveZPlain(unsigned k,unsigned leap,unsigned step) {
-	stringstream ss;
-	ss<<name<<"_"<<step<<tail;
+void data3d<DataType>::SaveZPlain(unsigned k, unsigned leap, unsigned step) {
+    stringstream ss;
+    ss << name << "_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
         cerr << "Invalid leap for saving p!" << endl;
         return;
     }
-	string fname=ss.str();
+    string fname = ss.str();
     ofstream out(fname.c_str(), ios_base::binary);
     if (!out.is_open()) {
         cerr << "File " << fname << "cannot be opened!" << endl;
         return;
     }
-	if(leap<=0)leap=1;
+    if (leap <= 0)leap = 1;
     unsigned i, j;
-	if(k>=nz)k=nz/2;
+    if (k >= nz)k = nz / 2;
     for (i = 0; i < nx; i += leap) {
         for (j = 0; j < ny; j += leap) {
-			out << p[i][j][k] << '\t';
+            out << p[i][j][k] << '\t';
         }
         out << endl;
     }
     out.close();
 }
+
 /**
  * 
  * @param k
@@ -324,30 +327,31 @@ void data3d<DataType>::SaveZPlain(unsigned k,unsigned leap,unsigned step) {
  * @param step
  */
 template<class DataType>
-void data3d<DataType>::SaveYPlain(unsigned k,unsigned leap,unsigned step) {
-	stringstream ss;
-	ss<<name<<"_"<<step<<tail;
+void data3d<DataType>::SaveYPlain(unsigned k, unsigned leap, unsigned step) {
+    stringstream ss;
+    ss << name << "_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
         cerr << "Invalid leap for saving p!" << endl;
         return;
     }
-	string fname=ss.str();
+    string fname = ss.str();
     ofstream out(fname.c_str(), ios_base::binary);
     if (!out.is_open()) {
         cerr << "File " << fname << "cannot be opened!" << endl;
         return;
     }
-	if(leap<=0)leap=1;
+    if (leap <= 0)leap = 1;
     unsigned i, j;
-	if(k>=nz)k=nz/2;
+    if (k >= nz)k = nz / 2;
     for (i = 0; i < nx; i += leap) {
         for (j = 0; j < nz; j += leap) {
-			out << p[i][k][j] << '\t';
+            out << p[i][k][j] << '\t';
         }
         out << endl;
     }
     out.close();
 }
+
 /**
  * 
  * @param k
@@ -355,30 +359,31 @@ void data3d<DataType>::SaveYPlain(unsigned k,unsigned leap,unsigned step) {
  * @param step
  */
 template<class DataType>
-void data3d<DataType>::SaveXPlain(unsigned k,unsigned leap,unsigned step) {
-	stringstream ss;
-	ss<<name<<"_"<<step<<tail;
+void data3d<DataType>::SaveXPlain(unsigned k, unsigned leap, unsigned step) {
+    stringstream ss;
+    ss << name << "_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
         cerr << "Invalid leap for saving p!" << endl;
         return;
     }
-	string fname=ss.str();
+    string fname = ss.str();
     ofstream out(fname.c_str(), ios_base::binary);
     if (!out.is_open()) {
         cerr << "File " << fname << "cannot be opened!" << endl;
         return;
     }
-	if(leap<=0)leap=1;
+    if (leap <= 0)leap = 1;
     unsigned i, j;
-	if(k>=nx)k=nx/2;
+    if (k >= nx)k = nx / 2;
     for (j = 0; j < ny; j += leap) {
-    	for (i = 0; i < nz; i += leap) {
-			out << p[k][j][i] << '\t';
+        for (i = 0; i < nz; i += leap) {
+            out << p[k][j][i] << '\t';
         }
         out << endl;
     }
     out.close();
 }
+
 template<class DataType>
 int data3d<DataType>::InitMatlabEngine() {
 

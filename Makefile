@@ -39,7 +39,7 @@ $(OBJS):
 3DFormulaTransforming.pdf:3DFormulaTransforming.tex
 	texi2pdf 3DFormulaTransforming.tex
 clean:
-	-rm -f *.o $(projects)
+	-rm -f *.o *.d $(projects)
 	sh clean.sh
 	cd $(TEST_SRC_DIR) && make clean
 	cd $(SRC) && make clean

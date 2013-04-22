@@ -120,9 +120,9 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile hpw3d</buildCommand>
+          <buildCommand>${MAKE} -f Makefile sine</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>hpw3d</executablePath>
+          <executablePath>sine</executablePath>
           <ccTool>
             <preprocessorList>
               <Elem>DEBUG=3</Elem>

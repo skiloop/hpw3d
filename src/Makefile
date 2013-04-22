@@ -3,6 +3,6 @@ include ../makefile.in
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) -c $<
-	mv $@ ..
+	cp $@ ..
 clean:
-	-rm -f *.o
+	-rm -f *.o *.d

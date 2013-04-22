@@ -80,7 +80,7 @@ public:
 
     virtual ~cpml() {
     };
-   
+
     void updateEz(const unsigned k, data3d<type1> &Ez, const data3d<type1>&Hx, const data3d<type1>&Hy, const data3d<type2>&ID3, const type1* CB, const type1 dx, const type1 dy) {
         unsigned i, j, ii, jj;
         type2 id;

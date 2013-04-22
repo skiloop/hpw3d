@@ -77,6 +77,9 @@ private:
     //initial plasma value
     MyDataF Ne0;
 #endif
+        // source type
+    int srcType;
+    
     //permittivity, permeability and conductivity of different materials
     MyDataF *epsilon;
     MyDataF *sigma;
@@ -86,9 +89,6 @@ private:
     MyDataF t0; //delay
     MyDataF source; //Differentiated Gaussian source    
     MyDataF omega; //wave angle frequency
-
-    // source type
-    int srcType;
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
     unsigned istart, iend, jstart;
