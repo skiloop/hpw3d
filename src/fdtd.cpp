@@ -771,7 +771,7 @@ void fdtd::compute() {
         //====================================
         // update Source
         //====================================
-        updateSourve(n);
+        updateSource(n);
         //        switch (srcType) {
         //            case SOURCE_GAUSSIAN:
         //                source = amp * -2.0 * ((n * dt - t0) / tw / tw)
@@ -1020,7 +1020,7 @@ void fdtd::SetSineSource(MyDataF omega_) {
 }
 
 void fdtd::updateHx() {
-    unsigned i, jk;
+    unsigned i, j,k;
     for (k = 1; k < Kmax - 1; ++k) {
 
         for (i = 0; i < Imax - 1; ++i) {
