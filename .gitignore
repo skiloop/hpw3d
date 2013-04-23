@@ -39,6 +39,8 @@ testCPML
 hpw3d
 origProgram
 sine
+gaussian
+testMain
 # test projects
 test/
 

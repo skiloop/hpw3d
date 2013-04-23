@@ -127,7 +127,7 @@ private:
     int neSkipStep;
 
     //plasma variables
-    MyDataF vm;
+    MyDataF vm; //collision frequency
     MyDataF p; // air pressure
     MyDataF De;
     MyDataF Da;
@@ -151,7 +151,9 @@ private:
     data3d<MyDataF> Erms;
     // Beta
     data3d<MyDataF> beta;
-
+    
+    // collision frequency
+    data3d<MyDataF> Nu_c;
     //
     data3d<MyDataF> Vx;
     data3d<MyDataF> Vy;
@@ -164,7 +166,10 @@ private:
     void updateCoeff();
     void updateBeta();
 
+    // Erms or Eeff operation
+    void IntegerEeff();
     int UpdateErms(void);
+    void updateCollisionFrequency();
     int InterpErms();
     int UpdateDensity(void);
     int UpdateVeloity(void);

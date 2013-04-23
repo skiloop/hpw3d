@@ -9,7 +9,7 @@ TEST_OBJ=sine.o testMain.o testcpml.o gaussian.o
 projects=$(TEST) hpw3d#3DFormulaTransforming.pdf
 .PHONY:all clean test
 
-all:hpw3d 
+all:hpw3d 3DFormulaTransforming.pdf
 
 hpw3d:$(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LIB)

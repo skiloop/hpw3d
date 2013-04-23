@@ -129,4 +129,17 @@ V_{ey}^{n+1}(i,j+1/2,k)=\alpha V_{ey}^{n}(i,j+1/2,k)-C_{vyey}\left[E_{ey}^{n+1}(
 \begin{equation}
 V_{ez}^{n+1}(i,j,k+1/2)=\alpha V_{ez}^{n}(i,j,k+1/2)-C_{vzez}\left[E_{ez}^{n+1}(i,j,k+1/2)+E_{ez}^{n}(i,j,k+1/2)\right]
 \end{equation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Density update equations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{equation}
+E_{eff} = m_{e} q_{e}^{-1} \sqrt{ < u^{2}(\tau) > \nu_{c} /2 }
+\end{equation}
+\begin{equation}
+<u^{2}(\tau)>=\frac{1}{\tau}\int^{\tau}_{0}u^{2}(t)d t
+\end{equation}
+for sine wave
+\begin{equation}
+E_{eff}=\sqrt{\frac{E_{rms}}{1+\omega^{2}/\nu^{2}_{m}}}
+\end{equation}
 \end{document}
