@@ -614,8 +614,7 @@ void fdtd::setUp() {
 
 void fdtd::compute() {
 
-    unsigned id, n;
-    unsigned i, j, k;
+    unsigned n;
     unsigned ic, jc, kc; //capture field
     //    ic = isp + 1;
     //    jc = jsp + 1;

@@ -42,7 +42,7 @@ sine
 gaussian
 testMain
 # test projects
-test/
+#test/
 run/
 
 # backup file

@@ -16,8 +16,21 @@ void initComData();
 
 int main() {
 
+	unsigned xlen,ylen,zlen,tlen;
+	unsigned minTimeLen=500;
     initComData();
-    fdtd hpw(5000, 50, 100, 26, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
+	MyDataF zoneLength=tw*2*C;
+	MyDataF dt=0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1/(dz*dz)));
+	xlen=zoneLength/dx;
+	ylen=zoneLength/dy;
+	zlen=zoneLength/dz;
+	tlen=tw/dt;
+	if(tlen<minTimeLen)tlen=minTimeLen;
+	cout<< "xlen="<<xlen<<endl;
+	cout<< "ylen="<<ylen<<endl;
+	cout<< "zlen="<<zlen<<endl;
+	cout<< "tlen="<<tlen<<endl;
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
     hpw.setSourceType(fdtd::SOURCE_GAUSSIAN);
 #ifdef WITH_DENSITY
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
@@ -46,8 +59,8 @@ void initComData() {
     //    tw = 0.3 * T;
 
     // Gaussian Pulse
-    dx = dy = dz = 1e-3;
     Amp = 1e10;
     tw = 20e-9;
-    omega = 2 * pi * C / 150 / dx;
+    dx = dy = dz = tw*C/50;
+    omega = 2 * pi * C / 50 / dx;
 }
