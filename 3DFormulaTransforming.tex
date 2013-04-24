@@ -133,6 +133,16 @@ V_{ez}^{n+1}(i,j,k+1/2)=\alpha V_{ez}^{n}(i,j,k+1/2)-C_{vzez}\left[E_{ez}^{n+1}(
 % Density update equations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{equation}
+N^{n+1}_{e}(i,j,k)=
+\frac{1}{1+\Delta t_{F}(\nu_{a}+r_{ei}N^{n}_{e}(i,j,k))}
+\times \left\lbrace N^{n}_{e}(i,j,k)\left[1+\Delta t_{F} \nu_{i}\right]+\frac{D_{eff}\Delta t_{F}}{\Delta s^{2}_{F}}
+\times \left[ N^{n}_{e}(i+1,j,k)+N^{n}_{e}(i-1,j,k)
+N^{n}_{e}(i,j+1,k)+N^{n}_{e}(i,j-1,k)
+N^{n}_{e}(i,j,k+1)+N^{n}_{e}(i,j,k-1)-6N^{n}_{e}(i,j,k)\right]
+\right\rbrace
+\end{equation}
+
+\begin{equation}
 E_{eff} = m_{e} q_{e}^{-1} \sqrt{ < u^{2}(\tau) > \nu_{c} /2 }
 \end{equation}
 \begin{equation}
@@ -141,5 +151,9 @@ E_{eff} = m_{e} q_{e}^{-1} \sqrt{ < u^{2}(\tau) > \nu_{c} /2 }
 for sine wave
 \begin{equation}
 E_{eff}=\sqrt{\frac{E_{rms}}{1+\omega^{2}/\nu^{2}_{m}}}
+\end{equation}
+Gaussian pulse density formula
+\begin{equation}
+A
 \end{equation}
 \end{document}

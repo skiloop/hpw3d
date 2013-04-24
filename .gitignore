@@ -43,6 +43,7 @@ gaussian
 testMain
 # test projects
 test/
+run/
 
 # backup file
 *~
