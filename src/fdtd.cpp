@@ -889,7 +889,7 @@ void fdtd::updateHx() {
                         (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
 #ifdef WITH_DENSITY
 #if DEBUG>=4
-                nanOperator(Hx.p[i][j][k],i,j,k,"Hx");
+                Hx.nanOperator(i,j,k);
 #endif
 #endif
             }
@@ -911,7 +911,7 @@ void fdtd::updateHy() {
                         (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
 #ifdef WITH_DENSITY
 #if DEBUG>=4
-               nanOperator(Hy.p[i][j][k],i,j,k,"Hy");
+                Hy.nanOperator(i,j,k);
 #endif
 #endif
             }
@@ -937,7 +937,7 @@ void fdtd::updateHz() {
                         (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
 #ifdef WITH_DENSITY
 #if DEBUG>=4
-                nanOperator(Hz.p[i][j][k],i,j,k,"Hz");
+                Hz.nanOperator(i,j,k);
 #endif
 #endif
             }
@@ -1023,7 +1023,7 @@ void fdtd::updateEy() {
                 }
 #ifdef WITH_DENSITY
 #if DEBUG>=4
-               nanOperator(Ey.p[i][j][k],i,j,k,"Ey");
+               Ey.nanOperator(i,j,k);
 #endif
                 Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
 #endif

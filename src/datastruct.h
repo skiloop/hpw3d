@@ -263,15 +263,11 @@ public:
 public:
     static int InitMatlabEngine();
     static int CloseEngine();
+#if DEBUG
+	void nanOperator(unsigned i,unsigned j,unsigned k);
+#endif
 
 };
-#if DEBUG
-void nanOperator(MyDataF data,unsigned i,unsigned j,unsigned k,string name){
-    if(isnan(data)){
-        cout<<"nan var found at:("<<i<<","<<j<<","<<k<<")"<<endl;
-    }
-}
-#endif
 
 #include "datastruct.cpp"
 

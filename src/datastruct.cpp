@@ -490,3 +490,13 @@ void data3d<DataType>::InitPlot() {
 #endif
 }
 
+#if DEBUG
+template<class DataType>
+void data3d<DataType>::nanOperator(unsigned i,unsigned j,unsigned k){
+    if(isnan(p[i][j][k])){
+        cout<<"nan var found for "<< getName()<<" at:("<<i<<","<<j<<","<<k<<")"<<endl;
+    }
+}
+#endif
+
+
