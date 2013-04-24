@@ -19,6 +19,9 @@ int main() {
     initComData();
     fdtd hpw(5000, 50, 100, 26, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
     hpw.setSourceType(fdtd::SOURCE_GAUSSIAN);
+#ifdef WITH_DENSITY
+    hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
+#endif
     //hpw.initialize();
     hpw.StartUp();
     return 0;

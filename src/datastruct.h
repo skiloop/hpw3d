@@ -253,6 +253,9 @@ public:
     void setName(const std::string &sn) {
         name = sn;
     }
+    string getName(){
+        return name;
+    }
 public:
     void ClearSim();
     void PlotArrays();
@@ -262,6 +265,13 @@ public:
     static int CloseEngine();
 
 };
+#if DEBUG
+void nanOperator(MyDataF data,unsigned i,unsigned j,unsigned k,string name){
+    if(isnan(data)){
+        cout<<"nan var found at:("<<i<<","<<j<<","<<k<<")"<<endl;
+    }
+}
+#endif
 
 #include "datastruct.cpp"
 
