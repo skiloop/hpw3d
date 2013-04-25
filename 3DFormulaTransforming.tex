@@ -1,4 +1,5 @@
 \documentclass[a4paper,10pt]{article}
+\usepackage{amssymb}
 \usepackage[utf8]{inputenc}
 \title{3D Format}
 \author{Baofeng Shi}
@@ -132,6 +133,7 @@ V_{ez}^{n+1}(i,j,k+1/2)=\alpha V_{ez}^{n}(i,j,k+1/2)-C_{vzez}\left[E_{ez}^{n+1}(
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Density update equations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Equation for Density
 \begin{equation}
 N^{n+1}_{e}(i,j,k)=
 \frac{1}{1+\Delta t_{F}(\nu_{a}+r_{ei}N^{n}_{e}(i,j,k))}
@@ -142,7 +144,7 @@ N^{n}_{e}(i,j,k+1)+N^{n}_{e}(i,j,k-1)-6N^{n}_{e}(i,j,k)\right]
 \right\rbrace
 \end{equation}
 
-\begin{equation}
+\begin{equation}\label{EeffNorm}
 E_{eff} = m_{e} q_{e}^{-1} \sqrt{ < u^{2}(\tau) > \nu_{c} /2 }
 \end{equation}
 \begin{equation}
@@ -153,7 +155,20 @@ for sine wave
 E_{eff}=\sqrt{\frac{E_{rms}}{1+\omega^{2}/\nu^{2}_{m}}}
 \end{equation}
 Gaussian pulse density formula
-\begin{equation}
-A
+$\nu_{i},\nu_c$ approximation
+\begin{equation}\label{nu_i_1}
+\nu_{i}/p=\left\lbrace\begin{array}{ll}
+1.32+0.54\times 10^7A \exp \left(-208/A\right),&30\leqslant A\leqslant 54\\
+5.00+0.19\times 10^7A \exp \left(-273.8/A\right),&54\leqslant A\leqslant 120\\
+54.08\times 10^7A \sqrt{A} \exp \left(-359/A\right),&120\leqslant A\leqslant 3000\\
+\end{array}\right.
 \end{equation}
+\begin{equation}\label{nu_c_1}
+\nu_{c}/p=\left\lbrace\begin{array}{ll}
+3.24\times 10^8 \exp\left( A/(1+0.04A)\right),&30\leqslant A\leqslant 54\\
+2.93\times 10^8 \exp\left( A/(1+0.041A)\right),&54\leqslant A\leqslant 120\\
+5.20\times 10^8 \sqrt{A},&120\leqslant A\leqslant 3000\\
+\end{array}\right.
+\end{equation}
+where $A=E_{eff}/p/133.3$ ,$E_{eff}$in $V/cm$
 \end{document}

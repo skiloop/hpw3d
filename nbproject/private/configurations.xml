@@ -2,10 +2,6 @@
 <configurationDescriptor version="88">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="hpw3d">
-      <df name="new">
-      </df>
-      <df name="old">
-      </df>
       <df name="run">
       </df>
       <df name="src">

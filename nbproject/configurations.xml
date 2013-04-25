@@ -5,6 +5,7 @@
       <df name="src">
         <in>InonizationFormula.cpp</in>
         <in>InonizationFormula.h</in>
+        <in>common.h</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
         <in>cpmld.cpp</in>
@@ -44,7 +45,7 @@
           <executablePath>hpw3d</executablePath>
           <ccTool>
             <preprocessorList>
-              <Elem>DEBUG=3</Elem>
+              <Elem>DEBUG=4</Elem>
             </preprocessorList>
           </ccTool>
         </makeTool>
@@ -57,6 +58,8 @@
         </ccTool>
       </item>
       <item path="src/InonizationFormula.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/common.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/cpml.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
@@ -73,6 +76,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>DEBUG=3</Elem>
             <Elem>WITH_DENSITY</Elem>
           </preprocessorList>
         </ccTool>
@@ -84,6 +88,9 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG=3</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/datastruct.h" ex="false" tool="1" flavor2="4">
@@ -91,6 +98,9 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG=3</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/fdtd.cpp" ex="false" tool="1" flavor2="4">
