@@ -192,7 +192,7 @@ int fdtd::UpdateDensity(void) {
             for (k = mt; k < Ne.nz - mt; k++) {
                 switch (srcType) {
                     case SOURCE_GAUSSIAN:
-                        Eeff = Erms.p[i][j][k] / 100; //convert to V/m
+                        Eeff = Erms.p[i][j][k] / 100; //convert to V/cm
                         break;
                     default:
                         Eeff = Erms.p[i][j][k] / 100 * pow(1 / (1 + omega * omega / vm / vm), 0.5);

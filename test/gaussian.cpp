@@ -21,6 +21,7 @@ void initComData();
 
 int main(int argc, char*argv[]) {
 
+<<<<<<< HEAD
 #ifdef _OPENMP
     cout << "OpenMP enabled." << endl;
     if (argc < 2) {
@@ -33,6 +34,8 @@ int main(int argc, char*argv[]) {
     }
     cout << "thread count :" << thread_count << endl;
 #endif
+=======
+>>>>>>> 0dce3817ad676d0c76fddc10a6a7dbe5604057b9
     unsigned xlen, ylen, zlen, tlen;
     unsigned minTimeLen = 500;
     initComData();
