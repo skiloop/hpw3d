@@ -5,7 +5,7 @@ SRC=src
 TEST=testCPML sine testMain gaussian
 TEST_SRC_DIR=./test/
 OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o #datastruct.o
-TEST_OBJ=sine.o testMain.o testcpml.o gaussian.o
+TEST_OBJ=sine.o testMain.o testcpml.o gaussian.o openmp.o
 projects=$(TEST) hpw3d#3DFormulaTransforming.pdf
 .PHONY:all clean test
 
@@ -32,6 +32,8 @@ $(TEST_OBJ):
 	cd $(TEST_SRC_DIR) && make $@
 $(OBJS):
 	cd $(SRC) && make $@
+openmp:openmp.o
+	$(CXX) -o $@ openmp.o $(CXXFLAGS) $(LIB)
 
 # ==========================================
 # 3DFormulaTransforming.pdf

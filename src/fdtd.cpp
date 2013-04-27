@@ -8,6 +8,12 @@
 #include <assert.h>
 #include <fstream>
 #include <sstream>
+#include <exception>
+
+#ifdef _OPENMP
+#include <omp.h>
+extern int thread_count;
+#endif
 
 #include "fdtd.h"
 #include "InonizationFormula.h"
@@ -177,7 +183,10 @@ int fdtd::UpdateDensity(void) {
 
     unsigned ci = 0, cj = 0, ck = 0;
     Ne_pre = Ne;
-
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) \
+        private(i,j,k,Eeff,Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1,vi,va,alpha_t,Deff,tau_m,kasi)
+#endif
     for (i = mt; i < Ne.nx - mt; i++) {
         for (j = mt; j < Ne.ny - mt; j++) {
             for (k = mt; k < Ne.nz - mt; k++) {
@@ -242,7 +251,7 @@ int fdtd::UpdateDensity(void) {
                         Ne_ijk * (1 + dtf * vi)
                         + Deff * dtf * (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk) / dtf / dtf
                         ) / (1 + dtf * (va + rei * Ne_ijk));
-                if (vi > maxvi) {       
+                if (vi > maxvi) {
                     maxvi = vi;
                     ci = i;
                     cj = j;
@@ -712,11 +721,8 @@ void fdtd::buildSphere() {
     unsigned i, j, k;
 
     for (i = 0; i < Imax; ++i) {
-
         for (j = 0; j < Jmax; ++j) {
-
             for (k = 0; k < Kmax; ++k) {
-
                 //compute distance form centre to the point i, j, k
                 dist = sqrt((i + 0.5 - sc) * (i + 0.5 - sc) +
                         (j + 0.5 - sc) * (j + 0.5 - sc) +
@@ -877,18 +883,28 @@ void fdtd::SetSineSource(MyDataF omega_) {
 
 void fdtd::updateHx() {
     unsigned i, j, k;
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) private(i,j,k)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
+#endif
     for (k = 1; k < Kmax - 1; ++k) {
-
+#if DEBUG>=4
+        static int isfirst = 1;
+        int threadNo = omp_get_thread_num();
+        if (isfirst == 1) {
+            printf("Thread %d of %d:%u Kmax=%u\n", threadNo, omp_get_num_threads(), k, Kmax);
+            printf("Hx:%u,%u,%u\n", Hx.nx, Hx.ny, Hx.nz);
+            isfirst++;
+        }
+#endif
         for (i = 0; i < Imax - 1; ++i) {
-
+            //printf("===%d===%d===%d\n",k,threadNo,i);
             for (j = 0; j < Jmax - 1; ++j) {
-
                 Hx.p[i][j][k] = DA * Hx.p[i][j][k] + DB *
                         ((Ez.p[i][j][k] - Ez.p[i][j + 1][k]) * pml.den_hy.p[j] +
                         (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
 #ifdef WITH_DENSITY
-#if DEBUG>=4
-                Hx.nanOperator(i,j,k);
+#if (DEBUG>=4&&!_OPENMP)
+                Hx.nanOperator(i, j, k);
 #endif
 #endif
             }
@@ -899,18 +915,18 @@ void fdtd::updateHx() {
 
 void fdtd::updateHy() {
     unsigned i, j, k;
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) private(i,j,k)//shared(Hy,Ez,Ex,pml,DA,DB,dx,dz)
+#endif
     for (k = 1; k < Kmax - 1; ++k) {
-
         for (i = 0; i < Imax - 1; ++i) {
-
             for (j = 0; j < Jmax - 1; ++j) {
-
                 Hy.p[i][j][k] = DA * Hy.p[i][j][k] + DB *
                         ((Ez.p[i + 1][j][k] - Ez.p[i][j][k]) * pml.den_hx.p[i] +
                         (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
 #ifdef WITH_DENSITY
-#if DEBUG>=4
-                Hy.nanOperator(i,j,k);
+#if (DEBUG>=4&&!_OPENMP)
+                Hy.nanOperator(i, j, k);
 #endif
 #endif
             }
@@ -925,18 +941,18 @@ void fdtd::updateHz() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Hz
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) private(i,j,k)//shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
+#endif
     for (k = 0; k < Kmax - 1; ++k) {
-
         for (i = 0; i < Imax - 1; ++i) {
-
             for (j = 0; j < Jmax - 1; ++j) {
-
                 Hz.p[i][j][k] = DA * Hz.p[i][j][k] + DB
                         * ((Ey.p[i][j][k] - Ey.p[i + 1][j][k]) * pml.den_hx.p[i] +
                         (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
 #ifdef WITH_DENSITY
-#if DEBUG>=4
-                Hz.nanOperator(i,j,k);
+#if (DEBUG>=4&&!_OPENMP)
+                Hz.nanOperator(i, j, k);
 #endif
 #endif
             }
@@ -953,19 +969,18 @@ void fdtd::updateEx() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ex
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) private(i,j,k,id)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#endif
     for (k = 0; k < Kmax - 1; ++k) {
-
         for (i = 0; i < Imax - 1; ++i) {
-
             for (j = 1; j < Jmax - 1; ++j) {
 #ifdef WITH_DENSITY
                 MyDataF Exp = Ex.p[i][j][k];
 #endif
                 id = ID1.p[i][j][k];
                 if (id == 1) { // PEC
-
                     Ex.p[i][j][k] = 0;
-
                 } else {
 #ifdef WITH_DENSITY
                     Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] * Cexex.p[i][j][k] + CB[id] * Cexh.p[i][j][k]*
@@ -995,17 +1010,17 @@ void fdtd::updateEy() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ey
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) private(i,j,k,id)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#endif
     for (k = 0; k < Kmax - 1; ++k) {
-
         for (i = 1; i < Imax - 1; ++i) {
-
             for (j = 0; j < Jmax - 1; ++j) {
 #ifdef WITH_DENSITY
                 MyDataF Eyp = Ey.p[i][j][k];
 #endif
                 id = ID2.p[i][j][k];
                 if (id == 1) { // PEC
-
                     Ey.p[i][j][k] = 0;
 
                 } else {
@@ -1021,8 +1036,8 @@ void fdtd::updateEy() {
 #endif
                 }
 #ifdef WITH_DENSITY
-#if DEBUG>=4
-               Ey.nanOperator(i,j,k);
+#if (DEBUG>=4&&!_OPENMP)
+                Ey.nanOperator(i, j, k);
 #endif
                 Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
 #endif
@@ -1042,19 +1057,18 @@ void fdtd::updateEz() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ez
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) private(i,j,k,id)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#endif
     for (k = 1; k < Kmax - 1; ++k) {
-
         for (i = 1; i < Imax - 1; ++i) {
-
             for (j = 1; j < Jmax - 1; ++j) {
 #ifdef WITH_DENSITY
                 MyDataF Ezp = Ez.p[i][j][k];
 #endif
                 id = ID3.p[i][j][k];
                 if (id == 1) { // PEC
-
                     Ez.p[i][j][k] = 0;
-
                 } else {
 #ifdef WITH_DENSITY
                     Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] * Cezez.p[i][j][k] + CB[id] * Cezh.p[i][j][k]
@@ -1074,7 +1088,6 @@ void fdtd::updateEz() {
         }
         pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
     }
-
 }
 
 void fdtd::updateMagneitcFields() {

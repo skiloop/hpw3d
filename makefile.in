@@ -2,6 +2,17 @@ CXX=g++
 #CXX=icpc
 CC=gcc
 
+# MATH lib
+LIB= -lm
+# CFlags and CXXFlags
+CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall
+
+#Add DENSITY
+#CXXFLAGS+=-DWITH_DENSITY
+
+# debug mode
+CXXFLAGS+=-g -DDEBUG=4
+
 # matlab path 
 MATPATH=/opt/Matlab/R2011a# for local server
 #MATPATH=/opt2/Matlab/R2011a# for servers of college
@@ -15,7 +26,10 @@ MATLINK=-Wl,-rpath=$(MATPATH)/bin/glnxa64
 # Matlab link path
 MATINC=-I$(MATPATH)/extern/include
 
-CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall -g -DDEBUG=4 -DWITH_DENSITY #-DMATLAB_SIMULATION $(MATINC)
-#CXXFLAGS=-MMD -Wall -g -DDEBUG=3 -DWETH_DENSITY -DMATLAB_SIMULATION $(MATINC)
-LIB= -lm $(MATLIB)
+# Matlab Engine
+#CXXFLAGS+=-DMATLAB_SIMULATION $(MATINC)
+#LIB+=$(MATLIB)
 
+# enable OpenMP
+CXXFLAGS+=-fopenmp
+LIB+=-fopenmp

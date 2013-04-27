@@ -1,5 +1,10 @@
 
 #include<iostream>
+#ifdef _OPENMP
+#include <cstdlib>
+#include <omp.h>
+int thread_count = 1;
+#endif
 //#define WITH_DENSITY
 #include "fdtd.h"
 MyDataF eps_0, epsR;
@@ -14,8 +19,20 @@ MyDataF Amp;
 unsigned pmlw;
 void initComData();
 
-int main() {
+int main(int argc, char*argv[]) {
 
+#ifdef _OPENMP
+    cout << "OpenMP enabled." << endl;
+    if (argc < 2) {
+        thread_count = 5;
+    } else {
+        thread_count = strtol(argv[1], NULL, 10);
+    }
+    if (thread_count < 0 && thread_count > 100) {
+        thread_count = 5;
+    }
+    cout << "thread count :" << thread_count << endl;
+#endif
     initComData();
     fdtd hpw(5000, 50, 100, 26, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
 #ifdef WITH_DENSITY

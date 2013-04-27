@@ -22,7 +22,7 @@ public:
             unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, unsigned _nmatrial = 50);
 #endif
     ~fdtd(void);
-    
+
     static const int SOURCE_GAUSSIAN = 0;
     static const int SOURCE_SINE = 1;
     static const int SOURCE_DERIVE_GAUSSIAN = 2;
@@ -77,9 +77,9 @@ private:
     //initial plasma value
     MyDataF Ne0;
 #endif
-        // source type
+    // source type
     int srcType;
-    
+
     //permittivity, permeability and conductivity of different materials
     MyDataF *epsilon;
     MyDataF *sigma;
@@ -151,7 +151,7 @@ private:
     data3d<MyDataF> Erms;
     // Beta
     data3d<MyDataF> beta;
-    
+
     // collision frequency
     data3d<MyDataF> Nu_c;
     //
@@ -174,6 +174,7 @@ private:
     int UpdateDensity(void);
     int UpdateVeloity(void);
     void WallCircleBound(data3d<MyDataF> &stru);
+#endif
     void updateHx();
     void updateHy();
     void updateHz();
@@ -183,7 +184,6 @@ private:
     void updateEz();
     void updateElectricAndVeloityFields();
     void updateSource(unsigned n);
-#endif
     cpml<MyDataF, unsigned int> pml;
 
 };

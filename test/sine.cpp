@@ -2,6 +2,11 @@
 #include<iostream>
 //#define WITH_DENSITY
 #include "../src/fdtd.h"
+#ifdef _OPENMP
+#include <cstdlib>
+#include <omp.h>
+int thread_count = 1;
+#endif
 MyDataF eps_0, epsR;
 MyDataF mu_0;
 MyDataF dx, dy, dz;
@@ -14,10 +19,21 @@ MyDataF Amp;
 unsigned pmlw;
 void initComData();
 
-int main() {
-
+int main(int argc, char*argv[]) {
+#ifdef _OPENMP
+    cout << "OpenMP enabled." << endl;
+    if (argc < 2) {
+        thread_count = 3;
+    } else {
+        thread_count = strtol(argv[1], NULL, 10);
+    }
+    if (thread_count < 0 && thread_count > 100) {
+        thread_count = 4;
+    }
+    cout << "thread count :" << thread_count << endl;
+#endif
     initComData();
-    fdtd hpw(500, 20, 20, 20, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
+    fdtd hpw(500, 60, 60, 60, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
     hpw.SetSineSource(omega);
 #ifdef WITH_DENSITY
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);

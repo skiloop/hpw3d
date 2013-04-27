@@ -2,9 +2,9 @@
 <configurationDescriptor version="88">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="hpw3d">
-      <df name="new">
-      </df>
-      <df name="old">
+      <df name="hdata">
+        <df name="run">
+        </df>
       </df>
       <df name="run">
       </df>
@@ -24,6 +24,7 @@
       </df>
       <df name="test">
         <in>gaussian.cpp</in>
+        <in>openmp.cpp</in>
         <in>sine.cpp</in>
         <in>testMain.cpp</in>
         <in>testcpml.cpp</in>
