@@ -11,7 +11,8 @@ CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall
 #CXXFLAGS+=-DWITH_DENSITY
 
 # debug mode
-CXXFLAGS+=-g -DDEBUG=4
+#CXXFLAGS+=-g -DDEBUG=4
+CXXFLAGS+=-O4
 
 # matlab path 
 MATPATH=/opt/Matlab/R2011a# for local server
