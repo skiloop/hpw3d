@@ -16,15 +16,10 @@
 #include<string.h>
 #include<stdlib.h>
 
+#include "../src/common.h"
 #include"../src/datastruct.h"
 #include"../src/cpml.h"
 
-//  Fundamental Constants (MKS units)
-double pi = 3.14159265358979;
-double C = 2.99792458E8;
-double mu_0;
-double eps_0;
-double me, e;
 //  Specify Material Relative Permittivity and Conductivity
 double epsR = 1.0; //free space
 
@@ -140,9 +135,6 @@ int main() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void initialize() {
-
-    mu_0 = 4.0 * pi * 1.0E-7;
-    eps_0 = 1.0 / (C * C * mu_0);
 
     // source position 
     ic = Imax / 2;

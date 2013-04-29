@@ -7,18 +7,14 @@ int thread_count = 1;
 #endif
 //#define WITH_DENSITY
 #include "../src/fdtd.h"
-MyDataF eps_0, epsR;
-MyDataF mu_0;
+MyDataF epsR;
 MyDataF dx, dy, dz;
-MyDataF pi, C;
-MyDataF me, e;
 MyDataF tw;
 MyDataF omega;
 MyDataF T; // ns
 MyDataF Amp;
 unsigned pmlw;
 void initComData();
-
 
 int main(int argc, char*argv[]) {
 
@@ -61,19 +57,12 @@ int main(int argc, char*argv[]) {
 }
 
 void initComData() {
-    pi = 3.14159265358979;
-    C = 2.99792458E8;
-    mu_0 = 4.0 * pi * 1.0E-7;
-    eps_0 = 1.0 / (C * C * mu_0);
     epsR = 1.0;
-
-    me = 9.110e-31;
-    e = 1.602e-19;
     pmlw = 12;
 
     // Gaussian Pulse
     Amp = 1e10;
     tw = 20e-9;
     dx = dy = dz = tw * C / 50;
-    omega = 2 * pi * C / 50 / dx;
+    omega = 2 * M_PI * C / 50 / dx;
 }

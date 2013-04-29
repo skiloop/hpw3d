@@ -11,19 +11,11 @@
 #include <math.h>
 #include "datastruct.h"
 
+extern MyDataF epsR;
+
 template<class type1, class type2>
 class cpml {
 public:
-
-    //  Fundamental Constants (MKS units)
-    const static type1 pi;
-    const static type1 C;
-    static type1 mu_0;
-    static type1 eps_0;
-
-    // Specify Material Relative Permittivity and Conductivity
-    static type1 epsR; //free space
-
 
     //  CPML components (Taflove 3rd Edition, Chapter 7)
     data3d<type1> psi_Ezx_1;
@@ -435,8 +427,7 @@ public:
     };
 
     void InitialMuEps() {
-        mu_0 = 4.0 * pi * 1.0E-7;
-        eps_0 = 1.0 / (C * C * mu_0);
+
     };
 
     void createCPMLArray() {
@@ -949,15 +940,6 @@ private:
         psi_Exy_2.CreateStruct(Imax - 1, nyPML_2, Kmax - 1, 0);
     };
 };
-template<class type1, class type2>
-type1 cpml<type1, type2>::eps_0 = 0;
-template<class type1, class type2>
-type1 cpml<type1, type2>::mu_0 = 0;
-template<class type1, class type2>
-type1 cpml<type1, type2>::epsR = 1.0;
-template<class type1, class type2>
-const type1 cpml<type1, type2>::C = 2.99792458E8;
-template<class type1, class type2>
-const type1 cpml<type1, type2>::pi = 3.14159265358979;
+
 #endif	/* CPML_H */
 

@@ -367,7 +367,7 @@
 
 //template<class type1, class type2>
 //void cpmld<type1, type2>::InitialMuEps() {
-//    mu_0 = 4.0 * pi * 1.0E-7;
+//    mu_0 = 4.0 * M_PI * 1.0E-7;
 //    eps_0 = 1.0 / (C * C * mu_0);
 //}
 

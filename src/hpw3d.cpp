@@ -9,11 +9,8 @@ int thread_count = 1;
 #include "fdtd.h"
 #include "inputChecker.h"
 
-MyDataF eps_0, epsR;
-MyDataF mu_0;
+MyDataF epsR;
 MyDataF dx, dy, dz;
-MyDataF pi, C;
-MyDataF me, e;
 MyDataF tw;
 MyDataF omega;
 MyDataF T; // ns
@@ -26,18 +23,11 @@ int main(int argc, char*argv[]) {
     checker.print();
     //return 0;
 
-    pi = 3.14159265358979;
-    C = 2.99792458E8;
-    mu_0 = 4.0 * pi * 1.0E-7;
-    eps_0 = 1.0 / (C * C * mu_0);
     epsR = 1.0;
-
-    me = 9.110e-31;
-    e = 1.602e-19;
     
     // sine wave configure
     T = 1 / checker.frequency;
-    omega = 2 * pi / T;
+    omega = 2 * M_PI / T;
     dx = C * T / checker.yeeCellSizeX;
     dy = C * T / checker.yeeCellSizeY;
     dz = C * T / checker.yeeCellSizeZ;

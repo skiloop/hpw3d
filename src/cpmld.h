@@ -15,7 +15,7 @@ class cpmld {
 public:
 
     //  Fundamental Constants (MKS units)
-    static const double pi;
+    static const double M_PI;
     static const double C;
     static double mu_0;
     static double eps_0;
@@ -457,7 +457,7 @@ public:
     };
 
     void InitialMuEps() {
-        mu_0 = 4.0 * pi * 1.0E-7;
+        mu_0 = 4.0 * M_PI * 1.0E-7;
         eps_0 = 1.0 / (C * C * mu_0);
     };
 
@@ -980,6 +980,6 @@ double cpmld<type1, type2>::epsR = 1.0;
 template<class type1, class type2>
 const double cpmld<type1, type2>::C = 2.99792458E8;
 template<class type1, class type2>
-const double cpmld<type1, type2>::pi = 3.14159265358979;
+const double cpmld<type1, type2>::M_PI = 3.14159265358979;
 #endif	/* CPMLD_H */
 

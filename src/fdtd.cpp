@@ -18,10 +18,9 @@ extern int thread_count;
 #include "fdtd.h"
 #include "InonizationFormula.h"
 
-extern MyDataF eps_0, epsR;
-extern MyDataF mu_0;
+extern MyDataF epsR;
 //extern MyDataF dt, dx, dy, dz;
-extern MyDataF pi, C, me, e, T;
+extern MyDataF T;
 
 using namespace std;
 #ifdef WITH_DENSITY
@@ -692,7 +691,7 @@ void fdtd::updateSource(unsigned n) {
             break;
         case SOURCE_SINE:
             // sine wave
-            source = 2 * pi * omega * amp * cos((n * dt - t0)*2 * pi * omega);
+            source = 2 * M_PI * omega * amp * cos((n * dt - t0)*2 * M_PI * omega);
             break;
         default:
             source = 0;

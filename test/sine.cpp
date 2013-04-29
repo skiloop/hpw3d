@@ -7,11 +7,8 @@
 #include <omp.h>
 int thread_count = 1;
 #endif
-MyDataF eps_0, epsR;
-MyDataF mu_0;
+MyDataF epsR;
 MyDataF dx, dy, dz;
-MyDataF pi, C;
-MyDataF me, e;
 MyDataF tw;
 MyDataF omega;
 MyDataF T; // ns
@@ -44,19 +41,13 @@ int main(int argc, char*argv[]) {
 }
 
 void initComData() {
-    pi = 3.14159265358979;
-    C = 2.99792458E8;
-    mu_0 = 4.0 * pi * 1.0E-7;
-    eps_0 = 1.0 / (C * C * mu_0);
     epsR = 1.0;
 
-    me = 9.110e-31;
-    e = 1.602e-19;
     pmlw = 12;
 
     // sine wave configure
     T = 1 / 110E9;
-    omega = 2 * pi / T;
+    omega = 2 * M_PI / T;
     dx = dy = dz = C * T / 100;
     Amp = 1e10;
     tw = 0.3 * T;
@@ -65,5 +56,5 @@ void initComData() {
     //    dx = dy = dz = 1e-3;
     //    Amp = 1e10;
     //    tw = 20e-9;
-    //    omega = 2 * pi * C / 150 / dx;
+    //    omega = 2 * M_PI * C / 150 / dx;
 }
