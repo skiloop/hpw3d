@@ -34,3 +34,6 @@ MATINC=-I$(MATPATH)/extern/include
 # enable OpenMP
 CXXFLAGS+=-fopenmp
 LIB+=-fopenmp
+
+# with density
+CXXFLAGS+=-DWITH_DENSITY

@@ -28,17 +28,17 @@ int main(int argc, char*argv[]) {
     if (thread_count < 0 && thread_count > 100) {
         thread_count = 5;
     }
-    cout << "=========<thread count :" << thread_count << "==========" << endl;
+    cout << "=========<<thread count :" << thread_count << ">>==========" << endl;
 #endif
     unsigned xlen, ylen, zlen, tlen;
-    unsigned minTimeLen = 500;
+    unsigned minTimeLen = 5000;
     initComData();
     MyDataF zoneLength = tw * 2 * C;
     MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
     xlen = zoneLength / dx;
     ylen = zoneLength / dy;
     zlen = zoneLength / dz;
-    tlen = tw / dt;
+    tlen = 3 * tw / dt;
     if (tlen < minTimeLen)tlen = minTimeLen;
     cout << "xlen=" << xlen << endl;
     cout << "ylen=" << ylen << endl;
@@ -46,10 +46,16 @@ int main(int argc, char*argv[]) {
     cout << "tlen=" << tlen << endl;
     cout << "dx=" << dx << endl;
     cout << "dt=" << dt << endl;
+    return 0;
+#ifdef WITH_DENSITY
+    int nmaterial = 50;
+    int neGrid = 16;
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw, nmaterial, neGrid);
+    hpw.setSourceType(fdtd::SOURCE_GAUSSIAN);
+    hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
+#else
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
     hpw.setSourceType(fdtd::SOURCE_GAUSSIAN);
-#ifdef WITH_DENSITY
-    hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
 #endif
     //hpw.initialize();
     hpw.StartUp();
