@@ -7,6 +7,8 @@ int thread_count = 1;
 #endif
 //#define WITH_DENSITY
 #include "fdtd.h"
+#include "inputChecker.h"
+
 MyDataF eps_0, epsR;
 MyDataF mu_0;
 MyDataF dx, dy, dz;
@@ -17,33 +19,13 @@ MyDataF omega;
 MyDataF T; // ns
 MyDataF Amp;
 unsigned pmlw;
-void initComData();
 
 int main(int argc, char*argv[]) {
+    inputChecker checker;
+    checker.parseInput(argc, argv);
+    checker.print();
+    //return 0;
 
-#ifdef _OPENMP
-    cout << "OpenMP enabled." << endl;
-    if (argc < 2) {
-        thread_count = 5;
-    } else {
-        thread_count = strtol(argv[1], NULL, 10);
-    }
-    if (thread_count < 0 && thread_count > 100) {
-        thread_count = 5;
-    }
-    cout << "thread count :" << thread_count << endl;
-#endif
-    initComData();
-    fdtd hpw(5000, 50, 100, 26, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
-#ifdef WITH_DENSITY
-    hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
-#endif
-    //hpw.initialize();
-    hpw.StartUp();
-    return 0;
-}
-
-void initComData() {
     pi = 3.14159265358979;
     C = 2.99792458E8;
     mu_0 = 4.0 * pi * 1.0E-7;
@@ -52,18 +34,43 @@ void initComData() {
 
     me = 9.110e-31;
     e = 1.602e-19;
-    pmlw = 12;
-
+    
     // sine wave configure
-    T = 1 / 110E9;
+    T = 1 / checker.frequency;
     omega = 2 * pi / T;
-    dx = dy = dz = C * T / 100;
-    Amp = 1e10;
+    dx = C * T / checker.yeeCellSizeX;
+    dy = C * T / checker.yeeCellSizeY;
+    dz = C * T / checker.yeeCellSizeZ;
+    Amp = checker.amptidute;
     tw = 0.3 * T;
+    unsigned xlen, ylen, zlen, tlen;
+    unsigned minTimeLen = 500;
 
-    //    // Gaussian Pulse
-    //    dx = dy = dz = 1e-3;
-    //    Amp = 1e10;
-    //    tw = 20e-9;
-    //    omega = 2 * pi * C / 150 / dx;
+    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
+    xlen = checker.xZoneLen * C / dx;
+    ylen = checker.yZoneLen * C / dy;
+    zlen = checker.zZoneLen * C / dz;
+    if (checker.waveType == inputChecker::SINE) {
+        tlen = T * checker.tZoneLen / dt;
+    } else {
+        tlen = tw * checker.tZoneLen / dt;
+    }
+
+    if (tlen < minTimeLen) {
+        tlen = minTimeLen;
+    }
+    cout << "xlen=" << xlen << endl;
+    cout << "ylen=" << ylen << endl;
+    cout << "zlen=" << zlen << endl;
+    cout << "tlen=" << tlen << endl;
+    cout << "dx=" << dx << endl;
+    cout << "dt=" << dt << endl;
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1,checker.pmlSize);
+    hpw.setSourceType(checker.waveType);
+#ifdef WITH_DENSITY
+    hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
+#endif
+    //hpw.initialize();
+    hpw.StartUp();
+    return 0;
 }

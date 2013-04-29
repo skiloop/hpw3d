@@ -4,7 +4,7 @@ include makefile.in
 SRC=src
 TEST=testCPML sine testMain gaussian
 TEST_SRC_DIR=./test/
-OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o #datastruct.o
+OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o inputChecker.o
 TEST_OBJ=sine.o testMain.o testcpml.o gaussian.o openmp.o
 projects=$(TEST) hpw3d#3DFormulaTransforming.pdf
 .PHONY:all clean test

@@ -19,11 +19,11 @@ MyDataF Amp;
 unsigned pmlw;
 void initComData();
 
+
 int main(int argc, char*argv[]) {
 
-<<<<<<< HEAD
 #ifdef _OPENMP
-    cout << "OpenMP enabled." << endl;
+    cout << "================OpenMP enabled.===============" << endl;
     if (argc < 2) {
         thread_count = 5;
     } else {
@@ -32,10 +32,8 @@ int main(int argc, char*argv[]) {
     if (thread_count < 0 && thread_count > 100) {
         thread_count = 5;
     }
-    cout << "thread count :" << thread_count << endl;
+    cout << "=========<thread count :" << thread_count << "==========" << endl;
 #endif
-=======
->>>>>>> 0dce3817ad676d0c76fddc10a6a7dbe5604057b9
     unsigned xlen, ylen, zlen, tlen;
     unsigned minTimeLen = 500;
     initComData();
@@ -72,13 +70,6 @@ void initComData() {
     me = 9.110e-31;
     e = 1.602e-19;
     pmlw = 12;
-
-    // sine wave configure
-    //    T = 1 / 110E9;
-    //    omega = 2 * pi / T;
-    //    dx = dy = dz = C * T / 100;
-    //    Amp = 1e10;
-    //    tw = 0.3 * T;
 
     // Gaussian Pulse
     Amp = 1e10;

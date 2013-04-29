@@ -413,7 +413,6 @@ void fdtd::updateBeta() {
             }
         }
     }
-
 }
 
 void fdtd::initDensity() {
