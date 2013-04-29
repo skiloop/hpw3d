@@ -24,7 +24,7 @@ int main(int argc, char*argv[]) {
     //return 0;
 
     epsR = 1.0;
-    
+
     // sine wave configure
     T = 1 / checker.frequency;
     omega = 2 * M_PI / T;
@@ -55,7 +55,7 @@ int main(int argc, char*argv[]) {
     cout << "tlen=" << tlen << endl;
     cout << "dx=" << dx << endl;
     cout << "dt=" << dt << endl;
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1,checker.pmlSize);
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize);
     hpw.setSourceType(checker.waveType);
 #ifdef WITH_DENSITY
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);

@@ -197,7 +197,6 @@ void initialize() {
     ID2.CreateStruct(Imax, Jmax, Kmax, 0);
     ID3.CreateStruct(Imax, Jmax, Kmax, 0);
 
-
     pml.createCPMLArray();
 }
 
