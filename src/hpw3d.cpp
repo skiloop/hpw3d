@@ -25,20 +25,20 @@ int main(int argc, char*argv[]) {
 
     epsR = 1.0;
 
-    // sine wave configure
-    tw=T = 1 / checker.frequency;
+    tw = T = 1 / checker.frequency;
     omega = 2 * M_PI / T;
     dx = C * T / checker.yeeCellSizeX;
     dy = C * T / checker.yeeCellSizeY;
     dz = C * T / checker.yeeCellSizeZ;
     Amp = checker.amptidute;
+	thread_count=checker.threadCount;
     unsigned xlen, ylen, zlen, tlen;
     unsigned minTimeLen = 500;
 
     MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
-    xlen = T*checker.xZoneLen * C / dx;
-    ylen = T*checker.yZoneLen * C / dy;
-    zlen = T*checker.zZoneLen * C / dz;
+    xlen = T * checker.xZoneLen * C / dx;
+    ylen = T * checker.yZoneLen * C / dy;
+    zlen = T * checker.zZoneLen * C / dz;
     if (checker.waveType == inputChecker::SINE) {
         tlen = T * checker.tZoneLen / dt;
     } else {
@@ -55,12 +55,12 @@ int main(int argc, char*argv[]) {
     cout << "dx=" << dx << endl;
     cout << "dt=" << dt << endl;
 #ifdef WITH_DENSITY
-	int nmaterial = 50;
-	int neGrid = 16;
-cout<< "nmaterial="<<nmaterial<<endl;
-cout<< "neGrid = "<<neGrid<<endl;
-	return 0;
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize,nmaterial,neGrid);
+    int nmaterial = 50;
+    int neGrid = 16;
+    cout << "nmaterial=" << nmaterial << endl;
+    cout << "neGrid = " << neGrid << endl;
+    return 0;
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize, nmaterial, neGrid);
     hpw.setSourceType(checker.waveType);
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
 #else

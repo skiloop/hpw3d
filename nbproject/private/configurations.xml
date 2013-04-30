@@ -2,15 +2,6 @@
 <configurationDescriptor version="88">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="hpw3d">
-      <df name="output">
-        <in>analysis.m</in>
-        <in>demoErr2.m</in>
-        <in>errDemo.m</in>
-        <in>fun.m</in>
-        <in>loadData.m</in>
-        <in>makeomovie.m</in>
-        <in>plain.m</in>
-      </df>
       <df name="run">
       </df>
       <df name="src">
@@ -19,7 +10,6 @@
         <in>common.h</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
-        <in>cpmld.cpp</in>
         <in>cpmld.h</in>
         <in>datastruct.cpp</in>
         <in>datastruct.h</in>
