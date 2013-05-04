@@ -8,6 +8,8 @@ typedef pMyDataF* ppMyDataF;
 #define DEFAULT_PML_SIZE 10
 #define GAUSSIAN_WAVE_TYPE 1
 #define SINE_WAVE_TYPE 2
+#define DERIVE_GAUSSIAN_TYPE 3
+#define ZERO_TYPE 4
 #define DEFAULT_WAVE_TYPE GAUSSIAN_WAVE_TYPE
 
 // some common constants

@@ -31,7 +31,7 @@ int main(int argc, char*argv[]) {
     dy = C * T / checker.yeeCellSizeY;
     dz = C * T / checker.yeeCellSizeZ;
     Amp = checker.amptidute;
-	thread_count=checker.threadCount;
+    thread_count = checker.threadCount;
     unsigned xlen, ylen, zlen, tlen;
     unsigned minTimeLen = 500;
 
@@ -54,6 +54,7 @@ int main(int argc, char*argv[]) {
     cout << "tlen=" << tlen << endl;
     cout << "dx=" << dx << endl;
     cout << "dt=" << dt << endl;
+    
 #ifdef WITH_DENSITY
     int nmaterial = 50;
     int neGrid = 16;
@@ -64,7 +65,7 @@ int main(int argc, char*argv[]) {
     hpw.setSourceType(checker.waveType);
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
 #else
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, pmlw);
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize);
     hpw.setSourceType(checker.waveType);
 #endif
     //hpw.initialize();

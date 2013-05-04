@@ -10,7 +10,6 @@
         <in>common.h</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
-        <in>cpmld.h</in>
         <in>datastruct.cpp</in>
         <in>datastruct.h</in>
         <in>fdtd.cpp</in>
@@ -61,8 +60,9 @@
         <runcommandpicklist>
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" --openmp-thread=3 --frequency=110e9 --amptidute=1e10 --zone-size=3 --simulatian-time=3 --pml-width=13 --yee-cell-size=3</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" --openmp-thread=1 --frequency=110e9 --amptidute=1e10 --zone-size=3 --simulatian-time=3 --pml-width=13 --yee-cell-size=3</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" --openmp-thread=3 --frequency=110e9 --amptidute=1e10 --zone-size=3 --simulatian-time=3 --pml-width=13 --yee-cell-size=3</runcommand>
+        <runcommand>"${OUTPUT_PATH}" --openmp-thread=1 --frequency=110e9 --amptidute=1e10 --zone-size=3 --simulatian-time=3 --pml-width=13 --yee-cell-size=3</runcommand>
         <rundir>/home/skiloop/workspace/hpw3d/run</rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>

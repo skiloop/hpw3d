@@ -5,15 +5,16 @@
       <df name="src">
         <in>InonizationFormula.cpp</in>
         <in>InonizationFormula.h</in>
+        <in>common.h</in>
         <in>cpml.cpp</in>
         <in>cpml.h</in>
-        <in>cpmld.h</in>
         <in>datastruct.cpp</in>
         <in>datastruct.h</in>
         <in>fdtd.cpp</in>
         <in>fdtd.h</in>
         <in>hpw3d.cpp</in>
         <in>inputChecker.cpp</in>
+        <in>inputChecker.h</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -57,13 +58,18 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="src/InonizationFormula.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/common.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/cpml.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
+      </item>
+      <item path="src/cpml.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/datastruct.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
@@ -93,7 +99,16 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="src/fdtd.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/hpw3d.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>_OPENMP=200505</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/inputChecker.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
             <Elem>WITH_DENSITY</Elem>
@@ -101,13 +116,7 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/inputChecker.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-          <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
-            <Elem>_OPENMP=200505</Elem>
-          </preprocessorList>
-        </ccTool>
+      <item path="src/inputChecker.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="sine" type="0">
@@ -147,8 +156,6 @@
         </ccTool>
       </item>
       <item path="src/cpml.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/cpmld.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/datastruct.cpp" ex="false" tool="1" flavor2="0">
         <ccTool>

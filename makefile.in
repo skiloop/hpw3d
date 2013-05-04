@@ -36,4 +36,4 @@ CXXFLAGS+=-fopenmp
 LIB+=-fopenmp
 
 # with density
-CXXFLAGS+=-DWITH_DENSITY
+#CXXFLAGS+=-DWITH_DENSITY

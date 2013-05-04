@@ -23,10 +23,10 @@ public:
 #endif
     ~fdtd(void);
 
-    static const int SOURCE_GAUSSIAN = 0;
-    static const int SOURCE_SINE = 1;
-    static const int SOURCE_DERIVE_GAUSSIAN = 2;
-    static const int SOURCE_ZERO = 3;
+    static const int SOURCE_GAUSSIAN = GAUSSIAN_WAVE_TYPE;
+    static const int SOURCE_SINE = SINE_WAVE_TYPE;
+    static const int SOURCE_DERIVE_GAUSSIAN = DERIVE_GAUSSIAN_TYPE;
+    static const int SOURCE_ZERO = ZERO_TYPE;
     //Function prototype definitions
     void initialize(); //Memory initialization
     void setUp(); //Coefficients, parameters etc will get computed

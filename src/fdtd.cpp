@@ -536,7 +536,7 @@ void fdtd::setUp() {
     //    dt = dx/2/C;
 
     //delay
-    t0 = 4.0 * tw;
+    t0 = 1.0 * tw;
     //    t0 = 6e-9;
 #ifdef WITH_DENSITY
     //Fine Grid size
@@ -627,7 +627,7 @@ void fdtd::compute() {
     //    jc = jsp + 1;
     //    kc = ksp + 2;
     ic = isp;
-    jc = jsp + (Imax - jsp) / 2;
+    jc = jsp + 1;//(Imax - jsp) / 2;
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -697,6 +697,8 @@ void fdtd::updateSource(unsigned n) {
             source = 0;
     }
     Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + CB[ID3.p[isp][jsp][ksp]] * source / dx / dy / dz;
+    //cout<<"source="<<source<<"\t"<<amp<<"\t"<<n<<"\t"<<dt<<"\t"<<
+    //        amp * -2.0 * ((n * dt - t0) / tw / tw) * exp(-pow(((n * dt - t0) / tw), 2))<<endl;
 
 }
 //Builds an object
