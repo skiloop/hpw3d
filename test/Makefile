@@ -1,8 +1,8 @@
 
 include ../makefile.in
 
-.cpp.o:
-	$(CXX) $(CXXFLAGS) -c $<
-	cp $@ ..
+#.cpp.o:
+#	$(CXX) $(CXXFLAGS) -c $<
+#	cp $@ ..
 clean:
 	-rm -f *.o *.d

@@ -1,10 +1,10 @@
 
 #include<iostream>
 //#define WITH_DENSITY
-#include "../src/fdtd.h"
 #ifdef _OPENMP
 #include <cstdlib>
 #include <omp.h>
+#include "../src/fdtd.h"
 int thread_count = 1;
 #endif
 MyDataF epsR;

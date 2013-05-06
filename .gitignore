@@ -64,3 +64,6 @@ large
 
 # out file
 *.out
+
+# ctag file
+./tags
