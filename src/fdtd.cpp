@@ -536,7 +536,7 @@ void fdtd::setUp() {
     //    dt = dx/2/C;
 
     //delay
-    t0 = 1.0 * tw;
+    t0 = 2.0 * tw;
     //    t0 = 6e-9;
 #ifdef WITH_DENSITY
     //Fine Grid size

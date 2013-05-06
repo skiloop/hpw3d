@@ -43,17 +43,11 @@
           <buildCommand>${MAKE} -f Makefile </buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>hpw3d</executablePath>
-          <ccTool>
-            <preprocessorList>
-              <Elem>DEBUG=4</Elem>
-            </preprocessorList>
-          </ccTool>
         </makeTool>
       </makefileType>
       <item path="src/InonizationFormula.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -94,7 +88,6 @@
       <item path="src/fdtd.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -111,7 +104,6 @@
       <item path="src/inputChecker.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>

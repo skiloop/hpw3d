@@ -60,7 +60,7 @@ int main(int argc, char*argv[]) {
     int neGrid = 16;
     cout << "nmaterial=" << nmaterial << endl;
     cout << "neGrid = " << neGrid << endl;
-    return 0;
+    //return 0;
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize, nmaterial, neGrid);
     hpw.setSourceType(checker.waveType);
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);

@@ -8,7 +8,15 @@
         <activeConfIndexElem>0</activeConfIndexElem>
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="3">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="4">
+        <file>
+            <url>src/hpw3d.cpp</url>
+            <bookmark id="4">
+                <name/>
+                <line>71</line>
+                <key/>
+            </bookmark>
+        </file>
         <file>
             <url>src/fdtd.cpp</url>
             <bookmark id="2">
