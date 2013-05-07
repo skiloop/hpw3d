@@ -89,7 +89,7 @@ void fdtd::IntegerEeff() {
     }
 }
 
-int fdtd::UpdateErms(void) {
+void fdtd::UpdateErms(void) {
     unsigned i, j, k;
     unsigned io, jo, ko;
     switch (srcType) {
@@ -118,7 +118,6 @@ int fdtd::UpdateErms(void) {
                 }
             }
     }
-    return 0;
 }
 
 void fdtd::updateCollisionFrequency() {
@@ -142,7 +141,7 @@ void fdtd::updateCollisionFrequency() {
     }
 }
 
-int fdtd::InterpErms() {
+void fdtd::InterpErms() {
     unsigned is, js, ks;
     unsigned in, jn, kn;
     unsigned i, j, k;
@@ -167,10 +166,9 @@ int fdtd::InterpErms() {
             }
         }
     }
-    return 0;
 }
 
-int fdtd::UpdateDensity(void) {
+void fdtd::UpdateDensity(void) {
 
     unsigned i, j, k, mt = 1;
 
@@ -206,15 +204,16 @@ int fdtd::UpdateDensity(void) {
                 Nekm1 = Ne_pre.p[i][j][k - 1];
 
                 switch (niutype) {
-                    case 1:
+                    case MORROW_AND_LOWKE:
                         Niu_MorrowAndLowke(&vi, &va, Eeff, Ne_ijk * 1e6);
                         break;
-                    case 2:
+                    case NIKONOV:
                         Niu_Nikonov(&vi, &va, Eeff, p);
                         break;
-                    case 3:
+                    case KANG:
                         Niu_Kang(&vi, &va, Eeff);
                         break;
+                    case ALI:
                     default:
                         alpha_t = Eeff / p;
                         if (alpha_t < 30) {
@@ -263,11 +262,10 @@ int fdtd::UpdateDensity(void) {
     WallCircleBound(Ne);
     cout << Ne.p[Ne.nx / 2][Ne.ny / 2][Ne.nz / 2] << '\t';
     cout << maxvi << '\t' << minvi << '\t' << Ne.p[ci][cj][ck] << '\t' << Erms.p[ci][cj][ck] << '\t';
-    return 0;
 }
 
-int fdtd::UpdateVeloity(void) {
-    return 0;
+void fdtd::UpdateVeloity(void) {
+    //return 0;
 }
 
 void fdtd::WallCircleBound(data3d<MyDataF> &stru) {
@@ -627,7 +625,7 @@ void fdtd::compute() {
     //    jc = jsp + 1;
     //    kc = ksp + 2;
     ic = isp;
-    jc = jsp + 1;//(Imax - jsp) / 2;
+    jc = jsp + 1; //(Imax - jsp) / 2;
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

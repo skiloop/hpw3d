@@ -1,16 +1,29 @@
 #ifndef COMMON_H
 #define COMMON_H
+
 #include <math.h>
 typedef double MyDataF;
 typedef MyDataF* pMyDataF;
 typedef pMyDataF* ppMyDataF;
+
+
 #define DEFAULT_THREAD_COUNT 5
 #define DEFAULT_PML_SIZE 10
+
+// source type definition
 #define GAUSSIAN_WAVE_TYPE 1
 #define SINE_WAVE_TYPE 2
 #define DERIVE_GAUSSIAN_TYPE 3
 #define ZERO_TYPE 4
 #define DEFAULT_WAVE_TYPE GAUSSIAN_WAVE_TYPE
+
+// nu type definition
+#define MORROW_AND_LOWKE 1
+#define NIKONOV 2
+#define KANG 3
+#define ALI 4
+#define DEFAULT_NU_FORMAT ALI
+
 
 // some common constants
 const MyDataF C = 2.99792458E8; // speed of light in free space

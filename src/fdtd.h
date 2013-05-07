@@ -27,6 +27,7 @@ public:
     static const int SOURCE_SINE = SINE_WAVE_TYPE;
     static const int SOURCE_DERIVE_GAUSSIAN = DERIVE_GAUSSIAN_TYPE;
     static const int SOURCE_ZERO = ZERO_TYPE;
+    
     //Function prototype definitions
     void initialize(); //Memory initialization
     void setUp(); //Coefficients, parameters etc will get computed
@@ -168,11 +169,11 @@ private:
 
     // Erms or Eeff operation
     void IntegerEeff();
-    int UpdateErms(void);
+    void UpdateErms(void);
     void updateCollisionFrequency();
-    int InterpErms();
-    int UpdateDensity(void);
-    int UpdateVeloity(void);
+    void InterpErms();
+    void UpdateDensity(void);
+    void UpdateVeloity(void);
     void WallCircleBound(data3d<MyDataF> &stru);
 #endif
     void updateHx();
