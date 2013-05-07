@@ -9,14 +9,14 @@
 class fdtd {
 public:
 #ifdef WITH_DENSITY
-    fdtd(unsigned _nmax = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
+    fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             MyDataF _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
             unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, unsigned _nmatrial = 50, unsigned _neGrid = 16);
 
     void SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
 #else
-    fdtd(unsigned _nmax = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
+    fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             MyDataF _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
             unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, unsigned _nmatrial = 50);
@@ -49,7 +49,7 @@ private:
     void putvars();
 private:
     //  Specify Number of Time Steps and Grid Size Parameters
-    unsigned nMax; // total number of time steps
+    unsigned totalTimeSteps; // total number of time steps
 
     // grid size corresponding to the number of Ez field components
     unsigned Imax;
@@ -68,7 +68,7 @@ private:
     // Specify the CPML Order and Other Parameters:
     unsigned m;
     unsigned ma;
-    unsigned pmlWith;
+    unsigned pmlWidth;
 
     //Max number of materials allowed
     unsigned numMaterials;

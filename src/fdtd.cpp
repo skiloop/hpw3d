@@ -25,30 +25,30 @@ extern MyDataF T;
 using namespace std;
 #ifdef WITH_DENSITY
 
-fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
+fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial, unsigned _neGrid)
-: nMax(_nmax), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
+: totalTimeSteps(_totalTimeSteps), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
-, m(_m), ma(_ma), pmlWith(pmlw)
+, m(_m), ma(_ma), pmlWidth(pmlw)
 , numMaterials(_nmaterial)
 , neGrid(_neGrid)
-, Ne0(1e7)
+, Ne0(DEFAULT_DENSITY_MAX)
 , srcType(SOURCE_GAUSSIAN)
 , epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
 #else
 
-fdtd::fdtd(unsigned _nmax, unsigned _imax, unsigned _jmax, unsigned _kmax,
+fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial)
-: nMax(_nmax), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
+: totalTimeSteps(_totalTimeSteps), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
-, m(_m), ma(_ma), pmlWith(pmlw)
+, m(_m), ma(_ma), pmlWidth(pmlw)
 , numMaterials(_nmaterial)
 , srcType(SOURCE_GAUSSIAN)
 , epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
@@ -423,7 +423,7 @@ void fdtd::initialize() {
 
     // initial PML
     pml.InitialMuEps();
-    pml.Initial(Imax, Jmax, Kmax, pmlWith);
+    pml.Initial(Imax, Jmax, Kmax, pmlWidth);
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "numMaterials = " << numMaterials << endl;
@@ -553,12 +553,12 @@ void fdtd::setUp() {
     //exit(0);
 #endif
     //  Specify the dipole size 
-    istart = pmlWith;
-    iend = Imax - pmlWith;
-    jstart = pmlWith;
-    jend = Jmax - pmlWith;
-    kstart = pmlWith;
-    kend = Kmax - pmlWith;
+    istart = pmlWidth;
+    iend = Imax - pmlWidth;
+    jstart = pmlWidth;
+    jend = Jmax - pmlWidth;
+    kstart = pmlWidth;
+    kend = Kmax - pmlWidth;
 
     // source position
     isp = Imax / 2;
@@ -638,7 +638,7 @@ void fdtd::compute() {
         return;
     }
 #endif
-    for (n = 1; n <= nMax; ++n) {
+    for (n = 1; n <= totalTimeSteps; ++n) {
 
         cout << "Ez at time step " << n << " at (" << ic << ", " << jc << ", " << kc;
         cout << ") :  " << Ez.p[ic][jc][kc] << endl;
@@ -866,8 +866,8 @@ void fdtd::putvars() {
     cout << "De=" << De << endl;
 #endif
     cout << endl << "TIme step = " << dt << endl;
-    cout << endl << "Number of steps = " << nMax << endl;
-    cout << endl << "Total Simulation time = " << nMax * dt << " Seconds" << endl;
+    cout << endl << "Number of steps = " << totalTimeSteps << endl;
+    cout << endl << "Total Simulation time = " << totalTimeSteps * dt << " Seconds" << endl;
 }
 
 void fdtd::setSourceType(int sourceType) {
