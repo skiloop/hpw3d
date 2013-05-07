@@ -7,12 +7,12 @@ LIB= -lm
 # CFlags and CXXFlags
 CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall
 
-#Add DENSITY
-#CXXFLAGS+=-DWITH_DENSITY
-
 # debug mode
 CXXFLAGS+=-g -DDEBUG=4
 #CXXFLAGS+=-O3
+
+#Add DENSITY
+CXXFLAGS+=-DWITH_DENSITY
 
 # matlab path 
 MATPATH=/opt/Matlab/R2011a# for local server

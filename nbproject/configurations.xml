@@ -43,11 +43,20 @@
           <buildCommand>${MAKE} -f Makefile </buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>hpw3d</executablePath>
+          <ccTool>
+            <incDir>
+              <pElem>.</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>DEBUG=4</Elem>
+            </preprocessorList>
+          </ccTool>
         </makeTool>
       </makefileType>
       <item path="src/InonizationFormula.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -59,6 +68,7 @@
       <item path="src/cpml.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -67,9 +77,6 @@
       </item>
       <item path="src/datastruct.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
           <preprocessorList>
             <Elem>DEBUG=3</Elem>
           </preprocessorList>
@@ -77,9 +84,6 @@
       </item>
       <item path="src/datastruct.h" ex="false" tool="1" flavor2="4">
         <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
           <preprocessorList>
             <Elem>DEBUG=3</Elem>
           </preprocessorList>
@@ -88,6 +92,7 @@
       <item path="src/fdtd.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -97,6 +102,7 @@
       <item path="src/hpw3d.cpp" ex="false" tool="1" flavor2="0">
         <ccTool>
           <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -104,6 +110,7 @@
       <item path="src/inputChecker.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
+            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
