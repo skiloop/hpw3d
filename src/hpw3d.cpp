@@ -14,8 +14,6 @@ MyDataF dx, dy, dz;
 MyDataF tw;
 MyDataF omega;
 MyDataF T; // ns
-MyDataF Amp;
-unsigned pmlw;
 
 int main(int argc, char*argv[]) {
     inputChecker checker;
@@ -29,8 +27,7 @@ int main(int argc, char*argv[]) {
     omega = 2 * M_PI / T;
     dx = C * T / checker.yeeCellSizeX;
     dy = C * T / checker.yeeCellSizeY;
-    dz = C * T / checker.yeeCellSizeZ;
-    Amp = checker.amptidute;
+    dz = C * T / checker.yeeCellSizeZ;;
     thread_count = checker.threadCount;
     unsigned xlen, ylen, zlen, tlen;
     unsigned minTimeLen = 500;
@@ -58,13 +55,12 @@ int main(int argc, char*argv[]) {
 #ifdef WITH_DENSITY
     int nmaterial = 50;
     cout << "nmaterial=" << nmaterial << endl;
-    cout << "fluid grid size = " << checker.fluidGridSize << endl;
-    //return 0;
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize, nmaterial, checker.fluidGridSize);
+    return 0;
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize, nmaterial, checker.fluidGridSize);
     hpw.setSourceType(checker.waveType);
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
 #else
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize);
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize);
     hpw.setSourceType(checker.waveType);
 #endif
     //hpw.initialize();

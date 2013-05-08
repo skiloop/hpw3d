@@ -14,6 +14,7 @@ typedef pMyDataF* ppMyDataF;
 #define DEFAULT_ZONE_SIZE (1.5)
 #define DEFAULT_AMPTIDUTE (1000) // in volt per meter
 #define DEFAULT_FREQUENCY (110E9) // in Hz
+#define DEFAULT_TIME_ZONE_LENGTH (1.0)
 
 // source type definition
 #define GAUSSIAN_WAVE_TYPE (1)

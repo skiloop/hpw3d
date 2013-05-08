@@ -24,9 +24,9 @@ fluidGridSize(DEFAULT_FLUID_GRID_SIZE),
 xZoneLen(0),
 yZoneLen(0),
 zZoneLen(0),
-tZoneLen(0),
+tZoneLen(DEFAULT_TIME_ZONE_LENGTH),
 zoneLen(DEFAULT_ZONE_SIZE),
-frequency(0),
+frequency(DEFAULT_FREQUENCY),
 amptidute(DEFAULT_AMPTIDUTE) {
 }
 
@@ -78,7 +78,7 @@ void inputChecker::check() {
         zZoneLen = DEFAULT_ZONE_SIZE;
     }
     if (tZoneLen < 0) {
-        tZoneLen = DEFAULT_ZONE_SIZE;
+        tZoneLen = DEFAULT_TIME_ZONE_LENGTH;
     }
     if (frequency < 0) {
         frequency = DEFAULT_FREQUENCY;
@@ -115,7 +115,7 @@ void inputChecker::help(char *prog) {
     cout << tab << "--y-zone-length=" << tab << "zone length in y-direction,in pulse width" << endl;
     cout << tab << "--z-zone-length=" << tab << "zone length in z-direction,in pulse width" << endl;
     cout << tab << "--zone-size=" << tab << "zone size,in pulse width,set x,y,z zone length together and ,setting yee cell cube" << endl;
-    cout << tab << "--simulatian-time=" << tab << "simulation time,in pulse width size" << endl;
+    cout << tab << "--simulation-time=" << tab << "simulation time,in pulse width size" << endl;
 
     //=======================================
     // Sine wave parameters
@@ -127,7 +127,7 @@ void inputChecker::help(char *prog) {
     cout << tab << "--y-zone-length=" << tab << "zone length in y-direction,in wave length" << endl;
     cout << tab << "--z-zone-length=" << tab << "zone length in z-direction,in wave length" << endl;
     cout << tab << "--zone-size=" << tab << "zone size,in wave length,set x,y,z zone length together,setting yee cell cube" << endl;
-    cout << tab << "--simulatian-time=" << tab << "simulation time,in wave length size" << endl;
+    cout << tab << "--simulation-time=" << tab << "simulation time,in wave length size" << endl;
     exit(0);
 }
 
@@ -167,7 +167,7 @@ void inputChecker::parseInput(int argc, char *argv[]) {
             zoneLen = atof(argv[i] + 12);
             continue;
         }
-        if (strncmp(argv[i], "--simulatian-time=", 18) == 0) {
+        if (strncmp(argv[i], "--simulation-time=", 18) == 0) {
             tZoneLen = atof(argv[i] + 18);
             continue;
         }
@@ -212,12 +212,13 @@ void inputChecker::print() {
     cout << "yeeCellSizeY=" << yeeCellSizeY << endl;
     cout << "yeeCellSizeZ=" << yeeCellSizeZ << endl;
     cout << "yeeCellSize=" << yeeCellSize << endl;
-    cout << "xZoneLen=" << xZoneLen << endl;
-    cout << "yZoneLen=" << yZoneLen << endl;
-    cout << "zZoneLen=" << zZoneLen << endl;
-    cout << "tZoneLen=" << tZoneLen << endl;
-    cout << "zoneLen=" << zoneLen << endl;
-    cout << "frequency=" << frequency << endl;
-    cout << "amptidute=" << amptidute << endl;
+    cout << "fluidGridSize=" << fluidGridSize << endl;
+    cout << "xZoneLen=" << xZoneLen << " lambda" << endl;
+    cout << "yZoneLen=" << yZoneLen << " lambda" << endl;
+    cout << "zZoneLen=" << zZoneLen << " lambda" << endl;
+    cout << "tZoneLen=" << tZoneLen << " T" << endl;
+    cout << "zoneLen=" << zoneLen << " lambda" << endl;
+    cout << "frequency=" << frequency << " Hz" << endl;
+    cout << "amptidute=" << amptidute << " V/m" << endl;
     cout << "============================================" << endl;
 }
