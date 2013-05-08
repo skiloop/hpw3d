@@ -126,6 +126,12 @@ private:
     //time step of plasma
     MyDataF dtf;
     int neSkipStep;
+    
+    // tempary that offen used
+    MyDataF half_dt;
+    MyDataF half_e;
+    MyDataF Coeff_velocity;
+    unsigned halfNeGrid;
 
     //plasma variables
     MyDataF vm; //collision frequency
@@ -142,8 +148,8 @@ private:
     // update coefficients
     //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
     data3d<MyDataF> Cexex, Ceyey, Cezez, Cezvz, Ceyvy, Cexvx;
-    data3d<MyDataF> Cexh, Ceyh, Cezh;
-    //    data3d<MyDataF> Cvxex,Cvyey,Cvzez;
+    data3d<MyDataF> Cexh, Ceyh, Cezh;    
+    data3d<MyDataF> Cvxex_guassian,Cvyey_guassian,Cvzez_guassian;
     MyDataF Cvxex, Cvyey, Cvzez;
 
     //Plasma

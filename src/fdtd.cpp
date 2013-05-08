@@ -122,19 +122,36 @@ void fdtd::UpdateErms(void) {
 
 void fdtd::updateCollisionFrequency() {
     unsigned i, j, k;
-    unsigned io, jo, ko;
+    //unsigned io, jo, ko;
     MyDataF EeffDivP;
     MyDataF DivParam = 100 * p * 133.3;
-    for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
-        for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
-            for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
-                EeffDivP = Erms.p[io][jo][ko] / DivParam;
+    MyDataF C1 = 5.20e8 * p;
+    MyDataF C2 = 2.93e8 * p;
+    MyDataF C3 = 3.24e8 * p;
+    //    for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
+    //        for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
+    //            for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
+    //                EeffDivP = Erms.p[io][jo][ko] / DivParam;
+    //                if (EeffDivP >= 120) {
+    //                    Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP);
+    //                } else if (EeffDivP >= 54) {
+    //                    Nu_c.p[i][j][k] = C2 * EeffDivP / (1 + 0.041 * EeffDivP);
+    //                } else {
+    //                    Nu_c.p[i][j][k] = C3 * EeffDivP / (1 + 0.04 * EeffDivP);
+    //                }
+    //            }
+    //        }
+    //    }
+    for (i = 0; i < Nu_c.nx; i++) {
+        for (j = 0; j < Nu_c.ny; j++) {
+            for (k = 0; k < Nu_c.nz; k++) {
+                EeffDivP = Erms.p[i][j][k] / DivParam;
                 if (EeffDivP >= 120) {
-                    Nu_c.p[i][j][k] = 5.20e8 * sqrt(EeffDivP);
+                    Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP);
                 } else if (EeffDivP >= 54) {
-                    Nu_c.p[i][j][k] = 2.93e8 * EeffDivP / (1 + 0.041 * EeffDivP);
+                    Nu_c.p[i][j][k] = C2 * EeffDivP / (1 + 0.041 * EeffDivP);
                 } else {
-                    Nu_c.p[i][j][k] = 3.24e8 * EeffDivP / (1 + 0.04 * EeffDivP);
+                    Nu_c.p[i][j][k] = C3 * EeffDivP / (1 + 0.04 * EeffDivP);
                 }
             }
         }
@@ -324,6 +341,12 @@ void fdtd::createCoeff() {
     Cezvz.CreateStruct(Ez, 0.0);
     // beta
     beta.CreateStruct(Ne, 0.0);
+    // velocity coefficients
+    if (srcType == fdtd::SOURCE_GAUSSIAN) {
+        Cvxex_guassian.CreateStruct(Vx, 0.0);
+        Cvyey_guassian.CreateStruct(Vy, 0.0);
+        Cvzez_guassian.CreateStruct(Vz, 0.0);
+    }
 }
 
 void fdtd::initCoeff() {
@@ -361,14 +384,19 @@ void fdtd::updateCoeff() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     unsigned i, j, k;
     unsigned im, jm, km;
-    unsigned halfNeGrid = neGrid / 2;
-    MyDataF tmp = 0.5 * e * (1 + alpha);
+    MyDataF tmp = half_e * (1 + alpha);
     for (i = 0, im = halfNeGrid; i < Ex.nx; i++, im += neGrid) {
         for (j = 0, jm = 0; j < Ex.ny; j++, jm += neGrid) {
             for (k = 0, km = halfNeGrid; k < Ex.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Cexex.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
                 Cexh.p[i][j][k] = 1 / kappa;
+                if (srcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = half_dt * Nu_c.p[im][jm][km];
+                    MyDataF gamma_t = 1 + a;
+                    tmp = half_e * (1 + (1 - a) / gamma_t);
+                    Cvxex_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
+                }
                 Cexvx.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
@@ -379,6 +407,12 @@ void fdtd::updateCoeff() {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Ceyey.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
                 Ceyh.p[i][j][k] = 1 / kappa;
+                if (srcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = half_dt * Nu_c.p[im][jm][km];
+                    MyDataF gamma_t = 1 + a;
+                    tmp = half_e * (1 + (1 - a) / gamma_t);
+                    Cvyey_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
+                }
                 Ceyvy.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
@@ -389,6 +423,12 @@ void fdtd::updateCoeff() {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Cezez.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
                 Cezh.p[i][j][k] = 1 / kappa;
+                if (srcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = half_dt * Nu_c.p[im][jm][km];
+                    MyDataF gamma_t = 1 + a;
+                    tmp = half_e * (1 + (1 - a) / gamma_t);
+                    Cvzez_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
+                }
                 Cezvz.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
@@ -402,11 +442,22 @@ void fdtd::updateBeta() {
     unsigned je = jend*neGrid;
     unsigned ks = kstart*neGrid;
     unsigned ke = kend*neGrid;
-    MyDataF temp = 0.25 * e * e * dt * dt / me / eps_0 / gamma;
-    for (unsigned i = is; i < ie; i++) {
-        for (unsigned j = js; j < je; j++) {
-            for (unsigned k = ks; k < ke; k++) {
-                beta.p[i][j][k] = temp * Ne.p[i][j][k];
+    MyDataF temp = 0.25 * e * e * dt * dt / me / eps_0;
+    if (srcType != fdtd::SOURCE_GAUSSIAN) {
+        temp = temp / gamma;
+        for (unsigned i = is; i < ie; i++) {
+            for (unsigned j = js; j < je; j++) {
+                for (unsigned k = ks; k < ke; k++) {
+                    beta.p[i][j][k] = temp * Ne.p[i][j][k];
+                }
+            }
+        }
+    } else {
+        for (unsigned i = is; i < ie; i++) {
+            for (unsigned j = js; j < je; j++) {
+                for (unsigned k = ks; k < ke; k++) {
+                    beta.p[i][j][k] = temp / (1 + half_dt * Nu_c.p[i][j][k]) * Ne.p[i][j][k];
+                }
             }
         }
     }
@@ -490,7 +541,7 @@ void fdtd::initialize() {
     Vy.CreateStruct(Ey, 0.0);
     Vz.CreateStruct(Ez, 0.0);
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
-        Nu_c.CreateStruct(Ez, 0.0);
+        Nu_c.CreateStruct(Ne, 0.0);
         Nu_c.setName("nu_c");
     }
 #if(DEBUG>=3)
@@ -539,6 +590,10 @@ void fdtd::setUp() {
 #ifdef WITH_DENSITY
     //Fine Grid size
     dsf = dx / neGrid;
+    half_dt = dt / 2;
+    half_e = e / 2;
+    Coeff_velocity = half_e * dt / me;
+    halfNeGrid = neGrid / 2;
 
     mu_e = e / me / vm; //3.7e-2;
     mu_i = mu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
@@ -981,14 +1036,18 @@ void fdtd::updateEx() {
 #endif                                  
                 }
 #ifdef WITH_DENSITY
-                Vx.p[i][j][k] = alpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
+                if (srcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = Nu_c.p[i * neGrid][j * neGrid + halfNeGrid][k * neGrid];
+                    Vx.p[i][j][k] = (1 - a) / (1 + a) * Vx.p[i][j][k] - Cvxex_guassian.p[i][j][k] * (Exp + Ex.p[i][j][k]);
+                } else {
+                    Vx.p[i][j][k] = alpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
+                }
 #endif
             }
         }
         pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
     }
     pml.updateExOut(Ex, Hy, ID1, CB, dz);
-
 }
 
 void fdtd::updateEy() {
@@ -1026,21 +1085,24 @@ void fdtd::updateEy() {
 #if (DEBUG>=4&&!_OPENMP)
                 Ey.nanOperator(i, j, k);
 #endif
-                Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                //                Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                if (srcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = Nu_c.p[i * neGrid + halfNeGrid][j * neGrid][k * neGrid];
+                    Vy.p[i][j][k] = (1 - a) / (1 + a) * Vy.p[i][j][k] - Cvyey_guassian.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
+                } else {
+                    Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                }
 #endif
             }
         }
         pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
     }
     pml.updateEyOut(Ey, Hx, ID2, CB, dy);
-
-
 }
 
 void fdtd::updateEz() {
     unsigned i, j, k;
     short id;
-
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ez
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1069,7 +1131,13 @@ void fdtd::updateEz() {
 #endif
                 }
 #ifdef WITH_DENSITY
-                Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                //                Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                if (srcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = Nu_c.p[i * neGrid ][j * neGrid][k * neGrid];
+                    Vz.p[i][j][k] = (1 - a) / (1 + a) * Vz.p[i][j][k] - Cvzez_guassian.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
+                } else {
+                    Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                }
 #endif
             }
         }
