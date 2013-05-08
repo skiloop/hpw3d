@@ -9,6 +9,11 @@ typedef pMyDataF* ppMyDataF;
 
 #define DEFAULT_THREAD_COUNT (5)
 #define DEFAULT_PML_SIZE (10)
+#define DEFAULT_FLUID_GRID_SIZE (16)
+#define DEFAULT_GRID_SIZE (50)
+#define DEFAULT_ZONE_SIZE (1.5)
+#define DEFAULT_AMPTIDUTE (1000) // in volt per meter
+#define DEFAULT_FREQUENCY (110E9) // in Hz
 
 // source type definition
 #define GAUSSIAN_WAVE_TYPE (1)

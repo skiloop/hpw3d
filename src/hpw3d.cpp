@@ -54,14 +54,13 @@ int main(int argc, char*argv[]) {
     cout << "tlen=" << tlen << endl;
     cout << "dx=" << dx << endl;
     cout << "dt=" << dt << endl;
-    
+
 #ifdef WITH_DENSITY
     int nmaterial = 50;
-    int neGrid = 16;
     cout << "nmaterial=" << nmaterial << endl;
-    cout << "neGrid = " << neGrid << endl;
+    cout << "fluid grid size = " << checker.fluidGridSize << endl;
     //return 0;
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize, nmaterial, neGrid);
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, Amp, 10, 12, 4, 1, checker.pmlSize, nmaterial, checker.fluidGridSize);
     hpw.setSourceType(checker.waveType);
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
 #else

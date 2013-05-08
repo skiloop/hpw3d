@@ -19,14 +19,15 @@ pmlSize(DEFAULT_PML_SIZE),
 yeeCellSizeX(0),
 yeeCellSizeY(0),
 yeeCellSizeZ(0),
-yeeCellSize(0),
+yeeCellSize(DEFAULT_GRID_SIZE),
+fluidGridSize(DEFAULT_FLUID_GRID_SIZE),
 xZoneLen(0),
 yZoneLen(0),
 zZoneLen(0),
 tZoneLen(0),
-zoneLen(0),
+zoneLen(DEFAULT_ZONE_SIZE),
 frequency(0),
-amptidute(0) {
+amptidute(DEFAULT_AMPTIDUTE) {
 }
 
 inputChecker::inputChecker(const inputChecker& orig) {
@@ -45,19 +46,22 @@ void inputChecker::check() {
     if (pmlSize <= 3) {
         pmlSize = DEFAULT_PML_SIZE;
     }
+    if (fluidGridSize <= 0) {
+        fluidGridSize = DEFAULT_FLUID_GRID_SIZE;
+    }
     if (yeeCellSize > 0) {
         yeeCellSizeX = yeeCellSize;
         yeeCellSizeY = yeeCellSize;
         yeeCellSizeZ = yeeCellSize;
     }
     if (yeeCellSizeX <= 0) {
-        yeeCellSizeX = 50;
+        yeeCellSizeX = DEFAULT_GRID_SIZE;
     }
     if (yeeCellSizeY <= 0) {
-        yeeCellSizeY = 50;
+        yeeCellSizeY = DEFAULT_GRID_SIZE;
     }
     if (yeeCellSizeZ <= 0) {
-        yeeCellSizeZ = 50;
+        yeeCellSizeZ = DEFAULT_GRID_SIZE;
     }
     if (zoneLen > 0) {
         xZoneLen = zoneLen;
@@ -65,22 +69,19 @@ void inputChecker::check() {
         zZoneLen = zoneLen;
     }
     if (xZoneLen < 0) {
-        xZoneLen = 1.5;
+        xZoneLen = DEFAULT_ZONE_SIZE;
     }
     if (yZoneLen < 0) {
-        yZoneLen = 1.5;
+        yZoneLen = DEFAULT_ZONE_SIZE;
     }
     if (zZoneLen < 0) {
-        zZoneLen = 1.5;
+        zZoneLen = DEFAULT_ZONE_SIZE;
     }
     if (tZoneLen < 0) {
-        tZoneLen = 1.5;
+        tZoneLen = DEFAULT_ZONE_SIZE;
     }
     if (frequency < 0) {
-        frequency = 110E9;
-    }
-    if (amptidute < 0) {
-        amptidute = 1000;
+        frequency = DEFAULT_FREQUENCY;
     }
 }
 
@@ -92,6 +93,7 @@ void inputChecker::help(char *prog) {
     cout << tab << "--help,-h" << tab << "help" << endl;
     cout << tab << "--openmp-thread=n" << tab << "number of threads for openmp,n is positive" << endl;
     cout << tab << "--wave-type=[1,2]" << tab << "source wave form type,1 for gaussian pulse,2 for sine wave" << endl;
+    cout << tab << "--fluid-grid-size=" << tab << "how many fluid grid size per Maxwell grid " << endl;
     //=======================================
     // fdtd parameters
     //=======================================
@@ -191,6 +193,10 @@ void inputChecker::parseInput(int argc, char *argv[]) {
         }
         if (strncmp(argv[i], "--yee-cell-size=", 16) == 0) {
             yeeCellSize = strtol(argv[i] + 16, NULL, 10);
+            continue;
+        }
+        if (strncmp(argv[i], "--fluid-grid-size=", 18) == 0) {
+            fluidGridSize = strtol(argv[i] + 18, NULL, 10);
             continue;
         }
     }

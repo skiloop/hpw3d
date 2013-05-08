@@ -56,7 +56,6 @@
       <item path="src/InonizationFormula.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -68,7 +67,6 @@
       <item path="src/cpml.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -92,7 +90,6 @@
       <item path="src/fdtd.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -102,7 +99,6 @@
       <item path="src/hpw3d.cpp" ex="false" tool="1" flavor2="0">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>
@@ -110,7 +106,6 @@
       <item path="src/inputChecker.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
-            <Elem>WITH_DENSITY</Elem>
             <Elem>_OPENMP=200505</Elem>
           </preprocessorList>
         </ccTool>

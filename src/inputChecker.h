@@ -26,6 +26,7 @@ public:
     int yeeCellSizeY;
     int yeeCellSizeZ;
     int yeeCellSize;
+    int fluidGridSize;
     float xZoneLen;
     float yZoneLen;
     float zZoneLen;

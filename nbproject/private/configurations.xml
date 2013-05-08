@@ -11,8 +11,6 @@
         <in>makeomovie.m</in>
         <in>plain.m</in>
       </df>
-      <df name="run">
-      </df>
       <df name="src">
         <in>InonizationFormula.cpp</in>
         <in>InonizationFormula.h</in>
