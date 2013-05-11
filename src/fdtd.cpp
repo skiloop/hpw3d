@@ -16,6 +16,7 @@ extern int thread_count;
 #endif
 
 #include "fdtd.h"
+#include "source.h"
 #include "InonizationFormula.h"
 
 extern MyDataF epsR;
@@ -580,12 +581,14 @@ void fdtd::initialize() {
 void fdtd::setUp() {
     unsigned i;
     //Time step
-    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
-            1.0 / (dz * dz)));
-    //    dt = dx/2/C;
+    //    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
+    //            1.0 / (dz * dz)));
+    dt = dx / 2 / C;
 
     //delay
-    t0 = 2.0 * tw;
+    if (srcType == fdtd::SOURCE_GAUSSIAN) {
+        t0 = 2.0 * tw;
+    }
     //    t0 = 6e-9;
 #ifdef WITH_DENSITY
     //Fine Grid size
@@ -679,8 +682,8 @@ void fdtd::compute() {
     //    ic = isp + 1;
     //    jc = jsp + 1;
     //    kc = ksp + 2;
-    ic = isp;
-    jc = jsp + 1; //(Imax - jsp) / 2;
+    ic = isp + (Imax - isp) / 2;
+    jc = jsp; //(Jmax - jsp) / 2;
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -717,9 +720,11 @@ void fdtd::compute() {
 #endif
         if ((n % save_modulus) == 0) {
             writeField(n);
+            Ez.save(isp, 1, n, 1);
+            Ez.save(jsp, 1, n, 2);            
+            Ez.save(ksp, 1, n, 3);
 #ifdef WITH_DENSITY
-            Ne.save(Ne.nz / 2, neGrid, n, 2);
-            Ez.save(ksp, 1, n, 2);
+            Ne.save(Ne.nz / 2, neGrid, n, 2);            
 #endif
         }
 #ifdef MATLAB_SIMULATION
@@ -744,7 +749,10 @@ void fdtd::updateSource(unsigned n) {
             break;
         case SOURCE_SINE:
             // sine wave
-            source = 2 * M_PI * omega * amp * cos((n * dt - t0)*2 * M_PI * omega);
+            source = M_PI_TWO * omega * amp * cos((n * dt - t0) * M_PI_TWO * omega);
+            break;
+        case SINE_PULSE_TYPE:
+            source = M_PI_TWO * omega * amp * Source::SinePulse(n * dt - t0, omega, t_up, t_down);
             break;
         default:
             source = 0;
@@ -1155,6 +1163,14 @@ void fdtd::updateElectricAndVeloityFields() {
     updateEx();
     updateEy();
     updateEz();
+}
+
+void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amptidute) {
+    t0 = t_0;
+    omega = omega_;
+    t_up = tUp;
+    t_down = tDown;
+    amp = amptidute;
 }
 // =================================================================
 // MATLAB SIMULATION

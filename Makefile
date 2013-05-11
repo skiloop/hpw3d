@@ -4,7 +4,7 @@ include makefile.in
 SRC=src
 TEST=testCPML sine testMain gaussian
 TEST_SRC_DIR=./test/
-OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o inputChecker.o
+OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o inputChecker.o source.o
 TEST_OBJ=sine.o testMain.o testcpml.o gaussian.o openmp.o
 VPATH = $(SRC):$(TEST_SRC_DIR)
 projects=$(TEST) hpw3d#3DFormulaTransforming.pdf

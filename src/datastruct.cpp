@@ -297,7 +297,7 @@ void data3d<DataType>::SaveData(unsigned k, unsigned leap, unsigned step) {
 template<class DataType>
 void data3d<DataType>::SaveZPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
-    ss << name << "_" << step << tail;
+    ss << name << "_z_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
         cerr << "Invalid leap for saving p!" << endl;
         return;
@@ -329,7 +329,7 @@ void data3d<DataType>::SaveZPlain(unsigned k, unsigned leap, unsigned step) {
 template<class DataType>
 void data3d<DataType>::SaveYPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
-    ss << name << "_" << step << tail;
+    ss << name << "_y_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
         cerr << "Invalid leap for saving p!" << endl;
         return;
@@ -361,7 +361,7 @@ void data3d<DataType>::SaveYPlain(unsigned k, unsigned leap, unsigned step) {
 template<class DataType>
 void data3d<DataType>::SaveXPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
-    ss << name << "_" << step << tail;
+    ss << name << "_x_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
         cerr << "Invalid leap for saving p!" << endl;
         return;

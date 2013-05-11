@@ -6,7 +6,6 @@ typedef double MyDataF;
 typedef MyDataF* pMyDataF;
 typedef pMyDataF* ppMyDataF;
 
-
 #define DEFAULT_THREAD_COUNT (5)
 #define DEFAULT_PML_SIZE (10)
 #define DEFAULT_FLUID_GRID_SIZE (16)
@@ -21,7 +20,9 @@ typedef pMyDataF* ppMyDataF;
 #define SINE_WAVE_TYPE (2)
 #define DERIVE_GAUSSIAN_TYPE (3)
 #define ZERO_TYPE (4)
+#define SINE_PULSE_TYPE (5)
 #define DEFAULT_WAVE_TYPE GAUSSIAN_WAVE_TYPE
+#define MAX_TYPE_VALUE SINE_PULSE_TYPE
 
 // nu type definition
 #define MORROW_AND_LOWKE (1)
@@ -39,5 +40,6 @@ const MyDataF me = 9.110e-31; // electricity mass
 const MyDataF e = 1.602e-19; // electricity charge
 const MyDataF mu_0 = 4.0 * M_PI * 1.0E-7;
 const MyDataF eps_0 = 1.0 / (C * C * mu_0);
+const MyDataF M_PI_TWO=M_PI*2;
 
 #endif

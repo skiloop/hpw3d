@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <cstdio>
 #include <cstring>
 #include "inputChecker.h"
 
@@ -25,7 +26,7 @@ xZoneLen(0),
 yZoneLen(0),
 zZoneLen(0),
 tZoneLen(DEFAULT_TIME_ZONE_LENGTH),
-zoneLen(DEFAULT_ZONE_SIZE),
+zoneLen(0),
 frequency(DEFAULT_FREQUENCY),
 amptidute(DEFAULT_AMPTIDUTE) {
 }
@@ -37,7 +38,7 @@ inputChecker::~inputChecker() {
 }
 
 void inputChecker::check() {
-    if (waveType != SINE) {
+    if (waveType < 0 || waveType > MAX_TYPE_VALUE) {
         waveType = GAUSSIAN;
     }
     if (threadCount <= 0) {
@@ -138,66 +139,38 @@ void inputChecker::parseInput(int argc, char *argv[]) {
     for (int i = 1; i < argc; i++) {
         if (strncmp("-h", argv[i], 2) == 0 || strncmp(argv[i], "--help", 6) == 0) {
             help(argv[0]);
-        }
-        if (strncmp(argv[i], "--openmp-thread=", 16) == 0) {
+        } else
+            if (strncmp(argv[i], "--openmp-thread=", 16) == 0) {
             threadCount = strtol(argv[i] + 16, NULL, 10);
-            continue;
-        }
-        if (strncmp(argv[i], "--wave-type=", 12) == 0) {
+        } else if (strncmp(argv[i], "--wave-type=", 12) == 0) {
             waveType = strtol(argv[i] + 12, NULL, 10);
-            continue;
-        }
-        if (strncmp(argv[i], "--pml-width=", 12) == 0) {
+        } else if (strncmp(argv[i], "--pml-width=", 12) == 0) {
             pmlSize = strtol(argv[i] + 12, NULL, 10);
-            continue;
-        }
-        if (strncmp(argv[i], "--x-zone-length=", 16) == 0) {
+        } else if (strncmp(argv[i], "--x-zone-length=", 16) == 0) {
             xZoneLen = atof(argv[i] + 16);
-            continue;
-        }
-        if (strncmp(argv[i], "--y-zone-length=", 16) == 0) {
+        } else if (strncmp(argv[i], "--y-zone-length=", 16) == 0) {
             yZoneLen = atof(argv[i] + 16);
-            continue;
-        }
-        if (strncmp(argv[i], "--z-zone-length=", 16) == 0) {
+
+        } else if (strncmp(argv[i], "--z-zone-length=", 16) == 0) {
             zZoneLen = atof(argv[i] + 16);
-            continue;
-        }
-        if (strncmp(argv[i], "--zone-size=", 12) == 0) {
+        } else if (strncmp(argv[i], "--zone-size=", 12) == 0) {
             zoneLen = atof(argv[i] + 12);
-            continue;
-        }
-        if (strncmp(argv[i], "--simulation-time=", 18) == 0) {
+        } else if (strncmp(argv[i], "--simulation-time=", 18) == 0) {
             tZoneLen = atof(argv[i] + 18);
-            continue;
-        }
-        if (strncmp(argv[i], "--amptidute=", 12) == 0) {
+        } else if (strncmp(argv[i], "--amptidute=", 12) == 0) {
             amptidute = atof(argv[i] + 12);
-            continue;
-        }
-        if (strncmp(argv[i], "--frequency=", 12) == 0) {
+        } else if (strncmp(argv[i], "--frequency=", 12) == 0) {
             frequency = atof(argv[i] + 12);
-            continue;
-        }
-        if (strncmp(argv[i], "--yc-size-x=", 12) == 0) {
+        } else if (strncmp(argv[i], "--yc-size-x=", 12) == 0) {
             yeeCellSizeX = strtol(argv[i] + 12, NULL, 10);
-            continue;
-        }
-        if (strncmp(argv[i], "--yc-size-y=", 12) == 0) {
+        } else if (strncmp(argv[i], "--yc-size-y=", 12) == 0) {
             yeeCellSizeY = strtol(argv[i] + 12, NULL, 10);
-            continue;
-        }
-        if (strncmp(argv[i], "--yc-size-z=", 12) == 0) {
+        } else if (strncmp(argv[i], "--yc-size-z=", 12) == 0) {
             yeeCellSizeZ = strtol(argv[i] + 12, NULL, 10);
-            continue;
-        }
-        if (strncmp(argv[i], "--yee-cell-size=", 16) == 0) {
+        } else if (strncmp(argv[i], "--yee-cell-size=", 16) == 0) {
             yeeCellSize = strtol(argv[i] + 16, NULL, 10);
-            continue;
-        }
-        if (strncmp(argv[i], "--fluid-grid-size=", 18) == 0) {
+        } else if (strncmp(argv[i], "--fluid-grid-size=", 18) == 0) {
             fluidGridSize = strtol(argv[i] + 18, NULL, 10);
-            continue;
         }
     }
     check();

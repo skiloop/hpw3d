@@ -30,6 +30,7 @@ public:
     
     //Function prototype definitions
     void initialize(); //Memory initialization
+    void intSourceSinePulse(MyDataF t_0,MyDataF omega_,MyDataF tUp,MyDataF tDown,MyDataF amptidute);
     void setUp(); //Coefficients, parameters etc will get computed
     void compute(); //E & H Field update equation
     void StartUp();
@@ -70,6 +71,12 @@ private:
     unsigned ma;
     unsigned pmlWidth;
 
+    /////////////////////////////////////////////////////////
+    // SOURCE PARAMETRS
+    ////////////////////////////////////////////////////////
+    MyDataF t_up;       // up bound of Pulse for Sine Pulse
+    MyDataF t_down;     // down bound of Pulse for Sine Pulse
+    
     //Max number of materials allowed
     unsigned numMaterials;
 #ifdef WITH_DENSITY
@@ -190,7 +197,7 @@ private:
     void updateEy();
     void updateEz();
     void updateElectricAndVeloityFields();
-    void updateSource(unsigned n);
+    void updateSource(unsigned n);    
     cpml<MyDataF, unsigned int> pml;
 
 };
