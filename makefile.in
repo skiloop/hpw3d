@@ -5,8 +5,10 @@ CC=gcc
 # MATH lib
 LIB= -lm
 # CFlags and CXXFlags
-CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall
-CFLAGS=-Wl,--hash-style=sysv -MMD -Wall
+#CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall
+#CFLAGS=-Wl,--hash-style=sysv -MMD -Wall
+CXXFLAGS=-Wl,--hash-style=sysv -Wall
+CFLAGS=-Wl,--hash-style=sysv -Wall
 
 # debug mode
 CXXFLAGS+=-g -DDEBUG=4

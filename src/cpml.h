@@ -9,6 +9,7 @@
 #define	CPML_H
 #include <math.h>
 #include "datastruct.h"
+#ifndef COMMON_H
 // some common constants
 const double C = 2.99792458E8; // speed of light in free space
 const double me = 9.110e-31; // electricity mass
@@ -16,6 +17,7 @@ const double e = 1.602e-19; // electricity charge
 const double mu_0 = 4.0 * M_PI * 1.0E-7;
 const double eps_0 = 1.0 / (C * C * mu_0);
 const double M_PI_TWO = M_PI * 2;
+#endif
 const double Mu0DivEps0 = mu_0 / eps_0;
 
 /***************************************************************

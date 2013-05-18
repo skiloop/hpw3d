@@ -15,6 +15,7 @@
 extern int thread_count;
 #endif
 
+#include "cpml.h"
 #include "fdtd.h"
 #include "source.h"
 #include "InonizationFormula.h"
@@ -474,8 +475,8 @@ void fdtd::initialize() {
     unsigned i;
 
     // initial PML
-    pml.InitialMuEps();
-    pml.Initial(Imax, Jmax, Kmax, pmlWidth);
+//    pml.InitialMuEps();
+//    pml.Initial(Imax, Jmax, Kmax, pmlWidth);
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "numMaterials = " << numMaterials << endl;
@@ -673,9 +674,13 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    MyDataF sigmaRatio=1.0;
+    MyDataF kappaMax=13;
+    MyDataF alphaMax=4;
+    int pmlOrder=4;
     //pml.initParmeters(dx, dy, dz, m, ma);
     pml.setCPMLRegion(pmlWidth);
-    pml.createCPMLArray(Imax, Jmax, Kmax);
+    pml.createCPMLArrays(Imax, Jmax, Kmax);
     pml.initCoefficientArrays(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, dy, dz,
             Ceyhz, Cezhy, Chyez, Chzey,
             Cexhz, Cezhx, Chxez, Chzex,
@@ -906,7 +911,7 @@ void fdtd::StartUp() {
     cout << "buildObject (in Startup)" << endl;
     buildObject();
     cout << "initial CPML (in Startup)" << endl;
-    pml.initCPML(dt, dx, dy, dz);
+    //pml.initCPML(dt, dx, dy, dz);
     cout << "computing (in Startup)" << endl;
     compute();
     cout << "exit Startup" << endl;
@@ -1083,7 +1088,7 @@ void fdtd::updateEy() {
             for (j = 0; j < Jmax - 1; ++j) {
 #ifdef WITH_DENSITY
                 MyDataF Eyp = Ey.p[i][j][k];
-#endif
+#endif  /* WITH_DENSITY */
 
 #ifdef WITH_DENSITY
                 Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
@@ -1094,7 +1099,7 @@ void fdtd::updateEy() {
                 Ey.p[i][j][k] = Ceye.p[i][j][k] * Ey.p[i][j][k] +
                         (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * Ceyhz.p[i][j][k] +
                         (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * Ceyhx.p[i][j][k];
-#endif
+#endif /* WITH_DENSITY */
 
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
