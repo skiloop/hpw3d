@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 //#include "microdef.h"
 #define MAX_ARRAY_SIZE 300000
-#include "common.h"
+//#include "common.h"
 
 template<typename T>
 class data1d {
@@ -253,7 +253,8 @@ public:
     void setName(const std::string &sn) {
         name = sn;
     }
-    string getName(){
+
+    string getName() {
         return name;
     }
 public:
@@ -264,7 +265,7 @@ public:
     static int InitMatlabEngine();
     static int CloseEngine();
 #if DEBUG
-	void nanOperator(unsigned i,unsigned j,unsigned k);
+    void nanOperator(unsigned i, unsigned j, unsigned k);
 #endif
 
 };

@@ -520,13 +520,27 @@ void fdtd::initialize() {
     cout << "Jmax=" << Jmax << endl;
     cout << "Kmax=" << Kmax << endl;
 #endif
-    Ez.CreateStruct(Imax, Jmax, Kmax, 0);
-    Ey.CreateStruct(Imax, Jmax - 1, Kmax - 1, 0);
-    Ex.CreateStruct(Imax - 1, Jmax, Kmax - 1, 0);
+    Ez.CreateStruct(Imax + 1, Jmax + 1, Kmax, 0);
+    Ey.CreateStruct(Imax + 1, Jmax, Kmax + 1, 0);
+    Ex.CreateStruct(Imax, Jmax + 1, Kmax + 1, 0);
 
-    Hx.CreateStruct(Imax, Jmax - 1, Kmax, 0);
-    Hy.CreateStruct(Imax - 1, Jmax, Kmax, 0);
-    Hz.CreateStruct((Imax - 1), (Jmax - 1), (Kmax - 1), 0);
+    Hx.CreateStruct(Imax + 1, Jmax, Kmax, 0);
+    Hy.CreateStruct(Imax, Jmax + 1, Kmax, 0);
+    Hz.CreateStruct(Imax, Jmax, Kmax + 1, 0);
+
+    //coefficients
+    Cexhy.CreateStruct(Ex, 0.0);
+    Cexhz.CreateStruct(Ex, 0.0);
+    Chxey.CreateStruct(Hx, 0.0);
+    Chxez.CreateStruct(Hx, 0.0);
+    Ceyhx.CreateStruct(Ey, 0.0);
+    Ceyhz.CreateStruct(Ey, 0.0);
+    Chyex.CreateStruct(Hy, 0.0);
+    Chyez.CreateStruct(Hy, 0.0);
+    Cezhy.CreateStruct(Ez, 0.0);
+    Cezhx.CreateStruct(Ez, 0.0);
+    Chzey.CreateStruct(Hz, 0.0);
+    Chzex.CreateStruct(Hz, 0.0);
 
     Ez.setName("Ez");
     Ex.setName("Ex");
@@ -556,24 +570,24 @@ void fdtd::initialize() {
     Ne.setName("Ne");
 #endif
 
-#if(DEBUG>=3)
-    cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << "creating ID1..." << endl;
-#endif
-    ID1.CreateStruct(Imax, Jmax, Kmax, 0);
+    //#if(DEBUG>=3)
+    //    cout << __FILE__ << ":" << __LINE__ << endl;
+    //    cout << "creating ID1..." << endl;
+    //#endif
+    //    ID1.CreateStruct(Imax, Jmax, Kmax, 0);
+    //
+    //#if(DEBUG>=3)
+    //    cout << __FILE__ << ":" << __LINE__ << endl;
+    //    cout << "creating ID2..." << endl;
+    //#endif
+    //    ID2.CreateStruct(Imax, Jmax, Kmax, 0);
+    //
+    //#if(DEBUG>=3)
+    //    cout << __FILE__ << ":" << __LINE__ << endl;
+    //    cout << "creating ID3..." << endl;
+    //#endif
+    //    ID3.CreateStruct(Imax, Jmax, Kmax, 0);
 
-#if(DEBUG>=3)
-    cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << "creating ID2..." << endl;
-#endif
-    ID2.CreateStruct(Imax, Jmax, Kmax, 0);
-
-#if(DEBUG>=3)
-    cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << "creating ID3..." << endl;
-#endif
-    ID3.CreateStruct(Imax, Jmax, Kmax, 0);
-    pml.createCPMLArray();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -659,7 +673,13 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    pml.initParmeters(dx, dy, dz, m, ma);
+    //pml.initParmeters(dx, dy, dz, m, ma);
+    pml.setCPMLRegion(pmlWidth);
+    pml.createCPMLArray(Imax, Jmax, Kmax);
+    pml.initCoefficientArrays(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, dy, dz,
+            Ceyhz, Cezhy, Chyez, Chzey,
+            Cexhz, Cezhx, Chxez, Chzex,
+            Ceyhx, Cexhy, Chyex, Chxey);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients
@@ -682,8 +702,8 @@ void fdtd::compute() {
     //    ic = isp + 1;
     //    jc = jsp + 1;
     //    kc = ksp + 2;
-    ic = isp;// + (Imax - isp) / 2;
-    jc = jsp+(Jmax - jsp) / 2;
+    ic = isp; // + (Imax - isp) / 2;
+    jc = jsp + (Jmax - jsp) / 2;
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -702,7 +722,9 @@ void fdtd::compute() {
         cout << ") :  " << Ez.p[ic][jc][kc] << endl;
 
         updateMagneitcFields();
+        pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
         updateElectricAndVeloityFields();
+        pml.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         //====================================
         // update Source
         //====================================
@@ -721,10 +743,10 @@ void fdtd::compute() {
         if ((n % save_modulus) == 0) {
             writeField(n);
             Ez.save(isp, 1, n, 1);
-            Ez.save(jsp, 1, n, 2);            
+            Ez.save(jsp, 1, n, 2);
             Ez.save(ksp, 1, n, 3);
 #ifdef WITH_DENSITY
-            Ne.save(Ne.nz / 2, neGrid, n, 2);            
+            Ne.save(Ne.nz / 2, neGrid, n, 2);
 #endif
         }
 #ifdef MATLAB_SIMULATION
@@ -949,11 +971,9 @@ void fdtd::updateHx() {
 #endif
     for (k = 1; k < Kmax - 1; ++k) {
         for (i = 0; i < Imax - 1; ++i) {
-            //printf("===%d===%d===%d\n",k,threadNo,i);
             for (j = 0; j < Jmax - 1; ++j) {
-                Hx.p[i][j][k] = DA * Hx.p[i][j][k] + DB *
-                        ((Ez.p[i][j][k] - Ez.p[i][j + 1][k]) * pml.den_hy.p[j] +
-                        (Ey.p[i][j][k] - Ey.p[i][j][k - 1]) * pml.den_hz.p[k]);
+                Hx.p[i][j][k] = Chxh.p[i][j][k] * Hx.p[i][j][k] + Chxez.p[i][j][k]*(Ez.p[i][j][k] - Ez.p[i][j + 1][k]) +
+                        Chxey.p[i][j][k]*(Ey.p[i][j][k] - Ey.p[i][j][k - 1]);
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
                 Hx.nanOperator(i, j, k);
@@ -961,7 +981,6 @@ void fdtd::updateHx() {
 #endif
             }
         }
-        pml.updateHxIn(k, Hx, Ez, DB, dy);
     }
 }
 
@@ -973,9 +992,8 @@ void fdtd::updateHy() {
     for (k = 1; k < Kmax - 1; ++k) {
         for (i = 0; i < Imax - 1; ++i) {
             for (j = 0; j < Jmax - 1; ++j) {
-                Hy.p[i][j][k] = DA * Hy.p[i][j][k] + DB *
-                        ((Ez.p[i + 1][j][k] - Ez.p[i][j][k]) * pml.den_hx.p[i] +
-                        (Ex.p[i][j][k - 1] - Ex.p[i][j][k]) * pml.den_hz.p[k]);
+                Hy.p[i][j][k] = Chyh.p[i][j][k] * Hy.p[i][j][k] + Chyez.p[i][j][k]*(Ez.p[i][j][k] - Ez.p[i + 1][j][k]) +
+                        Chyex.p[i][j][k]*(Ex.p[i][j][k] - Ex.p[i][j][k - 1]);
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
                 Hy.nanOperator(i, j, k);
@@ -983,9 +1001,7 @@ void fdtd::updateHy() {
 #endif
             }
         }
-        pml.updateHyIn(k, Hy, Ez, DB, dx);
     }
-    pml.updateHyOut(Hy, Ex, DB, dz);
 }
 
 void fdtd::updateHz() {
@@ -999,9 +1015,9 @@ void fdtd::updateHz() {
     for (k = 0; k < Kmax - 1; ++k) {
         for (i = 0; i < Imax - 1; ++i) {
             for (j = 0; j < Jmax - 1; ++j) {
-                Hz.p[i][j][k] = DA * Hz.p[i][j][k] + DB
-                        * ((Ey.p[i][j][k] - Ey.p[i + 1][j][k]) * pml.den_hx.p[i] +
-                        (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * pml.den_hy.p[j]);
+                Hz.p[i][j][k] = Chzh.p[i][j][k] * Hz.p[i][j][k] + Chzey.p[i][j][k]
+                        * (Ey.p[i][j][k] - Ey.p[i + 1][j][k]) +
+                        (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * Chyex.p[i][j][k];
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
                 Hz.nanOperator(i, j, k);
@@ -1009,7 +1025,6 @@ void fdtd::updateHz() {
 #endif
             }
         }
-        pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
     }
 }
 
@@ -1028,34 +1043,30 @@ void fdtd::updateEx() {
 #ifdef WITH_DENSITY
                 MyDataF Exp = Ex.p[i][j][k];
 #endif
-                id = ID1.p[i][j][k];
-                if (id == 1) { // PEC
-                    Ex.p[i][j][k] = 0;
-                } else {
+
 #ifdef WITH_DENSITY
-                    Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] * Cexex.p[i][j][k] + CB[id] * Cexh.p[i][j][k]*
-                            ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
-                            (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]) +
-                            Cexvx.p[i][j][k] * Vx.p[i][j][k];
+                Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] * Cexex.p[i][j][k] + CB[id] * Cexh.p[i][j][k]*
+                        ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
+                        (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]) +
+                        Cexvx.p[i][j][k] * Vx.p[i][j][k];
 #else
-                    Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] + CB[id] *
-                            ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
-                            (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]);
+                Ex.p[i][j][k] = Cexe.p[i][j][k] * Ex.p[i][j][k] +
+                        (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * Cexhz.p[i][j][k] +
+                        (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * Cexhy.p[i][j][k];
 #endif                                  
-                }
+
 #ifdef WITH_DENSITY
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = Nu_c.p[i * neGrid][j * neGrid + halfNeGrid][k * neGrid];
                     Vx.p[i][j][k] = (1 - a) / (1 + a) * Vx.p[i][j][k] - Cvxex_guassian.p[i][j][k] * (Exp + Ex.p[i][j][k]);
                 } else {
+
                     Vx.p[i][j][k] = alpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
                 }
 #endif
             }
         }
-        pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
     }
-    pml.updateExOut(Ex, Hy, ID1, CB, dz);
 }
 
 void fdtd::updateEy() {
@@ -1073,22 +1084,18 @@ void fdtd::updateEy() {
 #ifdef WITH_DENSITY
                 MyDataF Eyp = Ey.p[i][j][k];
 #endif
-                id = ID2.p[i][j][k];
-                if (id == 1) { // PEC
-                    Ey.p[i][j][k] = 0;
 
-                } else {
 #ifdef WITH_DENSITY
-                    Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
-                            ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
-                            (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]) +
-                            Ceyvy.p[i][j][k] * Vy.p[i][j][k];
+                Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
+                        ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
+                        (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]) +
+                        Ceyvy.p[i][j][k] * Vy.p[i][j][k];
 #else
-                    Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] + CB[id] *
-                            ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
-                            (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]);
+                Ey.p[i][j][k] = Ceye.p[i][j][k] * Ey.p[i][j][k] +
+                        (Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * Ceyhz.p[i][j][k] +
+                        (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * Ceyhx.p[i][j][k];
 #endif
-                }
+
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
                 Ey.nanOperator(i, j, k);
@@ -1098,14 +1105,13 @@ void fdtd::updateEy() {
                     MyDataF a = Nu_c.p[i * neGrid + halfNeGrid][j * neGrid][k * neGrid];
                     Vy.p[i][j][k] = (1 - a) / (1 + a) * Vy.p[i][j][k] - Cvyey_guassian.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
                 } else {
+
                     Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
                 }
 #endif
             }
         }
-        pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
     }
-    pml.updateEyOut(Ey, Hx, ID2, CB, dy);
 }
 
 void fdtd::updateEz() {
@@ -1123,33 +1129,29 @@ void fdtd::updateEz() {
 #ifdef WITH_DENSITY
                 MyDataF Ezp = Ez.p[i][j][k];
 #endif
-                id = ID3.p[i][j][k];
-                if (id == 1) { // PEC
-                    Ez.p[i][j][k] = 0;
-                } else {
+
 #ifdef WITH_DENSITY
-                    Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] * Cezez.p[i][j][k] + CB[id] * Cezh.p[i][j][k]
-                            * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
-                            (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]) +
-                            Cezvz.p[i][j][k] * Vz.p[i][j][k];
+                Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] * Cezez.p[i][j][k] + CB[id] * Cezh.p[i][j][k]
+                        * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
+                        (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]) +
+                        Cezvz.p[i][j][k] * Vz.p[i][j][k];
 #else
-                    Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] + CB[id]
-                            * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
-                            (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]);
+                Ez.p[i][j][k] = Ceze.p[i][j][k] * Ez.p[i][j][k] + (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k] +
+                        (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * Cezhx.p[i][j][k];
 #endif
-                }
+
 #ifdef WITH_DENSITY
                 //                Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = Nu_c.p[i * neGrid ][j * neGrid][k * neGrid];
                     Vz.p[i][j][k] = (1 - a) / (1 + a) * Vz.p[i][j][k] - Cvzez_guassian.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
                 } else {
+
                     Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
                 }
 #endif
             }
         }
-        pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
     }
 }
 
@@ -1166,6 +1168,7 @@ void fdtd::updateElectricAndVeloityFields() {
 }
 
 void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amptidute) {
+
     t0 = t_0;
     omega = omega_;
     t_up = tUp;
@@ -1180,11 +1183,13 @@ void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF 
 int fdtd::initMatlabSimulation() {
     if (Ez.InitMatlabEngine() < 0)return -1;
     Ez.InitPlot();
+
     return 0;
 
 }
 
 void fdtd::doMatlabSimulation() {
+
     Ez.PlotArrays();
 }
 
