@@ -28,7 +28,6 @@ int main(int argc, char*argv[]) {
     dx = C * T / checker.yeeCellSizeX;
     dy = C * T / checker.yeeCellSizeY;
     dz = C * T / checker.yeeCellSizeZ;
-    ;
     thread_count = checker.threadCount;
     unsigned xlen, ylen, zlen, tlen;
     unsigned minTimeLen = 500;

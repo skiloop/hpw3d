@@ -587,7 +587,7 @@ void fdtd::setUp() {
 
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
-        t0 = 2.0 * tw;
+        t0 = 1.0 * tw;
     }
     //    t0 = 6e-9;
 #ifdef WITH_DENSITY
@@ -682,8 +682,8 @@ void fdtd::compute() {
     //    ic = isp + 1;
     //    jc = jsp + 1;
     //    kc = ksp + 2;
-    ic = isp + (Imax - isp) / 2;
-    jc = jsp; //(Jmax - jsp) / 2;
+    ic = isp;// + (Imax - isp) / 2;
+    jc = jsp+(Jmax - jsp) / 2;
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

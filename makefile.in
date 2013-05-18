@@ -6,6 +6,7 @@ CC=gcc
 LIB= -lm
 # CFlags and CXXFlags
 CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall
+CFLAGS=-Wl,--hash-style=sysv -MMD -Wall
 
 # debug mode
 CXXFLAGS+=-g -DDEBUG=4

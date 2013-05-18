@@ -2,7 +2,7 @@
 include makefile.in
 
 SRC=src
-TEST=testCPML sine testMain gaussian
+TEST=testCPML sine testMain gaussian cpmlfdtd3d
 TEST_SRC_DIR=./test/
 OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o inputChecker.o source.o
 TEST_OBJ=sine.o testMain.o testcpml.o gaussian.o openmp.o
@@ -21,18 +21,22 @@ hpw3d:$(OBJS)
 # ==================================================
 
 test: $(TEST)
-gaussian:gaussian.o fdtd.o InonizationFormula.o
+gaussian:gaussian.o fdtd.o InonizationFormula.o source.o
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIB)
-sine:sine.o fdtd.o InonizationFormula.o
+sine:sine.o fdtd.o InonizationFormula.o source.o
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIB)
 testMain:testMain.o
-	$(CXX) -o $@ testMain.o $(CXXFLAGS) $(LIB)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIB)
+cpmlfdtd3d:cpmlfdtd3d.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LIB)
 testCPML:testcpml.o cpml.o
 	$(CXX) $(CXXFLAGS) -o $@  $^ $(LIB)
 $(TEST_OBJ): %.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c $<	
 $(OBJS): %.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c $<	
+cpmlfdtd3d.o:cpmlfdtd3d.c
+	$(CC) $(CFLAGS) -c $<	
 openmp:openmp.o
 	$(CXX) -o $@ openmp.o $(CXXFLAGS) $(LIB)
 datastruct.h:datastruct.cpp	common.h

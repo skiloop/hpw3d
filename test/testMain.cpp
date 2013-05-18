@@ -26,7 +26,7 @@ double eps_0;
 double epsR = 1.0; //free space
 
 //  Specify Number of Time Steps and Grid Size Parameters
-int nMax = 500; // total number of time steps
+int nMax = 2000; // total number of time steps
 
 // grid size corresponding to the number of Ez field components
 int Imax = 51;
@@ -47,7 +47,7 @@ double tw = 2e-9; //pulse width
 //double T=2e-9;// ns
 double tO; //delay
 double source; //Differentiated Gaussian source
-double amp = 1e-10; // Amplitude
+double amp = 100; // Amplitude
 
 //Specify the Time Step at which the data has to be saved for Visualization
 int save_modulus = 10;
@@ -57,7 +57,7 @@ int istart, iend, jstart;
 int jend, kstart, kend;
 
 // omega
-float omega;
+double omega;
 
 //Output recording point
 int ksource = 12;
@@ -86,63 +86,63 @@ int i, j, ii, jj, k, kk, n;
 
 
 // H & E Field components
-float ***Hx;
-float ***Hy;
-float ***Hz;
-float ***Ex;
-float ***Ey;
-float ***Ez;
+double ***Hx;
+double ***Hy;
+double ***Hz;
+double ***Ex;
+double ***Ey;
+double ***Ez;
 
 short ***ID1; //medium definition array for Ex
 short ***ID2; //medium definition array for Ey
 short ***ID3; //medium definition array for Ez
 
 //  CPML components (Taflove 3rd Edition, Chapter 7)
-float ***psi_Ezx_1;
-float ***psi_Ezx_2;
-float ***psi_Hyx_1;
-float ***psi_Hyx_2;
-float ***psi_Ezy_1;
-float ***psi_Ezy_2;
-float ***psi_Hxy_1;
-float ***psi_Hxy_2;
-float ***psi_Hxz_1;
-float ***psi_Hxz_2;
-float ***psi_Hyz_1;
-float ***psi_Hyz_2;
-float ***psi_Exz_1;
-float ***psi_Exz_2;
-float ***psi_Eyz_1;
-float ***psi_Eyz_2;
-float ***psi_Hzx_1;
-float ***psi_Eyx_1;
-float ***psi_Hzx_2;
-float ***psi_Eyx_2;
-float ***psi_Hzy_1;
-float ***psi_Exy_1;
-float ***psi_Hzy_2;
-float ***psi_Exy_2;
+double ***psi_Ezx_1;
+double ***psi_Ezx_2;
+double ***psi_Hyx_1;
+double ***psi_Hyx_2;
+double ***psi_Ezy_1;
+double ***psi_Ezy_2;
+double ***psi_Hxy_1;
+double ***psi_Hxy_2;
+double ***psi_Hxz_1;
+double ***psi_Hxz_2;
+double ***psi_Hyz_1;
+double ***psi_Hyz_2;
+double ***psi_Exz_1;
+double ***psi_Exz_2;
+double ***psi_Eyz_1;
+double ***psi_Eyz_2;
+double ***psi_Hzx_1;
+double ***psi_Eyx_1;
+double ***psi_Hzx_2;
+double ***psi_Eyx_2;
+double ***psi_Hzy_1;
+double ***psi_Exy_1;
+double ***psi_Hzy_2;
+double ***psi_Exy_2;
 
-float *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;
-float *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;
-float *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;
-float *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;
-float *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;
-float *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;
-float *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;
-float *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;
-float *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;
-float *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;
-float *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;
-float *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;
+double *be_x_1, *ce_x_1, *alphae_x_PML_1, *sige_x_PML_1, *kappae_x_PML_1;
+double *bh_x_1, *ch_x_1, *alphah_x_PML_1, *sigh_x_PML_1, *kappah_x_PML_1;
+double *be_x_2, *ce_x_2, *alphae_x_PML_2, *sige_x_PML_2, *kappae_x_PML_2;
+double *bh_x_2, *ch_x_2, *alphah_x_PML_2, *sigh_x_PML_2, *kappah_x_PML_2;
+double *be_y_1, *ce_y_1, *alphae_y_PML_1, *sige_y_PML_1, *kappae_y_PML_1;
+double *bh_y_1, *ch_y_1, *alphah_y_PML_1, *sigh_y_PML_1, *kappah_y_PML_1;
+double *be_y_2, *ce_y_2, *alphae_y_PML_2, *sige_y_PML_2, *kappae_y_PML_2;
+double *bh_y_2, *ch_y_2, *alphah_y_PML_2, *sigh_y_PML_2, *kappah_y_PML_2;
+double *be_z_1, *ce_z_1, *alphae_z_PML_1, *sige_z_PML_1, *kappae_z_PML_1;
+double *bh_z_1, *ch_z_1, *alphah_z_PML_1, *sigh_z_PML_1, *kappah_z_PML_1;
+double *be_z_2, *ce_z_2, *alphae_z_PML_2, *sige_z_PML_2, *kappae_z_PML_2;
+double *bh_z_2, *ch_z_2, *alphah_z_PML_2, *sigh_z_PML_2, *kappah_z_PML_2;
 
 // denominators for the update equations
-float *den_ex;
-float *den_hx;
-float *den_ey;
-float *den_hy;
-float *den_ez;
-float *den_hz;
+double *den_ex;
+double *den_hx;
+double *den_ey;
+double *den_hy;
+double *den_ez;
+double *den_hz;
 
 //Max number of materials allowed
 int numMaterials = 50;
@@ -153,12 +153,12 @@ double *mu;
 double *sigma;
 
 //E field update coefficients
-float *CA;
-float *CB;
+double *CA;
+double *CB;
 
 //H field update coefficients
-float DA;
-float DB;
+double DA;
+double DB;
 
 //Function prototype definitions
 void initialize(); //Memeory initialization
@@ -222,29 +222,29 @@ void initialize() {
         sigma[i] = 0.0;
     }
 
-    CA = (float *) malloc((numMaterials) * sizeof (float));
+    CA = (double *) malloc((numMaterials) * sizeof (double));
 
     for (i = 0; i < numMaterials; i++) {
 
         CA[i] = 0.0;
     }
 
-    CB = (float *) malloc((numMaterials) * sizeof (float));
+    CB = (double *) malloc((numMaterials) * sizeof (double));
 
     for (i = 0; i < numMaterials; i++) {
 
         CB[i] = 0.0;
     }
 
-    Ez = (float ***) malloc(Imax * sizeof (float **));
+    Ez = (double ***) malloc(Imax * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        Ez[i] = (float **) malloc(Jmax * sizeof (float *));
+        Ez[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            Ez[i][j] = (float *) malloc(Kmax * sizeof (float));
+            Ez[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -253,15 +253,15 @@ void initialize() {
         }
     }
 
-    Ey = (float ***) malloc((Imax) * sizeof (float **));
+    Ey = (double ***) malloc((Imax) * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        Ey[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        Ey[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            Ey[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            Ey[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -270,15 +270,15 @@ void initialize() {
         }
     }
 
-    Ex = (float ***) malloc((Imax - 1) * sizeof (float **));
+    Ex = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        Ex[i] = (float **) malloc(Jmax * sizeof (float *));
+        Ex[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            Ex[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            Ex[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -287,15 +287,15 @@ void initialize() {
         }
     }
 
-    Hx = (float ***) malloc(Imax * sizeof (float **));
+    Hx = (double ***) malloc(Imax * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        Hx[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        Hx[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            Hx[i][j] = (float *) malloc(Kmax * sizeof (float));
+            Hx[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -304,15 +304,15 @@ void initialize() {
         }
     }
 
-    Hy = (float ***) malloc((Imax - 1) * sizeof (float **));
+    Hy = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        Hy[i] = (float **) malloc(Jmax * sizeof (float *));
+        Hy[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            Hy[i][j] = (float *) malloc(Kmax * sizeof (float));
+            Hy[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -321,15 +321,15 @@ void initialize() {
         }
     }
 
-    Hz = (float ***) malloc((Imax - 1) * sizeof (float **));
+    Hz = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        Hz[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        Hz[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            Hz[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            Hz[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -389,15 +389,15 @@ void initialize() {
         }
     }
 
-    psi_Ezx_1 = (float ***) malloc(nxPML_1 * sizeof (float **));
+    psi_Ezx_1 = (double ***) malloc(nxPML_1 * sizeof (double **));
 
     for (i = 0; i < nxPML_1; i++) {
 
-        psi_Ezx_1[i] = (float **) malloc(Jmax * sizeof (float *));
+        psi_Ezx_1[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            psi_Ezx_1[i][j] = (float *) malloc(Kmax * sizeof (float));
+            psi_Ezx_1[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -406,15 +406,15 @@ void initialize() {
         }
     }
 
-    psi_Ezx_2 = (float ***) malloc(nxPML_2 * sizeof (float **));
+    psi_Ezx_2 = (double ***) malloc(nxPML_2 * sizeof (double **));
 
     for (i = 0; i < nxPML_2; i++) {
 
-        psi_Ezx_2[i] = (float **) malloc(Jmax * sizeof (float *));
+        psi_Ezx_2[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            psi_Ezx_2[i][j] = (float *) malloc(Kmax * sizeof (float));
+            psi_Ezx_2[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -423,15 +423,15 @@ void initialize() {
         }
     }
 
-    psi_Hyx_1 = (float ***) malloc((nxPML_1 - 1) * sizeof (float **));
+    psi_Hyx_1 = (double ***) malloc((nxPML_1 - 1) * sizeof (double **));
 
     for (i = 0; i < nxPML_1 - 1; i++) {
 
-        psi_Hyx_1[i] = (float **) malloc(Jmax * sizeof (float *));
+        psi_Hyx_1[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            psi_Hyx_1[i][j] = (float *) malloc(Kmax * sizeof (float));
+            psi_Hyx_1[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -440,15 +440,15 @@ void initialize() {
         }
     }
 
-    psi_Hyx_2 = (float ***) malloc((nxPML_2 - 1) * sizeof (float **));
+    psi_Hyx_2 = (double ***) malloc((nxPML_2 - 1) * sizeof (double **));
 
     for (i = 0; i < nxPML_2 - 1; i++) {
 
-        psi_Hyx_2[i] = (float **) malloc(Jmax * sizeof (float *));
+        psi_Hyx_2[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            psi_Hyx_2[i][j] = (float *) malloc(Kmax * sizeof (float));
+            psi_Hyx_2[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -457,15 +457,15 @@ void initialize() {
         }
     }
 
-    psi_Ezy_1 = (float ***) malloc(Imax * sizeof (float **));
+    psi_Ezy_1 = (double ***) malloc(Imax * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        psi_Ezy_1[i] = (float **) malloc(nyPML_1 * sizeof (float *));
+        psi_Ezy_1[i] = (double **) malloc(nyPML_1 * sizeof (double *));
 
         for (j = 0; j < nyPML_1; j++) {
 
-            psi_Ezy_1[i][j] = (float *) malloc(Kmax * sizeof (float));
+            psi_Ezy_1[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -474,15 +474,15 @@ void initialize() {
         }
     }
 
-    psi_Ezy_2 = (float ***) malloc(Imax * sizeof (float **));
+    psi_Ezy_2 = (double ***) malloc(Imax * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        psi_Ezy_2[i] = (float **) malloc(nyPML_2 * sizeof (float *));
+        psi_Ezy_2[i] = (double **) malloc(nyPML_2 * sizeof (double *));
 
         for (j = 0; j < nyPML_2; j++) {
 
-            psi_Ezy_2[i][j] = (float *) malloc(Kmax * sizeof (float));
+            psi_Ezy_2[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -491,15 +491,15 @@ void initialize() {
         }
     }
 
-    psi_Hxy_1 = (float ***) malloc(Imax * sizeof (float **));
+    psi_Hxy_1 = (double ***) malloc(Imax * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        psi_Hxy_1[i] = (float **) malloc((nyPML_1 - 1) * sizeof (float *));
+        psi_Hxy_1[i] = (double **) malloc((nyPML_1 - 1) * sizeof (double *));
 
         for (j = 0; j < nyPML_1 - 1; j++) {
 
-            psi_Hxy_1[i][j] = (float *) malloc(Kmax * sizeof (float));
+            psi_Hxy_1[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -508,15 +508,15 @@ void initialize() {
         }
     }
 
-    psi_Hxy_2 = (float ***) malloc(Imax * sizeof (float **));
+    psi_Hxy_2 = (double ***) malloc(Imax * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        psi_Hxy_2[i] = (float **) malloc((nyPML_2 - 1) * sizeof (float *));
+        psi_Hxy_2[i] = (double **) malloc((nyPML_2 - 1) * sizeof (double *));
 
         for (j = 0; j < nyPML_2 - 1; j++) {
 
-            psi_Hxy_2[i][j] = (float *) malloc(Kmax * sizeof (float));
+            psi_Hxy_2[i][j] = (double *) malloc(Kmax * sizeof (double));
 
             for (k = 0; k < Kmax; k++) {
 
@@ -525,15 +525,15 @@ void initialize() {
         }
     }
 
-    psi_Hxz_1 = (float ***) malloc(Imax * sizeof (float **));
+    psi_Hxz_1 = (double ***) malloc(Imax * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        psi_Hxz_1[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        psi_Hxz_1[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
-        for (j = 0; j < Jmax-1; j++) {
+        for (j = 0; j < Jmax - 1; j++) {
 
-            psi_Hxz_1[i][j] = (float *) malloc((nzPML_1 - 1) * sizeof (float));
+            psi_Hxz_1[i][j] = (double *) malloc((nzPML_1 - 1) * sizeof (double));
 
             for (k = 0; k < nzPML_1 - 1; k++) {
 
@@ -542,15 +542,15 @@ void initialize() {
         }
     }
 
-    psi_Hxz_2 = (float ***) malloc(Imax * sizeof (float **));
+    psi_Hxz_2 = (double ***) malloc(Imax * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        psi_Hxz_2[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        psi_Hxz_2[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
-        for (j = 0; j < Jmax-1; j++) {
+        for (j = 0; j < Jmax - 1; j++) {
 
-            psi_Hxz_2[i][j] = (float *) malloc((nzPML_2 - 1) * sizeof (float));
+            psi_Hxz_2[i][j] = (double *) malloc((nzPML_2 - 1) * sizeof (double));
 
             for (k = 0; k < nzPML_2 - 1; k++) {
 
@@ -559,15 +559,15 @@ void initialize() {
         }
     }
 
-    psi_Hyz_1 = (float ***) malloc((Imax - 1) * sizeof (float **));
+    psi_Hyz_1 = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        psi_Hyz_1[i] = (float **) malloc(Jmax * sizeof (float *));
+        psi_Hyz_1[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            psi_Hyz_1[i][j] = (float *) malloc((nzPML_1 - 1) * sizeof (float));
+            psi_Hyz_1[i][j] = (double *) malloc((nzPML_1 - 1) * sizeof (double));
 
             for (k = 0; k < nzPML_1 - 1; k++) {
 
@@ -576,15 +576,15 @@ void initialize() {
         }
     }
 
-    psi_Hyz_2 = (float ***) malloc((Imax - 1) * sizeof (float **));
+    psi_Hyz_2 = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        psi_Hyz_2[i] = (float **) malloc(Jmax * sizeof (float *));
+        psi_Hyz_2[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            psi_Hyz_2[i][j] = (float *) malloc((nzPML_2 - 1) * sizeof (float));
+            psi_Hyz_2[i][j] = (double *) malloc((nzPML_2 - 1) * sizeof (double));
 
             for (k = 0; k < nzPML_2 - 1; k++) {
 
@@ -593,15 +593,15 @@ void initialize() {
         }
     }
 
-    psi_Exz_1 = (float ***) malloc((Imax - 1) * sizeof (float **));
+    psi_Exz_1 = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        psi_Exz_1[i] = (float **) malloc(Jmax * sizeof (float *));
+        psi_Exz_1[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            psi_Exz_1[i][j] = (float *) malloc(nzPML_1 * sizeof (float));
+            psi_Exz_1[i][j] = (double *) malloc(nzPML_1 * sizeof (double));
 
             for (k = 0; k < nzPML_1; k++) {
 
@@ -610,15 +610,15 @@ void initialize() {
         }
     }
 
-    psi_Exz_2 = (float ***) malloc((Imax - 1) * sizeof (float **));
+    psi_Exz_2 = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        psi_Exz_2[i] = (float **) malloc(Jmax * sizeof (float *));
+        psi_Exz_2[i] = (double **) malloc(Jmax * sizeof (double *));
 
         for (j = 0; j < Jmax; j++) {
 
-            psi_Exz_2[i][j] = (float *) malloc(nzPML_2 * sizeof (float));
+            psi_Exz_2[i][j] = (double *) malloc(nzPML_2 * sizeof (double));
 
             for (k = 0; k < nzPML_2; k++) {
 
@@ -627,15 +627,15 @@ void initialize() {
         }
     }
 
-    psi_Eyz_1 = (float ***) malloc((Imax) * sizeof (float **));
+    psi_Eyz_1 = (double ***) malloc((Imax) * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        psi_Eyz_1[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        psi_Eyz_1[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            psi_Eyz_1[i][j] = (float *) malloc(nzPML_1 * sizeof (float));
+            psi_Eyz_1[i][j] = (double *) malloc(nzPML_1 * sizeof (double));
 
             for (k = 0; k < nzPML_1; k++) {
 
@@ -644,15 +644,15 @@ void initialize() {
         }
     }
 
-    psi_Eyz_2 = (float ***) malloc((Imax) * sizeof (float **));
+    psi_Eyz_2 = (double ***) malloc((Imax) * sizeof (double **));
 
     for (i = 0; i < Imax; i++) {
 
-        psi_Eyz_2[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        psi_Eyz_2[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            psi_Eyz_2[i][j] = (float *) malloc(nzPML_2 * sizeof (float));
+            psi_Eyz_2[i][j] = (double *) malloc(nzPML_2 * sizeof (double));
 
             for (k = 0; k < nzPML_2; k++) {
 
@@ -661,15 +661,15 @@ void initialize() {
         }
     }
 
-    psi_Hzx_1 = (float ***) malloc((nxPML_1 - 1) * sizeof (float **));
+    psi_Hzx_1 = (double ***) malloc((nxPML_1 - 1) * sizeof (double **));
 
     for (i = 0; i < nxPML_1 - 1; i++) {
 
-        psi_Hzx_1[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        psi_Hzx_1[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            psi_Hzx_1[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            psi_Hzx_1[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -678,15 +678,15 @@ void initialize() {
         }
     }
 
-    psi_Hzx_2 = (float ***) malloc((nxPML_2 - 1) * sizeof (float **));
+    psi_Hzx_2 = (double ***) malloc((nxPML_2 - 1) * sizeof (double **));
 
     for (i = 0; i < nxPML_2 - 1; i++) {
 
-        psi_Hzx_2[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        psi_Hzx_2[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            psi_Hzx_2[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            psi_Hzx_2[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -695,15 +695,15 @@ void initialize() {
         }
     }
 
-    psi_Eyx_1 = (float ***) malloc(nxPML_1 * sizeof (float **));
+    psi_Eyx_1 = (double ***) malloc(nxPML_1 * sizeof (double **));
 
     for (i = 0; i < nxPML_1; i++) {
 
-        psi_Eyx_1[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        psi_Eyx_1[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            psi_Eyx_1[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            psi_Eyx_1[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -712,15 +712,15 @@ void initialize() {
         }
     }
 
-    psi_Eyx_2 = (float ***) malloc(nxPML_2 * sizeof (float **));
+    psi_Eyx_2 = (double ***) malloc(nxPML_2 * sizeof (double **));
 
     for (i = 0; i < nxPML_2; i++) {
 
-        psi_Eyx_2[i] = (float **) malloc((Jmax - 1) * sizeof (float *));
+        psi_Eyx_2[i] = (double **) malloc((Jmax - 1) * sizeof (double *));
 
         for (j = 0; j < Jmax - 1; j++) {
 
-            psi_Eyx_2[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            psi_Eyx_2[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -729,15 +729,15 @@ void initialize() {
         }
     }
 
-    psi_Hzy_1 = (float ***) malloc((Imax - 1) * sizeof (float **));
+    psi_Hzy_1 = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        psi_Hzy_1[i] = (float **) malloc((nyPML_1 - 1) * sizeof (float *));
+        psi_Hzy_1[i] = (double **) malloc((nyPML_1 - 1) * sizeof (double *));
 
         for (j = 0; j < nyPML_1 - 1; j++) {
 
-            psi_Hzy_1[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            psi_Hzy_1[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -746,15 +746,15 @@ void initialize() {
         }
     }
 
-    psi_Hzy_2 = (float ***) malloc((Imax - 1) * sizeof (float **));
+    psi_Hzy_2 = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        psi_Hzy_2[i] = (float **) malloc((nyPML_2 - 1) * sizeof (float *));
+        psi_Hzy_2[i] = (double **) malloc((nyPML_2 - 1) * sizeof (double *));
 
         for (j = 0; j < nyPML_2 - 1; j++) {
 
-            psi_Hzy_2[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            psi_Hzy_2[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -763,15 +763,15 @@ void initialize() {
         }
     }
 
-    psi_Exy_1 = (float ***) malloc((Imax - 1) * sizeof (float **));
+    psi_Exy_1 = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        psi_Exy_1[i] = (float **) malloc(nyPML_1 * sizeof (float *));
+        psi_Exy_1[i] = (double **) malloc(nyPML_1 * sizeof (double *));
 
         for (j = 0; j < nyPML_1; j++) {
 
-            psi_Exy_1[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            psi_Exy_1[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -780,15 +780,15 @@ void initialize() {
         }
     }
 
-    psi_Exy_2 = (float ***) malloc((Imax - 1) * sizeof (float **));
+    psi_Exy_2 = (double ***) malloc((Imax - 1) * sizeof (double **));
 
     for (i = 0; i < Imax - 1; i++) {
 
-        psi_Exy_2[i] = (float **) malloc(nyPML_2 * sizeof (float *));
+        psi_Exy_2[i] = (double **) malloc(nyPML_2 * sizeof (double *));
 
         for (j = 0; j < nyPML_2; j++) {
 
-            psi_Exy_2[i][j] = (float *) malloc((Kmax - 1) * sizeof (float));
+            psi_Exy_2[i][j] = (double *) malloc((Kmax - 1) * sizeof (double));
 
             for (k = 0; k < Kmax - 1; k++) {
 
@@ -797,401 +797,401 @@ void initialize() {
         }
     }
 
-    den_ex = (float *) malloc((Imax - 1) * sizeof (float));
+    den_ex = (double *) malloc((Imax - 1) * sizeof (double));
     for (i = 0; i < Imax - 1; i++) {
 
         den_ex[i] = 0.0;
     }
 
-    den_hx = (float *) malloc((Imax - 1) * sizeof (float));
+    den_hx = (double *) malloc((Imax - 1) * sizeof (double));
     for (i = 0; i < Imax - 1; i++) {
 
         den_hx[i] = 0.0;
     }
 
-    den_ey = (float *) malloc((Jmax - 1) * sizeof (float));
+    den_ey = (double *) malloc((Jmax - 1) * sizeof (double));
     for (i = 0; i < Jmax - 1; i++) {
 
         den_ey[i] = 0.0;
     }
 
-    den_hy = (float *) malloc((Jmax - 1) * sizeof (float));
+    den_hy = (double *) malloc((Jmax - 1) * sizeof (double));
     for (i = 0; i < Jmax - 1; i++) {
 
         den_hy[i] = 0.0;
     }
 
-    den_ez = (float *) malloc((Kmax - 1) * sizeof (float));
+    den_ez = (double *) malloc((Kmax - 1) * sizeof (double));
     for (i = 0; i < Kmax - 1; i++) {
 
         den_ez[i] = 0.0;
     }
 
-    den_hz = (float *) malloc((Kmax - 1) * sizeof (float));
+    den_hz = (double *) malloc((Kmax - 1) * sizeof (double));
     for (i = 0; i < Kmax - 1; i++) {
 
         den_hz[i] = 0.0;
     }
 
-    be_x_1 = (float *) malloc((nxPML_1) * sizeof (float));
+    be_x_1 = (double *) malloc((nxPML_1) * sizeof (double));
     for (i = 0; i < nxPML_1; i++) {
 
         be_x_1[i] = 0.0;
     }
 
-    ce_x_1 = (float *) malloc((nxPML_1) * sizeof (float));
+    ce_x_1 = (double *) malloc((nxPML_1) * sizeof (double));
     for (i = 0; i < nxPML_1; i++) {
 
         ce_x_1[i] = 0.0;
     }
 
-    alphae_x_PML_1 = (float *) malloc((nxPML_1) * sizeof (float));
+    alphae_x_PML_1 = (double *) malloc((nxPML_1) * sizeof (double));
     for (i = 0; i < nxPML_1; i++) {
 
         alphae_x_PML_1[i] = 0.0;
     }
 
-    sige_x_PML_1 = (float *) malloc((nxPML_1) * sizeof (float));
+    sige_x_PML_1 = (double *) malloc((nxPML_1) * sizeof (double));
     for (i = 0; i < nxPML_1; i++) {
 
         sige_x_PML_1[i] = 0.0;
     }
 
-    kappae_x_PML_1 = (float *) malloc((nxPML_1) * sizeof (float));
+    kappae_x_PML_1 = (double *) malloc((nxPML_1) * sizeof (double));
     for (i = 0; i < nxPML_1; i++) {
 
         kappae_x_PML_1[i] = 0.0;
     }
 
-    bh_x_1 = (float *) malloc((nxPML_1 - 1) * sizeof (float));
+    bh_x_1 = (double *) malloc((nxPML_1 - 1) * sizeof (double));
     for (i = 0; i < nxPML_1 - 1; i++) {
 
         bh_x_1[i] = 0.0;
     }
 
-    ch_x_1 = (float *) malloc((nxPML_1 - 1) * sizeof (float));
+    ch_x_1 = (double *) malloc((nxPML_1 - 1) * sizeof (double));
     for (i = 0; i < nxPML_1 - 1; i++) {
 
         ch_x_1[i] = 0.0;
     }
 
-    alphah_x_PML_1 = (float *) malloc((nxPML_1 - 1) * sizeof (float));
+    alphah_x_PML_1 = (double *) malloc((nxPML_1 - 1) * sizeof (double));
     for (i = 0; i < nxPML_1 - 1; i++) {
 
         alphah_x_PML_1[i] = 0.0;
     }
 
-    sigh_x_PML_1 = (float *) malloc((nxPML_1 - 1) * sizeof (float));
+    sigh_x_PML_1 = (double *) malloc((nxPML_1 - 1) * sizeof (double));
     for (i = 0; i < nxPML_1 - 1; i++) {
 
         sigh_x_PML_1[i] = 0.0;
     }
 
-    kappah_x_PML_1 = (float *) malloc((nxPML_1 - 1) * sizeof (float));
+    kappah_x_PML_1 = (double *) malloc((nxPML_1 - 1) * sizeof (double));
     for (i = 0; i < nxPML_1 - 1; i++) {
 
         kappah_x_PML_1[i] = 0.0;
     }
 
-    be_x_2 = (float *) malloc((nxPML_2) * sizeof (float));
+    be_x_2 = (double *) malloc((nxPML_2) * sizeof (double));
     for (i = 0; i < nxPML_2; i++) {
 
         be_x_2[i] = 0.0;
     }
 
-    ce_x_2 = (float *) malloc((nxPML_2) * sizeof (float));
+    ce_x_2 = (double *) malloc((nxPML_2) * sizeof (double));
     for (i = 0; i < nxPML_2; i++) {
 
         ce_x_2[i] = 0.0;
     }
 
-    alphae_x_PML_2 = (float *) malloc((nxPML_2) * sizeof (float));
+    alphae_x_PML_2 = (double *) malloc((nxPML_2) * sizeof (double));
     for (i = 0; i < nxPML_2; i++) {
 
         alphae_x_PML_2[i] = 0.0;
     }
 
 
-    sige_x_PML_2 = (float *) malloc((nxPML_2) * sizeof (float));
+    sige_x_PML_2 = (double *) malloc((nxPML_2) * sizeof (double));
     for (i = 0; i < nxPML_2; i++) {
 
         sige_x_PML_2[i] = 0.0;
     }
 
 
-    kappae_x_PML_2 = (float *) malloc((nxPML_2) * sizeof (float));
+    kappae_x_PML_2 = (double *) malloc((nxPML_2) * sizeof (double));
     for (i = 0; i < nxPML_2; i++) {
 
         kappae_x_PML_2[i] = 0.0;
     }
 
 
-    bh_x_2 = (float *) malloc((nxPML_2 - 1) * sizeof (float));
+    bh_x_2 = (double *) malloc((nxPML_2 - 1) * sizeof (double));
     for (i = 0; i < nxPML_2 - 1; i++) {
 
         bh_x_2[i] = 0.0;
     }
 
 
-    ch_x_2 = (float *) malloc((nxPML_2 - 1) * sizeof (float));
+    ch_x_2 = (double *) malloc((nxPML_2 - 1) * sizeof (double));
     for (i = 0; i < nxPML_2 - 1; i++) {
 
         ch_x_2[i] = 0.0;
     }
 
-    alphah_x_PML_2 = (float *) malloc((nxPML_2 - 1) * sizeof (float));
+    alphah_x_PML_2 = (double *) malloc((nxPML_2 - 1) * sizeof (double));
     for (i = 0; i < nxPML_2 - 1; i++) {
 
         alphah_x_PML_2[i] = 0.0;
     }
 
-    sigh_x_PML_2 = (float *) malloc((nxPML_2 - 1) * sizeof (float));
+    sigh_x_PML_2 = (double *) malloc((nxPML_2 - 1) * sizeof (double));
     for (i = 0; i < nxPML_2 - 1; i++) {
         sigh_x_PML_2[i] = 0.0;
     }
 
-    kappah_x_PML_2 = (float *) malloc((nxPML_2 - 1) * sizeof (float));
+    kappah_x_PML_2 = (double *) malloc((nxPML_2 - 1) * sizeof (double));
     for (i = 0; i < nxPML_1 - 1; i++) {
 
         kappah_x_PML_2[i] = 0.0;
     }
 
-    be_y_1 = (float *) malloc((nyPML_1) * sizeof (float));
+    be_y_1 = (double *) malloc((nyPML_1) * sizeof (double));
     for (i = 0; i < nyPML_1; i++) {
 
         be_y_1[i] = 0.0;
     }
 
-    ce_y_1 = (float *) malloc((nyPML_1) * sizeof (float));
+    ce_y_1 = (double *) malloc((nyPML_1) * sizeof (double));
     for (i = 0; i < nyPML_1; i++) {
 
         ce_y_1[i] = 0.0;
     }
 
-    alphae_y_PML_1 = (float *) malloc((nyPML_1) * sizeof (float));
+    alphae_y_PML_1 = (double *) malloc((nyPML_1) * sizeof (double));
     for (i = 0; i < nyPML_1; i++) {
 
         alphae_y_PML_1[i] = 0.0;
     }
 
-    sige_y_PML_1 = (float *) malloc((nyPML_1) * sizeof (float));
+    sige_y_PML_1 = (double *) malloc((nyPML_1) * sizeof (double));
     for (i = 0; i < nyPML_1; i++) {
 
         sige_y_PML_1[i] = 0.0;
     }
 
-    kappae_y_PML_1 = (float *) malloc((nyPML_1) * sizeof (float));
+    kappae_y_PML_1 = (double *) malloc((nyPML_1) * sizeof (double));
     for (i = 0; i < nyPML_1; i++) {
 
         kappae_y_PML_1[i] = 0.0;
     }
 
-    bh_y_1 = (float *) malloc((nyPML_1 - 1) * sizeof (float));
+    bh_y_1 = (double *) malloc((nyPML_1 - 1) * sizeof (double));
     for (i = 0; i < nyPML_1 - 1; i++) {
 
         bh_y_1[i] = 0.0;
     }
 
-    ch_y_1 = (float *) malloc((nyPML_1 - 1) * sizeof (float));
+    ch_y_1 = (double *) malloc((nyPML_1 - 1) * sizeof (double));
     for (i = 0; i < nyPML_1 - 1; i++) {
 
         ch_y_1[i] = 0.0;
     }
 
-    alphah_y_PML_1 = (float *) malloc((nyPML_1 - 1) * sizeof (float));
+    alphah_y_PML_1 = (double *) malloc((nyPML_1 - 1) * sizeof (double));
     for (i = 0; i < nyPML_1 - 1; i++) {
 
         alphah_y_PML_1[i] = 0.0;
     }
 
-    sigh_y_PML_1 = (float *) malloc((nyPML_1 - 1) * sizeof (float));
+    sigh_y_PML_1 = (double *) malloc((nyPML_1 - 1) * sizeof (double));
     for (i = 0; i < nyPML_1 - 1; i++) {
 
         sigh_y_PML_1[i] = 0.0;
     }
 
-    kappah_y_PML_1 = (float *) malloc((nyPML_1 - 1) * sizeof (float));
+    kappah_y_PML_1 = (double *) malloc((nyPML_1 - 1) * sizeof (double));
     for (i = 0; i < nyPML_1 - 1; i++) {
 
         kappah_y_PML_1[i] = 0.0;
     }
 
-    be_y_2 = (float *) malloc((nyPML_2) * sizeof (float));
+    be_y_2 = (double *) malloc((nyPML_2) * sizeof (double));
     for (i = 0; i < nyPML_2; i++) {
 
         be_y_2[i] = 0.0;
     }
 
-    ce_y_2 = (float *) malloc((nyPML_2) * sizeof (float));
+    ce_y_2 = (double *) malloc((nyPML_2) * sizeof (double));
     for (i = 0; i < nyPML_2; i++) {
 
         ce_y_2[i] = 0.0;
     }
 
-    alphae_y_PML_2 = (float *) malloc((nyPML_2) * sizeof (float));
+    alphae_y_PML_2 = (double *) malloc((nyPML_2) * sizeof (double));
     for (i = 0; i < nyPML_2; i++) {
 
         alphae_y_PML_2[i] = 0.0;
     }
 
-    sige_y_PML_2 = (float *) malloc((nyPML_2) * sizeof (float));
+    sige_y_PML_2 = (double *) malloc((nyPML_2) * sizeof (double));
     for (i = 0; i < nyPML_2; i++) {
 
         sige_y_PML_2[i] = 0.0;
     }
 
-    kappae_y_PML_2 = (float *) malloc((nyPML_2) * sizeof (float));
+    kappae_y_PML_2 = (double *) malloc((nyPML_2) * sizeof (double));
     for (i = 0; i < nyPML_2; i++) {
 
         kappae_y_PML_2[i] = 0.0;
     }
 
-    bh_y_2 = (float *) malloc((nyPML_2 - 1) * sizeof (float));
+    bh_y_2 = (double *) malloc((nyPML_2 - 1) * sizeof (double));
     for (i = 0; i < nyPML_2 - 1; i++) {
 
         bh_y_2[i] = 0.0;
     }
 
-    ch_y_2 = (float *) malloc((nyPML_2 - 1) * sizeof (float));
+    ch_y_2 = (double *) malloc((nyPML_2 - 1) * sizeof (double));
     for (i = 0; i < nyPML_2 - 1; i++) {
 
         ch_y_2[i] = 0.0;
     }
 
-    alphah_y_PML_2 = (float *) malloc((nyPML_2 - 1) * sizeof (float));
+    alphah_y_PML_2 = (double *) malloc((nyPML_2 - 1) * sizeof (double));
     for (i = 0; i < nyPML_2 - 1; i++) {
 
         alphah_y_PML_2[i] = 0.0;
     }
 
-    sigh_y_PML_2 = (float *) malloc((nyPML_2 - 1) * sizeof (float));
+    sigh_y_PML_2 = (double *) malloc((nyPML_2 - 1) * sizeof (double));
     for (i = 0; i < nyPML_2 - 1; i++) {
 
         sigh_y_PML_2[i] = 0.0;
     }
 
-    kappah_y_PML_2 = (float *) malloc((nyPML_2 - 1) * sizeof (float));
+    kappah_y_PML_2 = (double *) malloc((nyPML_2 - 1) * sizeof (double));
     for (i = 0; i < nyPML_1 - 1; i++) {
 
         kappah_y_PML_2[i] = 0.0;
     }
 
-    be_z_1 = (float *) malloc((nzPML_1) * sizeof (float));
+    be_z_1 = (double *) malloc((nzPML_1) * sizeof (double));
     for (i = 0; i < nzPML_1; i++) {
 
         be_z_1[i] = 0.0;
     }
 
-    ce_z_1 = (float *) malloc((nzPML_1) * sizeof (float));
+    ce_z_1 = (double *) malloc((nzPML_1) * sizeof (double));
     for (i = 0; i < nzPML_1; i++) {
 
         ce_z_1[i] = 0.0;
     }
 
-    alphae_z_PML_1 = (float *) malloc((nzPML_1) * sizeof (float));
+    alphae_z_PML_1 = (double *) malloc((nzPML_1) * sizeof (double));
     for (i = 0; i < nzPML_1; i++) {
 
         alphae_z_PML_1[i] = 0.0;
     }
 
-    sige_z_PML_1 = (float *) malloc((nzPML_1) * sizeof (float));
+    sige_z_PML_1 = (double *) malloc((nzPML_1) * sizeof (double));
     for (i = 0; i < nzPML_1; i++) {
 
         sige_z_PML_1[i] = 0.0;
     }
 
-    kappae_z_PML_1 = (float *) malloc((nzPML_1) * sizeof (float));
+    kappae_z_PML_1 = (double *) malloc((nzPML_1) * sizeof (double));
     for (i = 0; i < nzPML_1; i++) {
 
         kappae_z_PML_1[i] = 0.0;
     }
 
-    bh_z_1 = (float *) malloc((nzPML_1 - 1) * sizeof (float));
+    bh_z_1 = (double *) malloc((nzPML_1 - 1) * sizeof (double));
     for (i = 0; i < nzPML_1 - 1; i++) {
 
         bh_z_1[i] = 0.0;
     }
 
-    ch_z_1 = (float *) malloc((nzPML_1 - 1) * sizeof (float));
+    ch_z_1 = (double *) malloc((nzPML_1 - 1) * sizeof (double));
     for (i = 0; i < nzPML_1 - 1; i++) {
 
         ch_z_1[i] = 0.0;
     }
 
-    alphah_z_PML_1 = (float *) malloc((nzPML_1 - 1) * sizeof (float));
+    alphah_z_PML_1 = (double *) malloc((nzPML_1 - 1) * sizeof (double));
     for (i = 0; i < nzPML_1 - 1; i++) {
 
         alphah_z_PML_1[i] = 0.0;
     }
 
-    sigh_z_PML_1 = (float *) malloc((nzPML_1 - 1) * sizeof (float));
+    sigh_z_PML_1 = (double *) malloc((nzPML_1 - 1) * sizeof (double));
     for (i = 0; i < nzPML_1 - 1; i++) {
 
         sigh_z_PML_1[i] = 0.0;
     }
 
-    kappah_z_PML_1 = (float *) malloc((nzPML_1 - 1) * sizeof (float));
+    kappah_z_PML_1 = (double *) malloc((nzPML_1 - 1) * sizeof (double));
     for (i = 0; i < nzPML_1 - 1; i++) {
 
         kappah_z_PML_1[i] = 0.0;
     }
 
-    be_z_2 = (float *) malloc((nzPML_2) * sizeof (float));
+    be_z_2 = (double *) malloc((nzPML_2) * sizeof (double));
     for (i = 0; i < nzPML_2; i++) {
 
         be_z_2[i] = 0.0;
     }
 
-    ce_z_2 = (float *) malloc((nzPML_2) * sizeof (float));
+    ce_z_2 = (double *) malloc((nzPML_2) * sizeof (double));
     for (i = 0; i < nzPML_2; i++) {
 
         ce_z_2[i] = 0.0;
     }
 
-    alphae_z_PML_2 = (float *) malloc((nzPML_2) * sizeof (float));
+    alphae_z_PML_2 = (double *) malloc((nzPML_2) * sizeof (double));
     for (i = 0; i < nzPML_2; i++) {
 
         alphae_z_PML_2[i] = 0.0;
     }
 
-    sige_z_PML_2 = (float *) malloc((nzPML_2) * sizeof (float));
+    sige_z_PML_2 = (double *) malloc((nzPML_2) * sizeof (double));
     for (i = 0; i < nzPML_2; i++) {
 
         sige_z_PML_2[i] = 0.0;
     }
 
-    kappae_z_PML_2 = (float *) malloc((nzPML_2) * sizeof (float));
+    kappae_z_PML_2 = (double *) malloc((nzPML_2) * sizeof (double));
     for (i = 0; i < nzPML_2; i++) {
 
         kappae_z_PML_2[i] = 0.0;
     }
 
-    bh_z_2 = (float *) malloc((nzPML_2 - 1) * sizeof (float));
+    bh_z_2 = (double *) malloc((nzPML_2 - 1) * sizeof (double));
     for (i = 0; i < nzPML_2 - 1; i++) {
 
         bh_z_2[i] = 0.0;
     }
 
-    ch_z_2 = (float *) malloc((nzPML_2 - 1) * sizeof (float));
+    ch_z_2 = (double *) malloc((nzPML_2 - 1) * sizeof (double));
     for (i = 0; i < nzPML_2 - 1; i++) {
 
         ch_z_2[i] = 0.0;
     }
 
-    alphah_z_PML_2 = (float *) malloc((nzPML_2 - 1) * sizeof (float));
+    alphah_z_PML_2 = (double *) malloc((nzPML_2 - 1) * sizeof (double));
     for (i = 0; i < nzPML_2 - 1; i++) {
 
         alphah_z_PML_2[i] = 0.0;
     }
 
-    sigh_z_PML_2 = (float *) malloc((nzPML_2 - 1) * sizeof (float));
+    sigh_z_PML_2 = (double *) malloc((nzPML_2 - 1) * sizeof (double));
     for (i = 0; i < nzPML_2 - 1; i++) {
 
         sigh_z_PML_2[i] = 0.0;
     }
 
 
-    kappah_z_PML_2 = (float *) malloc((nzPML_2 - 1) * sizeof (float));
+    kappah_z_PML_2 = (double *) malloc((nzPML_2 - 1) * sizeof (double));
     for (i = 0; i < nzPML_1 - 1; i++) {
 
         kappah_z_PML_2[i] = 0.0;
@@ -1204,15 +1204,15 @@ void initialize() {
 void setUp() {
 
     //Time step
-//    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
-//            1.0 / (dz * dz)));
-    dt = dx/2/C;
+    //    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
+    //            1.0 / (dz * dz)));
+    dt = dx / 2 / C;
     //delay
     tO = 4.0 * tw;
-//    tO = 6e-9;
-    
+    //    tO = 6e-9;
+
     // omega
-    omega = 2*pi*C/300/dx;
+    omega = 2 * pi * C / 1000 / dx;
 
     //  Specify the dipole size 
     istart = 24;
@@ -1281,7 +1281,7 @@ void initializeCPML() {
 
         sige_x_PML_1[i] = sig_x_max * pow(((nxPML_1 - 1 - i)
                 / (nxPML_1 - 1.0)), m);
-        alphae_x_PML_1[i] = alpha_x_max * pow(((float) i
+        alphae_x_PML_1[i] = alpha_x_max * pow(((double) i
                 / (nxPML_1 - 1.0)), ma);
         kappae_x_PML_1[i] = 1.0 + (kappa_x_max - 1.0) *
                 pow((nxPML_1 - 1 - i) / (nxPML_1 - 1.0), m);
@@ -1318,7 +1318,7 @@ void initializeCPML() {
 
         sige_x_PML_2[i] = sig_x_max * pow(((nxPML_2 - 1 - i)
                 / (nxPML_2 - 1.0)), m);
-        alphae_x_PML_2[i] = alpha_x_max * pow(((float) i
+        alphae_x_PML_2[i] = alpha_x_max * pow(((double) i
                 / (nxPML_2 - 1.0)), ma);
         kappae_x_PML_2[i] = 1.0 + (kappa_x_max - 1.0) *
                 pow((nxPML_2 - 1 - i) / (nxPML_2 - 1.0), m);
@@ -1358,7 +1358,7 @@ void initializeCPML() {
 
         sige_y_PML_1[j] = sig_y_max * pow(((nyPML_1 - 1 - j)
                 / (nyPML_1 - 1.0)), m);
-        alphae_y_PML_1[j] = alpha_y_max * pow(((float) j
+        alphae_y_PML_1[j] = alpha_y_max * pow(((double) j
                 / (nyPML_1 - 1.0)), ma);
         kappae_y_PML_1[j] = 1.0 + (kappa_y_max - 1.0) *
                 pow((nyPML_1 - 1 - j) / (nyPML_1 - 1.0), m);
@@ -1395,7 +1395,7 @@ void initializeCPML() {
 
         sige_y_PML_2[j] = sig_y_max * pow(((nyPML_2 - 1 - j)
                 / (nyPML_2 - 1.0)), m);
-        alphae_y_PML_2[j] = alpha_y_max * pow(((float) j
+        alphae_y_PML_2[j] = alpha_y_max * pow(((double) j
                 / (nyPML_2 - 1.0)), ma);
         kappae_y_PML_2[j] = 1.0 + (kappa_y_max - 1.0) *
                 pow((nyPML_2 - 1 - j) / (nyPML_2 - 1.0), m);
@@ -1434,7 +1434,7 @@ void initializeCPML() {
 
         sige_z_PML_1[k] = sig_z_max * pow(((nzPML_1 - 1 - k)
                 / (nzPML_1 - 1.0)), m);
-        alphae_z_PML_1[k] = alpha_z_max * pow(((float) k
+        alphae_z_PML_1[k] = alpha_z_max * pow(((double) k
                 / (nzPML_1 - 1.0)), ma);
         kappae_z_PML_1[k] = 1.0 + (kappa_z_max - 1.0) *
                 pow((nzPML_1 - 1 - k) / (nzPML_1 - 1.0), m);
@@ -1473,7 +1473,7 @@ void initializeCPML() {
 
         sige_z_PML_2[k] = sig_z_max * pow(((nzPML_2 - 1 - k)
                 / (nzPML_2 - 1.0)), m);
-        alphae_z_PML_2[k] = alpha_z_max * pow(((float) k
+        alphae_z_PML_2[k] = alpha_z_max * pow(((double) k
                 / (nzPML_2 - 1.0)), ma);
         kappae_z_PML_2[k] = 1.0 + (kappa_z_max - 1.0) *
                 pow((nzPML_2 - 1 - k) / (nzPML_2 - 1.0), m);
@@ -1637,7 +1637,7 @@ void compute() {
 
     for (n = 1; n <= nMax; ++n) {
 
-        printf("Ez at time step %d at (25, 76, 12) :  %f\n", n, Ez[25][64][12]);
+        printf("Ez at time step %d at (25, 76, 12) :  %f\n", n, Ez[25][76][12]);
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  UPDATE Hx
@@ -2039,11 +2039,15 @@ void compute() {
         i = 25;
         j = 63;
         k = 12;
-        source = amp * -2.0 * ((n * dt - tO) / tw/tw)
-                * exp(-pow(((n * dt - tO) / tw), 2)); //Differentiated Gaussian pulse
-        //source = amp*sin((n*dt-tO)*2*omega*pi);
+//        source = amp * -2.0 * ((n * dt - tO) / tw / tw)
+//                * exp(-pow(((n * dt - tO) / tw), 2)); //Differentiated Gaussian pulse
+        if(n<510){
+            source = amp*sin((n*dt-tO)*2*omega*pi);
+        }else{
+            source=0.0;
+        }
 
-        Ez[i][j][k] = Ez[i][j][k] + CB[ID3[i][j][k]] * source/dx/dy/dz;
+        Ez[i][j][k] = Ez[i][j][k] + CB[ID3[i][j][k]] * source / dx / dy / dz;
 
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2165,8 +2169,8 @@ void writeField(int iteration) {
 
         for (j = 0; j < Jmax - 1; j++) {
             // |E|
-            fprintf(ptr, "%f\t", sqrt(pow(Ex[i][j][ksource], 2) +
-                    pow(Ey[i][j][ksource], 2) + pow(Ez[i][j][ksource], 2)));
+            fprintf(ptr, "%f\t", sqrt(pow(Ex[i][j][ksource+5], 2) +
+                    pow(Ey[i][j][ksource+5], 2) + pow(Ez[i][j][ksource+5], 2)));
 
             //	fprintf(ptr, "%f\t", Ex[i][j][ksource]);//Ex
             //	fprintf(ptr, "%f\t", Ey[i][j][ksource]);//Ey
