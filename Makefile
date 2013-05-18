@@ -42,7 +42,7 @@ openmp:openmp.o
 	$(CXX) -o $@ openmp.o $(CXXFLAGS) $(LIB)
 datastruct.h:datastruct.cpp	common.h
 fdtd.o:cpml.o
-cpml.o:cpml.h cpml.cpp datastruct.h datastruct.cpp common.h
+cpml.o:cpml.cpp datastruct.h datastruct.cpp common.h cpml.h 
 	$(CXX) -c $< $(CXXFLAGS)
 
 # ==========================================
