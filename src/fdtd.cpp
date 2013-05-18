@@ -976,7 +976,7 @@ void fdtd::updateHx() {
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
     for (k = 0; k < Kmax; ++k) {
-        for (i = 0; i < Imax+1; ++i) {
+        for (i = 0; i < Imax + 1; ++i) {
             for (j = 0; j < Jmax; ++j) {
                 Hx.p[i][j][k] = Chxh.p[i][j][k] * Hx.p[i][j][k] + Chxez.p[i][j][k]*(Ez.p[i][j][k] - Ez.p[i][j + 1][k]) +
                         Chxey.p[i][j][k]*(Ey.p[i][j][k] - Ey.p[i][j][k - 1]);
@@ -995,9 +995,9 @@ void fdtd::updateHy() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Hy,Ez,Ex,pml,DA,DB,dx,dz)
 #endif
-    for (k = 0; k < Kmax ; ++k) {
+    for (k = 0; k < Kmax; ++k) {
         for (i = 0; i < Imax; ++i) {
-            for (j = 0; j < Jmax+ 1; ++j) {
+            for (j = 0; j < Jmax + 1; ++j) {
                 Hy.p[i][j][k] = Chyh.p[i][j][k] * Hy.p[i][j][k] + Chyez.p[i][j][k]*(Ez.p[i][j][k] - Ez.p[i + 1][j][k]) +
                         Chyex.p[i][j][k]*(Ex.p[i][j][k] - Ex.p[i][j][k - 1]);
 #ifdef WITH_DENSITY
@@ -1018,7 +1018,7 @@ void fdtd::updateHz() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
 #endif
-    for (k = 0; k < Kmax+1; ++k) {
+    for (k = 0; k < Kmax + 1; ++k) {
         for (i = 0; i < Imax; ++i) {
             for (j = 0; j < Jmax; ++j) {
                 Hz.p[i][j][k] = Chzh.p[i][j][k] * Hz.p[i][j][k] + Chzey.p[i][j][k]
@@ -1036,7 +1036,7 @@ void fdtd::updateHz() {
 
 void fdtd::updateEx() {
     unsigned i, j, k;
-    short id;
+    short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ex
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1077,14 +1077,14 @@ void fdtd::updateEx() {
 
 void fdtd::updateEy() {
     unsigned i, j, k;
-    short id;
+    short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ey
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,id)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
-    for (k = 1; k < Kmax ; ++k) {
+    for (k = 1; k < Kmax; ++k) {
         for (i = 1; i < Imax; ++i) {
             for (j = 0; j < Jmax; ++j) {
 #ifdef WITH_DENSITY
@@ -1122,7 +1122,7 @@ void fdtd::updateEy() {
 
 void fdtd::updateEz() {
     unsigned i, j, k;
-    short id;
+    short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ez
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -88,19 +88,21 @@ public:
     virtual ~cpml();
 private:
     // cpml layer width on each size
-    unsigned short n_cpml_xp;
     unsigned short n_cpml_xn;
-    unsigned short n_cpml_yp;
+    unsigned short n_cpml_xp;
     unsigned short n_cpml_yn;
-    unsigned short n_cpml_zp;
+    unsigned short n_cpml_yp;
     unsigned short n_cpml_zn;
+    unsigned short n_cpml_zp;
+
     // cpml flags
-    bool is_cpml_xp;
     bool is_cpml_xn;
-    bool is_cpml_yp;
+    bool is_cpml_xp;
     bool is_cpml_yn;
-    bool is_cpml_zp;
+    bool is_cpml_yp;
     bool is_cpml_zn;
+    bool is_cpml_zp;
+
     //============================================
     // cpml arrays
     //============================================
@@ -415,7 +417,6 @@ private:
     void updateMFieldCPML_y(data3d<type1>&Hx, data3d<type1>&Hz);
     void updateMFieldCPML_z(data3d<type1>&Hx, data3d<type1>&Hy);
 };
-
 
 template<class type1>
 cpml<type1>::cpml()
