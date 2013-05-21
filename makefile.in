@@ -12,6 +12,7 @@ CFLAGS=-Wl,--hash-style=sysv -Wall
 
 # debug mode
 CXXFLAGS+=-g -DDEBUG=4
+CFLAGS+=-g -DDEBUG=4
 #CXXFLAGS+=-O3
 
 #Add DENSITY

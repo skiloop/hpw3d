@@ -28,7 +28,9 @@ int main(int argc, char*argv[]) {
     dx = C * T / checker.yeeCellSizeX;
     dy = C * T / checker.yeeCellSizeY;
     dz = C * T / checker.yeeCellSizeZ;
+#ifdef _OPENMP
     thread_count = checker.threadCount;
+#endif
     unsigned xlen, ylen, zlen, tlen;
     unsigned minTimeLen = 500;
 
@@ -56,7 +58,6 @@ int main(int argc, char*argv[]) {
 #ifdef WITH_DENSITY
     int nmaterial = 50;
     cout << "nmaterial=" << nmaterial << endl;
-    return 0;
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize, nmaterial, checker.fluidGridSize);
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
 #else
@@ -65,7 +66,9 @@ int main(int argc, char*argv[]) {
     hpw.setSourceType(checker.waveType);
     switch (checker.waveType) {
         case GAUSSIAN_WAVE_TYPE:break;
-        case SINE_WAVE_TYPE:break;
+        case SINE_WAVE_TYPE:
+            hpw.SetSineSource(omega);
+            break;
         case DERIVE_GAUSSIAN_TYPE:break;
         case ZERO_TYPE:break;
         case SINE_PULSE_TYPE:

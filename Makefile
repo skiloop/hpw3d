@@ -4,9 +4,9 @@ include makefile.in
 SRC=src
 TEST=testCPML sine testMain gaussian cpmlfdtd3d
 TEST_SRC_DIR=./test/
-CPPOBJECT=hpw3d.o fdtd.o InonizationFormula.o inputChecker.o source.o
-OBJS=cpml.o $(CPPOBJECT)
-TEST_OBJ=sine.o testMain.o testcpml.o gaussian.o openmp.o
+OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o inputChecker.o source.o
+CPPOBJECT=sine.o testMain.o testcpml.o gaussian.o openmp.o
+TEST_OBJ=$(CPPOBJECTS) cpmlfdtd3d.o
 VPATH = $(SRC):$(TEST_SRC_DIR)
 projects=$(TEST) hpw3d#3DFormulaTransforming.pdf
 .PHONY:all clean test
@@ -32,12 +32,10 @@ cpmlfdtd3d:cpmlfdtd3d.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIB)
 testCPML:testcpml.o cpml.o
 	$(CXX) $(CXXFLAGS) -o $@  $^ $(LIB)
-$(TEST_OBJ): %.o:%.cpp
-	$(CXX) $(CXXFLAGS) -c $<	
 $(CPPOBJECT): %.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c $<	
 cpmlfdtd3d.o:cpmlfdtd3d.c
-	$(CC) $(CFLAGS) -c $<	
+	$(CC) -c $< $(CFLAGS)
 openmp:openmp.o
 	$(CXX) -o $@ openmp.o $(CXXFLAGS) $(LIB)
 datastruct.h:datastruct.cpp	common.h
