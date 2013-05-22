@@ -272,30 +272,6 @@ public:
 
 template<class DataType> unsigned int data3d<DataType>::cnt = 0;
 template<class DataType> string data3d<DataType>::tail = ".dat";
-/*
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) 2011  <copyright holder> <email>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
- * @file datastruct.cpp
- * @version 0.0.0
- * @author skiloop ( skiloop@126.com )
- * @date 31/08/2011 0.0.0 created, by skiloop
- */
 
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -308,9 +284,6 @@ template<class DataType> string data3d<DataType>::tail = ".dat";
 #include <string>
 
 using namespace std;
-
-//#include"datastruct.h"
-
 
 #ifdef MATLAB_SIMULATION
 template<class DataType> Engine* data3d<DataType>::ep = NULL;
@@ -769,8 +742,6 @@ void data3d<DataType>::nanOperator(unsigned i,unsigned j,unsigned k){
     }
 }
 #endif
-
-
 
 //#include "datastruct.cpp"
 
