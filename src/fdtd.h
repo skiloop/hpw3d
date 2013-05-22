@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../src/cpml.h"
+#include "cpml.h"
 
 #ifndef WITH_DENSITY
 //#define WITH_DENSITY
@@ -154,10 +154,8 @@ private:
 
     // update coefficients
     //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
-    data3d<MyDataF> Cexe, Ceye, Ceze, Cezvz, Ceyvy, Cexvx;
-    data3d<MyDataF> Chxh,Chyh,Chzh;
-    data3d<MyDataF> Cexhy, Ceyhz, Cezhx,Cexhz, Ceyhx, Cezhy;    
-    data3d<MyDataF> Chxey, Chyez, Chzex,Chxez, Chyex, Chzey;
+    data3d<MyDataF> Cexex, Ceyey, Cezez, Cezvz, Ceyvy, Cexvx;
+    data3d<MyDataF> Cexh, Ceyh, Cezh;    
     data3d<MyDataF> Cvxex_guassian,Cvyey_guassian,Cvzez_guassian;
     MyDataF Cvxex, Cvyey, Cvzez;
 
