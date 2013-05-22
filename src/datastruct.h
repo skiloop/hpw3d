@@ -1,6 +1,6 @@
 /*
 <one line to give the program's name and a brief idea of what it does.>
-Copyright (C) 2011  <copyright holder> <email>
+Copyright (C) 2011  skiloop <skiloop@126.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #undef printf
 #endif
 
-#endif// end MATLAB_SIMULATION
+#endif // end MATLAB_SIMULATION
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
@@ -83,7 +83,9 @@ public:
     void CreateStruct(unsigned num) {
         createArray(num);
     };
-
+    void CreateStruct(unsigned num,T val) {
+        createArray(num,val);
+    };
     void initArray(T initval = 0) {
         if (p == NULL)return;
         for (unsigned i = 0; i < n; i++)p[i] = initval;
@@ -401,7 +403,7 @@ void data3d<DataType>::PrintData() {
     }
 }
 
-template<class DataType>
+template<class DataType>	
 bool data3d<DataType>::CheckStruct() {
     if (ny <= 0 || nx <= 0 || nz <= 0 || p == NULL) {
         return false;

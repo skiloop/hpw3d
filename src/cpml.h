@@ -579,95 +579,95 @@ void cpml<type1>::createCPMLArrays(unsigned nx, unsigned ny, unsigned nz) {
     unsigned nzp1 = nz + 1;
     if (is_cpml_xn) {
         // x direction
-        cpml_a_ex_xn.CreateStruct(n_cpml_xn);
-        cpml_b_ex_xn.CreateStruct(n_cpml_xn);
-        cpml_a_mx_xn.CreateStruct(n_cpml_xn);
-        cpml_b_mx_xn.CreateStruct(n_cpml_xn);
-        Psi_eyx_xn.CreateStruct(n_cpml_xn, ny, nzp1);
-        Psi_ezx_xn.CreateStruct(n_cpml_xn, nyp1, nz);
-        Psi_hyx_xn.CreateStruct(n_cpml_xn, nyp1, nz);
-        Psi_hzx_xn.CreateStruct(n_cpml_xn, ny, nzp1);
-        CPsi_eyx_xn.CreateStruct(n_cpml_xn, ny, nzp1);
-        CPsi_ezx_xn.CreateStruct(n_cpml_xn, nyp1, nz);
-        CPsi_hyx_xn.CreateStruct(n_cpml_xn, nyp1, nz);
-        CPsi_hzx_xn.CreateStruct(n_cpml_xn, ny, nzp1);
+        cpml_a_ex_xn.CreateStruct(n_cpml_xn,0.0);
+        cpml_b_ex_xn.CreateStruct(n_cpml_xn,0.0);
+        cpml_a_mx_xn.CreateStruct(n_cpml_xn,0.0);
+        cpml_b_mx_xn.CreateStruct(n_cpml_xn,0.0);
+        Psi_eyx_xn.CreateStruct(n_cpml_xn, ny, nzp1,0.0);
+        Psi_ezx_xn.CreateStruct(n_cpml_xn, nyp1, nz,0.0);
+        Psi_hyx_xn.CreateStruct(n_cpml_xn, nyp1, nz,0.0);
+        Psi_hzx_xn.CreateStruct(n_cpml_xn, ny, nzp1,0.0);
+        CPsi_eyx_xn.CreateStruct(n_cpml_xn, ny, nzp1,0.0);
+        CPsi_ezx_xn.CreateStruct(n_cpml_xn, nyp1, nz,0.0);
+        CPsi_hyx_xn.CreateStruct(n_cpml_xn, nyp1, nz,0.0);
+        CPsi_hzx_xn.CreateStruct(n_cpml_xn, ny, nzp1,0.0);
     }
     // xp arrays
     if (is_cpml_xp) {
-        cpml_a_ex_xp.CreateStruct(n_cpml_xp);
-        cpml_b_ex_xp.CreateStruct(n_cpml_xp);
-        cpml_a_mx_xp.CreateStruct(n_cpml_xp);
-        cpml_b_mx_xp.CreateStruct(n_cpml_xp);
-        Psi_eyx_xp.CreateStruct(n_cpml_xp, ny, nzp1);
-        Psi_ezx_xp.CreateStruct(n_cpml_xp, nyp1, nz);
-        Psi_hyx_xp.CreateStruct(n_cpml_xp, nyp1, nz);
-        Psi_hzx_xp.CreateStruct(n_cpml_xp, ny, nzp1);
-        CPsi_eyx_xp.CreateStruct(n_cpml_xp, ny, nzp1);
-        CPsi_ezx_xp.CreateStruct(n_cpml_xp, nyp1, nz);
-        CPsi_hyx_xp.CreateStruct(n_cpml_xp, nyp1, nz);
-        CPsi_hzx_xp.CreateStruct(n_cpml_xp, ny, nzp1);
+        cpml_a_ex_xp.CreateStruct(n_cpml_xp,0.0);
+        cpml_b_ex_xp.CreateStruct(n_cpml_xp,0.0);
+        cpml_a_mx_xp.CreateStruct(n_cpml_xp,0.0);
+        cpml_b_mx_xp.CreateStruct(n_cpml_xp,0.0);
+        Psi_eyx_xp.CreateStruct(n_cpml_xp, ny, nzp1,0.0);
+        Psi_ezx_xp.CreateStruct(n_cpml_xp, nyp1, nz,0.0);
+        Psi_hyx_xp.CreateStruct(n_cpml_xp, nyp1, nz,0.0);
+        Psi_hzx_xp.CreateStruct(n_cpml_xp, ny, nzp1,0.0);
+        CPsi_eyx_xp.CreateStruct(n_cpml_xp, ny, nzp1,0.0);
+        CPsi_ezx_xp.CreateStruct(n_cpml_xp, nyp1, nz,0.0);
+        CPsi_hyx_xp.CreateStruct(n_cpml_xp, nyp1, nz,0.0);
+        CPsi_hzx_xp.CreateStruct(n_cpml_xp, ny, nzp1,0.0);
     }
     // yn arrays
     if (is_cpml_yn) {
         // y direction
-        cpml_a_ey_yn.CreateStruct(n_cpml_yn);
-        cpml_b_ey_yn.CreateStruct(n_cpml_yn);
-        cpml_a_my_yn.CreateStruct(n_cpml_yn);
-        cpml_b_my_yn.CreateStruct(n_cpml_yn);
-        Psi_exy_yn.CreateStruct(nx, n_cpml_yn, nzp1);
-        Psi_ezy_yn.CreateStruct(nxp1, n_cpml_yn, nz);
-        Psi_hxy_yn.CreateStruct(nxp1, n_cpml_yn, nz);
-        Psi_hzy_yn.CreateStruct(nx, n_cpml_yn, nzp1);
-        CPsi_exy_yn.CreateStruct(nx, n_cpml_yn, nzp1);
-        CPsi_ezy_yn.CreateStruct(nxp1, n_cpml_yn, nz);
-        CPsi_hxy_yn.CreateStruct(nxp1, n_cpml_yn, nz);
-        CPsi_hzy_yn.CreateStruct(nx, n_cpml_yn, nzp1);
+        cpml_a_ey_yn.CreateStruct(n_cpml_yn,0.0);
+        cpml_b_ey_yn.CreateStruct(n_cpml_yn,0.0);
+        cpml_a_my_yn.CreateStruct(n_cpml_yn,0.0);
+        cpml_b_my_yn.CreateStruct(n_cpml_yn,0.0);
+        Psi_exy_yn.CreateStruct(nx, n_cpml_yn, nzp1,0.0);
+        Psi_ezy_yn.CreateStruct(nxp1, n_cpml_yn, nz,0.0);
+        Psi_hxy_yn.CreateStruct(nxp1, n_cpml_yn, nz,0.0);
+        Psi_hzy_yn.CreateStruct(nx, n_cpml_yn, nzp1,0.0);
+        CPsi_exy_yn.CreateStruct(nx, n_cpml_yn, nzp1,0.0);
+        CPsi_ezy_yn.CreateStruct(nxp1, n_cpml_yn, nz,0.0);
+        CPsi_hxy_yn.CreateStruct(nxp1, n_cpml_yn, nz,0.0);
+        CPsi_hzy_yn.CreateStruct(nx, n_cpml_yn, nzp1,0.0);
     }
     // yp arrays
     if (is_cpml_yp) {
-        cpml_a_ey_yp.CreateStruct(n_cpml_yp);
-        cpml_b_ey_yp.CreateStruct(n_cpml_yp);
-        cpml_a_my_yp.CreateStruct(n_cpml_yp);
-        cpml_b_my_yp.CreateStruct(n_cpml_yp);
-        Psi_exy_yp.CreateStruct(nx, n_cpml_yp, nzp1);
-        Psi_ezy_yp.CreateStruct(nxp1, n_cpml_yp, nz);
-        Psi_hxy_yp.CreateStruct(nxp1, n_cpml_yp, nz);
-        Psi_hzy_yp.CreateStruct(nx, n_cpml_yp, nzp1);
-        CPsi_exy_yp.CreateStruct(nx, n_cpml_yp, nzp1);
-        CPsi_ezy_yp.CreateStruct(nxp1, n_cpml_yp, nz);
-        CPsi_hxy_yp.CreateStruct(nxp1, n_cpml_yp, nz);
-        CPsi_hzy_yp.CreateStruct(nx, n_cpml_yp, nzp1);
+        cpml_a_ey_yp.CreateStruct(n_cpml_yp,0.0);
+        cpml_b_ey_yp.CreateStruct(n_cpml_yp,0.0);
+        cpml_a_my_yp.CreateStruct(n_cpml_yp,0.0);
+        cpml_b_my_yp.CreateStruct(n_cpml_yp,0.0);
+        Psi_exy_yp.CreateStruct(nx, n_cpml_yp, nzp1,0.0);
+        Psi_ezy_yp.CreateStruct(nxp1, n_cpml_yp, nz,0.0);
+        Psi_hxy_yp.CreateStruct(nxp1, n_cpml_yp, nz,0.0);
+        Psi_hzy_yp.CreateStruct(nx, n_cpml_yp, nzp1,0.0);
+        CPsi_exy_yp.CreateStruct(nx, n_cpml_yp, nzp1,0.0);
+        CPsi_ezy_yp.CreateStruct(nxp1, n_cpml_yp, nz,0.0);
+        CPsi_hxy_yp.CreateStruct(nxp1, n_cpml_yp, nz,0.0);
+        CPsi_hzy_yp.CreateStruct(nx, n_cpml_yp, nzp1,0.0);
     }
     // zn arrays
     if (is_cpml_zn) {
         // z direction
-        cpml_a_ez_zn.CreateStruct(n_cpml_zn);
-        cpml_b_ez_zn.CreateStruct(n_cpml_zn);
-        cpml_a_mz_zn.CreateStruct(n_cpml_zn);
-        cpml_b_mz_zn.CreateStruct(n_cpml_zn);
-        Psi_exz_zn.CreateStruct(nx, nyp1, n_cpml_zn);
-        Psi_eyz_zn.CreateStruct(nxp1, ny, n_cpml_zn);
-        Psi_hxz_zn.CreateStruct(nxp1, ny, n_cpml_zn);
-        Psi_hyz_zn.CreateStruct(nx, nyp1, n_cpml_zn);
-        CPsi_exz_zn.CreateStruct(nx, nyp1, n_cpml_zn);
-        CPsi_eyz_zn.CreateStruct(nxp1, ny, n_cpml_zn);
-        CPsi_hxz_zn.CreateStruct(nxp1, ny, n_cpml_zn);
-        CPsi_hyz_zn.CreateStruct(nx, nyp1, n_cpml_zn);
+        cpml_a_ez_zn.CreateStruct(n_cpml_zn,0.0);
+        cpml_b_ez_zn.CreateStruct(n_cpml_zn,0.0);
+        cpml_a_mz_zn.CreateStruct(n_cpml_zn,0.0);
+        cpml_b_mz_zn.CreateStruct(n_cpml_zn,0.0);
+        Psi_exz_zn.CreateStruct(nx, nyp1, n_cpml_zn,0.0);
+        Psi_eyz_zn.CreateStruct(nxp1, ny, n_cpml_zn,0.0);
+        Psi_hxz_zn.CreateStruct(nxp1, ny, n_cpml_zn,0.0);
+        Psi_hyz_zn.CreateStruct(nx, nyp1, n_cpml_zn,0.0);
+        CPsi_exz_zn.CreateStruct(nx, nyp1, n_cpml_zn,0.0);
+        CPsi_eyz_zn.CreateStruct(nxp1, ny, n_cpml_zn,0.0);
+        CPsi_hxz_zn.CreateStruct(nxp1, ny, n_cpml_zn,0.0);
+        CPsi_hyz_zn.CreateStruct(nx, nyp1, n_cpml_zn,0.0);
     }
     // zp arrays
     if (is_cpml_zp) {
-        cpml_a_ez_zp.CreateStruct(n_cpml_zp);
-        cpml_b_ez_zp.CreateStruct(n_cpml_zp);
-        cpml_a_mz_zp.CreateStruct(n_cpml_zp);
-        cpml_b_mz_zp.CreateStruct(n_cpml_zp);
-        Psi_exz_zp.CreateStruct(nx, nyp1, n_cpml_zp);
-        Psi_eyz_zp.CreateStruct(nxp1, ny, n_cpml_zp);
-        Psi_hxz_zp.CreateStruct(nxp1, ny, n_cpml_zp);
-        Psi_hyz_zp.CreateStruct(nx, nyp1, n_cpml_zp);
-        CPsi_exz_zp.CreateStruct(nx, nyp1, n_cpml_zp);
-        CPsi_eyz_zp.CreateStruct(nxp1, ny, n_cpml_zp);
-        CPsi_hxz_zp.CreateStruct(nxp1, ny, n_cpml_zp);
-        CPsi_hyz_zp.CreateStruct(nx, nyp1, n_cpml_zp);
+        cpml_a_ez_zp.CreateStruct(n_cpml_zp,0.0);
+        cpml_b_ez_zp.CreateStruct(n_cpml_zp,0.0);
+        cpml_a_mz_zp.CreateStruct(n_cpml_zp,0.0);
+        cpml_b_mz_zp.CreateStruct(n_cpml_zp,0.0);
+        Psi_exz_zp.CreateStruct(nx, nyp1, n_cpml_zp,0.0);
+        Psi_eyz_zp.CreateStruct(nxp1, ny, n_cpml_zp,0.0);
+        Psi_hxz_zp.CreateStruct(nxp1, ny, n_cpml_zp,0.0);
+        Psi_hyz_zp.CreateStruct(nx, nyp1, n_cpml_zp,0.0);
+        CPsi_exz_zp.CreateStruct(nx, nyp1, n_cpml_zp,0.0);
+        CPsi_eyz_zp.CreateStruct(nxp1, ny, n_cpml_zp,0.0);
+        CPsi_hxz_zp.CreateStruct(nxp1, ny, n_cpml_zp,0.0);
+        CPsi_hyz_zp.CreateStruct(nx, nyp1, n_cpml_zp,0.0);
     }
 }
 

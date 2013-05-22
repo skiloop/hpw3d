@@ -686,12 +686,12 @@ void fdtd::setUp() {
     int pmlOrder = 4;
 
     //pml.initParmeters(dx, dy, dz, m, ma);
-//    pml.setCPMLRegion(pmlWidth);
-//    pml.createCPMLArrays(Imax, Jmax, Kmax);
-//    pml.initCoefficientArrays(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, dy, dz,
-//            Ceyhz, Cezhy, Chyez, Chzey,
-//            Cexhz, Cezhx, Chxez, Chzex,
-//            Ceyhx, Cexhy, Chyex, Chxey);
+    pml.setCPMLRegion(pmlWidth);
+    pml.createCPMLArrays(Imax, Jmax, Kmax);
+    pml.initCoefficientArrays(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, dy, dz,
+            Ceyhz, Cezhy, Chyez, Chzey,
+            Cexhz, Cezhx, Chxez, Chzex,
+            Ceyhx, Cexhy, Chyex, Chxey);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients
@@ -734,9 +734,9 @@ void fdtd::compute() {
         cout << ") :  " << Ez.p[ic][jc][kc] << endl;
 
         updateMagneitcFields();
-//        pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
+        pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
         updateElectricAndVeloityFields();
-//        pml.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
+        pml.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         //====================================
         // update Source
         //====================================
