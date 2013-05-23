@@ -1,7 +1,7 @@
 
 #include<iostream>
-#ifdef _OPENMP
 #include <cstdlib>
+#ifdef _OPENMP
 #include <omp.h>
 int thread_count = 1;
 #endif
