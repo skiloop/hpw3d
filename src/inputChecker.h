@@ -27,11 +27,11 @@ public:
     int yeeCellSizeZ;
     int yeeCellSize;
     int fluidGridSize;
-    float xZoneLen;
-    float yZoneLen;
-    float zZoneLen;
-    float tZoneLen;
-    float zoneLen;
+    double xZoneLen;
+    double yZoneLen;
+    double zZoneLen;
+    double tZoneLen;
+    double zoneLen;
     double frequency;
     double amptidute;
     //parameter for sine pulse

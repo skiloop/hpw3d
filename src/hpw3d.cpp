@@ -36,13 +36,13 @@ int main(int argc, char*argv[]) {
 
 //    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
     MyDataF dt = dx/2/C;
-    xlen = T * checker.xZoneLen * C / dx;
-    ylen = T * checker.yZoneLen * C / dy;
-    zlen = T * checker.zZoneLen * C / dz;
+    xlen = (unsigned)(T * checker.xZoneLen * C / dx);
+    ylen = (unsigned)(T * checker.yZoneLen * C / dy);
+    zlen = (unsigned)(T * checker.zZoneLen * C / dz);
     if (checker.waveType == inputChecker::SINE) {
-        tlen = T * checker.tZoneLen / dt;
+        tlen = (unsigned)(T * checker.tZoneLen / dt);
     } else {
-        tlen = tw * checker.tZoneLen / dt;
+        tlen = (unsigned)(tw * checker.tZoneLen / dt);
     }
 
     if (tlen < minTimeLen) {
