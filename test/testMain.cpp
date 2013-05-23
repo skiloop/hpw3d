@@ -2039,12 +2039,12 @@ void compute() {
         i = 25;
         j = 63;
         k = 12;
-//        source = amp * -2.0 * ((n * dt - tO) / tw / tw)
-//                * exp(-pow(((n * dt - tO) / tw), 2)); //Differentiated Gaussian pulse
-        if(n<510){
-            source = amp*sin((n*dt-tO)*2*omega*pi);
-        }else{
-            source=0.0;
+        //        source = amp * -2.0 * ((n * dt - tO) / tw / tw)
+        //                * exp(-pow(((n * dt - tO) / tw), 2)); //Differentiated Gaussian pulse
+        if (n < 510) {
+            source = amp * sin((n * dt - tO)*2 * omega * pi);
+        } else {
+            source = 0.0;
         }
 
         Ez[i][j][k] = Ez[i][j][k] + CB[ID3[i][j][k]] * source / dx / dy / dz;
@@ -2169,8 +2169,8 @@ void writeField(int iteration) {
 
         for (j = 0; j < Jmax - 1; j++) {
             // |E|
-            fprintf(ptr, "%f\t", sqrt(pow(Ex[i][j][ksource+5], 2) +
-                    pow(Ey[i][j][ksource+5], 2) + pow(Ez[i][j][ksource+5], 2)));
+            fprintf(ptr, "%f\t", sqrt(pow(Ex[i][j][ksource + 5], 2) +
+                    pow(Ey[i][j][ksource + 5], 2) + pow(Ez[i][j][ksource + 5], 2)));
 
             //	fprintf(ptr, "%f\t", Ex[i][j][ksource]);//Ex
             //	fprintf(ptr, "%f\t", Ey[i][j][ksource]);//Ey

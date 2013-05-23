@@ -12,16 +12,52 @@
 
 class inputChecker {
 public:
+    
+    /**
+     * constructor for inputChecker
+     */
     inputChecker();
+    
+    /**
+     * copy constructor
+     * @param orig
+     */
     inputChecker(const inputChecker& orig);
+    
+    /**
+     * deconstructor
+     */
     virtual ~inputChecker();
+    
+    /**
+     * print help for program
+     * @param argv
+     */
     void help(char *argv);
+    
+    /**
+     * print parramters from input
+     */
     void print();
+    
+    /**
+     * parse input variables
+     * @param argc
+     * @param argv
+     */
     void parseInput(int argc, char *argv[]);
+    
 public:
+    // wave form type
     int waveType;
+    
+    // thread count for openmp
     int threadCount;
+    
+    // pml width
     int pmlSize;
+    
+    // 
     int yeeCellSizeX;
     int yeeCellSizeY;
     int yeeCellSizeZ;

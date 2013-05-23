@@ -30,12 +30,32 @@ public:
 
     //Function prototype definitions
     void initialize(); //Memory initialization
+    
+    /**
+     * 
+     * @param t_0
+     * @param omega_
+     * @param tUp
+     * @param tDown
+     * @param amptidute
+     */
     void intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amptidute);
     void setUp(); //Coefficients, parameters etc will get computed
     void compute(); //E & H Field update equation
     void StartUp();
+    
+    /**
+     * 
+     * @param omega_
+     */
     void SetSineSource(MyDataF omega_);
+    
+    /**
+     * 
+     * @param sourceType
+     */
     void setSourceType(int sourceType);
+    
 #ifdef MATLAB_SIMULATION
     int initMatlabSimulation();
     void doMatlabSimulation();
