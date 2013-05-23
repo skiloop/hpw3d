@@ -36,7 +36,7 @@ public:
      * @param tw
      * @return 
      */
-    static MyDataF GaussianPulse(MyDataF t,MyDataF tw);
+    static MyDataF GaussianPulse(MyDataF t, MyDataF tw);
 private:
 
 };

@@ -160,7 +160,7 @@ private:
 
     // update coefficients
     //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
-    data3d<MyDataF> Cezvz, Ceyvy, Cexvx;    
+    data3d<MyDataF> Cezvz, Ceyvy, Cexvx;
     data3d<MyDataF> Cvxex_guassian, Cvyey_guassian, Cvzez_guassian;
     MyDataF Cvxex, Cvyey, Cvzez;
 

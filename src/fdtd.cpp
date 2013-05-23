@@ -680,7 +680,7 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MyDataF sigmaRatio = 0.75/sqrt(mu_0/eps_0/epsR);
+    MyDataF sigmaRatio = 0.75 / sqrt(mu_0 / eps_0 / epsR);
     MyDataF kappaMax = 10;
     MyDataF alphaMax = 0.025;
     int pmlOrder = 4;
@@ -984,9 +984,9 @@ void fdtd::updateHx() {
     for (k = 0; k < Kmax; ++k) {
         for (i = 0; i < Imax + 1; ++i) {
             for (j = 0; j < Jmax; ++j) {
-                Hx.p[i][j][k] = Chxh.p[i][j][k] * Hx.p[i][j][k] + 
-					Chxez.p[i][j][k]*(Ez.p[i][j + 1][k] - Ez.p[i][j][k]) +
-					Chxey.p[i][j][k]*(Ey.p[i][j][k + 1] - Ey.p[i][j][k]);
+                Hx.p[i][j][k] = Chxh.p[i][j][k] * Hx.p[i][j][k] +
+                        Chxez.p[i][j][k]*(Ez.p[i][j + 1][k] - Ez.p[i][j][k]) +
+                        Chxey.p[i][j][k]*(Ey.p[i][j][k + 1] - Ey.p[i][j][k]);
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
                 Hx.nanOperator(i, j, k);
@@ -1005,9 +1005,9 @@ void fdtd::updateHy() {
     for (k = 0; k < Kmax; ++k) {
         for (i = 0; i < Imax; ++i) {
             for (j = 0; j < Jmax + 1; ++j) {
-                Hy.p[i][j][k] = Chyh.p[i][j][k] * Hy.p[i][j][k] + 
-					Chyez.p[i][j][k]*(Ez.p[i + 1][j][k] - Ez.p[i][j][k]) +
-					Chyex.p[i][j][k]*(Ex.p[i][j][k + 1] - Ex.p[i][j][k]);
+                Hy.p[i][j][k] = Chyh.p[i][j][k] * Hy.p[i][j][k] +
+                        Chyez.p[i][j][k]*(Ez.p[i + 1][j][k] - Ez.p[i][j][k]) +
+                        Chyex.p[i][j][k]*(Ex.p[i][j][k + 1] - Ex.p[i][j][k]);
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
                 Hy.nanOperator(i, j, k);
@@ -1030,8 +1030,8 @@ void fdtd::updateHz() {
         for (i = 0; i < Imax; ++i) {
             for (j = 0; j < Jmax; ++j) {
                 Hz.p[i][j][k] = Chzh.p[i][j][k] * Hz.p[i][j][k] +
-					(Ey.p[i + 1][j][k] - Ey.p[i][j][k]) * Chzey.p[i][j][k] +
-					(Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * Chzex.p[i][j][k];
+                        (Ey.p[i + 1][j][k] - Ey.p[i][j][k]) * Chzey.p[i][j][k] +
+                        (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * Chzex.p[i][j][k];
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
                 Hz.nanOperator(i, j, k);
@@ -1150,9 +1150,9 @@ void fdtd::updateEz() {
                         (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]) +
                         Cezvz.p[i][j][k] * Vz.p[i][j][k];
 #else
-                Ez.p[i][j][k] = Ceze.p[i][j][k] * Ez.p[i][j][k] + 
-					(Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k]+
-					(Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
+                Ez.p[i][j][k] = Ceze.p[i][j][k] * Ez.p[i][j][k] +
+                        (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k]+
+                        (Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
 #endif
 
 #ifdef WITH_DENSITY

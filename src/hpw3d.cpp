@@ -34,15 +34,15 @@ int main(int argc, char*argv[]) {
     unsigned xlen, ylen, zlen, tlen;
     unsigned minTimeLen = 500;
 
-//    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
-    MyDataF dt = dx/2/C;
-    xlen = (unsigned)(T * checker.xZoneLen * C / dx);
-    ylen = (unsigned)(T * checker.yZoneLen * C / dy);
-    zlen = (unsigned)(T * checker.zZoneLen * C / dz);
+    //    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
+    MyDataF dt = dx / 2 / C;
+    xlen = (unsigned) (T * checker.xZoneLen * C / dx);
+    ylen = (unsigned) (T * checker.yZoneLen * C / dy);
+    zlen = (unsigned) (T * checker.zZoneLen * C / dz);
     if (checker.waveType == inputChecker::SINE) {
-        tlen = (unsigned)(T * checker.tZoneLen / dt);
+        tlen = (unsigned) (T * checker.tZoneLen / dt);
     } else {
-        tlen = (unsigned)(tw * checker.tZoneLen / dt);
+        tlen = (unsigned) (tw * checker.tZoneLen / dt);
     }
 
     if (tlen < minTimeLen) {
@@ -72,9 +72,9 @@ int main(int argc, char*argv[]) {
         case DERIVE_GAUSSIAN_TYPE:break;
         case ZERO_TYPE:break;
         case SINE_PULSE_TYPE:
-            checker.t0 = 0.01*T;
+            checker.t0 = 0.01 * T;
             checker.omega = omega;
-            checker.tUp = 1.01*T;
+            checker.tUp = 1.01 * T;
             checker.tDown = 0;
             hpw.intSourceSinePulse(checker.t0, checker.omega, checker.tUp, checker.tDown, checker.amptidute);
             break;

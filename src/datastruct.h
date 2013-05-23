@@ -83,9 +83,11 @@ public:
     void CreateStruct(unsigned num) {
         createArray(num);
     };
-    void CreateStruct(unsigned num,T val) {
-        createArray(num,val);
+
+    void CreateStruct(unsigned num, T val) {
+        createArray(num, val);
     };
+
     void initArray(T initval = 0) {
         if (p == NULL)return;
         for (unsigned i = 0; i < n; i++)p[i] = initval;
@@ -403,7 +405,7 @@ void data3d<DataType>::PrintData() {
     }
 }
 
-template<class DataType>	
+template<class DataType>
 bool data3d<DataType>::CheckStruct() {
     if (ny <= 0 || nx <= 0 || nz <= 0 || p == NULL) {
         return false;
@@ -737,10 +739,11 @@ void data3d<DataType>::InitPlot() {
 }
 
 #if DEBUG
+
 template<class DataType>
-void data3d<DataType>::nanOperator(unsigned i,unsigned j,unsigned k){
-    if(isnan(p[i][j][k])){
-        cout<<"nan var found for "<< getName()<<" at:("<<i<<","<<j<<","<<k<<")"<<endl;
+void data3d<DataType>::nanOperator(unsigned i, unsigned j, unsigned k) {
+    if (isnan(p[i][j][k])) {
+        cout << "nan var found for " << getName() << " at:(" << i << "," << j << "," << k << ")" << endl;
     }
 }
 #endif
