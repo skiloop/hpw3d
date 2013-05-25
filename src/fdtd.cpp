@@ -762,8 +762,11 @@ void fdtd::compute() {
             Ez.save(isp + 10, 1, n, 1);
             Ez.save(jsp + 10, 1, n, 2);
             Ez.save(ksp + 10, 1, n, 3);
+            Ex.save(ksp+10,1,n,3);
+            Ey.save(ksp+10,1,n,3);
             pml.Psi_exz_zp.setName("psi");
             pml.Psi_exz_zp.save(0, 1, n, 3);
+            pml.Psi_exz_zp.save(4, 1, n, 3);
 #ifdef WITH_DENSITY
             Ne.save(Ne.nz / 2, neGrid, n, 2);
 #endif
