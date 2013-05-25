@@ -1,6 +1,6 @@
 /*
 <one line to give the program's name and a brief idea of what it does.>
-Copyright (C) 2011  <copyright holder> <email>
+Copyright (C) 2011  skiloop <skiloop@126.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #undef printf
 #endif
 
-#endif// end MATLAB_SIMULATION
+#endif // end MATLAB_SIMULATION
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
@@ -42,20 +42,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 //#include "microdef.h"
 #define MAX_ARRAY_SIZE 300000
-//#include "common.h"
+#include "common.h"
 
 template<typename T>
 class data1d {
 public:
 
+    /**
+     * constructor
+     * @param num array length
+     * @param val initial variable
+     */
     data1d(unsigned num, T val = 0) : p(NULL), n(num) {
         createArray(num);
         initArray(val);
     };
 
+    /**
+     * default donstructor
+     * set @c p NULL
+     * array length zero
+     */
     data1d() : p(NULL), n(0) {
     };
 
+    /**
+     * copy constructor
+     * @param orig
+     */
     data1d(const data1d& orig) {
         if (orig.p != NULL && orig.n > 0) {
             p = new T[orig.n];
@@ -67,12 +81,19 @@ public:
         }
     };
 
+    /**
+     * deconstructor
+     */
     ~data1d() {
         if (p != NULL)delete []p;
         p = NULL;
         n = 0;
     };
 
+    /**
+     * create array with length @c num
+     * @param num
+     */
     void createArray(unsigned num) {
         if (num > 0) {
             p = new T[num];
@@ -80,24 +101,53 @@ public:
         }
     };
 
+    /**
+     * create array with length @c num
+     * @param num
+     */
     void CreateStruct(unsigned num) {
         createArray(num);
     };
 
+    /**
+     * create array with length @c num and initial array with @c val
+     * @param num
+     * @param val
+     */
+    void CreateStruct(unsigned num, T val) {
+        createArray(num, val);
+    };
+
+    /**
+     * initial array to @c initval
+     * @param initval
+     */
     void initArray(T initval = 0) {
         if (p == NULL)return;
         for (unsigned i = 0; i < n; i++)p[i] = initval;
     };
 
+    /**
+     * reset array to zero
+     */
     void resetArray() {
         initArray();
     };
 
+    /**
+     * create array with length @c num and initial array with @c val
+     * @param num
+     * @param val
+     */
     void createArray(unsigned num, T val) {
         createArray(num);
         initArray(val);
     };
 
+    /**
+     * save array with file name @c name
+     * @param name
+     */
     void save(const string name) {
         ofstream out;
         out.open(name.c_str());
@@ -136,7 +186,7 @@ private:
     static bool isMatlabEngineStarted;
 #endif
 private:
-    std::string name;
+    std::string name; // name for this to save file
 
 private:
     int Number;
@@ -179,14 +229,32 @@ public:
 
     };
 
+    /**
+     * default constructor set
+     *  @c nx = 0
+     *  @c ny = 0
+     *  @c nz = 0
+     *  @c p=NULL
+     */
     data3d() : nx(0), ny(0), nz(0), p(NULL) {
     };
+    
+    /**
+     * copy constructor
+     * @param obj
+     */
     data3d(const data3d< DataType > &obj);
+    
+    /**
+     * deconstructor
+     */
     ~data3d();
+    
     /**
      * print p in struct data3d
      */
     void PrintData();
+    
     /**
      * free space created for data3d @c mst
      */
@@ -208,6 +276,7 @@ public:
      * Create Space for struct data3d and initialize its @c nx and @c ny
      */
     int CreateStruct(unsigned nnx, unsigned nny, unsigned nnz);
+    
     /**
      * Create Space for struct data3d and initialize its @c nx and @c ny
      */
@@ -226,14 +295,73 @@ public:
      */
     void CaptData(const unsigned num, unsigned leap = 0);
 
+    /**
+     * 
+     * @param other
+     */
     void operator=(data3d< DataType > const &other);
+    
+    /**
+     * initial array to @c initVal
+     * @param initVal
+     */
     void InitStructData(DataType initVal = 0);
+    
+    /**
+     * save array 
+     * @param leap
+     * @param step
+     */
     void SaveData(unsigned leap, unsigned step);
+    
+    /**
+     * 
+     * @param k
+     * @param leap
+     * @param step
+     */
     void SaveData(unsigned k, unsigned leap, unsigned step);
+    
+    /**
+     * 
+     * @param i
+     * @param leap
+     * @param step
+     */
     void SaveXPlain(unsigned i, unsigned leap, unsigned step);
+    
+    /**
+     * 
+     * @param j
+     * @param leap
+     * @param step
+     */
     void SaveYPlain(unsigned j, unsigned leap, unsigned step);
+    
+    /**
+     * 
+     * @param k
+     * @param leap
+     * @param step
+     */
     void SaveZPlain(unsigned k, unsigned leap, unsigned step);
+    
+    /**
+     * 
+     * @param k
+     * @param leap
+     * @param step
+     * @param type
+     */
     void SaveData(unsigned k, unsigned leap, unsigned step, int type);
+    
+    /**
+     * 
+     * @param k
+     * @param leap
+     * @param step
+     * @param type
+     */
     void save(unsigned k, unsigned leap, unsigned step, int type);
 
     /**
@@ -242,22 +370,31 @@ public:
      * @return
      */
     int CreateStruct(const data3d< DataType > &stru);
+    
     /**
      * @brief Create a data3d with the same size as @c stru and initial all var to @c initVal;
      * @param stru the source data3d to be copied.
      */
     int CreateStruct(const data3d< DataType > &stru, DataType initVal);
 
-    //set name
-
+    /**
+     * set @name to @sn
+     * @param sn
+     */
     void setName(const std::string &sn) {
         name = sn;
     }
 
+    /**
+     * get name 
+     * @return @c name
+     */
     string getName() {
         return name;
     }
+    
 public:
+    
     void ClearSim();
     void PlotArrays();
     void InitPlot();
@@ -270,17 +407,27 @@ public:
 
 };
 
-
 template<class DataType> unsigned int data3d<DataType>::cnt = 0;
 template<class DataType> string data3d<DataType>::tail = ".dat";
+
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <string>
+
+using namespace std;
 
 #ifdef MATLAB_SIMULATION
 template<class DataType> Engine* data3d<DataType>::ep = NULL;
 template<class DataType> bool data3d<DataType>::isMatlabEngineStarted = false;
 #endif
 
-template<class DataType>
-data3d<DataType>::data3d(const data3d< DataType >& obj) : p(NULL) {
+template<class DataType> data3d<DataType>::data3d(const data3d< DataType >& obj) : p(NULL) {
     CreateStruct(obj);
     try {
         unsigned i, j;
@@ -725,10 +872,11 @@ void data3d<DataType>::InitPlot() {
 }
 
 #if DEBUG
+
 template<class DataType>
-void data3d<DataType>::nanOperator(unsigned i,unsigned j,unsigned k){
-    if(isnan(p[i][j][k])){
-        cout<<"nan var found for "<< getName()<<" at:("<<i<<","<<j<<","<<k<<")"<<endl;
+void data3d<DataType>::nanOperator(unsigned i, unsigned j, unsigned k) {
+    if (isnan(p[i][j][k])) {
+        cout << "nan var found for " << getName() << " at:(" << i << "," << j << "," << k << ")" << endl;
     }
 }
 #endif
