@@ -716,6 +716,11 @@ void fdtd::compute() {
     //    kc = ksp + 2;
     ic = isp; // + (Imax - isp) / 2;
     jc = jsp + (Jmax - jsp) / 2;
+#if DEBUG>=3
+    if (jc + 20 < Jmax) {
+        jc = jsp + 20;
+    }
+#endif
     kc = ksp;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -731,7 +736,7 @@ void fdtd::compute() {
     for (n = 1; n <= totalTimeSteps; ++n) {
 
         cout << "Ez at time step " << n << " at (" << ic << ", " << jc << ", " << kc;
-        cout << ") :  " << Ez.p[ic][jc][kc] << endl;
+        cout << ") :  " << Ez.p[ic][jc][kc] << '\t' << Ez.p[isp][jsp][ksp] << endl;
 
         updateMagneitcFields();
         pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
@@ -754,9 +759,11 @@ void fdtd::compute() {
 #endif
         if ((n % save_modulus) == 0) {
             writeField(n);
-            Ez.save(isp, 1, n, 1);
-            Ez.save(jsp, 1, n, 2);
-            Ez.save(ksp, 1, n, 3);
+            Ez.save(ic, 1, n, 1);
+            Ez.save(jc, 1, n, 2);
+            Ez.save(kc, 1, n, 3);   
+            pml.Psi_exz_zp.setName("psi");
+            pml.Psi_exz_zp.save(0,1,n,3);
 #ifdef WITH_DENSITY
             Ne.save(Ne.nz / 2, neGrid, n, 2);
 #endif
@@ -889,7 +896,7 @@ void fdtd::writeField(unsigned iteration) {
     ofstream out;
     stringstream ss;
     // form file name
-    ss << "E_Field_" << iteration << ".dat";
+    ss << "E_Field_ks_" << iteration << ".dat";
     string fileBaseName(ss.str());
     // open file
     out.open(fileBaseName.c_str());
@@ -899,6 +906,21 @@ void fdtd::writeField(unsigned iteration) {
             for (j = 0; j < Jmax - 1; j++) { // |E|
                 out << sqrt(pow(Ex.p[i][j][ksource], 2) +
                         pow(Ey.p[i][j][ksource], 2) + pow(Ez.p[i][j][ksource], 2)) << '\t';
+            }
+            out << endl;
+        }
+        out.close();
+    }
+        ss << "E_Field_j_" << iteration << ".dat";
+    fileBaseName=ss.str();
+    // open file
+    out.open(fileBaseName.c_str());
+    if (out.is_open()) {
+
+        for (i = 0; i < Imax - 1; i++) {
+            for (j = 0; j < Jmax - 1; j++) { // |E|
+                out << sqrt(pow(Ex.p[i][ksource+10][j], 2) +
+                        pow(Ey.p[i][ksource+10][j], 2) + pow(Ez.p[i][ksource+10][j], 2)) << '\t';
             }
             out << endl;
         }

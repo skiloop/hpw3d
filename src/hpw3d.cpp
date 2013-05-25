@@ -32,7 +32,7 @@ int main(int argc, char*argv[]) {
     thread_count = checker.threadCount;
 #endif
     unsigned xlen, ylen, zlen, tlen;
-    unsigned minTimeLen = 500;
+    unsigned minTimeLen = 2000;
 
     //    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
     MyDataF dt = dx / 2 / C;

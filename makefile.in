@@ -36,6 +36,6 @@ MATINC=-I$(MATPATH)/extern/include
 #LIB+=$(MATLIB)
 
 # enable OpenMP
-CXXFLAGS+=-fopenmp
-LIB+=-fopenmp
+#CXXFLAGS+=-fopenmp
+#LIB+=-fopenmp
 
