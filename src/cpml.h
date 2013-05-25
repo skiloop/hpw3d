@@ -133,7 +133,7 @@ private:
     data3d<type1> Psi_hxz_zn;
     data3d<type1> Psi_hyz_zn;
     // zp arrays
-//    data3d<type1> Psi_exz_zp;
+    //    data3d<type1> Psi_exz_zp;
     data3d<type1> Psi_eyz_zp;
     data3d<type1> Psi_hxz_zp;
     data3d<type1> Psi_hyz_zp;
@@ -726,10 +726,10 @@ void cpml<type1>::initCoefficientArraysXN(short pmlOrder, type1 sigmaRatio, type
         type1 sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dx);
 
         for (unsigned i = 0, iplus = 1; i < n_cpml_xn; i++, iplus++) {
-//            type1 rho_e = (n_cpml_xn - i - 0.75) / n_cpml_xn;
-            type1 rho_e = (n_cpml_xn - i) / n_cpml_xn;
-//            type1 rho_m = (n_cpml_xn - i - 0.25) / n_cpml_xn;
-            type1 rho_m = (n_cpml_xn - i) / n_cpml_xn;
+            //            type1 rho_e = (n_cpml_xn - i - 0.75) /(type1)n_cpml_xn;
+            type1 rho_e = (n_cpml_xn - i) /(type1)n_cpml_xn;
+            //            type1 rho_m = (n_cpml_xn - i - 0.25) /(type1)n_cpml_xn;
+            type1 rho_m = (n_cpml_xn - i) /(type1)n_cpml_xn;
             type1 rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             type1 rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             type1 sigma_pex = sigmaMax*rho_e_pmlOrder;
@@ -740,8 +740,16 @@ void cpml<type1>::initCoefficientArraysXN(short pmlOrder, type1 sigmaRatio, type
             type1 alpha_mx = alphaMax * fabs(rho_m);
             cpml_b_ex_xn.p[i] = exp((-dt / eps_0) * (sigma_pex / kappa_ex + alpha_ex));
             cpml_b_mx_xn.p[i] = exp((-dt / eps_0) * (sigma_pmx / kappa_mx + alpha_mx));
-            cpml_a_ex_xn.p[i] = 1 / dx * (cpml_b_ex_xn.p[i] - 1.0) * sigma_pex / (kappa_ex * (sigma_pex + kappa_ex * alpha_ex));
-            cpml_a_mx_xn.p[i] = 1 / dx * (cpml_b_mx_xn.p[i] - 1.0) * sigma_pmx / (kappa_mx * (sigma_pmx + kappa_mx * alpha_mx));
+            if (rho_e!= 0) {
+                cpml_a_ex_xn.p[i] = 1 / dx * (cpml_b_ex_xn.p[i] - 1.0) * sigma_pex / (kappa_ex * (sigma_pex + kappa_ex * alpha_ex));
+            } else {
+                cpml_a_ex_xn.p[i] = 0;
+            }
+            if (rho_m!= 0) {
+                cpml_a_mx_xn.p[i] = 1 / dx * (cpml_b_mx_xn.p[i] - 1.0) * sigma_pmx / (kappa_mx * (sigma_pmx + kappa_mx * alpha_mx));
+            } else {
+                cpml_a_mx_xn.p[i] = 0;
+            }
             for (unsigned j = 0; j < Psi_eyx_xn.ny; j++) {
                 for (unsigned k = 0; k < Psi_eyx_xn.nz; k++) {
                     CPsi_eyx_xn.p[i][j][k] = Ceyhz.p[iplus][j][k] * dx;
@@ -778,10 +786,10 @@ void cpml<type1>::initCoefficientArraysXP(short pmlOrder, type1 sigmaRatio, type
         unsigned iex = Ceyhz.nx - n_cpml_xp - 1;
         unsigned ihx = Chyez.nx - n_cpml_xp;
         for (unsigned i = 0; i < n_cpml_xp; i++) {
-//            type1 rho_e = (i + 0.25) / n_cpml_xp;
-            type1 rho_e = (i) / n_cpml_xp;
-//            type1 rho_m = (i + 0.75) / n_cpml_xp;
-            type1 rho_m = (i) / n_cpml_xp;
+            //            type1 rho_e = (i + 0.25) /(type1)n_cpml_xp;
+            type1 rho_e = (i) /(type1)n_cpml_xp;
+            //            type1 rho_m = (i + 0.75) /(type1)n_cpml_xp;
+            type1 rho_m = (i) /(type1)n_cpml_xp;
             type1 rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             type1 rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             type1 sigma_pex = sigmaMax*rho_e_pmlOrder;
@@ -792,8 +800,16 @@ void cpml<type1>::initCoefficientArraysXP(short pmlOrder, type1 sigmaRatio, type
             type1 alpha_mx = alphaMax * fabs(rho_m);
             cpml_b_ex_xp.p[i] = exp((-dt / eps_0) * (sigma_pex / kappa_ex + alpha_ex));
             cpml_b_mx_xp.p[i] = exp((-dt / eps_0) * (sigma_pmx / kappa_mx + alpha_mx));
-            cpml_a_ex_xp.p[i] = 1 / dx * (cpml_b_ex_xp.p[i] - 1.0) * sigma_pex / (kappa_ex * (sigma_pex + kappa_ex * alpha_ex));
-            cpml_a_mx_xp.p[i] = 1 / dx * (cpml_b_mx_xp.p[i] - 1.0) * sigma_pmx / (kappa_mx * (sigma_pmx + kappa_mx * alpha_mx));
+            if (rho_e!= 0) {
+                cpml_a_ex_xp.p[i] = 1 / dx * (cpml_b_ex_xp.p[i] - 1.0) * sigma_pex / (kappa_ex * (sigma_pex + kappa_ex * alpha_ex));
+            } else {
+                cpml_a_ex_xp.p[i] = 0;
+            }
+            if (rho_m!= 0) {
+                cpml_a_mx_xp.p[i] = 1 / dx * (cpml_b_mx_xp.p[i] - 1.0) * sigma_pmx / (kappa_mx * (sigma_pmx + kappa_mx * alpha_mx));
+            } else {
+                cpml_a_mx_xp.p[i] = 0;
+            }
 
             for (unsigned j = 0; j < Psi_eyx_xp.ny; j++) {
                 for (unsigned k = 0; k < Psi_eyx_xp.nz; k++) {
@@ -831,10 +847,10 @@ void cpml<type1>::initCoefficientArraysYN(short pmlOrder, type1 sigmaRatio, type
     if (is_cpml_yn) {
         type1 sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dy);
         for (unsigned j = 0, jplus = 1; j < n_cpml_yn; j++, jplus++) {
-//            type1 rho_e = (n_cpml_yn - j - 0.75) / n_cpml_yn;
-            type1 rho_e = (n_cpml_yn - j) / n_cpml_yn;
-//            type1 rho_m = (n_cpml_yn - j - 0.25) / n_cpml_yn;
-            type1 rho_m = (n_cpml_yn - j) / n_cpml_yn;
+            //            type1 rho_e = (n_cpml_yn - j - 0.75) /(type1)n_cpml_yn;
+            type1 rho_e = (n_cpml_yn - j) /(type1)n_cpml_yn;
+            //            type1 rho_m = (n_cpml_yn - j - 0.25) /(type1)n_cpml_yn;
+            type1 rho_m = (n_cpml_yn - j) /(type1)n_cpml_yn;
             type1 rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             type1 rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             type1 sigma_pey = sigmaMax*rho_e_pmlOrder;
@@ -845,8 +861,16 @@ void cpml<type1>::initCoefficientArraysYN(short pmlOrder, type1 sigmaRatio, type
             type1 alpha_my = alphaMax * fabs(rho_m);
             cpml_b_ey_yn.p[j] = exp((-dt / eps_0) * (sigma_pey / kappa_ey + alpha_ey));
             cpml_b_my_yn.p[j] = exp((-dt / eps_0) * (sigma_pmy / kappa_my + alpha_my));
-            cpml_a_ey_yn.p[j] = 1 / dy * (cpml_b_ey_yn.p[j] - 1.0) * sigma_pey / (kappa_ey * (sigma_pey + kappa_ey * alpha_ey));
-            cpml_a_my_yn.p[j] = 1 / dy * (cpml_b_my_yn.p[j] - 1.0) * sigma_pmy / (kappa_my * (sigma_pmy + kappa_my * alpha_my));
+            if (rho_e!= 0) {
+                cpml_a_ey_yn.p[j] = 1 / dy * (cpml_b_ey_yn.p[j] - 1.0) * sigma_pey / (kappa_ey * (sigma_pey + kappa_ey * alpha_ey));
+            } else {
+                cpml_a_ey_yn.p[j] = 0;
+            }
+            if (rho_m!= 0) {
+                cpml_a_my_yn.p[j] = 1 / dy * (cpml_b_my_yn.p[j] - 1.0) * sigma_pmy / (kappa_my * (sigma_pmy + kappa_my * alpha_my));
+            } else {
+                cpml_a_my_yn.p[j] = 0;
+            }
 
             for (unsigned i = 0; i < Psi_exy_yn.nx; i++) {
                 for (unsigned k = 0; k < Psi_exy_yn.nz; k++) {
@@ -884,10 +908,10 @@ void cpml<type1>::initCoefficientArraysYP(short pmlOrder, type1 sigmaRatio, type
         unsigned iex = Cexhz.ny - n_cpml_yp - 1;
         unsigned ihx = Chxez.ny - n_cpml_yp;
         for (unsigned j = 0; j < n_cpml_yp; j++) {
-//            type1 rho_e = (j + 0.25) / n_cpml_yp;
-            type1 rho_e = (j) / n_cpml_yp;
-//            type1 rho_m = (j + 0.75) / n_cpml_yp;
-            type1 rho_m = (j) / n_cpml_yp;
+            //            type1 rho_e = (j + 0.25) /(type1)n_cpml_yp;
+            type1 rho_e = (j) /(type1)n_cpml_yp;
+            //            type1 rho_m = (j + 0.75) /(type1)n_cpml_yp;
+            type1 rho_m = (j) /(type1)n_cpml_yp;
             type1 rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             type1 rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             type1 sigma_pey = sigmaMax*rho_e_pmlOrder;
@@ -898,8 +922,16 @@ void cpml<type1>::initCoefficientArraysYP(short pmlOrder, type1 sigmaRatio, type
             type1 alpha_my = alphaMax * fabs(rho_m);
             cpml_b_ey_yp.p[j] = exp((-dt / eps_0) * (sigma_pey / kappa_ey + alpha_ey));
             cpml_b_my_yp.p[j] = exp((-dt / eps_0) * (sigma_pmy / kappa_my + alpha_my));
-            cpml_a_ey_yp.p[j] = 1 / dy * (cpml_b_ey_yp.p[j] - 1.0) * sigma_pey / (kappa_ey * (sigma_pey + kappa_ey * alpha_ey));
-            cpml_a_my_yp.p[j] = 1 / dy * (cpml_b_my_yp.p[j] - 1.0) * sigma_pmy / (kappa_my * (sigma_pmy + kappa_my * alpha_my));
+            if (rho_e!= 0) {
+                cpml_a_ey_yp.p[j] = 1 / dy * (cpml_b_ey_yp.p[j] - 1.0) * sigma_pey / (kappa_ey * (sigma_pey + kappa_ey * alpha_ey));
+            } else {
+                cpml_a_my_yp.p[j] = 0;
+            }
+            if (rho_m!= 0) {
+                cpml_a_my_yp.p[j] = 1 / dy * (cpml_b_my_yp.p[j] - 1.0) * sigma_pmy / (kappa_my * (sigma_pmy + kappa_my * alpha_my));
+            } else {
+                cpml_a_my_yp.p[j] = 0;
+            }
 
             for (unsigned i = 0; i < Psi_exy_yp.nx; i++) {
                 for (unsigned k = 0; k < Psi_exy_yp.nz; k++) {
@@ -937,10 +969,10 @@ void cpml<type1>::initCoefficientArraysZN(short pmlOrder, type1 sigmaRatio, type
     if (is_cpml_zn) {
         type1 sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dz);
         for (unsigned k = 0, iplus = 1; k < n_cpml_zn; k++, iplus++) {
-//            type1 rho_e = (n_cpml_zn - k - 0.75) / n_cpml_zn;
-            type1 rho_e = (n_cpml_zn - k) / n_cpml_zn;
-//            type1 rho_m = (n_cpml_zn - k - 0.25) / n_cpml_zn;
-            type1 rho_m = (n_cpml_zn - k) / n_cpml_zn;
+            //            type1 rho_e = (n_cpml_zn - k - 0.75) /(type1)n_cpml_zn;
+            type1 rho_e = (n_cpml_zn - k) /(type1)n_cpml_zn;
+            //            type1 rho_m = (n_cpml_zn - k - 0.25) /(type1)n_cpml_zn;
+            type1 rho_m = (n_cpml_zn - k) /(type1)n_cpml_zn;
             type1 rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             type1 rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             type1 sigma_pez = sigmaMax*rho_e_pmlOrder;
@@ -951,8 +983,16 @@ void cpml<type1>::initCoefficientArraysZN(short pmlOrder, type1 sigmaRatio, type
             type1 alpha_mz = alphaMax * fabs(rho_m);
             cpml_b_ez_zn.p[k] = exp((-dt / eps_0) * (sigma_pez / kappa_ez + alpha_ez));
             cpml_b_mz_zn.p[k] = exp((-dt / eps_0) * (sigma_pmz / kappa_mz + alpha_mz));
-            cpml_a_ez_zn.p[k] = 1 / dz * (cpml_b_ez_zn.p[k] - 1.0) * sigma_pez / (kappa_ez * (sigma_pez + kappa_ez * alpha_ez));
-            cpml_a_mz_zn.p[k] = 1 / dz * (cpml_b_mz_zn.p[k] - 1.0) * sigma_pmz / (kappa_mz * (sigma_pmz + kappa_mz * alpha_mz));
+            if (rho_e!= 0) {
+                cpml_a_ez_zn.p[k] = 1 / dz * (cpml_b_ez_zn.p[k] - 1.0) * sigma_pez / (kappa_ez * (sigma_pez + kappa_ez * alpha_ez));
+            } else {
+                cpml_a_ez_zn.p[k] = 0;
+            }
+            if (rho_m!= 0) {
+                cpml_a_mz_zn.p[k] = 1 / dz * (cpml_b_mz_zn.p[k] - 1.0) * sigma_pmz / (kappa_mz * (sigma_pmz + kappa_mz * alpha_mz));
+            } else {
+                cpml_a_mz_zn.p[k] = 0;
+            }
 
             for (unsigned j = 0; j < Psi_exz_zn.ny; j++) {
                 for (unsigned i = 0; i < Psi_exz_zn.nx; i++) {
@@ -990,10 +1030,10 @@ void cpml<type1>::initCoefficientArraysZP(short pmlOrder, type1 sigmaRatio, type
         unsigned iez = Ceyhx.nz - n_cpml_zp - 1;
         unsigned ihz = Chyex.nz - n_cpml_zp;
         for (unsigned k = 0; k < n_cpml_zp; k++) {
-//            type1 rho_e = (k + 0.25) / n_cpml_zp;
-            type1 rho_e = (k) / n_cpml_zp;
-//            type1 rho_m = (k + 0.75) / n_cpml_zp;
-            type1 rho_m = (k) / n_cpml_zp;
+            //            type1 rho_e = (k + 0.25) /(type1)n_cpml_zp;
+            type1 rho_e = (k) /(type1)n_cpml_zp;
+            //            type1 rho_m = (k + 0.75) /(type1)n_cpml_zp;
+            type1 rho_m = (k) /(type1)n_cpml_zp;
             type1 rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             type1 rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             type1 sigma_pez = sigmaMax*rho_e_pmlOrder;
@@ -1002,11 +1042,19 @@ void cpml<type1>::initCoefficientArraysZP(short pmlOrder, type1 sigmaRatio, type
             type1 kappa_mz = 1 + (kappaMax - 1) * rho_m_pmlOrder;
             type1 alpha_ez = alphaMax * fabs(rho_e);
             type1 alpha_mz = alphaMax * fabs(rho_m);
+
             cpml_b_ez_zp.p[k] = exp((-dt / eps_0) * (sigma_pez / kappa_ez + alpha_ez));
             cpml_b_mz_zp.p[k] = exp((-dt / eps_0) * (sigma_pmz / kappa_mz + alpha_mz));
-            cpml_a_ez_zp.p[k] = 1 / dz * (cpml_b_ez_zp.p[k] - 1.0) * sigma_pez / (kappa_ez * (sigma_pez + kappa_ez * alpha_ez));
-            cpml_a_mz_zp.p[k] = 1 / dz * (cpml_b_mz_zp.p[k] - 1.0) * sigma_pmz / (kappa_mz * (sigma_pmz + kappa_mz * alpha_mz));
-
+            if (rho_e!= 0) {
+                cpml_a_ez_zp.p[k] = 1 / dz * (cpml_b_ez_zp.p[k] - 1.0) * sigma_pez / (kappa_ez * (sigma_pez + kappa_ez * alpha_ez));
+            } else {
+                cpml_a_ez_zp.p[k] = 0;
+            }
+            if (rho_m!= 0) {
+                cpml_a_mz_zp.p[k] = 1 / dz * (cpml_b_mz_zp.p[k] - 1.0) * sigma_pmz / (kappa_mz * (sigma_pmz + kappa_mz * alpha_mz));
+            } else {
+                cpml_a_mz_zp.p[k] = 0;
+            }
             for (unsigned j = 0; j < Psi_eyz_zp.ny; j++) {
                 for (unsigned i = 0; i < Psi_eyz_zp.nx; i++) {
                     CPsi_eyz_zp.p[i][j][k] = Ceyhx.p[i][j][iez] * dz;
@@ -1208,7 +1256,7 @@ void cpml<type1>::updateEFieldCPML_z(data3d<type1>& Ex, data3d<type1>& Ey) {
     if (is_cpml_zp) {
         unsigned khy = Ey.nz - n_cpml_zp - 1;
         unsigned khx = Ex.nz - n_cpml_zp - 1;
-        for (unsigned k = 0; k < n_cpml_zn; k++) {
+        for (unsigned k = 0; k < n_cpml_zp; k++) {
             for (unsigned j = 0; j < Ey.ny; j++) {
                 for (unsigned i = 0; i < Ey.nx; i++) {
                     Ey.p[i][j][khy] += CPsi_eyz_zp.p[i][j][k] * Psi_eyz_zp.p[i][j][k];
@@ -1397,10 +1445,10 @@ void cpml<type1>::updatePsi_eyx_xp(const data3d<type1>& Hz) {
 
 template<class type1>
 void cpml<type1>::updatePsi_exy_yp(const data3d<type1>& Hz) {
-    for (unsigned j = 0, imy = Hz.ny - n_cpml_yp; j < n_cpml_yp; j++, imy++) {
+    for (unsigned j = 0, ihy = Hz.ny - n_cpml_yp; j < n_cpml_yp; j++, ihy++) {
         for (unsigned i = 0; i < Psi_exy_yp.nx; i++) {
             for (unsigned k = 0; k < Psi_exy_yp.nz; k++) {
-                Psi_exy_yp.p[i][j][k] = Psi_exy_yp.p[i][j][k] * cpml_b_ey_yp.p[j] + cpml_a_ey_yp.p[j]*(Hz.p[i][imy][k] - Hz.p[i][imy - 1][k]);
+                Psi_exy_yp.p[i][j][k] = Psi_exy_yp.p[i][j][k] * cpml_b_ey_yp.p[j] + cpml_a_ey_yp.p[j]*(Hz.p[i][ihy][k] - Hz.p[i][ihy - 1][k]);
             }
         }
     }
@@ -1452,10 +1500,10 @@ void cpml<type1>::updatePsi_hzx_xp(const data3d<type1>& Ey) {
 
 template<class type1>
 void cpml<type1>::updatePsi_hyx_xp(const data3d<type1>& Ez) {
-    for (unsigned i = 0, imx = Ez.nx - n_cpml_zp; i < n_cpml_zp; i++, imx++) {
+    for (unsigned i = 0, ihx = Ez.nx - n_cpml_xp; i < n_cpml_xp; i++, ihx++) {
         for (unsigned j = 0; j < Psi_hyx_xp.ny; j++) {
             for (unsigned k = 0; k < Psi_hyx_xp.nz; k++) {
-                Psi_hyx_xp.p[i][j][k] = Psi_hyx_xp.p[i][j][k] * cpml_b_mx_xp.p[i] + cpml_a_mx_xp.p[i]*(Ez.p[imx][j][k] - Ez.p[imx - 1 ][j][k]);
+                Psi_hyx_xp.p[i][j][k] = Psi_hyx_xp.p[i][j][k] * cpml_b_mx_xp.p[i] + cpml_a_mx_xp.p[i]*(Ez.p[ihx][j][k] - Ez.p[ihx - 1 ][j][k]);
             }
         }
     }
@@ -1463,10 +1511,10 @@ void cpml<type1>::updatePsi_hyx_xp(const data3d<type1>& Ez) {
 
 template<class type1>
 void cpml<type1>::updatePsi_hxy_yp(const data3d<type1>& Ez) {
-    for (unsigned j = 0, jmy = Ez.ny - n_cpml_yp; j < n_cpml_yp; j++, jmy++) {
+    for (unsigned j = 0, jhy = Ez.ny - n_cpml_yp; j < n_cpml_yp; j++, jhy++) {
         for (unsigned i = 0; i < Psi_hxy_yp.nx; i++) {
             for (unsigned k = 0; k < Psi_hxy_yp.nz; k++) {
-                Psi_hxy_yp.p[i][j][k] = Psi_hxy_yp.p[i][j][k] * cpml_b_my_yp.p[j] + cpml_a_my_yp.p[j]*(Ez.p[i][jmy][k] - Ez.p[i][jmy - 1][k]);
+                Psi_hxy_yp.p[i][j][k] = Psi_hxy_yp.p[i][j][k] * cpml_b_my_yp.p[j] + cpml_a_my_yp.p[j]*(Ez.p[i][jhy][k] - Ez.p[i][jhy - 1][k]);
             }
         }
     }

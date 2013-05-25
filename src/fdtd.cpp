@@ -759,11 +759,11 @@ void fdtd::compute() {
 #endif
         if ((n % save_modulus) == 0) {
             writeField(n);
-            Ez.save(ic, 1, n, 1);
-            Ez.save(jc, 1, n, 2);
-            Ez.save(kc, 1, n, 3);   
+            Ez.save(isp + 10, 1, n, 1);
+            Ez.save(jsp + 10, 1, n, 2);
+            Ez.save(ksp + 10, 1, n, 3);
             pml.Psi_exz_zp.setName("psi");
-            pml.Psi_exz_zp.save(0,1,n,3);
+            pml.Psi_exz_zp.save(0, 1, n, 3);
 #ifdef WITH_DENSITY
             Ne.save(Ne.nz / 2, neGrid, n, 2);
 #endif
@@ -911,16 +911,17 @@ void fdtd::writeField(unsigned iteration) {
         }
         out.close();
     }
-        ss << "E_Field_j_" << iteration << ".dat";
-    fileBaseName=ss.str();
+    stringstream sc;
+    sc << "E_Field_j_" << iteration << ".dat";
+    fileBaseName = sc.str();
     // open file
     out.open(fileBaseName.c_str());
     if (out.is_open()) {
 
         for (i = 0; i < Imax - 1; i++) {
             for (j = 0; j < Jmax - 1; j++) { // |E|
-                out << sqrt(pow(Ex.p[i][ksource+10][j], 2) +
-                        pow(Ey.p[i][ksource+10][j], 2) + pow(Ez.p[i][ksource+10][j], 2)) << '\t';
+                out << sqrt(pow(Ex.p[i][ksource + 10][j], 2) +
+                        pow(Ey.p[i][ksource + 10][j], 2) + pow(Ez.p[i][ksource + 10][j], 2)) << '\t';
             }
             out << endl;
         }
