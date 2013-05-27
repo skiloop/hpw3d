@@ -125,6 +125,9 @@ private:
     // source position
     unsigned isp, jsp, ksp;
 
+	// common data
+	MyDataF dtDivEps0DivDxyz;
+
     // H & E Field components
     data3d<MyDataF> Hx;
     data3d<MyDataF> Hy;

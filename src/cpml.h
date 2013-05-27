@@ -726,10 +726,10 @@ void cpml<T>::initCoefficientArraysXN(short pmlOrder, T sigmaRatio, T kappaMax, 
         T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dx);
 
         for (unsigned i = 0, iplus = 1; i < n_cpml_xn; i++, iplus++) {
-            //            T rho_e = (n_cpml_xn - i - 0.75) /(T)n_cpml_xn;
-            T rho_e = (n_cpml_xn - i) /(T)n_cpml_xn;
-            //            T rho_m = (n_cpml_xn - i - 0.25) /(T)n_cpml_xn;
-            T rho_m = (n_cpml_xn - i) /(T)n_cpml_xn;
+			T rho_e = (n_cpml_xn - i - 0.75) /(T)n_cpml_xn;
+            //T rho_e = (n_cpml_xn - i) /(T)n_cpml_xn;	
+			T rho_m = (n_cpml_xn - i - 0.25) /(T)n_cpml_xn;
+			//T rho_m = (n_cpml_xn - i) /(T)n_cpml_xn;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             T sigma_pex = sigmaMax*rho_e_pmlOrder;
@@ -786,10 +786,10 @@ void cpml<T>::initCoefficientArraysXP(short pmlOrder, T sigmaRatio, T kappaMax, 
         unsigned iex = Ceyhz.nx - n_cpml_xp - 1;
         unsigned ihx = Chyez.nx - n_cpml_xp;
         for (unsigned i = 0; i < n_cpml_xp; i++) {
-            //            T rho_e = (i + 0.25) /(T)n_cpml_xp;
-            T rho_e = (i) /(T)n_cpml_xp;
-            //            T rho_m = (i + 0.75) /(T)n_cpml_xp;
-            T rho_m = (i) /(T)n_cpml_xp;
+			T rho_e = (i + 0.25) /(T)n_cpml_xp;
+            //T rho_e = (i) /(T)n_cpml_xp;
+			T rho_m = (i + 0.75) /(T)n_cpml_xp;
+            //T rho_m = (i) /(T)n_cpml_xp;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             T sigma_pex = sigmaMax*rho_e_pmlOrder;
@@ -847,10 +847,10 @@ void cpml<T>::initCoefficientArraysYN(short pmlOrder, T sigmaRatio, T kappaMax, 
     if (is_cpml_yn) {
         T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dy);
         for (unsigned j = 0, jplus = 1; j < n_cpml_yn; j++, jplus++) {
-            //            T rho_e = (n_cpml_yn - j - 0.75) /(T)n_cpml_yn;
-            T rho_e = (n_cpml_yn - j) /(T)n_cpml_yn;
-            //            T rho_m = (n_cpml_yn - j - 0.25) /(T)n_cpml_yn;
-            T rho_m = (n_cpml_yn - j) /(T)n_cpml_yn;
+			T rho_e = (n_cpml_yn - j - 0.75) /(T)n_cpml_yn;
+			//T rho_e = (n_cpml_yn - j) /(T)n_cpml_yn;
+			T rho_m = (n_cpml_yn - j - 0.25) /(T)n_cpml_yn;
+			//T rho_m = (n_cpml_yn - j) /(T)n_cpml_yn;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             T sigma_pey = sigmaMax*rho_e_pmlOrder;
@@ -908,10 +908,10 @@ void cpml<T>::initCoefficientArraysYP(short pmlOrder, T sigmaRatio, T kappaMax, 
         unsigned iex = Cexhz.ny - n_cpml_yp - 1;
         unsigned ihx = Chxez.ny - n_cpml_yp;
         for (unsigned j = 0; j < n_cpml_yp; j++) {
-            //            T rho_e = (j + 0.25) /(T)n_cpml_yp;
-            T rho_e = (j) /(T)n_cpml_yp;
-            //            T rho_m = (j + 0.75) /(T)n_cpml_yp;
-            T rho_m = (j) /(T)n_cpml_yp;
+			T rho_e = (j + 0.25) /(T)n_cpml_yp;
+			//T rho_e = (j) /(T)n_cpml_yp;
+			T rho_m = (j + 0.75) /(T)n_cpml_yp;
+			//T rho_m = (j) /(T)n_cpml_yp;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             T sigma_pey = sigmaMax*rho_e_pmlOrder;
@@ -969,10 +969,10 @@ void cpml<T>::initCoefficientArraysZN(short pmlOrder, T sigmaRatio, T kappaMax, 
     if (is_cpml_zn) {
         T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dz);
         for (unsigned k = 0, iplus = 1; k < n_cpml_zn; k++, iplus++) {
-            //            T rho_e = (n_cpml_zn - k - 0.75) /(T)n_cpml_zn;
-            T rho_e = (n_cpml_zn - k) /(T)n_cpml_zn;
-            //            T rho_m = (n_cpml_zn - k - 0.25) /(T)n_cpml_zn;
-            T rho_m = (n_cpml_zn - k) /(T)n_cpml_zn;
+			T rho_e = (n_cpml_zn - k - 0.75) /(T)n_cpml_zn;
+			//T rho_e = (n_cpml_zn - k) /(T)n_cpml_zn;
+			T rho_m = (n_cpml_zn - k - 0.25) /(T)n_cpml_zn;
+			//T rho_m = (n_cpml_zn - k) /(T)n_cpml_zn;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             T sigma_pez = sigmaMax*rho_e_pmlOrder;
@@ -1030,10 +1030,10 @@ void cpml<T>::initCoefficientArraysZP(short pmlOrder, T sigmaRatio, T kappaMax, 
         unsigned iez = Ceyhx.nz - n_cpml_zp - 1;
         unsigned ihz = Chyex.nz - n_cpml_zp;
         for (unsigned k = 0; k < n_cpml_zp; k++) {
-            //            T rho_e = (k + 0.25) /(T)n_cpml_zp;
-            T rho_e = (k) /(T)n_cpml_zp;
-            //            T rho_m = (k + 0.75) /(T)n_cpml_zp;
-            T rho_m = (k) /(T)n_cpml_zp;
+			T rho_e = (k + 0.25) /(T)n_cpml_zp;
+			//T rho_e = (k) /(T)n_cpml_zp;
+			T rho_m = (k + 0.75) /(T)n_cpml_zp;
+			//T rho_m = (k) /(T)n_cpml_zp;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
             T sigma_pez = sigmaMax*rho_e_pmlOrder;

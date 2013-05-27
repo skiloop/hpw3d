@@ -612,6 +612,10 @@ void fdtd::setUp() {
         t0 = 3.0 * tw;
     }
     //    t0 = 6e-9;
+
+	// common use data
+	dtDivEps0DivDxyz=dt/eps_0/dx/dy/dz;
+
 #ifdef WITH_DENSITY
     //Fine Grid size
     dsf = dx / neGrid;
@@ -801,7 +805,7 @@ void fdtd::updateSource(unsigned n) {
         default:
             source = 0;
     }
-    Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + CB[0] * source / dx / dy / dz;
+    Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] - dtDivEps0DivDxyz * source;
     //cout<<"source="<<source<<"\t"<<amp<<"\t"<<n<<"\t"<<dt<<"\t"<<
     //        amp * -2.0 * ((n * dt - t0) / tw / tw) * exp(-pow(((n * dt - t0) / tw), 2))<<endl;
 
