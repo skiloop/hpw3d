@@ -805,7 +805,7 @@ void fdtd::updateSource(unsigned n) {
         default:
             source = 0;
     }
-    Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] - dtDivEps0DivDxyz * source;
+    Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + dtDivEps0DivDxyz * source;
     //cout<<"source="<<source<<"\t"<<amp<<"\t"<<n<<"\t"<<dt<<"\t"<<
     //        amp * -2.0 * ((n * dt - t0) / tw / tw) * exp(-pow(((n * dt - t0) / tw), 2))<<endl;
 
@@ -1007,7 +1007,7 @@ void fdtd::SetSineSource(MyDataF omega_) {
 }
 
 void fdtd::updateHx() {
-    unsigned i, j, k;
+    int i, j, k;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
@@ -1028,7 +1028,7 @@ void fdtd::updateHx() {
 }
 
 void fdtd::updateHy() {
-    unsigned i, j, k;
+    int i, j, k;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Hy,Ez,Ex,pml,DA,DB,dx,dz)
 #endif
@@ -1049,7 +1049,7 @@ void fdtd::updateHy() {
 }
 
 void fdtd::updateHz() {
-    unsigned i, j, k;
+    int i, j, k;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Hz
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1073,7 +1073,7 @@ void fdtd::updateHz() {
 }
 
 void fdtd::updateEx() {
-    unsigned i, j, k;
+    int i, j, k;
     short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ex
@@ -1114,7 +1114,7 @@ void fdtd::updateEx() {
 }
 
 void fdtd::updateEy() {
-    unsigned i, j, k;
+    int i, j, k;
     short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ey
@@ -1159,7 +1159,7 @@ void fdtd::updateEy() {
 }
 
 void fdtd::updateEz() {
-    unsigned i, j, k;
+    int i, j, k;
     short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ez
