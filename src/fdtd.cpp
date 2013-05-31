@@ -613,8 +613,8 @@ void fdtd::setUp() {
     }
     //    t0 = 6e-9;
 
-	// common use data
-	dtDivEps0DivDxyz=dt/eps_0/dx/dy/dz;
+    // common use data
+    dtDivEps0DivDxyz = dt / eps_0 / dx / dy / dz;
 
 #ifdef WITH_DENSITY
     //Fine Grid size
@@ -726,6 +726,20 @@ void fdtd::compute() {
     }
 #endif
     kc = ksp;
+
+
+    if (jc >= Jmax) {
+        jc = Jmax - 1;
+    }
+    if (ic >= Imax) {
+        ic = Imax - 1;
+    }
+    if (kc >= Kmax) {
+        kc = Kmax - 1;
+    }
+    cout << "ic=" << ic << endl;
+    cout << "jc=" << jc << endl;
+    cout << "kc=" << kc << endl;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  BEGIN TIME STEP
@@ -766,8 +780,8 @@ void fdtd::compute() {
             Ez.save(isp + 10, 1, n, 1);
             Ez.save(jsp + 10, 1, n, 2);
             Ez.save(ksp + 10, 1, n, 3);
-            Ex.save(ksp+10,1,n,3);
-            Ey.save(ksp+10,1,n,3);
+            Ex.save(ksp + 10, 1, n, 3);
+            Ey.save(ksp + 10, 1, n, 3);
             pml.Psi_exz_zp.setName("psi");
             pml.Psi_exz_zp.save(0, 1, n, 3);
             pml.Psi_exz_zp.save(4, 1, n, 3);

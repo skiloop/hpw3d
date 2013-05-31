@@ -49,7 +49,7 @@ cpml.o:cpml.cpp datastruct.h datastruct.cpp common.h cpml.h
 3DFormulaTransforming.pdf:3DFormulaTransforming.tex
 	texi2pdf 3DFormulaTransforming.tex
 clean:
-	-rm -f *.o *.d $(projects)
+	-rm -f *.o *.d $(projects) *.aux *.log
 	sh clean.sh
 #	cd $(TEST_SRC_DIR) && make clean
 #	cd $(SRC) && make clean
