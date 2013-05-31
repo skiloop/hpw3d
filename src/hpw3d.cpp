@@ -48,6 +48,9 @@ int main(int argc, char*argv[]) {
     if (tlen < minTimeLen) {
         tlen = minTimeLen;
     }
+	xlen+=2*checker.pmlSize;
+	ylen+=2*checker.pmlSize;
+	zlen+=2*checker.pmlSize;
     cout << "xlen=" << xlen << endl;
     cout << "ylen=" << ylen << endl;
     cout << "zlen=" << zlen << endl;
