@@ -695,7 +695,7 @@ void fdtd::setUp() {
     pml.initCoefficientArrays(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, dy, dz,
             Ceyhz, Cezhy, Chyez, Chzey,
             Cexhz, Cezhx, Chxez, Chzex,
-            Ceyhx, Cexhy, Chyex, Chxey);
+            Ceyhx, Cexhy, Chyex, Chxey,Cexe,Ceye,Ceze,Chxh,Chyh,Chzh);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients
