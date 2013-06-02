@@ -789,7 +789,7 @@ void cpml<T>::initCoefficientArraysXN(short pmlOrder, T sigmaRatio, T kappaMax, 
             T alpha_ex = alphaMax * fabs(rho_e);
             T alpha_mx =  alphaMax * fabs(rho_m);
             cpml_b_ex_xn.p[i] = exp((-dt / eps_0) * (sigma_pex / kappa_ex + alpha_ex));
-            cpml_b_mx_xn.p[i] = exp((-dt / mu_0) * (sigma_pmx / kappa_mx + alpha_mx));
+            cpml_b_mx_xn.p[i] = exp((-dt / eps_0) * (sigma_pmx / kappa_mx + alpha_mx));
             if (rho_e != 0) {
                 cpml_a_ex_xn.p[i] = 1 / dx * (cpml_b_ex_xn.p[i] - 1.0) * sigma_pex / (kappa_ex * (sigma_pex + kappa_ex * alpha_ex));
             } else {
@@ -800,60 +800,60 @@ void cpml<T>::initCoefficientArraysXN(short pmlOrder, T sigmaRatio, T kappaMax, 
             } else {
                 cpml_a_mx_xn.p[i] = 0;
             }
-            //for (unsigned j = 0; j < Psi_eyx_xn.ny; j++) {
-            //    for (unsigned k = 0; k < Psi_eyx_xn.nz; k++) {
-            //        CPsi_eyx_xn.p[i][j][k] = Ceyhz.p[iplus][j][k] * dx;
-            //        Ceyhz.p[iplus][j][k] = Ceyhz.p[iplus][j][k] / kappa_ex;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_ezx_xn.nz; j++) {
-            //    for (unsigned k = 0; k < Psi_ezx_xn.ny; k++) {
-            //        CPsi_ezx_xn.p[i][k][j] = Cezhy.p[iplus][k][j] * dx;
-            //        Cezhy.p[iplus][k][j] = Cezhy.p[iplus][k][j] / kappa_ex;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_hyx_xn.ny; j++) {
-            //    for (unsigned k = 0; k < Psi_hyx_xn.nz; k++) {
-            //        CPsi_hyx_xn.p[i][j][k] = Chyez.p[i][j][k] * dx;
-            //        Chyez.p[i][j][k] = Chyez.p[i][j][k] / kappa_mx;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_hzx_xn.nz; j++) {
-            //    for (unsigned k = 0; k < Psi_hzx_xn.ny; k++) {
-            //        CPsi_hzx_xn.p[i][k][j] = Chzey.p[i][k][j] * dx;
-            //        Chzey.p[i][k][j] = Chzey.p[i][k][j] / kappa_mx;
-            //    }
-            //}
-            T cev = 1 / (eps_0 / dt + sigma_pex / 2) / dx;
-            T chv = 1 / (mu_0 / dt + sigma_pmx / 2) / dx;
             for (unsigned j = 0; j < Psi_eyx_xn.ny; j++) {
                 for (unsigned k = 0; k < Psi_eyx_xn.nz; k++) {
-                    Ceyhz.p[iplus][j][k] = -cev;
                     CPsi_eyx_xn.p[i][j][k] = Ceyhz.p[iplus][j][k] * dx;
                     Ceyhz.p[iplus][j][k] = Ceyhz.p[iplus][j][k] / kappa_ex;
                 }
             }
             for (unsigned j = 0; j < Psi_ezx_xn.nz; j++) {
                 for (unsigned k = 0; k < Psi_ezx_xn.ny; k++) {
-                    Cezhy.p[iplus][k][j] = cev;
                     CPsi_ezx_xn.p[i][k][j] = Cezhy.p[iplus][k][j] * dx;
                     Cezhy.p[iplus][k][j] = Cezhy.p[iplus][k][j] / kappa_ex;
                 }
             }
             for (unsigned j = 0; j < Psi_hyx_xn.ny; j++) {
                 for (unsigned k = 0; k < Psi_hyx_xn.nz; k++) {
-                    Chyez.p[i][j][k] = chv;
                     CPsi_hyx_xn.p[i][j][k] = Chyez.p[i][j][k] * dx;
                     Chyez.p[i][j][k] = Chyez.p[i][j][k] / kappa_mx;
                 }
             }
             for (unsigned j = 0; j < Psi_hzx_xn.nz; j++) {
                 for (unsigned k = 0; k < Psi_hzx_xn.ny; k++) {
-                    Chzey.p[i][k][j] = -chv;
                     CPsi_hzx_xn.p[i][k][j] = Chzey.p[i][k][j] * dx;
                     Chzey.p[i][k][j] = Chzey.p[i][k][j] / kappa_mx;
                 }
             }
+            //T cev = 1 / (eps_0 / dt + sigma_pex / 2) / dx;
+            //T chv = 1 / (mu_0 / dt + sigma_pmx / 2) / dx;
+            //for (unsigned j = 0; j < Psi_eyx_xn.ny; j++) {
+            //    for (unsigned k = 0; k < Psi_eyx_xn.nz; k++) {
+            //        Ceyhz.p[iplus][j][k] = -cev;
+            //        CPsi_eyx_xn.p[i][j][k] = Ceyhz.p[iplus][j][k] * dx;
+            //        Ceyhz.p[iplus][j][k] = Ceyhz.p[iplus][j][k] / kappa_ex;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_ezx_xn.nz; j++) {
+            //    for (unsigned k = 0; k < Psi_ezx_xn.ny; k++) {
+            //        Cezhy.p[iplus][k][j] = cev;
+            //        CPsi_ezx_xn.p[i][k][j] = Cezhy.p[iplus][k][j] * dx;
+            //        Cezhy.p[iplus][k][j] = Cezhy.p[iplus][k][j] / kappa_ex;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_hyx_xn.ny; j++) {
+            //    for (unsigned k = 0; k < Psi_hyx_xn.nz; k++) {
+            //        Chyez.p[i][j][k] = chv;
+            //        CPsi_hyx_xn.p[i][j][k] = Chyez.p[i][j][k] * dx;
+            //        Chyez.p[i][j][k] = Chyez.p[i][j][k] / kappa_mx;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_hzx_xn.nz; j++) {
+            //    for (unsigned k = 0; k < Psi_hzx_xn.ny; k++) {
+            //        Chzey.p[i][k][j] = -chv;
+            //        CPsi_hzx_xn.p[i][k][j] = Chzey.p[i][k][j] * dx;
+            //        Chzey.p[i][k][j] = Chzey.p[i][k][j] / kappa_mx;
+            //    }
+            //}
         }
     }
 }
@@ -879,7 +879,7 @@ void cpml<T>::initCoefficientArraysXP(short pmlOrder, T sigmaRatio, T kappaMax, 
             T alpha_ex = alphaMax * fabs(rho_e);
             T alpha_mx =  alphaMax * fabs(rho_m);
             cpml_b_ex_xp.p[i] = exp((-dt / eps_0) * (sigma_pex / kappa_ex + alpha_ex));
-            cpml_b_mx_xp.p[i] = exp((-dt / mu_0) * (sigma_pmx / kappa_mx + alpha_mx));
+            cpml_b_mx_xp.p[i] = exp((-dt / eps_0) * (sigma_pmx / kappa_mx + alpha_mx));
             if (rho_e != 0) {
                 cpml_a_ex_xp.p[i] = 1 / dx * (cpml_b_ex_xp.p[i] - 1.0) * sigma_pex / (kappa_ex * (sigma_pex + kappa_ex * alpha_ex));
             } else {
@@ -891,60 +891,60 @@ void cpml<T>::initCoefficientArraysXP(short pmlOrder, T sigmaRatio, T kappaMax, 
                 cpml_a_mx_xp.p[i] = 0;
             }
 
-            //for (unsigned j = 0; j < Psi_eyx_xp.ny; j++) {
-            //    for (unsigned k = 0; k < Psi_eyx_xp.nz; k++) {
-            //        CPsi_eyx_xp.p[i][j][k] = Ceyhz.p[iex][j][k] * dx;
-            //        Ceyhz.p[iex][j][k] = Ceyhz.p[iex][j][k] / kappa_ex;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_ezx_xp.nz; j++) {
-            //    for (unsigned k = 0; k < Psi_ezx_xp.ny; k++) {
-            //        CPsi_ezx_xp.p[i][k][j] = Cezhy.p[iex][k][j] * dx;
-            //        Cezhy.p[iex][k][j] = Cezhy.p[iex][k][j] / kappa_ex;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_hyx_xp.ny; j++) {
-            //    for (unsigned k = 0; k < Psi_hyx_xp.nz; k++) {
-            //        CPsi_hyx_xp.p[i][j][k] = Chyez.p[ihx][j][k] * dx;
-            //        Chyez.p[ihx][j][k] = Chyez.p[ihx][j][k] / kappa_mx;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_hzx_xp.nz; j++) {
-            //    for (unsigned k = 0; k < Psi_hzx_xp.ny; k++) {
-            //        CPsi_hzx_xp.p[i][k][j] = Chzey.p[ihx][k][j] * dx;
-            //        Chzey.p[ihx][k][j] = Chzey.p[ihx][k][j] / kappa_mx;
-            //    }
-            //}
-            T cev = 1 / (eps_0 / dt + sigma_pex / 2) / dx;
-            T chv = 1 / (mu_0 / dt + sigma_pmx / 2) / dx;
             for (unsigned j = 0; j < Psi_eyx_xp.ny; j++) {
                 for (unsigned k = 0; k < Psi_eyx_xp.nz; k++) {
-                    Ceyhz.p[iex][j][k] = -cev;
                     CPsi_eyx_xp.p[i][j][k] = Ceyhz.p[iex][j][k] * dx;
                     Ceyhz.p[iex][j][k] = Ceyhz.p[iex][j][k] / kappa_ex;
                 }
             }
             for (unsigned j = 0; j < Psi_ezx_xp.nz; j++) {
                 for (unsigned k = 0; k < Psi_ezx_xp.ny; k++) {
-                    Cezhy.p[iex][k][j] = cev;
                     CPsi_ezx_xp.p[i][k][j] = Cezhy.p[iex][k][j] * dx;
                     Cezhy.p[iex][k][j] = Cezhy.p[iex][k][j] / kappa_ex;
                 }
             }
             for (unsigned j = 0; j < Psi_hyx_xp.ny; j++) {
                 for (unsigned k = 0; k < Psi_hyx_xp.nz; k++) {
-                    Chyez.p[ihx][j][k] = chv;
                     CPsi_hyx_xp.p[i][j][k] = Chyez.p[ihx][j][k] * dx;
                     Chyez.p[ihx][j][k] = Chyez.p[ihx][j][k] / kappa_mx;
                 }
             }
             for (unsigned j = 0; j < Psi_hzx_xp.nz; j++) {
                 for (unsigned k = 0; k < Psi_hzx_xp.ny; k++) {
-                    Chzey.p[ihx][k][j] = -chv;
                     CPsi_hzx_xp.p[i][k][j] = Chzey.p[ihx][k][j] * dx;
                     Chzey.p[ihx][k][j] = Chzey.p[ihx][k][j] / kappa_mx;
                 }
             }
+            //T cev = 1 / (eps_0 / dt + sigma_pex / 2) / dx;
+            //T chv = 1 / (mu_0 / dt + sigma_pmx / 2) / dx;
+            //for (unsigned j = 0; j < Psi_eyx_xp.ny; j++) {
+            //    for (unsigned k = 0; k < Psi_eyx_xp.nz; k++) {
+            //        Ceyhz.p[iex][j][k] = -cev;
+            //        CPsi_eyx_xp.p[i][j][k] = Ceyhz.p[iex][j][k] * dx;
+            //        Ceyhz.p[iex][j][k] = Ceyhz.p[iex][j][k] / kappa_ex;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_ezx_xp.nz; j++) {
+            //    for (unsigned k = 0; k < Psi_ezx_xp.ny; k++) {
+            //        Cezhy.p[iex][k][j] = cev;
+            //        CPsi_ezx_xp.p[i][k][j] = Cezhy.p[iex][k][j] * dx;
+            //        Cezhy.p[iex][k][j] = Cezhy.p[iex][k][j] / kappa_ex;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_hyx_xp.ny; j++) {
+            //    for (unsigned k = 0; k < Psi_hyx_xp.nz; k++) {
+            //        Chyez.p[ihx][j][k] = chv;
+            //        CPsi_hyx_xp.p[i][j][k] = Chyez.p[ihx][j][k] * dx;
+            //        Chyez.p[ihx][j][k] = Chyez.p[ihx][j][k] / kappa_mx;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_hzx_xp.nz; j++) {
+            //    for (unsigned k = 0; k < Psi_hzx_xp.ny; k++) {
+            //        Chzey.p[ihx][k][j] = -chv;
+            //        CPsi_hzx_xp.p[i][k][j] = Chzey.p[ihx][k][j] * dx;
+            //        Chzey.p[ihx][k][j] = Chzey.p[ihx][k][j] / kappa_mx;
+            //    }
+            //}
             ihx++;
             iex++;
         }
@@ -970,7 +970,7 @@ void cpml<T>::initCoefficientArraysYN(short pmlOrder, T sigmaRatio, T kappaMax, 
             T alpha_ey = alphaMax * fabs(rho_e);
             T alpha_my =  alphaMax * fabs(rho_m);
             cpml_b_ey_yn.p[j] = exp((-dt / eps_0) * (sigma_pey / kappa_ey + alpha_ey));
-            cpml_b_my_yn.p[j] = exp((-dt / mu_0) * (sigma_pmy / kappa_my + alpha_my));
+            cpml_b_my_yn.p[j] = exp((-dt / eps_0) * (sigma_pmy / kappa_my + alpha_my));
             if (rho_e != 0) {
                 cpml_a_ey_yn.p[j] = 1 / dy * (cpml_b_ey_yn.p[j] - 1.0) * sigma_pey / (kappa_ey * (sigma_pey + kappa_ey * alpha_ey));
             } else {
@@ -982,60 +982,60 @@ void cpml<T>::initCoefficientArraysYN(short pmlOrder, T sigmaRatio, T kappaMax, 
                 cpml_a_my_yn.p[j] = 0;
             }
 
-            //for (unsigned i = 0; i < Psi_exy_yn.nx; i++) {
-            //    for (unsigned k = 0; k < Psi_exy_yn.nz; k++) {
-            //        CPsi_exy_yn.p[i][j][k] = Cexhz.p[i][jplus][k] * dy;
-            //        Cexhz.p[i][jplus][k] = Cexhz.p[i][jplus][k] / kappa_ey;
-            //    }
-            //}
-            //for (unsigned i = 0; i < Psi_ezy_yn.nz; i++) {
-            //    for (unsigned k = 0; k < Psi_ezy_yn.nx; k++) {
-            //        CPsi_ezy_yn.p[k][j][i] = Cezhx.p[k][jplus][i] * dy;
-            //        Cezhx.p[k][jplus][i] = Cezhx.p[k][jplus][i] / kappa_ey;
-            //    }
-            //}
-            //for (unsigned i = 0; i < Psi_hxy_yn.nx; i++) {
-            //    for (unsigned k = 0; k < Psi_hxy_yn.nz; k++) {
-            //        CPsi_hxy_yn.p[i][j][k] = Chxez.p[i][j][k] * dy;
-            //        Chxez.p[i][j][k] = Chxez.p[i][j][k] / kappa_my;
-            //    }
-            //}
-            //for (unsigned i = 0; i < Psi_hzy_yn.nz; i++) {
-            //    for (unsigned k = 0; k < Psi_hzy_yn.nx; k++) {
-            //        CPsi_hzy_yn.p[k][j][i] = Chzex.p[k][j][i] * dy;
-            //        Chzex.p[k][j][i] = Chzex.p[k][j][i] / kappa_my;
-            //    }
-            //}
-            T cev = 1 / (eps_0 / dt + sigma_pey / 2) / dy;
-            T chv = 1 / (mu_0 / dt + sigma_pmy / 2) / dy;
             for (unsigned i = 0; i < Psi_exy_yn.nx; i++) {
                 for (unsigned k = 0; k < Psi_exy_yn.nz; k++) {
-                    Cexhz.p[i][jplus][k] = cev;
                     CPsi_exy_yn.p[i][j][k] = Cexhz.p[i][jplus][k] * dy;
                     Cexhz.p[i][jplus][k] = Cexhz.p[i][jplus][k] / kappa_ey;
                 }
             }
             for (unsigned i = 0; i < Psi_ezy_yn.nz; i++) {
                 for (unsigned k = 0; k < Psi_ezy_yn.nx; k++) {
-                    Cezhx.p[k][jplus][i] = -cev;
                     CPsi_ezy_yn.p[k][j][i] = Cezhx.p[k][jplus][i] * dy;
                     Cezhx.p[k][jplus][i] = Cezhx.p[k][jplus][i] / kappa_ey;
                 }
             }
             for (unsigned i = 0; i < Psi_hxy_yn.nx; i++) {
                 for (unsigned k = 0; k < Psi_hxy_yn.nz; k++) {
-                    Chxez.p[i][j][k] = -chv;
                     CPsi_hxy_yn.p[i][j][k] = Chxez.p[i][j][k] * dy;
                     Chxez.p[i][j][k] = Chxez.p[i][j][k] / kappa_my;
                 }
             }
             for (unsigned i = 0; i < Psi_hzy_yn.nz; i++) {
                 for (unsigned k = 0; k < Psi_hzy_yn.nx; k++) {
-                    Chzex.p[k][j][i] = chv;
                     CPsi_hzy_yn.p[k][j][i] = Chzex.p[k][j][i] * dy;
                     Chzex.p[k][j][i] = Chzex.p[k][j][i] / kappa_my;
                 }
             }
+            //T cev = 1 / (eps_0 / dt + sigma_pey / 2) / dy;
+            //T chv = 1 / (mu_0 / dt + sigma_pmy / 2) / dy;
+            //for (unsigned i = 0; i < Psi_exy_yn.nx; i++) {
+            //    for (unsigned k = 0; k < Psi_exy_yn.nz; k++) {
+            //        Cexhz.p[i][jplus][k] = cev;
+            //        CPsi_exy_yn.p[i][j][k] = Cexhz.p[i][jplus][k] * dy;
+            //        Cexhz.p[i][jplus][k] = Cexhz.p[i][jplus][k] / kappa_ey;
+            //    }
+            //}
+            //for (unsigned i = 0; i < Psi_ezy_yn.nz; i++) {
+            //    for (unsigned k = 0; k < Psi_ezy_yn.nx; k++) {
+            //        Cezhx.p[k][jplus][i] = -cev;
+            //        CPsi_ezy_yn.p[k][j][i] = Cezhx.p[k][jplus][i] * dy;
+            //        Cezhx.p[k][jplus][i] = Cezhx.p[k][jplus][i] / kappa_ey;
+            //    }
+            //}
+            //for (unsigned i = 0; i < Psi_hxy_yn.nx; i++) {
+            //    for (unsigned k = 0; k < Psi_hxy_yn.nz; k++) {
+            //        Chxez.p[i][j][k] = -chv;
+            //        CPsi_hxy_yn.p[i][j][k] = Chxez.p[i][j][k] * dy;
+            //        Chxez.p[i][j][k] = Chxez.p[i][j][k] / kappa_my;
+            //    }
+            //}
+            //for (unsigned i = 0; i < Psi_hzy_yn.nz; i++) {
+            //    for (unsigned k = 0; k < Psi_hzy_yn.nx; k++) {
+            //        Chzex.p[k][j][i] = chv;
+            //        CPsi_hzy_yn.p[k][j][i] = Chzex.p[k][j][i] * dy;
+            //        Chzex.p[k][j][i] = Chzex.p[k][j][i] / kappa_my;
+            //    }
+            //}
         }
     }
 }
@@ -1061,7 +1061,7 @@ void cpml<T>::initCoefficientArraysYP(short pmlOrder, T sigmaRatio, T kappaMax, 
             T alpha_ey = alphaMax * fabs(rho_e);
             T alpha_my =  alphaMax * fabs(rho_m);
             cpml_b_ey_yp.p[j] = exp((-dt / eps_0) * (sigma_pey / kappa_ey + alpha_ey));
-            cpml_b_my_yp.p[j] = exp((-dt / mu_0) * (sigma_pmy / kappa_my + alpha_my));
+            cpml_b_my_yp.p[j] = exp((-dt / eps_0) * (sigma_pmy / kappa_my + alpha_my));
             if (rho_e != 0) {
                 cpml_a_ey_yp.p[j] = 1 / dy * (cpml_b_ey_yp.p[j] - 1.0) * sigma_pey / (kappa_ey * (sigma_pey + kappa_ey * alpha_ey));
             } else {
@@ -1073,60 +1073,60 @@ void cpml<T>::initCoefficientArraysYP(short pmlOrder, T sigmaRatio, T kappaMax, 
                 cpml_a_my_yp.p[j] = 0;
             }
 
-            //for (unsigned i = 0; i < Psi_exy_yp.nx; i++) {
-            //    for (unsigned k = 0; k < Psi_exy_yp.nz; k++) {
-            //        CPsi_exy_yp.p[i][j][k] = Cexhz.p[i][iex][k] * dy;
-            //        Cexhz.p[i][iex][k] = Cexhz.p[i][iex][k] / kappa_ey;
-            //    }
-            //}
-            //for (unsigned i = 0; i < Psi_ezy_yp.nz; i++) {
-            //    for (unsigned k = 0; k < Psi_ezy_yp.nx; k++) {
-            //        CPsi_ezy_yp.p[k][j][i] = Cezhx.p[k][iex][i] * dy;
-            //        Cezhx.p[k][iex][i] = Cezhx.p[k][iex][i] / kappa_ey;
-            //    }
-            //}
-            //for (unsigned i = 0; i < Psi_hxy_yp.nx; i++) {
-            //    for (unsigned k = 0; k < Psi_hxy_yp.nz; k++) {
-            //        CPsi_hxy_yp.p[i][j][k] = Chxez.p[i][ihx][k] * dy;
-            //        Chxez.p[i][ihx][k] = Chxez.p[i][ihx][k] / kappa_my;
-            //    }
-            //}
-            //for (unsigned i = 0; i < Psi_hzy_yp.nz; i++) {
-            //    for (unsigned k = 0; k < Psi_hzy_yp.nx; k++) {
-            //        CPsi_hzy_yp.p[k][j][i] = Chzex.p[k][ihx][i] * dy;
-            //        Chzex.p[k][ihx][i] = Chzex.p[k][ihx][i] / kappa_my;
-            //    }
-            //}
-            T cev = 1 / (eps_0 / dt + sigma_pey / 2) / dy;
-            T chv = 1 / (mu_0 / dt + sigma_pmy / 2) / dy;
             for (unsigned i = 0; i < Psi_exy_yp.nx; i++) {
                 for (unsigned k = 0; k < Psi_exy_yp.nz; k++) {
-                    Cexhz.p[i][iex][k] = cev;
                     CPsi_exy_yp.p[i][j][k] = Cexhz.p[i][iex][k] * dy;
                     Cexhz.p[i][iex][k] = Cexhz.p[i][iex][k] / kappa_ey;
                 }
             }
             for (unsigned i = 0; i < Psi_ezy_yp.nz; i++) {
                 for (unsigned k = 0; k < Psi_ezy_yp.nx; k++) {
-                    Cezhx.p[k][iex][i] = -cev;
                     CPsi_ezy_yp.p[k][j][i] = Cezhx.p[k][iex][i] * dy;
                     Cezhx.p[k][iex][i] = Cezhx.p[k][iex][i] / kappa_ey;
                 }
             }
             for (unsigned i = 0; i < Psi_hxy_yp.nx; i++) {
                 for (unsigned k = 0; k < Psi_hxy_yp.nz; k++) {
-                    Chxez.p[i][ihx][k] = -chv;
                     CPsi_hxy_yp.p[i][j][k] = Chxez.p[i][ihx][k] * dy;
                     Chxez.p[i][ihx][k] = Chxez.p[i][ihx][k] / kappa_my;
                 }
             }
             for (unsigned i = 0; i < Psi_hzy_yp.nz; i++) {
                 for (unsigned k = 0; k < Psi_hzy_yp.nx; k++) {
-                    Chzex.p[k][ihx][i] = chv;
                     CPsi_hzy_yp.p[k][j][i] = Chzex.p[k][ihx][i] * dy;
                     Chzex.p[k][ihx][i] = Chzex.p[k][ihx][i] / kappa_my;
                 }
             }
+            //T cev = 1 / (eps_0 / dt + sigma_pey / 2) / dy;
+            //T chv = 1 / (mu_0 / dt + sigma_pmy / 2) / dy;
+            //for (unsigned i = 0; i < Psi_exy_yp.nx; i++) {
+            //    for (unsigned k = 0; k < Psi_exy_yp.nz; k++) {
+            //        Cexhz.p[i][iex][k] = cev;
+            //        CPsi_exy_yp.p[i][j][k] = Cexhz.p[i][iex][k] * dy;
+            //        Cexhz.p[i][iex][k] = Cexhz.p[i][iex][k] / kappa_ey;
+            //    }
+            //}
+            //for (unsigned i = 0; i < Psi_ezy_yp.nz; i++) {
+            //    for (unsigned k = 0; k < Psi_ezy_yp.nx; k++) {
+            //        Cezhx.p[k][iex][i] = -cev;
+            //        CPsi_ezy_yp.p[k][j][i] = Cezhx.p[k][iex][i] * dy;
+            //        Cezhx.p[k][iex][i] = Cezhx.p[k][iex][i] / kappa_ey;
+            //    }
+            //}
+            //for (unsigned i = 0; i < Psi_hxy_yp.nx; i++) {
+            //    for (unsigned k = 0; k < Psi_hxy_yp.nz; k++) {
+            //        Chxez.p[i][ihx][k] = -chv;
+            //        CPsi_hxy_yp.p[i][j][k] = Chxez.p[i][ihx][k] * dy;
+            //        Chxez.p[i][ihx][k] = Chxez.p[i][ihx][k] / kappa_my;
+            //    }
+            //}
+            //for (unsigned i = 0; i < Psi_hzy_yp.nz; i++) {
+            //    for (unsigned k = 0; k < Psi_hzy_yp.nx; k++) {
+            //        Chzex.p[k][ihx][i] = chv;
+            //        CPsi_hzy_yp.p[k][j][i] = Chzex.p[k][ihx][i] * dy;
+            //        Chzex.p[k][ihx][i] = Chzex.p[k][ihx][i] / kappa_my;
+            //    }
+            //}
             ihx++;
             iex++;
         }
@@ -1152,7 +1152,7 @@ void cpml<T>::initCoefficientArraysZN(short pmlOrder, T sigmaRatio, T kappaMax, 
             T alpha_ez = alphaMax * fabs(rho_e);
             T alpha_mz =  alphaMax * fabs(rho_m);
             cpml_b_ez_zn.p[k] = exp((-dt / eps_0) * (sigma_pez / kappa_ez + alpha_ez));
-            cpml_b_mz_zn.p[k] = exp((-dt / mu_0) * (sigma_pmz / kappa_mz + alpha_mz));
+            cpml_b_mz_zn.p[k] = exp((-dt / eps_0) * (sigma_pmz / kappa_mz + alpha_mz));
             if (rho_e != 0) {
                 cpml_a_ez_zn.p[k] = 1 / dz * (cpml_b_ez_zn.p[k] - 1.0) * sigma_pez / (kappa_ez * (sigma_pez + kappa_ez * alpha_ez));
             } else {
@@ -1164,60 +1164,60 @@ void cpml<T>::initCoefficientArraysZN(short pmlOrder, T sigmaRatio, T kappaMax, 
                 cpml_a_mz_zn.p[k] = 0;
             }
 
-            //for (unsigned j = 0; j < Psi_exz_zn.ny; j++) {
-            //    for (unsigned i = 0; i < Psi_exz_zn.nx; i++) {
-            //        CPsi_exz_zn.p[i][j][k] = Cexhy.p[i][j][iplus] * dz;
-            //        Cexhy.p[i][j][iplus] = Cexhy.p[i][j][iplus] / kappa_ez;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_eyz_zn.nx; j++) {
-            //    for (unsigned i = 0; i < Psi_eyz_zn.ny; i++) {
-            //        CPsi_eyz_zn.p[j][i][k] = Ceyhx.p[j][i][iplus] * dz;
-            //        Ceyhx.p[j][i][iplus] = Ceyhx.p[j][i][iplus] / kappa_ez;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_hxz_zn.ny; j++) {
-            //    for (unsigned i = 0; i < Psi_hxz_zn.nx; i++) {
-            //        CPsi_hxz_zn.p[i][j][k] = Chxey.p[i][j][k] * dz;
-            //        Chxey.p[i][j][k] = Chxey.p[i][j][k] / kappa_mz;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_hyz_zn.nx; j++) {
-            //    for (unsigned i = 0; i < Psi_hyz_zn.ny; i++) {
-            //        CPsi_hyz_zn.p[j][i][k] = Chyex.p[j][i][k] * dz;
-            //        Chyex.p[j][i][k] = Chyex.p[j][i][k] / kappa_mz;
-            //    }
-            //}
-            T cev = 1 / (eps_0 / dt + sigma_pez / 2) / dz;
-            T chv = 1 / (mu_0 / dt + sigma_pmz / 2) / dz;
             for (unsigned j = 0; j < Psi_exz_zn.ny; j++) {
                 for (unsigned i = 0; i < Psi_exz_zn.nx; i++) {
-                    Cexhy.p[i][j][iplus] = -cev;
                     CPsi_exz_zn.p[i][j][k] = Cexhy.p[i][j][iplus] * dz;
                     Cexhy.p[i][j][iplus] = Cexhy.p[i][j][iplus] / kappa_ez;
                 }
             }
             for (unsigned j = 0; j < Psi_eyz_zn.nx; j++) {
                 for (unsigned i = 0; i < Psi_eyz_zn.ny; i++) {
-                    Ceyhx.p[j][i][iplus] = cev;
                     CPsi_eyz_zn.p[j][i][k] = Ceyhx.p[j][i][iplus] * dz;
                     Ceyhx.p[j][i][iplus] = Ceyhx.p[j][i][iplus] / kappa_ez;
                 }
             }
             for (unsigned j = 0; j < Psi_hxz_zn.ny; j++) {
                 for (unsigned i = 0; i < Psi_hxz_zn.nx; i++) {
-                    Chxey.p[i][j][k] = chv;
                     CPsi_hxz_zn.p[i][j][k] = Chxey.p[i][j][k] * dz;
                     Chxey.p[i][j][k] = Chxey.p[i][j][k] / kappa_mz;
                 }
             }
             for (unsigned j = 0; j < Psi_hyz_zn.nx; j++) {
                 for (unsigned i = 0; i < Psi_hyz_zn.ny; i++) {
-                    Chyex.p[j][i][k] = -chv;
                     CPsi_hyz_zn.p[j][i][k] = Chyex.p[j][i][k] * dz;
                     Chyex.p[j][i][k] = Chyex.p[j][i][k] / kappa_mz;
                 }
             }
+            //T cev = 1 / (eps_0 / dt + sigma_pez / 2) / dz;
+            //T chv = 1 / (mu_0 / dt + sigma_pmz / 2) / dz;
+            //for (unsigned j = 0; j < Psi_exz_zn.ny; j++) {
+            //    for (unsigned i = 0; i < Psi_exz_zn.nx; i++) {
+            //        Cexhy.p[i][j][iplus] = -cev;
+            //        CPsi_exz_zn.p[i][j][k] = Cexhy.p[i][j][iplus] * dz;
+            //        Cexhy.p[i][j][iplus] = Cexhy.p[i][j][iplus] / kappa_ez;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_eyz_zn.nx; j++) {
+            //    for (unsigned i = 0; i < Psi_eyz_zn.ny; i++) {
+            //        Ceyhx.p[j][i][iplus] = cev;
+            //        CPsi_eyz_zn.p[j][i][k] = Ceyhx.p[j][i][iplus] * dz;
+            //        Ceyhx.p[j][i][iplus] = Ceyhx.p[j][i][iplus] / kappa_ez;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_hxz_zn.ny; j++) {
+            //    for (unsigned i = 0; i < Psi_hxz_zn.nx; i++) {
+            //        Chxey.p[i][j][k] = chv;
+            //        CPsi_hxz_zn.p[i][j][k] = Chxey.p[i][j][k] * dz;
+            //        Chxey.p[i][j][k] = Chxey.p[i][j][k] / kappa_mz;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_hyz_zn.nx; j++) {
+            //    for (unsigned i = 0; i < Psi_hyz_zn.ny; i++) {
+            //        Chyex.p[j][i][k] = -chv;
+            //        CPsi_hyz_zn.p[j][i][k] = Chyex.p[j][i][k] * dz;
+            //        Chyex.p[j][i][k] = Chyex.p[j][i][k] / kappa_mz;
+            //    }
+            //}
         }
     }
 }
@@ -1244,7 +1244,7 @@ void cpml<T>::initCoefficientArraysZP(short pmlOrder, T sigmaRatio, T kappaMax, 
             T alpha_mz =  alphaMax * fabs(rho_m);
 
             cpml_b_ez_zp.p[k] = exp((-dt / eps_0) * (sigma_pez / kappa_ez + alpha_ez));
-            cpml_b_mz_zp.p[k] = exp((-dt / mu_0) * (sigma_pmz / kappa_mz + alpha_mz));
+            cpml_b_mz_zp.p[k] = exp((-dt / eps_0) * (sigma_pmz / kappa_mz + alpha_mz));
             if (rho_e != 0) {
                 cpml_a_ez_zp.p[k] = 1 / dz * (cpml_b_ez_zp.p[k] - 1.0) * sigma_pez / (kappa_ez * (sigma_pez + kappa_ez * alpha_ez));
             } else {
@@ -1255,60 +1255,60 @@ void cpml<T>::initCoefficientArraysZP(short pmlOrder, T sigmaRatio, T kappaMax, 
             } else {
                 cpml_a_mz_zp.p[k] = 0;
             }
-            //for (unsigned j = 0; j < Psi_eyz_zp.ny; j++) {
-            //    for (unsigned i = 0; i < Psi_eyz_zp.nx; i++) {
-            //        CPsi_eyz_zp.p[i][j][k] = Ceyhx.p[i][j][iez] * dz;
-            //        Ceyhx.p[i][j][iez] = Ceyhx.p[i][j][iez] / kappa_ez;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_exz_zp.nx; j++) {
-            //    for (unsigned i = 0; i < Psi_exz_zp.ny; i++) {
-            //        CPsi_exz_zp.p[j][i][k] = Cexhy.p[j][i][iez] * dz;
-            //        Cexhy.p[j][i][iez] = Cexhy.p[j][i][iez] / kappa_ez;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_hyz_zp.ny; j++) {
-            //    for (unsigned i = 0; i < Psi_hyz_zp.nx; i++) {
-            //        CPsi_hyz_zp.p[i][j][k] = Chyex.p[i][j][ihz] * dz;
-            //        Chyex.p[i][j][ihz] = Chyex.p[i][j][ihz] / kappa_mz;
-            //    }
-            //}
-            //for (unsigned j = 0; j < Psi_hxz_zp.nx; j++) {
-            //    for (unsigned i = 0; i < Psi_hxz_zp.ny; i++) {
-            //        CPsi_hxz_zp.p[j][i][k] = Chxey.p[j][i][ihz] * dz;
-            //        Chxey.p[j][i][ihz] = Chxey.p[j][i][ihz] / kappa_mz;
-            //    }
-            //}
-            T cev = 1 / (eps_0 / dt + sigma_pez / 2) / dz;
-            T chv = 1 / (mu_0 / dt + sigma_pmz / 2) / dz;
             for (unsigned j = 0; j < Psi_eyz_zp.ny; j++) {
                 for (unsigned i = 0; i < Psi_eyz_zp.nx; i++) {
-                    Ceyhx.p[i][j][iez] = cev;
                     CPsi_eyz_zp.p[i][j][k] = Ceyhx.p[i][j][iez] * dz;
                     Ceyhx.p[i][j][iez] = Ceyhx.p[i][j][iez] / kappa_ez;
                 }
             }
             for (unsigned j = 0; j < Psi_exz_zp.nx; j++) {
                 for (unsigned i = 0; i < Psi_exz_zp.ny; i++) {
-                    Cexhy.p[j][i][iez] = -cev;
                     CPsi_exz_zp.p[j][i][k] = Cexhy.p[j][i][iez] * dz;
                     Cexhy.p[j][i][iez] = Cexhy.p[j][i][iez] / kappa_ez;
                 }
             }
             for (unsigned j = 0; j < Psi_hyz_zp.ny; j++) {
                 for (unsigned i = 0; i < Psi_hyz_zp.nx; i++) {
-                    Chyex.p[i][j][ihz] = -chv;
                     CPsi_hyz_zp.p[i][j][k] = Chyex.p[i][j][ihz] * dz;
                     Chyex.p[i][j][ihz] = Chyex.p[i][j][ihz] / kappa_mz;
                 }
             }
             for (unsigned j = 0; j < Psi_hxz_zp.nx; j++) {
                 for (unsigned i = 0; i < Psi_hxz_zp.ny; i++) {
-                    Chxey.p[j][i][ihz] = chv;
                     CPsi_hxz_zp.p[j][i][k] = Chxey.p[j][i][ihz] * dz;
                     Chxey.p[j][i][ihz] = Chxey.p[j][i][ihz] / kappa_mz;
                 }
             }
+            //T cev = 1 / (eps_0 / dt + sigma_pez / 2) / dz;
+            //T chv = 1 / (mu_0 / dt + sigma_pmz / 2) / dz;
+            //for (unsigned j = 0; j < Psi_eyz_zp.ny; j++) {
+            //    for (unsigned i = 0; i < Psi_eyz_zp.nx; i++) {
+            //        Ceyhx.p[i][j][iez] = cev;
+            //        CPsi_eyz_zp.p[i][j][k] = Ceyhx.p[i][j][iez] * dz;
+            //        Ceyhx.p[i][j][iez] = Ceyhx.p[i][j][iez] / kappa_ez;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_exz_zp.nx; j++) {
+            //    for (unsigned i = 0; i < Psi_exz_zp.ny; i++) {
+            //        Cexhy.p[j][i][iez] = -cev;
+            //        CPsi_exz_zp.p[j][i][k] = Cexhy.p[j][i][iez] * dz;
+            //        Cexhy.p[j][i][iez] = Cexhy.p[j][i][iez] / kappa_ez;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_hyz_zp.ny; j++) {
+            //    for (unsigned i = 0; i < Psi_hyz_zp.nx; i++) {
+            //        Chyex.p[i][j][ihz] = -chv;
+            //        CPsi_hyz_zp.p[i][j][k] = Chyex.p[i][j][ihz] * dz;
+            //        Chyex.p[i][j][ihz] = Chyex.p[i][j][ihz] / kappa_mz;
+            //    }
+            //}
+            //for (unsigned j = 0; j < Psi_hxz_zp.nx; j++) {
+            //    for (unsigned i = 0; i < Psi_hxz_zp.ny; i++) {
+            //        Chxey.p[j][i][ihz] = chv;
+            //        CPsi_hxz_zp.p[j][i][k] = Chxey.p[j][i][ihz] * dz;
+            //        Chxey.p[j][i][ihz] = Chxey.p[j][i][ihz] / kappa_mz;
+            //    }
+            //}
             ihz++;
             iez++;
         }
