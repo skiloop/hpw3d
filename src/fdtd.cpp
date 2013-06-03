@@ -672,7 +672,9 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     DA = 1.0;
     DB = dt / mu_0;
+    
     initCoeficients();
+    
     for (i = 0; i < numMaterials; ++i) {
 
         CA[i] = (1.0 - sigma[i] * dt / (2.0 * epsilon[i])) /
