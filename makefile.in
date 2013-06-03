@@ -1,5 +1,5 @@
-CXX=g++
-#CXX=icpc
+#CXX=g++
+CXX=icpc
 CC=gcc
 
 # MATH lib
@@ -11,9 +11,10 @@ CXXFLAGS=-Wl,--hash-style=sysv -Wall
 CFLAGS=-Wl,--hash-style=sysv -Wall
 
 # debug mode
-CXXFLAGS+=-g -DDEBUG=4
-CFLAGS+=-g -DDEBUG=4
-#CXXFLAGS+=-O3
+#CXXFLAGS+=-g -DDEBUG=4
+#CFLAGS+=-g -DDEBUG=4
+CXXFLAGS+=-O3
+CFLAGS+=-O3
 
 #Add DENSITY
 #CXXFLAGS+=-DWITH_DENSITY
@@ -36,6 +37,6 @@ MATINC=-I$(MATPATH)/extern/include
 #LIB+=$(MATLIB)
 
 # enable OpenMP
-#CXXFLAGS+=-fopenmp
-#LIB+=-fopenmp
+CXXFLAGS+=-fopenmp
+LIB+=-fopenmp
 
