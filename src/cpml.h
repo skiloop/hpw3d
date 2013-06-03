@@ -738,6 +738,7 @@ template<class T> void cpml<T>::initEMUpdateCoeficientsInCPMLRegion(short pmlOrd
     T sigmaMax_x = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dx);
     T sigmaMax_y = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dy);
     T sigmaMax_z = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dz);
+	int i;
     if (is_cpml_xn) {
         T rho_e = (n_cpml_xn - i - 0.75) / (T) n_cpml_xn;
         //T rho_e = (n_cpml_xn - i) /(T)n_cpml_xn;	
