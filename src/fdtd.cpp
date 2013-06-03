@@ -721,10 +721,10 @@ void fdtd::compute() {
     //    jc = jsp + 1;
     //    kc = ksp + 2;
     ic = isp; // + (Imax - isp) / 2;
-    jc = jsp + (Jmax - jsp) / 2;
+    jc = jsp + 30;
 #if DEBUG>=3
-    if (jc + 20 < Jmax) {
-        jc = jsp + 20;
+    if (jc + 30 < Jmax) {
+        jc = jsp + 30;
     }
 #endif
     kc = ksp;
