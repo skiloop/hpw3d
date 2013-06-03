@@ -686,9 +686,9 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MyDataF sigmaRatio = 0.75 / sqrt(mu_0 / eps_0 / epsR);
-    MyDataF kappaMax = 10;
-    MyDataF alphaMax = 0.025;
+    MyDataF sigmaRatio = 1 / sqrt(epsR);
+    MyDataF kappaMax = 15;
+    MyDataF alphaMax = 0.24;
     int pmlOrder = 4;
 
     //pml.initParmeters(dx, dy, dz, m, ma);
