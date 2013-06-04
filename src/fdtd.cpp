@@ -672,9 +672,9 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     DA = 1.0;
     DB = dt / mu_0;
-    
+
     initCoeficients();
-    
+
     for (i = 0; i < numMaterials; ++i) {
 
         CA[i] = (1.0 - sigma[i] * dt / (2.0 * epsilon[i])) /
@@ -686,7 +686,7 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MyDataF sigmaRatio = 1 / sqrt(epsR);
+    MyDataF sigmaMax = 1.0;
     MyDataF kappaMax = 15;
     MyDataF alphaMax = 0.24;
     int pmlOrder = 4;
@@ -694,7 +694,7 @@ void fdtd::setUp() {
     //pml.initParmeters(dx, dy, dz, m, ma);
     pml.setCPMLRegion(pmlWidth);
     pml.createCPMLArrays(Imax, Jmax, Kmax);
-    pml.initCoefficientArrays(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, dy, dz,
+    pml.initCoefficientArrays(pmlOrder, sigmaMax, kappaMax, alphaMax, epsR, dt, dx, dy, dz,
             Ceyhz, Cezhy, Chyez, Chzey,
             Cexhz, Cezhx, Chxez, Chzex,
             Ceyhx, Cexhy, Chyex, Chxey);
