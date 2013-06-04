@@ -594,8 +594,7 @@ void fdtd::initialize() {
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "creating ID3..." << endl;
 #endif
-    ID3.CreateStruct(Imax, Jmax, Kmax, 0);
-    pml.createCPMLArray();
+    ID3.CreateStruct(Imax, Jmax, Kmax, 0);    
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -786,7 +785,7 @@ void fdtd::compute() {
             pml.Psi_exz_zp.save(0, 1, n, 3);
             pml.Psi_exz_zp.save(4, 1, n, 3);
 #ifdef WITH_DENSITY
-            Ne.save(Ne.nz / 2, neGrid, n, 2);            
+            Ne.save(Ne.nz / 2, neGrid, n, 2);
 #endif
         }
 #ifdef MATLAB_SIMULATION
@@ -1038,7 +1037,6 @@ void fdtd::updateHx() {
 #endif
             }
         }
-        pml.updateHxIn(k, Hx, Ez, DB, dy);
     }
 }
 
@@ -1060,9 +1058,7 @@ void fdtd::updateHy() {
 #endif
             }
         }
-        pml.updateHyIn(k, Hy, Ez, DB, dx);
     }
-    pml.updateHyOut(Hy, Ex, DB, dz);
 }
 
 void fdtd::updateHz() {
@@ -1086,7 +1082,6 @@ void fdtd::updateHz() {
 #endif
             }
         }
-        pml.updateHz(k, Hz, Ex, Ey, DB, dx, dy);
     }
 }
 
@@ -1111,7 +1106,7 @@ void fdtd::updateEx() {
 #ifdef WITH_DENSITY
                 Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
 #endif                                  
-                }
+
 #ifdef WITH_DENSITY
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = Nu_c.p[i * neGrid][j * neGrid + halfNeGrid][k * neGrid];
@@ -1122,9 +1117,7 @@ void fdtd::updateEx() {
 #endif
             }
         }
-        pml.updateExIn(k, Ex, Hz, ID1, CB, dy);
     }
-    pml.updateExOut(Ex, Hy, ID1, CB, dz);
 }
 
 void fdtd::updateEy() {
@@ -1134,7 +1127,7 @@ void fdtd::updateEy() {
     //  UPDATE Ey
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,id)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,id) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
     for (k = 1; k < Kmax; ++k) {
         for (i = 1; i < Imax; ++i) {
@@ -1161,12 +1154,10 @@ void fdtd::updateEy() {
                 } else {
                     Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
                 }
-#endif
+#endif /* WITH_DENSITY */
             }
         }
-        pml.updateEyIn(k, Ey, Hz, ID2, CB, dx);
     }
-    pml.updateEyOut(Ey, Hx, ID2, CB, dy);
 }
 
 void fdtd::updateEz() {
@@ -1176,7 +1167,7 @@ void fdtd::updateEz() {
     //  UPDATE Ez
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,id)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,id) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
     for (k = 0; k < Kmax; ++k) {
         for (i = 1; i < Imax; ++i) {
@@ -1190,7 +1181,7 @@ void fdtd::updateEz() {
 #ifdef WITH_DENSITY
                 Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
 #endif
-                }
+
 #ifdef WITH_DENSITY
                 //                Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
@@ -1202,7 +1193,6 @@ void fdtd::updateEz() {
 #endif
             }
         }
-        pml.updateEz(k, Ez, Hx, Hy, ID3, CB, dx, dy);
     }
 }
 
