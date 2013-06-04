@@ -276,19 +276,11 @@ public:
     void initCoefficientArrays(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx, T dy, T dz,
             data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey,
             data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex,
-            data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey,
-            data3d<T>&Cexe, data3d<T>&Ceye, data3d<T>&Ceze,
-            data3d<T>&Chxh, data3d<T>&Chyh, data3d<T>&Chzh);
+            data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey);
     //=======================================================
     // private functions
     //=======================================================
 private:
-    void initEMUpdateCoeficientsInCPMLRegion(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx, T dy, T dz,
-            data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey,
-            data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex,
-            data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey,
-            data3d<T>&Cexe, data3d<T>&Ceye, data3d<T>&Ceze,
-            data3d<T>&Chxh, data3d<T>&Chyh, data3d<T>&Chzh);
     /**
      * 
      * @param pmlOrder
@@ -718,56 +710,13 @@ template<class T>
 void cpml<T>::initCoefficientArrays(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx, T dy, T dz,
         data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey,
         data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex,
-        data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey,
-        data3d<T>&Cexe, data3d<T>&Ceye, data3d<T>&Ceze,
-        data3d<T>&Chxh, data3d<T>&Chyh, data3d<T>&Chzh) {
+        data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey) {
     initCoefficientArraysXN(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, Ceyhz, Cezhy, Chyez, Chzey);
     initCoefficientArraysXP(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, Ceyhz, Cezhy, Chyez, Chzey);
     initCoefficientArraysYN(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dy, Cexhz, Cezhx, Chxez, Chzex);
     initCoefficientArraysYP(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dy, Cexhz, Cezhx, Chxez, Chzex);
     initCoefficientArraysZN(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dz, Ceyhx, Cexhy, Chyex, Chxey);
     initCoefficientArraysZP(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dz, Ceyhx, Cexhy, Chyex, Chxey);
-}
-
-template<class T> void cpml<T>::initEMUpdateCoeficientsInCPMLRegion(short pmlOrder, T sigmaRatio,
-        T kappaMax, T alphaMax, T dt, T dx, T dy, T dz,
-        data3d<T>& Ceyhz, data3d<T>& Cezhy, data3d<T>& Chyez, data3d<T>& Chzey,
-        data3d<T>& Cexhz, data3d<T>& Cezhx, data3d<T>& Chxez, data3d<T>& Chzex,
-        data3d<T>& Ceyhx, data3d<T>& Cexhy, data3d<T>& Chyex, data3d<T>& Chxey,
-        data3d<T>& Cexe, data3d<T>& Ceye, data3d<T>& Ceze, data3d<T>& Chxh, data3d<T>& Chyh, data3d<T>& Chzh) {
-    T sigmaMax_x = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dx);
-    T sigmaMax_y = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dy);
-    T sigmaMax_z = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dz);
-	int i;
-    if (is_cpml_xn) {
-        T rho_e = (n_cpml_xn - i - 0.75) / (T) n_cpml_xn;
-        //T rho_e = (n_cpml_xn - i) /(T)n_cpml_xn;	
-        T rho_m = (n_cpml_xn - i - 0.25) / (T) n_cpml_xn;
-        //T rho_m = (n_cpml_xn - i) /(T)n_cpml_xn;
-        T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
-        T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
-        T sigma_pex = sigmaMax_x*rho_e_pmlOrder;
-        T sigma_pmx =  sigmaMax_x * rho_m_pmlOrder;
-        T kappa_ex = 1 + (kappaMax - 1) * rho_e_pmlOrder;
-        T kappa_mx = 1 + (kappaMax - 1) * rho_m_pmlOrder;
-        T alpha_ex = alphaMax * fabs(rho_e);
-        T alpha_mx =  alphaMax * fabs(rho_m);
-    }
-    if (is_cpml_xp) {
-
-    }
-    if (is_cpml_yn) {
-
-    }
-    if (is_cpml_yp) {
-
-    }
-    if (is_cpml_zn) {
-
-    }
-    if (is_cpml_zp) {
-
-    }
 }
 
 template<class T>
