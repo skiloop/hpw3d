@@ -2,11 +2,11 @@
 include makefile.in
 
 SRC=src
-TEST=testCPML sine testMain gaussian cpmlfdtd3d
-TEST_SRC_DIR=./test/
+#TEST=testCPML sine testMain gaussian cpmlfdtd3d
+#TEST_SRC_DIR=./test/
 OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o inputChecker.o source.o
-CPPOBJECT=sine.o testMain.o testcpml.o gaussian.o openmp.o
-TEST_OBJ=$(CPPOBJECTS) cpmlfdtd3d.o
+#CPPOBJECT=sine.o testMain.o testcpml.o gaussian.o openmp.o
+#TEST_OBJ=$(CPPOBJECTS) cpmlfdtd3d.o
 VPATH = $(SRC):$(TEST_SRC_DIR)
 projects=$(TEST) hpw3d#3DFormulaTransforming.pdf
 .PHONY:all clean test
