@@ -144,6 +144,9 @@ void fdtd::updateCollisionFrequency() {
     //            }
     //        }
     //    }
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,EeffDivP) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
+#endif
     for (i = 0; i < Nu_c.nx; i++) {
         for (j = 0; j < Nu_c.ny; j++) {
             for (k = 0; k < Nu_c.nz; k++) {
@@ -384,8 +387,12 @@ void fdtd::updateCoeff() {
     unsigned i, j, k;
     unsigned im, jm, km;
     MyDataF tmp = half_e * (1 + alpha);
-    for (i = 0, im = halfNeGrid; i < Ex.nx; i++, im += neGrid) {
-        for (j = 0, jm = 0; j < Ex.ny; j++, jm += neGrid) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
+#endif    
+    for (j = 0; j < Ex.ny; j++) {
+        jm = j*neGrid;
+        for (i = 0, im = halfNeGrid; i < Ex.nx; i++, im += neGrid) {
             for (k = 0, km = halfNeGrid; k < Ex.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Cexe.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
@@ -394,14 +401,20 @@ void fdtd::updateCoeff() {
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
-                    tmp = half_e * (1 + (1 - a) / gamma_t);
+                    MyDataF tmpc = half_e * (1 + (1 - a) / gamma_t);
                     Cvxex_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
+                    Cexvx.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
+                } else {
+                    Cexvx.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
                 }
-                Cexvx.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
     }
-    for (i = 0, im = 0; i < Ey.nx; i++, im += neGrid) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
+#endif    
+    for (i = 0; i < Ey.nx; i++) {
+        im = i*neGrid;
         for (j = 0, jm = halfNeGrid; j < Ey.ny; j++, jm += neGrid) {
             for (k = 0, km = halfNeGrid; k < Ey.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
@@ -411,14 +424,20 @@ void fdtd::updateCoeff() {
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
-                    tmp = half_e * (1 + (1 - a) / gamma_t);
+                    MyDataF tmpc = half_e * (1 + (1 - a) / gamma_t);
                     Cvyey_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
+                    Ceyvy.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
+                } else {
+                    Ceyvy.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
                 }
-                Ceyvy.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
     }
-    for (i = 0, im = 0; i < Ez.nx; i++, im += neGrid) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
+#endif   
+    for (i = 0; i < Ez.nx; i++) {
+        im = i*neGrid;
         for (j = 0, jm = 0; j < Ez.ny; j++, jm += neGrid) {
             for (k = 0, km = 0; k < Ez.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
@@ -428,10 +447,12 @@ void fdtd::updateCoeff() {
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
-                    tmp = half_e * (1 + (1 - a) / gamma_t);
+                    MyDataF tmpc = half_e * (1 + (1 - a) / gamma_t);
                     Cvzez_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
+                    Cezvz.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
+                } else {
+                    Cezvz.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
                 }
-                Cezvz.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
             }
         }
     }
@@ -447,6 +468,9 @@ void fdtd::updateBeta() {
     MyDataF temp = 0.25 * e * e * dt * dt / me / eps_0;
     if (srcType != fdtd::SOURCE_GAUSSIAN) {
         temp = temp / gamma;
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic)  //shared(Hx,Ez,Ey,pml,DA,DB,dy)
+#endif
         for (unsigned i = is; i < ie; i++) {
             for (unsigned j = js; j < je; j++) {
                 for (unsigned k = ks; k < ke; k++) {
@@ -455,6 +479,9 @@ void fdtd::updateBeta() {
             }
         }
     } else {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
+#endif
         for (unsigned i = is; i < ie; i++) {
             for (unsigned j = js; j < je; j++) {
                 for (unsigned k = ks; k < ke; k++) {
@@ -944,7 +971,7 @@ void fdtd::SetSineSource(MyDataF omega_) {
 void fdtd::updateHx() {
     int i, j, k;
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
     for (k = 0; k < Kmax; ++k) {
         for (i = 0; i < Imax + 1; ++i) {
@@ -965,7 +992,7 @@ void fdtd::updateHx() {
 void fdtd::updateHy() {
     int i, j, k;
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Hy,Ez,Ex,pml,DA,DB,dx,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Hy,Ez,Ex,pml,DA,DB,dx,dz)
 #endif
     for (k = 0; k < Kmax; ++k) {
         for (i = 0; i < Imax; ++i) {
@@ -989,7 +1016,7 @@ void fdtd::updateHz() {
     //  UPDATE Hz
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
 #endif
     for (k = 0; k < Kmax + 1; ++k) {
         for (i = 0; i < Imax; ++i) {
