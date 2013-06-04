@@ -435,18 +435,20 @@ cpml<T>::cpml()
 , is_cpml_zn(false)
 , is_cpml_zp(false) {
 }
-template<class T> cpml<T>::cpml(unsigned short width_xn, unsigned short width_xp, 
-        unsigned short width_yn, unsigned short width_yp, 
-        unsigned short width_zn, unsigned short width_zp, 
-        unsigned imax, unsigned jmax, unsigned kmax)
-{
-    setCPMLRegion(width_xn,width_xp,width_yn,width_yp,width_zn,width_zp);
-    createCPMLArrays(imax,jmax,kmax);
+
+template<class T> cpml<T>::cpml(unsigned short width_xn, unsigned short width_xp,
+        unsigned short width_yn, unsigned short width_yp,
+        unsigned short width_zn, unsigned short width_zp,
+        unsigned imax, unsigned jmax, unsigned kmax) {
+    setCPMLRegion(width_xn, width_xp, width_yn, width_yp, width_zn, width_zp);
+    createCPMLArrays(imax, jmax, kmax);
 }
-template<class T> cpml<T>::cpml(unsigned short cpmlWidth, unsigned imax, unsigned jmax, unsigned kmax){
+
+template<class T> cpml<T>::cpml(unsigned short cpmlWidth, unsigned imax, unsigned jmax, unsigned kmax) {
     setCPMLRegion(cpmlWidth);
-    createCPMLArrays(imax,jmax,kmax);
+    createCPMLArrays(imax, jmax, kmax);
 }
+
 template<class T>
 cpml<T>::cpml(const cpml& orig)
 : n_cpml_xn(orig.n_cpml_xn)

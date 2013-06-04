@@ -30,7 +30,7 @@ public:
 
     //Function prototype definitions
     void initialize(); //Memory initialization
-    
+
     /**
      * 
      * @param t_0
@@ -43,19 +43,19 @@ public:
     void setUp(); //Coefficients, parameters etc will get computed
     void compute(); //E & H Field update equation
     void StartUp();
-    
+
     /**
      * 
      * @param omega_
      */
     void SetSineSource(MyDataF omega_);
-    
+
     /**
      * 
      * @param sourceType
      */
     void setSourceType(int sourceType);
-    
+
 #ifdef MATLAB_SIMULATION
     int initMatlabSimulation();
     void doMatlabSimulation();
@@ -125,8 +125,8 @@ private:
     // source position
     unsigned isp, jsp, ksp;
 
-	// common data
-	MyDataF dtDivEps0DivDxyz;
+    // common data
+    MyDataF dtDivEps0DivDxyz;
 
     // H & E Field components
     data3d<MyDataF> Hx;
