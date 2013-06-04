@@ -332,12 +332,9 @@ void fdtd::createCoeff() {
     //    Cvyey.CreateStruct(Vy,0.0);
     //    Cvzez.CreateStruct(Vz,0.0);
     // electricity coefficients
-    Cexex.CreateStruct(Ex, 0.0);
-    Ceyey.CreateStruct(Ey, 0.0);
-    Cezez.CreateStruct(Ez, 0.0);
-    Cexh.CreateStruct(Ex, 0.0);
-    Ceyh.CreateStruct(Ey, 0.0);
-    Cezh.CreateStruct(Ez, 0.0);
+    Cexe.CreateStruct(Ex, 0.0);
+    Ceye.CreateStruct(Ey, 0.0);
+    Ceze.CreateStruct(Ez, 0.0);
     Cexvx.CreateStruct(Ex, 0.0);
     Ceyvy.CreateStruct(Ey, 0.0);
     Cezvz.CreateStruct(Ez, 0.0);
@@ -391,8 +388,9 @@ void fdtd::updateCoeff() {
         for (j = 0, jm = 0; j < Ex.ny; j++, jm += neGrid) {
             for (k = 0, km = halfNeGrid; k < Ex.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
-                Cexex.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Cexh.p[i][j][k] = 1 / kappa;
+                Cexe.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+                Cexhy.p[i][j][k] = 1 / kappa;
+                Cexhz.p[i][j][k] = 1 / kappa;
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
@@ -407,8 +405,9 @@ void fdtd::updateCoeff() {
         for (j = 0, jm = halfNeGrid; j < Ey.ny; j++, jm += neGrid) {
             for (k = 0, km = halfNeGrid; k < Ey.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
-                Ceyey.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Ceyh.p[i][j][k] = 1 / kappa;
+                Ceye.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+                Ceyhx.p[i][j][k] = 1 / kappa;
+                Ceyhz.p[i][j][k] = 1 / kappa;
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
@@ -423,8 +422,9 @@ void fdtd::updateCoeff() {
         for (j = 0, jm = 0; j < Ez.ny; j++, jm += neGrid) {
             for (k = 0, km = 0; k < Ez.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
-                Cezez.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Cezh.p[i][j][k] = 1 / kappa;
+                Ceze.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+                Cezhy.p[i][j][k] = 1 / kappa;
+                Cezhx.p[i][j][k] = 1 / kappa;
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
@@ -1103,16 +1103,11 @@ void fdtd::updateEx() {
 #ifdef WITH_DENSITY
                 MyDataF Exp = Ex.p[i][j][k];
 #endif
-
-#ifdef WITH_DENSITY
-                Ex.p[i][j][k] = CA[id] * Ex.p[i][j][k] * Cexex.p[i][j][k] + CB[id] * Cexh.p[i][j][k]*
-                        ((Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * pml.den_ey.p[j] +
-                        (Hy.p[i][j][k] - Hy.p[i][j][k + 1]) * pml.den_ez.p[k]) +
-                        Cexvx.p[i][j][k] * Vx.p[i][j][k];
-#else
                 Ex.p[i][j][k] = Cexe.p[i][j][k] * Ex.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * Cexhz.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i][j][k - 1]) * Cexhy.p[i][j][k];
+#ifdef WITH_DENSITY
+                Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
 #endif                                  
 
 #ifdef WITH_DENSITY
@@ -1145,15 +1140,11 @@ void fdtd::updateEy() {
                 MyDataF Eyp = Ey.p[i][j][k];
 #endif  /* WITH_DENSITY */
 
-#ifdef WITH_DENSITY
-                Ey.p[i][j][k] = CA[id] * Ey.p[i][j][k] * Ceyey.p[i][j][k] + CB[id] * Ceyh.p[i][j][k]*
-                        ((Hz.p[i - 1][j][k] - Hz.p[i][j][k]) * pml.den_ex.p[i] +
-                        (Hx.p[i][j][k + 1] - Hx.p[i][j][k]) * pml.den_ez.p[k]) +
-                        Ceyvy.p[i][j][k] * Vy.p[i][j][k];
-#else
                 Ey.p[i][j][k] = Ceye.p[i][j][k] * Ey.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i - 1][j][k]) * Ceyhz.p[i][j][k] +
                         (Hx.p[i][j][k] - Hx.p[i][j][k - 1]) * Ceyhx.p[i][j][k];
+#ifdef WITH_DENSITY
+                Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
 #endif /* WITH_DENSITY */
 
 #ifdef WITH_DENSITY
@@ -1189,16 +1180,11 @@ void fdtd::updateEz() {
 #ifdef WITH_DENSITY
                 MyDataF Ezp = Ez.p[i][j][k];
 #endif
-
-#ifdef WITH_DENSITY
-                Ez.p[i][j][k] = CA[id] * Ez.p[i][j][k] * Cezez.p[i][j][k] + CB[id] * Cezh.p[i][j][k]
-                        * ((Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * pml.den_ex.p[i] +
-                        (Hx.p[i][j - 1][k] - Hx.p[i][j][k]) * pml.den_ey.p[j]) +
-                        Cezvz.p[i][j][k] * Vz.p[i][j][k];
-#else
                 Ez.p[i][j][k] = Ceze.p[i][j][k] * Ez.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k]+
                         (Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
+#ifdef WITH_DENSITY
+                Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
 #endif
 
 #ifdef WITH_DENSITY
