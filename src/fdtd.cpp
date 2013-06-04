@@ -595,7 +595,7 @@ void fdtd::setUp() {
     if (iend < istart)iend = istart + 1;
     if (jend < jstart)jend = jstart + 1;
     if (kend < kstart)kend = kstart + 1;
-  
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  COMPUTING FIELD UPDATE EQUATION COEFFICIENTS
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -678,9 +678,9 @@ void fdtd::compute() {
         cout << ") :  " << Ez.p[ic][jc][kc] << '\t' << Ez.p[isp][jsp][ksp] << endl;
 
         updateMagneitcFields();
-        pml.updateCPML_M_Fields(Hx,Hy,Hz,Ex,Ey,Ez);
+        pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
         updateElectricAndVeloityFields();
-        pml.updateCPML_E_Fields(Ex,Ey,Ez,Hx,Hy,Hz);
+        pml.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         //====================================
         // update Source
         //====================================
