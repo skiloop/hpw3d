@@ -238,23 +238,23 @@ public:
      */
     data3d() : nx(0), ny(0), nz(0), p(NULL) {
     };
-    
+
     /**
      * copy constructor
      * @param obj
      */
     data3d(const data3d< DataType > &obj);
-    
+
     /**
      * deconstructor
      */
     ~data3d();
-    
+
     /**
      * print p in struct data3d
      */
     void PrintData();
-    
+
     /**
      * free space created for data3d @c mst
      */
@@ -276,7 +276,7 @@ public:
      * Create Space for struct data3d and initialize its @c nx and @c ny
      */
     int CreateStruct(unsigned nnx, unsigned nny, unsigned nnz);
-    
+
     /**
      * Create Space for struct data3d and initialize its @c nx and @c ny
      */
@@ -300,20 +300,20 @@ public:
      * @param other
      */
     void operator=(data3d< DataType > const &other);
-    
+
     /**
      * initial array to @c initVal
      * @param initVal
      */
     void InitStructData(DataType initVal = 0);
-    
+
     /**
      * save array 
      * @param leap
      * @param step
      */
     void SaveData(unsigned leap, unsigned step);
-    
+
     /**
      * 
      * @param k
@@ -321,7 +321,7 @@ public:
      * @param step
      */
     void SaveData(unsigned k, unsigned leap, unsigned step);
-    
+
     /**
      * 
      * @param i
@@ -329,7 +329,7 @@ public:
      * @param step
      */
     void SaveXPlain(unsigned i, unsigned leap, unsigned step);
-    
+
     /**
      * 
      * @param j
@@ -337,7 +337,7 @@ public:
      * @param step
      */
     void SaveYPlain(unsigned j, unsigned leap, unsigned step);
-    
+
     /**
      * 
      * @param k
@@ -345,7 +345,7 @@ public:
      * @param step
      */
     void SaveZPlain(unsigned k, unsigned leap, unsigned step);
-    
+
     /**
      * 
      * @param k
@@ -354,7 +354,7 @@ public:
      * @param type
      */
     void SaveData(unsigned k, unsigned leap, unsigned step, int type);
-    
+
     /**
      * 
      * @param k
@@ -370,7 +370,7 @@ public:
      * @return
      */
     int CreateStruct(const data3d< DataType > &stru);
-    
+
     /**
      * @brief Create a data3d with the same size as @c stru and initial all var to @c initVal;
      * @param stru the source data3d to be copied.
@@ -392,9 +392,9 @@ public:
     string getName() {
         return name;
     }
-    
+
 public:
-    
+
     void ClearSim();
     void PlotArrays();
     void InitPlot();

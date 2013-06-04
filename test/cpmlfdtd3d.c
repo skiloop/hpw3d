@@ -197,7 +197,7 @@ void initialize() {
     omega = 2 * pi / tw;
     dx = dy = dz = C * tw / 100;
     dt = dx / 2 / C;
-    nMax = tw *10 / dt;
+    nMax = tw * 10 / dt;
 #endif
 
     //PML Layers (10 layers)
@@ -1181,7 +1181,6 @@ void initialize() {
         bh_z_2[i] = 0.0;
     }
 
-        }
     ch_z_2 = (double *) malloc((nzPML_2 - 1) * sizeof (double));
     for (i = 0; i < nzPML_2 - 1; i++) {
 

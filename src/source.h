@@ -23,6 +23,7 @@ public:
      * @return 
      */
     static MyDataF SinePulse(MyDataF t, MyDataF omega, MyDataF t_max, MyDataF t_min);
+
     /**
      * Sine Wave
      * @param t
@@ -30,13 +31,14 @@ public:
      * @return 
      */
     static MyDataF SineWave(MyDataF t, MyDataF omega);
+
     /**
      * 
      * @param t
      * @param tw
      * @return 
      */
-    static MyDataF GaussianPulse(MyDataF t,MyDataF tw);
+    static MyDataF GaussianPulse(MyDataF t, MyDataF tw);
 private:
 
 };

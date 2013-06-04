@@ -20,8 +20,7 @@ MyDataF Alpha_Nikonov(MyDataF E, MyDataF P) {
     MyDataF EDivP = fabs(E) / P;
     if (EDivP < 108.0) {
         return 3.9 * P * exp(-213 / EDivP);
-    }
-    else {
+    } else {
         return 14.5 * P * exp(-316 / EDivP);
     }
 }
@@ -34,13 +33,11 @@ MyDataF Eta_Nikonov(MyDataF E, MyDataF P) {
         MyDataF val1 = 4.47e-3 * (EDivP)*(EDivP);
         if (EDivP >= 10.0) {
             return val1;
-        }
-        else {
+        } else {
             MyDataF val2 = 4.47 / EDivP;
             return (val1 > val2 ? val1 : val2);
         }
-    }
-    else {
+    } else {
         MyDataF temp = sqrt(EDivP);
         return (EDivP <= 90 ? 1.58 * temp : 142 / temp);
     }
@@ -72,8 +69,7 @@ MyDataF Alpha_MorrowAndLowke(MyDataF E, MyDataF N) {
 
     if (edn > 1.5) {
         return 2e-16 * N * exp(-7.248 / edn);
-    }
-    else {
+    } else {
         return 6.619e-17 * N * exp(-5.593 / edn);
     }
 }
@@ -88,8 +84,7 @@ MyDataF Eta_MorrowAndLowke(MyDataF E, MyDataF N) {
             return N * ((6.089e-20 * edn - 2.893e-19) + N * 4.47778e-59 * pow(edn * 1e-16, -1.2749));
         else
             return N * ((8.889e-21 * edn + 2.567e-19) + N * 4.47778e-59 * pow(edn * 1e-16, -1.2749));
-    }
-    else {
+    } else {
         if (edn < 0)
             return 0;
         else
@@ -106,8 +101,7 @@ MyDataF We_MorrowAndLowke(MyDataF E, MyDataF N) {
             return -sign(E)*(1.03 * edn + 1.3)*1e-10;
         else
             return -sign(E)*(7.4e5 * edn + 7.1e6)*1e-16;
-    }
-    else {
+    } else {
         if (edn <= 0.26)
             return -sign(E)*(6.87e6 * edn + 3.38e4)*1e-16;
         else
