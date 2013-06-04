@@ -479,44 +479,6 @@ void fdtd::initialize() {
     //    pml.Initial(Imax, Jmax, Kmax, pmlWidth);
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << "numMaterials = " << numMaterials << endl;
-#endif
-    //Dynamic memory allocation
-    epsilon = new MyDataF[numMaterials];
-
-    for (i = 0; i < numMaterials; i++) {
-
-        epsilon[i] = eps_0;
-    }
-
-    mu = new MyDataF[numMaterials];
-
-    for (i = 0; i < numMaterials; i++) {
-
-        mu[i] = mu_0;
-    }
-
-    sigma = new MyDataF[numMaterials];
-
-    for (i = 0; i < numMaterials; i++) {
-
-        sigma[i] = 0.0;
-    }
-
-    CA = new MyDataF[numMaterials];
-
-    for (i = 0; i < numMaterials; i++) {
-
-        CA[i] = 0.0;
-    }
-
-    CB = new MyDataF[numMaterials];
-
-    for (i = 0; i < numMaterials; i++) {
-        CB[i] = 0.0;
-    }
-#if(DEBUG>=3)
-    cout << __FILE__ << ":" << __LINE__ << endl;
     cout << "Imax=" << Imax << endl;
     cout << "Jmax=" << Jmax << endl;
     cout << "Kmax=" << Kmax << endl;
@@ -577,24 +539,6 @@ void fdtd::initialize() {
     createCoeff();
     Ne.setName("Ne");
 #endif
-
-#if(DEBUG>=3)
-    cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << "creating ID1..." << endl;
-#endif
-    ID1.CreateStruct(Imax, Jmax, Kmax, 0);
-
-#if(DEBUG>=3)
-    cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << "creating ID2..." << endl;
-#endif
-    ID2.CreateStruct(Imax, Jmax, Kmax, 0);
-
-#if(DEBUG>=3)
-    cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << "creating ID3..." << endl;
-#endif
-    ID3.CreateStruct(Imax, Jmax, Kmax, 0);    
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -651,36 +595,12 @@ void fdtd::setUp() {
     if (iend < istart)iend = istart + 1;
     if (jend < jstart)jend = jstart + 1;
     if (kend < kstart)kend = kstart + 1;
-    //Material properties
-    //Location '0' is for free space and '1' is for PEC
-    epsilon[2] = 4.0 * eps_0;
-    sigma[2] = 0.005;
-    epsilon[3] = 8.0 * eps_0;
-    sigma[3] = 3.96E7; // aluminum
-    epsilon[4] = 9.5 * eps_0;
-    sigma[4] = 5.76E7; //copper
-    epsilon[5] = 9.0 * eps_0;
-    sigma[5] = 2e6; //steel
-    epsilon[6] = 2.1 * eps_0;
-    sigma[6] = 7.8e-4; //teflon
-    epsilon[7] = 81 * eps_0;
-    sigma[7] = 1e-2; //water
-
+  
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  COMPUTING FIELD UPDATE EQUATION COEFFICIENTS
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    DA = 1.0;
-    DB = dt / mu_0;
 
     initCoeficients();
-
-    for (i = 0; i < numMaterials; ++i) {
-
-        CA[i] = (1.0 - sigma[i] * dt / (2.0 * epsilon[i])) /
-                (1.0 + sigma[i] * dt / (2.0 * epsilon[i]));
-        CB[i] = (dt / (epsilon[i])) /
-                (1.0 + sigma[i] * dt / (2.0 * epsilon[i]));
-    }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
@@ -758,7 +678,9 @@ void fdtd::compute() {
         cout << ") :  " << Ez.p[ic][jc][kc] << '\t' << Ez.p[isp][jsp][ksp] << endl;
 
         updateMagneitcFields();
+        pml.updateCPML_M_Fields(Hx,Hy,Hz,Ex,Ey,Ez);
         updateElectricAndVeloityFields();
+        pml.updateCPML_E_Fields(Ex,Ey,Ez,Hx,Hy,Hz);
         //====================================
         // update Source
         //====================================
