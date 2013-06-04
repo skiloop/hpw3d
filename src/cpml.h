@@ -54,14 +54,14 @@ public:
      * @param jmax max number of cells in y direction
      * @param kmax max number of cells in z direction
      * @param pmlOrder pml order
-     * @param sigmaRatio 
+     * @param sigmaMax 
      * @param kappaMax
      * @param alphaMax
      */
     cpml(unsigned short width_xn, unsigned short width_xp, unsigned short width_yn,
             unsigned short width_yp, unsigned short width_zn, unsigned short width_zp,
             unsigned imax, unsigned jmax, unsigned kmax,
-            unsigned short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax);
+            unsigned short pmlOrder, T sigmaMax, T kappaMax, T alphaMax);
 
     /**
      * constructor
@@ -70,12 +70,12 @@ public:
      * @param jmax max number of cells in y direction
      * @param kmax max number of cells in z direction
      * @param pmlOrder pml order
-     * @param sigmaRatio 
+     * @param sigmaMax 
      * @param kappaMax
      * @param alphaMax
      */
     cpml(unsigned short cpmlWidth, unsigned imax, unsigned jmax, unsigned kmax,
-            unsigned short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax);
+            unsigned short pmlOrder, T sigmaMax, T kappaMax, T alphaMax);
 
     /**
      * 
@@ -253,7 +253,7 @@ public:
     /**
      * 
      * @param pmlOrder
-     * @param sigmaRatio
+     * @param sigmaMax
      * @param kappaMax
      * @param alphaMax
      * @param dt
@@ -273,7 +273,7 @@ public:
      * @param Chyex
      * @param Chxey
      */
-    void initCoefficientArrays(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx, T dy, T dz,
+    void initCoefficientArrays(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dx, T dy, T dz,
             data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey,
             data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex,
             data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey);
@@ -284,7 +284,7 @@ private:
     /**
      * 
      * @param pmlOrder
-     * @param sigmaRatio
+     * @param sigmaMax
      * @param kappaMax
      * @param alphaMax
      * @param dt
@@ -294,12 +294,12 @@ private:
      * @param Chyez
      * @param Chzey
      */
-    void initCoefficientArraysXN(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx, data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey);
+    void initCoefficientArraysXN(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dx, data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey);
 
     /**
      * 
      * @param pmlOrder
-     * @param sigmaRatio
+     * @param sigmaMax
      * @param kappaMax
      * @param alphaMax
      * @param dt
@@ -309,12 +309,12 @@ private:
      * @param Chyez
      * @param Chzey
      */
-    void initCoefficientArraysXP(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx, data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey);
+    void initCoefficientArraysXP(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dx, data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey);
 
     /**
      * 
      * @param pmlOrder
-     * @param sigmaRatio
+     * @param sigmaMax
      * @param kappaMax
      * @param alphaMax
      * @param dt
@@ -324,11 +324,11 @@ private:
      * @param Chxez
      * @param Chzex
      */
-    void initCoefficientArraysYN(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dy, data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex);
+    void initCoefficientArraysYN(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dy, data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex);
     /**
      * 
      * @param pmlOrder
-     * @param sigmaRatio
+     * @param sigmaMax
      * @param kappaMax
      * @param alphaMax
      * @param dt
@@ -338,11 +338,11 @@ private:
      * @param Chxez
      * @param Chzex
      */
-    void initCoefficientArraysYP(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dy, data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex);
+    void initCoefficientArraysYP(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dy, data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex);
     /**
      * 
      * @param pmlOrder
-     * @param sigmaRatio
+     * @param sigmaMax
      * @param kappaMax
      * @param alphaMax
      * @param dt
@@ -352,11 +352,11 @@ private:
      * @param Chyex
      * @param Chxey
      */
-    void initCoefficientArraysZN(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dz, data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey);
+    void initCoefficientArraysZN(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dz, data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey);
     /**
      * 
      * @param pmlOrder
-     * @param sigmaRatio
+     * @param sigmaMax
      * @param kappaMax
      * @param alphaMax
      * @param dt
@@ -366,7 +366,7 @@ private:
      * @param Chyex
      * @param Chxey
      */
-    void initCoefficientArraysZP(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dz, data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey);
+    void initCoefficientArraysZP(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dz, data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey);
 
     /**
      * 
@@ -707,23 +707,23 @@ void cpml<T>::setCPMLRegion(short width_xn, short width_xp, short width_yn, shor
 }
 
 template<class T>
-void cpml<T>::initCoefficientArrays(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx, T dy, T dz,
+void cpml<T>::initCoefficientArrays(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dx, T dy, T dz,
         data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey,
         data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex,
         data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey) {
-    initCoefficientArraysXN(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, Ceyhz, Cezhy, Chyez, Chzey);
-    initCoefficientArraysXP(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dx, Ceyhz, Cezhy, Chyez, Chzey);
-    initCoefficientArraysYN(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dy, Cexhz, Cezhx, Chxez, Chzex);
-    initCoefficientArraysYP(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dy, Cexhz, Cezhx, Chxez, Chzex);
-    initCoefficientArraysZN(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dz, Ceyhx, Cexhy, Chyex, Chxey);
-    initCoefficientArraysZP(pmlOrder, sigmaRatio, kappaMax, alphaMax, dt, dz, Ceyhx, Cexhy, Chyex, Chxey);
+    initCoefficientArraysXN(pmlOrder, sigmaMax, kappaMax, alphaMax, dt, dx, Ceyhz, Cezhy, Chyez, Chzey);
+    initCoefficientArraysXP(pmlOrder, sigmaMax, kappaMax, alphaMax, dt, dx, Ceyhz, Cezhy, Chyez, Chzey);
+    initCoefficientArraysYN(pmlOrder, sigmaMax, kappaMax, alphaMax, dt, dy, Cexhz, Cezhx, Chxez, Chzex);
+    initCoefficientArraysYP(pmlOrder, sigmaMax, kappaMax, alphaMax, dt, dy, Cexhz, Cezhx, Chxez, Chzex);
+    initCoefficientArraysZN(pmlOrder, sigmaMax, kappaMax, alphaMax, dt, dz, Ceyhx, Cexhy, Chyex, Chxey);
+    initCoefficientArraysZP(pmlOrder, sigmaMax, kappaMax, alphaMax, dt, dz, Ceyhx, Cexhy, Chyex, Chxey);
 }
 
 template<class T>
-void cpml<T>::initCoefficientArraysXN(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx,
+void cpml<T>::initCoefficientArraysXN(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dx,
         data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey) {
     if (is_cpml_xn) {
-        T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dx);
+        T sigmaOpt = sigmaMax * (pmlOrder + 1) / (150 * M_PI * dx);
 
         for (unsigned i = 0, iplus = 1; i < n_cpml_xn; i++, iplus++) {
             T rho_e = (n_cpml_xn - i - 0.75) / (T) n_cpml_xn;
@@ -732,8 +732,8 @@ void cpml<T>::initCoefficientArraysXN(short pmlOrder, T sigmaRatio, T kappaMax, 
             //T rho_m = (n_cpml_xn - i) /(T)n_cpml_xn;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
-            T sigma_pex = sigmaMax*rho_e_pmlOrder;
-            T sigma_pmx =  sigmaMax * rho_m_pmlOrder;
+            T sigma_pex = sigmaOpt*rho_e_pmlOrder;
+            T sigma_pmx =  sigmaOpt * rho_m_pmlOrder;
             T kappa_ex = 1 + (kappaMax - 1) * rho_e_pmlOrder;
             T kappa_mx = 1 + (kappaMax - 1) * rho_m_pmlOrder;
             T alpha_ex = alphaMax * fabs(rho_e);
@@ -809,10 +809,10 @@ void cpml<T>::initCoefficientArraysXN(short pmlOrder, T sigmaRatio, T kappaMax, 
 }
 
 template<class T>
-void cpml<T>::initCoefficientArraysXP(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dx,
+void cpml<T>::initCoefficientArraysXP(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dx,
         data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey) {
     if (is_cpml_xp) {
-        T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dx);
+        T sigmaOpt = sigmaMax * (pmlOrder + 1) / (150 * M_PI * dx);
         unsigned iex = Ceyhz.nx - n_cpml_xp - 1;
         unsigned ihx = Chyez.nx - n_cpml_xp;
         for (unsigned i = 0; i < n_cpml_xp; i++) {
@@ -822,8 +822,8 @@ void cpml<T>::initCoefficientArraysXP(short pmlOrder, T sigmaRatio, T kappaMax, 
             //T rho_m = (i) /(T)n_cpml_xp;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
-            T sigma_pex = sigmaMax*rho_e_pmlOrder;
-            T sigma_pmx =  sigmaMax * rho_m_pmlOrder;
+            T sigma_pex = sigmaOpt*rho_e_pmlOrder;
+            T sigma_pmx =  sigmaOpt * rho_m_pmlOrder;
             T kappa_ex = 1 + (kappaMax - 1) * rho_e_pmlOrder;
             T kappa_mx = 1 + (kappaMax - 1) * rho_m_pmlOrder;
             T alpha_ex = alphaMax * fabs(rho_e);
@@ -902,10 +902,10 @@ void cpml<T>::initCoefficientArraysXP(short pmlOrder, T sigmaRatio, T kappaMax, 
 }
 
 template<class T>
-void cpml<T>::initCoefficientArraysYN(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dy,
+void cpml<T>::initCoefficientArraysYN(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dy,
         data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex) {
     if (is_cpml_yn) {
-        T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dy);
+        T sigmaOpt = sigmaMax * (pmlOrder + 1) / (150 * M_PI * dy);
         for (unsigned j = 0, jplus = 1; j < n_cpml_yn; j++, jplus++) {
             T rho_e = (n_cpml_yn - j - 0.75) / (T) n_cpml_yn;
             //T rho_e = (n_cpml_yn - j) /(T)n_cpml_yn;
@@ -913,8 +913,8 @@ void cpml<T>::initCoefficientArraysYN(short pmlOrder, T sigmaRatio, T kappaMax, 
             //T rho_m = (n_cpml_yn - j) /(T)n_cpml_yn;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
-            T sigma_pey = sigmaMax*rho_e_pmlOrder;
-            T sigma_pmy =  sigmaMax * rho_m_pmlOrder;
+            T sigma_pey = sigmaOpt*rho_e_pmlOrder;
+            T sigma_pmy =  sigmaOpt * rho_m_pmlOrder;
             T kappa_ey = 1 + (kappaMax - 1) * rho_e_pmlOrder;
             T kappa_my = 1 + (kappaMax - 1) * rho_m_pmlOrder;
             T alpha_ey = alphaMax * fabs(rho_e);
@@ -991,10 +991,10 @@ void cpml<T>::initCoefficientArraysYN(short pmlOrder, T sigmaRatio, T kappaMax, 
 }
 
 template<class T>
-void cpml<T>::initCoefficientArraysYP(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dy,
+void cpml<T>::initCoefficientArraysYP(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dy,
         data3d<T>&Cexhz, data3d<T>&Cezhx, data3d<T>&Chxez, data3d<T>&Chzex) {
     if (is_cpml_yp) {
-        T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dy);
+        T sigmaOpt = sigmaMax * (pmlOrder + 1) / (150 * M_PI * dy);
         unsigned iex = Cexhz.ny - n_cpml_yp - 1;
         unsigned ihx = Chxez.ny - n_cpml_yp;
         for (unsigned j = 0; j < n_cpml_yp; j++) {
@@ -1004,8 +1004,8 @@ void cpml<T>::initCoefficientArraysYP(short pmlOrder, T sigmaRatio, T kappaMax, 
             //T rho_m = (j) /(T)n_cpml_yp;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
-            T sigma_pey = sigmaMax*rho_e_pmlOrder;
-            T sigma_pmy =  sigmaMax * rho_m_pmlOrder;
+            T sigma_pey = sigmaOpt*rho_e_pmlOrder;
+            T sigma_pmy =  sigmaOpt * rho_m_pmlOrder;
             T kappa_ey = 1 + (kappaMax - 1) * rho_e_pmlOrder;
             T kappa_my = 1 + (kappaMax - 1) * rho_m_pmlOrder;
             T alpha_ey = alphaMax * fabs(rho_e);
@@ -1084,10 +1084,10 @@ void cpml<T>::initCoefficientArraysYP(short pmlOrder, T sigmaRatio, T kappaMax, 
 }
 
 template<class T>
-void cpml<T>::initCoefficientArraysZN(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dz,
+void cpml<T>::initCoefficientArraysZN(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dz,
         data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey) {
     if (is_cpml_zn) {
-        T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dz);
+        T sigmaOpt = sigmaMax * (pmlOrder + 1) / (150 * M_PI * dz);
         for (unsigned k = 0, iplus = 1; k < n_cpml_zn; k++, iplus++) {
             T rho_e = (n_cpml_zn - k - 0.75) / (T) n_cpml_zn;
             //T rho_e = (n_cpml_zn - k) /(T)n_cpml_zn;
@@ -1095,8 +1095,8 @@ void cpml<T>::initCoefficientArraysZN(short pmlOrder, T sigmaRatio, T kappaMax, 
             //T rho_m = (n_cpml_zn - k) /(T)n_cpml_zn;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
-            T sigma_pez = sigmaMax*rho_e_pmlOrder;
-            T sigma_pmz =  sigmaMax * rho_m_pmlOrder;
+            T sigma_pez = sigmaOpt*rho_e_pmlOrder;
+            T sigma_pmz =  sigmaOpt * rho_m_pmlOrder;
             T kappa_ez = 1 + (kappaMax - 1) * rho_e_pmlOrder;
             T kappa_mz = 1 + (kappaMax - 1) * rho_m_pmlOrder;
             T alpha_ez = alphaMax * fabs(rho_e);
@@ -1173,10 +1173,10 @@ void cpml<T>::initCoefficientArraysZN(short pmlOrder, T sigmaRatio, T kappaMax, 
 }
 
 template<class T>
-void cpml<T>::initCoefficientArraysZP(short pmlOrder, T sigmaRatio, T kappaMax, T alphaMax, T dt, T dz,
+void cpml<T>::initCoefficientArraysZP(short pmlOrder, T sigmaMax, T kappaMax, T alphaMax, T dt, T dz,
         data3d<T>&Ceyhx, data3d<T>&Cexhy, data3d<T>&Chyex, data3d<T>&Chxey) {
     if (is_cpml_zp) {
-        T sigmaMax = sigmaRatio * (pmlOrder + 1) / (150 * M_PI * dz);
+        T sigmaOpt = sigmaMax * (pmlOrder + 1) / (150 * M_PI * dz);
         unsigned iez = Ceyhx.nz - n_cpml_zp - 1;
         unsigned ihz = Chyex.nz - n_cpml_zp;
         for (unsigned k = 0; k < n_cpml_zp; k++) {
@@ -1186,8 +1186,8 @@ void cpml<T>::initCoefficientArraysZP(short pmlOrder, T sigmaRatio, T kappaMax, 
             //T rho_m = (k) /(T)n_cpml_zp;
             T rho_e_pmlOrder = pow(fabs(rho_e), pmlOrder);
             T rho_m_pmlOrder = pow(fabs(rho_m), pmlOrder);
-            T sigma_pez = sigmaMax*rho_e_pmlOrder;
-            T sigma_pmz =  sigmaMax * rho_m_pmlOrder;
+            T sigma_pez = sigmaOpt*rho_e_pmlOrder;
+            T sigma_pmz =  sigmaOpt * rho_m_pmlOrder;
             T kappa_ez = 1 + (kappaMax - 1) * rho_e_pmlOrder;
             T kappa_mz = 1 + (kappaMax - 1) * rho_m_pmlOrder;
             T alpha_ez = alphaMax * fabs(rho_e);
