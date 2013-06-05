@@ -498,9 +498,6 @@ void fdtd::initDensity() {
 #endif
 
 void fdtd::initialize() {
-
-    unsigned i;
-
     // initial PML
     //    pml.InitialMuEps();
     //    pml.Initial(Imax, Jmax, Kmax, pmlWidth);
@@ -1039,12 +1036,11 @@ void fdtd::updateHz() {
 
 void fdtd::updateEx() {
     int i, j, k;
-    short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ex
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,id)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
     for (k = 1; k < Kmax; ++k) {
         for (i = 0; i < Imax; ++i) {
@@ -1074,12 +1070,11 @@ void fdtd::updateEx() {
 
 void fdtd::updateEy() {
     int i, j, k;
-    short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ey
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,id) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
     for (k = 1; k < Kmax; ++k) {
         for (i = 1; i < Imax; ++i) {
@@ -1114,12 +1109,11 @@ void fdtd::updateEy() {
 
 void fdtd::updateEz() {
     int i, j, k;
-    short id = 0;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  UPDATE Ez
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,id) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
     for (k = 0; k < Kmax; ++k) {
         for (i = 1; i < Imax; ++i) {
