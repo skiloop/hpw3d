@@ -16,13 +16,13 @@ typedef pMyDataF* ppMyDataF;
 #define DEFAULT_TIME_ZONE_LENGTH (1.0)
 
 // source type definition
-#define GAUSSIAN_WAVE_TYPE (1)
-#define SINE_WAVE_TYPE (2)
-#define DERIVE_GAUSSIAN_TYPE (3)
+#define GAUSSIAN_WAVE (1)
+#define SINE_WAVE (2)
+#define DERIVATIVE_GAUSSIAN_WAVE (3)
 #define ZERO_TYPE (4)
-#define SINE_PULSE_TYPE (5)
-#define DEFAULT_WAVE_TYPE GAUSSIAN_WAVE_TYPE
-#define MAX_TYPE_VALUE SINE_PULSE_TYPE
+#define ONE_SINE_PULSE (5)
+#define DEFAULT_WAVE_TYPE GAUSSIAN_WAVE
+#define MAX_TYPE_VALUE ONE_SINE_PULSE
 
 // nu type definition
 #define MORROW_AND_LOWKE (1)

@@ -331,13 +331,13 @@ void fdtd::WallCircleBound(data3d<MyDataF> &stru) {
 
 void fdtd::createCoeff() {
     // velocity coefficients
-    //    Cvxex.CreateStruct(Vx,0.0);
-    //    Cvyey.CreateStruct(Vy,0.0);
-    //    Cvzez.CreateStruct(Vz,0.0);
+    //Cvxex.CreateStruct(Vx,0.0);
+    //Cvyey.CreateStruct(Vy,0.0);
+    //Cvzez.CreateStruct(Vz,0.0);
     // electricity coefficients
-    Cexe.CreateStruct(Ex, 0.0);
-    Ceye.CreateStruct(Ey, 0.0);
-    Ceze.CreateStruct(Ez, 0.0);
+    //Cexe.CreateStruct(Ex, 0.0);
+    //Ceye.CreateStruct(Ey, 0.0);
+    //Ceze.CreateStruct(Ez, 0.0);
     Cexvx.CreateStruct(Ex, 0.0);
     Ceyvy.CreateStruct(Ey, 0.0);
     Cezvz.CreateStruct(Ez, 0.0);
@@ -579,8 +579,10 @@ void fdtd::setUp() {
 
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
-        t0 = 3.0 * tw;
-    }
+        t0 = 4.5 * tw;
+	}else{
+		t0 = tw;
+	}
     //    t0 = 6e-9;
 
     // common use data
@@ -651,7 +653,7 @@ void fdtd::setUp() {
 #ifdef WITH_DENSITY
     initCoeff();
 #endif
-    putvars();
+    printParameters();
 
 }
 
@@ -750,6 +752,7 @@ void fdtd::compute() {
 
 }
 
+
 void fdtd::updateSource(unsigned n) {
     MyDataF source;
     switch (srcType) {
@@ -761,7 +764,7 @@ void fdtd::updateSource(unsigned n) {
             // sine wave
             source = M_PI_TWO * omega * amp * cos((n * dt - t0) * M_PI_TWO * omega);
             break;
-        case SINE_PULSE_TYPE:
+        case ONE_SINE_PULSE:
             source = M_PI_TWO * omega * amp * Source::SinePulse(n * dt - t0, omega, t_up, t_down);
             break;
         default:
@@ -916,7 +919,7 @@ void fdtd::StartUp() {
     cout << "exit Startup" << endl;
 }
 
-void fdtd::putvars() {
+void fdtd::printParameters() {
     cout << "dx = " << dx << endl;
     cout << "dy = " << dy << endl;
     cout << "dz = " << dz << endl;

@@ -23,9 +23,9 @@ public:
 #endif
     ~fdtd(void);
 
-    static const int SOURCE_GAUSSIAN = GAUSSIAN_WAVE_TYPE;
-    static const int SOURCE_SINE = SINE_WAVE_TYPE;
-    static const int SOURCE_DERIVE_GAUSSIAN = DERIVE_GAUSSIAN_TYPE;
+    static const int SOURCE_GAUSSIAN = GAUSSIAN_WAVE;
+    static const int SOURCE_SINE = SINE_WAVE;
+    static const int SOURCE_DERIVE_GAUSSIAN = DERIVATIVE_GAUSSIAN_WAVE;
     static const int SOURCE_ZERO = ZERO_TYPE;
 
     //Function prototype definitions
@@ -67,7 +67,7 @@ private:
     void writeField(unsigned); //Writes output
     void buildSphere(); //Builds a spherical object
     void buildDipole(); //Builds a dipole
-    void putvars();
+    void printParameters();
 private:
     //  Specify Number of Time Steps and Grid Size Parameters
     unsigned totalTimeSteps; // total number of time steps

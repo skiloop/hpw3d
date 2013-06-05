@@ -23,7 +23,17 @@ int main(int argc, char*argv[]) {
 
     epsR = 1.0;
 
-    tw = T = 1 / checker.frequency;
+	T = 1/checker.frequency;
+	switch(checker.waveType){
+		case GAUSSIAN_WAVE:
+			tw = 1.5174271293851462339/M_PI/checker.frequency;
+			break;
+		case DERIVATIVE_GAUSSIAN_WAVE:
+			break;
+		default:
+			tw = T;
+	}
+
     omega = 2 * M_PI / T;
     dx = C * T / checker.yeeCellSizeX;
     dy = C * T / checker.yeeCellSizeY;
@@ -68,13 +78,13 @@ int main(int argc, char*argv[]) {
 #endif
     hpw.setSourceType(checker.waveType);
     switch (checker.waveType) {
-        case GAUSSIAN_WAVE_TYPE:break;
-        case SINE_WAVE_TYPE:
+        case GAUSSIAN_WAVE:break;
+        case SINE_WAVE:
             hpw.SetSineSource(omega);
             break;
-        case DERIVE_GAUSSIAN_TYPE:break;
+        case DERIVATIVE_GAUSSIAN_WAVE:break;
         case ZERO_TYPE:break;
-        case SINE_PULSE_TYPE:
+        case ONE_SINE_PULSE:
             checker.t0 = 0.01 * T;
             checker.omega = omega;
             checker.tUp = 1.01 * T;

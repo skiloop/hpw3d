@@ -76,8 +76,8 @@ public:
     double tUp;
     double tDown;
 
-    const static int GAUSSIAN = GAUSSIAN_WAVE_TYPE;
-    const static int SINE = SINE_WAVE_TYPE;
+    const static int GAUSSIAN = GAUSSIAN_WAVE;
+    const static int SINE = SINE_WAVE;
 private:
     void checkInput();
     void check();
