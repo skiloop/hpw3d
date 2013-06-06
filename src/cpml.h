@@ -49,11 +49,11 @@ public:
 
     /**
      * constructor
-     * @param width_xn width of cpml layer on x negetive side
+     * @param width_xn width of cpml layer on x negative side
      * @param width_xp width of cpml layer on x positive side
-     * @param width_yn width of cpml layer on y negetive side
+     * @param width_yn width of cpml layer on y negative side
      * @param width_yp width of cpml layer on y positive side
-     * @param width_zn width of cpml layer on z negetive side
+     * @param width_zn width of cpml layer on z negative side
      * @param width_zp width of cpml layer on z positive side
      * @param imax max number of cells in x direction
      * @param jmax max number of cells in y direction
@@ -1359,7 +1359,7 @@ void cpml<T>::updatePsiForMFields(const data3d<T>& Ex, const data3d<T>& Ey, cons
 
 template<class T>
 void cpml<T>::updateEFieldCPML_x(data3d<T>& Ey, data3d<T>& Ez) {
-    // x negetive region
+    // x negative region
     if (is_cpml_xn) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1409,7 +1409,7 @@ void cpml<T>::updateEFieldCPML_x(data3d<T>& Ey, data3d<T>& Ez) {
 
 template<class T>
 void cpml<T>::updateEFieldCPML_y(data3d<T>& Ex, data3d<T>& Ez) {
-    // x negetive region
+    // y negative region
     if (is_cpml_yn) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1432,7 +1432,7 @@ void cpml<T>::updateEFieldCPML_y(data3d<T>& Ex, data3d<T>& Ez) {
             }
         }
     }
-    // x positive region
+    // y positive region
     if (is_cpml_yp) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1459,7 +1459,7 @@ void cpml<T>::updateEFieldCPML_y(data3d<T>& Ex, data3d<T>& Ez) {
 
 template<class T>
 void cpml<T>::updateEFieldCPML_z(data3d<T>& Ex, data3d<T>& Ey) {
-    // x negetive region
+    // z negative region
     if (is_cpml_zn) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1483,7 +1483,7 @@ void cpml<T>::updateEFieldCPML_z(data3d<T>& Ex, data3d<T>& Ey) {
             }
         }
     }
-    // x positive region
+    // z positive region
     if (is_cpml_zp) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1510,7 +1510,7 @@ void cpml<T>::updateEFieldCPML_z(data3d<T>& Ex, data3d<T>& Ey) {
 
 template<class T>
 void cpml<T>::updateMFieldCPML_x(data3d<T>& Hy, data3d<T>& Hz) {
-    // x negetive region
+    // x negative region
     if (is_cpml_xn) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1560,7 +1560,7 @@ void cpml<T>::updateMFieldCPML_x(data3d<T>& Hy, data3d<T>& Hz) {
 
 template<class T>
 void cpml<T>::updateMFieldCPML_y(data3d<T>& Hx, data3d<T>& Hz) {
-    // x negetive region
+    // y negative region
     if (is_cpml_yn) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1583,7 +1583,7 @@ void cpml<T>::updateMFieldCPML_y(data3d<T>& Hx, data3d<T>& Hz) {
             }
         }
     }
-    // x positive region
+    // y positive region
     if (is_cpml_yp) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1610,8 +1610,7 @@ void cpml<T>::updateMFieldCPML_y(data3d<T>& Hx, data3d<T>& Hz) {
 
 template<class T>
 void cpml<T>::updateMFieldCPML_z(data3d<T>& Hx, data3d<T>& Hy) {
-    //TODO add update Hz in pml region
-    // x negetive region
+    // z negative region
     if (is_cpml_zn) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
@@ -1634,7 +1633,7 @@ void cpml<T>::updateMFieldCPML_z(data3d<T>& Hx, data3d<T>& Hy) {
             }
         }
     }
-    // x positive region
+    // z positive region
     if (is_cpml_zp) {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
