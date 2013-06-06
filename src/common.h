@@ -42,4 +42,5 @@ const MyDataF mu_0 = 4.0 * M_PI * 1.0E-7;
 const MyDataF eps_0 = 1.0 / (C * C * mu_0);
 const MyDataF M_PI_TWO = M_PI * 2;
 
+#define WITH_DENSITY
 #endif /*  COMMON_H */

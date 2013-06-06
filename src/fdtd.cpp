@@ -123,7 +123,7 @@ void fdtd::UpdateErms(void) {
 }
 
 void fdtd::updateCollisionFrequency() {
-    unsigned i, j, k;
+    int i, j, k;
     //unsigned io, jo, ko;
     MyDataF EeffDivP;
     MyDataF DivParam = 100 * p * 133.3;
@@ -192,7 +192,7 @@ void fdtd::InterpErms() {
 
 void fdtd::UpdateDensity(void) {
 
-    unsigned i, j, k, mt = 1;
+    int i, j, k, mt = 1;
 
     MyDataF Eeff, alpha_t, tau_m, kasi;
     MyDataF Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1;
@@ -361,14 +361,13 @@ void fdtd::initCoeff() {
     gamma = 1 + a;
     alpha = (1 - a) / gamma;
     Cvxex = Cvyey = Cvzez = e * dt / 2 / me / gamma;
-#if WITH_DENSITY
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // update collision frequency
-    if (srcType == fdtd::SOURCE_GAUSSIAN)Nu_c.ResetStructData(vm);
-#endif
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // update beta
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //updateBeta();
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if (srcType == fdtd::SOURCE_GAUSSIAN){
+        Nu_c.ResetStructData(vm);
+    }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //electricity coefficients
@@ -384,7 +383,7 @@ void fdtd::updateCoeff() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //electricity coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    unsigned i, j, k;
+    int i, j, k;
     unsigned im, jm, km;
     MyDataF tmp = half_e * (1 + alpha);
 #ifdef _OPENMP
@@ -471,7 +470,7 @@ void fdtd::updateBeta() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)  //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
-        for (unsigned i = is; i < ie; i++) {
+        for (int i = is; i < ie; i++) {
             for (unsigned j = js; j < je; j++) {
                 for (unsigned k = ks; k < ke; k++) {
                     beta.p[i][j][k] = temp * Ne.p[i][j][k];
@@ -482,7 +481,7 @@ void fdtd::updateBeta() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
-        for (unsigned i = is; i < ie; i++) {
+        for (int i = is; i < ie; i++) {
             for (unsigned j = js; j < je; j++) {
                 for (unsigned k = ks; k < ke; k++) {
                     beta.p[i][j][k] = temp / (1 + half_dt * Nu_c.p[i][j][k]) * Ne.p[i][j][k];
@@ -549,10 +548,7 @@ void fdtd::initialize() {
     Vx.CreateStruct(Ex, 0.0);
     Vy.CreateStruct(Ey, 0.0);
     Vz.CreateStruct(Ez, 0.0);
-    if (srcType == fdtd::SOURCE_GAUSSIAN) {
-        Nu_c.CreateStruct(Ne, 0.0);
-        Nu_c.setName("nu_c");
-    }
+
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << " neGrid = " << neGrid << endl;
@@ -560,15 +556,18 @@ void fdtd::initialize() {
     Ne.CreateStruct(Imax*neGrid, Jmax*neGrid, Kmax*neGrid, Ne0);
     Erms.CreateStruct(Ne, 0.0);
     Ne_pre.CreateStruct(Ne, 0.0);
+    if (srcType == fdtd::SOURCE_GAUSSIAN) {
+        Nu_c.CreateStruct(Ne, 0.0);
+        Nu_c.setName("nu_c");
+    }
     createCoeff();
-    Ne.setName("Ne");
+    Ne.setName("Ne"); 
 #endif
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void fdtd::setUp() {
-    unsigned i;
     //Time step
     //    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
     //            1.0 / (dz * dz)));
@@ -577,9 +576,9 @@ void fdtd::setUp() {
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
         t0 = 4.5 * tw;
-	}else{
-		t0 = tw;
-	}
+    } else {
+        t0 = tw;
+    }
     //    t0 = 6e-9;
 
     // common use data
@@ -645,13 +644,15 @@ void fdtd::setUp() {
             Ceyhx, Cexhy, Chyex, Chxey);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Initial Coefficients
+    // Initial Coefficients for Density
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef WITH_DENSITY
     initCoeff();
 #endif
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // print parameters
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     printParameters();
-
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -748,7 +749,6 @@ void fdtd::compute() {
     cout << "Done time-stepping..." << endl;
 
 }
-
 
 void fdtd::updateSource(unsigned n) {
     MyDataF source;
