@@ -361,6 +361,7 @@ void fdtd::initCoeff() {
     gamma = 1 + a;
     alpha = (1 - a) / gamma;
     Cvxex = Cvyey = Cvzez = e * dt / 2 / me / gamma;
+	Coeff_velocity = half_e * dt / me;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // update collision frequency
@@ -385,7 +386,7 @@ void fdtd::updateCoeff() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     int i, j, k;
     unsigned im, jm, km;
-    MyDataF tmp = half_e * (1 + alpha);
+    MyDataF tmp = eMDtDiv2DivEps0 * (1 + alpha);
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif    
@@ -395,12 +396,12 @@ void fdtd::updateCoeff() {
             for (k = 0, km = halfNeGrid; k < Ex.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Cexe.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Cexhy.p[i][j][k] = 1 / kappa;
-                Cexhz.p[i][j][k] = 1 / kappa;
+                Cexhy.p[i][j][k] = -dtDivEps0DivDz / kappa;
+                Cexhz.p[i][j][k] = dtDivEps0DivDy / kappa;
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
-                    MyDataF tmpc = half_e * (1 + (1 - a) / gamma_t);
+                    MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma_t);
                     Cvxex_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
                     Cexvx.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
                 } else {
@@ -418,12 +419,12 @@ void fdtd::updateCoeff() {
             for (k = 0, km = halfNeGrid; k < Ey.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Ceye.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Ceyhx.p[i][j][k] = 1 / kappa;
-                Ceyhz.p[i][j][k] = 1 / kappa;
+                Ceyhx.p[i][j][k] = dtDivEps0DivDz / kappa;
+                Ceyhz.p[i][j][k] = -dtDivEps0DivDx / kappa;
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
-                    MyDataF tmpc = half_e * (1 + (1 - a) / gamma_t);
+                    MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma_t);
                     Cvyey_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
                     Ceyvy.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
                 } else {
@@ -441,12 +442,12 @@ void fdtd::updateCoeff() {
             for (k = 0, km = 0; k < Ez.nz; k++, km += neGrid) {
                 MyDataF kappa = (1 + beta.p[im][jm][km]);
                 Ceze.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
-                Cezhy.p[i][j][k] = 1 / kappa;
-                Cezhx.p[i][j][k] = 1 / kappa;
+                Cezhy.p[i][j][k] = dtDivEps0DivDx / kappa;
+                Cezhx.p[i][j][k] = -dtDivEps0DivDy / kappa;
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = half_dt * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
-                    MyDataF tmpc = half_e * (1 + (1 - a) / gamma_t);
+                    MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma_t);
                     Cvzez_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
                     Cezvz.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
                 } else {
@@ -464,7 +465,7 @@ void fdtd::updateBeta() {
     unsigned je = jend*neGrid;
     unsigned ks = kstart*neGrid;
     unsigned ke = kend*neGrid;
-    MyDataF temp = 0.25 * e * e * dt * dt / me / eps_0;
+    MyDataF temp = e2Dt2Div4DivEps0DivMe;
     if (srcType != fdtd::SOURCE_GAUSSIAN) {
         temp = temp / gamma;
 #ifdef _OPENMP
@@ -579,19 +580,27 @@ void fdtd::setUp() {
     } else {
         t0 = tw;
     }
-    //    t0 = 6e-9;
 
-    // common use data
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //temporary variables that often used
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     dtDivEps0DivDxyz = dt / eps_0 / dx / dy / dz;
-
 #ifdef WITH_DENSITY
-    //Fine Grid size
     dsf = dx / neGrid;
     half_dt = dt / 2;
     half_e = e / 2;
-    Coeff_velocity = half_e * dt / me;
+	dtDivEps0DivDx = dt/eps_0/dx;
+	dtDivEps0DivDy = dt/eps_0/dy;
+	dtDivEps0DivDz = dt/eps_0/dz;
+	e2Dt2Div4DivEps0DivMe = 0.25 * e * e * dt * dt / me / eps_0;
+	eMDtDiv2DivEps0 = half_e*dt/eps_0;    
     halfNeGrid = neGrid / 2;
+#endif
 
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// fluid variables
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef WITH_DENSITY	
     mu_e = e / me / vm; //3.7e-2;
     mu_i = mu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
     De = mu_e * 2 * 1.602e-19 / e; //
@@ -600,6 +609,8 @@ void fdtd::setUp() {
     //Fine Time Step Size
     dtf = 0.05 * dsf * dsf / 2 / Dmax;
     neSkipStep = dtf / dt;
+
+
     cout << "neSkipStep=" << neSkipStep << endl;
     cout << tw / dt / neSkipStep << endl;
     //exit(0);
@@ -629,13 +640,15 @@ void fdtd::setUp() {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     MyDataF sigmaMax = 1.0;
     MyDataF kappaMax = 15;
     MyDataF alphaMax = 0.24;
     int pmlOrder = 4;
 
-    //pml.initParmeters(dx, dy, dz, m, ma);
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//  PML initials
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     pml.setCPMLRegion(pmlWidth);
     pml.createCPMLArrays(Imax, Jmax, Kmax);
     pml.initCoefficientArrays(pmlOrder, sigmaMax, kappaMax, alphaMax, epsR, dt, dx, dy, dz,
@@ -643,10 +656,10 @@ void fdtd::setUp() {
             Cexhz, Cezhx, Chxez, Chzex,
             Ceyhx, Cexhy, Chyex, Chxey);
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef WITH_DENSITY
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients for Density
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#ifdef WITH_DENSITY
     initCoeff();
 #endif
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -674,8 +687,6 @@ void fdtd::compute() {
     }
 #endif
     kc = ksp;
-
-
     if (jc >= Jmax) {
         jc = Jmax - 1;
     }
@@ -909,8 +920,6 @@ void fdtd::StartUp() {
     setUp();
     cout << "buildObject (in Startup)" << endl;
     buildObject();
-    cout << "initial CPML (in Startup)" << endl;
-    //pml.initCPML(dt, dx, dy, dz);
     cout << "computing (in Startup)" << endl;
     compute();
     cout << "exit Startup" << endl;

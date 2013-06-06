@@ -163,9 +163,14 @@ private:
     MyDataF dtf;
     int neSkipStep;
 
-    // tempary that offen used
+    // temporary variables that often used
     MyDataF half_dt;
     MyDataF half_e;
+	MyDataF eMDtDiv2DivEps0;
+	MyDataF dtDivEps0DivDx;
+	MyDataF e2Dt2Div4DivEps0DivMe;
+	MyDataF dtDivEps0DivDy;
+	MyDataF dtDivEps0DivDz;
     MyDataF Coeff_velocity;
     unsigned halfNeGrid;
 
