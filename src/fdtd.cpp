@@ -1062,9 +1062,7 @@ void fdtd::updateEx() {
                         (Hy.p[i][j][k] - Hy.p[i][j][k - 1]) * Cexhy.p[i][j][k];
 #ifdef WITH_DENSITY
                 Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
-#endif                                  
 
-#ifdef WITH_DENSITY
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = Nu_c.p[i * neGrid][j * neGrid + halfNeGrid][k * neGrid];
                     Vx.p[i][j][k] = (1 - a) / (1 + a) * Vx.p[i][j][k] - Cvxex_guassian.p[i][j][k] * (Exp + Ex.p[i][j][k]);
@@ -1097,13 +1095,11 @@ void fdtd::updateEy() {
                         (Hx.p[i][j][k] - Hx.p[i][j][k - 1]) * Ceyhx.p[i][j][k];
 #ifdef WITH_DENSITY
                 Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
-#endif /* WITH_DENSITY */
 
-#ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
                 Ey.nanOperator(i, j, k);
 #endif
-                //                Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = Nu_c.p[i * neGrid + halfNeGrid][j * neGrid][k * neGrid];
                     Vy.p[i][j][k] = (1 - a) / (1 + a) * Vy.p[i][j][k] - Cvyey_guassian.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
@@ -1135,10 +1131,8 @@ void fdtd::updateEz() {
                         (Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
 #ifdef WITH_DENSITY
                 Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
-#endif
 
-#ifdef WITH_DENSITY
-                //                Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {
                     MyDataF a = Nu_c.p[i * neGrid ][j * neGrid][k * neGrid];
                     Vz.p[i][j][k] = (1 - a) / (1 + a) * Vz.p[i][j][k] - Cvzez_guassian.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
