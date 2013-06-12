@@ -17,7 +17,7 @@ CXXFLAGS+=-O3
 CFLAGS+=-O3
 
 #Add DENSITY
-CXXFLAGS+=-DWITH_DENSITY
+#CXXFLAGS+=-DWITH_DENSITY
 
 # matlab path 
 MATPATH=/opt/Matlab/R2011a# for local server
