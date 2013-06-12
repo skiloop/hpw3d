@@ -625,6 +625,8 @@ void fdtd::setUp() {
 
     // source position
     isp = Imax / 2;
+    //jsp = Jmax - pmlWidth - 35;
+    //jsp = pmlWidth+10;
     jsp = Jmax / 2;
     ksp = Kmax / 2;
 
@@ -699,6 +701,9 @@ void fdtd::compute() {
     cout << "ic=" << ic << endl;
     cout << "jc=" << jc << endl;
     cout << "kc=" << kc << endl;
+    cout << "isp=" << isp << endl;
+    cout << "jsp=" << jsp << endl;
+    cout << "ksp=" << ksp << endl;
     assert(ic < Imax && jc < Jmax && kc < Kmax);
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  BEGIN TIME STEP
@@ -713,7 +718,19 @@ void fdtd::compute() {
     for (n = 1; n <= totalTimeSteps; ++n) {
 
         cout << "Ez at time step " << n << " at (" << ic << ", " << jc << ", " << kc;
-        cout << ") :  " << Ez.p[ic][jc][kc] << '\t' << Ez.p[isp][jsp][ksp] << endl;
+        cout << ") :  ";
+		//cout<<Ez.p[ic][jc][kc]<<endl;
+	   cout	<< Ez.p[isp][jsp+30][ksp] << '\t';
+	   cout	<< Ez.p[isp+30][jsp][ksp] << '\t';
+	   cout	<< Ez.p[isp][jsp][ksp+30] << endl;
+	   //cout	<< Ez.p[isp][jsp+10][ksp] << '\t';
+	   //cout	<< Ez.p[isp][jsp+15][ksp] << '\t';
+	   //cout	<< Ez.p[isp][jsp+20][ksp] << '\t';
+	   //cout	<< Ez.p[isp][jsp+25][ksp] << '\t';
+	   //cout	<< Ez.p[isp][jsp+30][ksp] << '\t';
+	   //cout	<< Ez.p[isp][jsp+35][ksp] << '\t';
+	   //cout	<< Ez.p[isp][jsp+40][ksp] << '\t';
+	   //cout	<< Ez.p[isp][jsp+45][ksp] << endl;
 
         updateMagneitcFields();
         pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
