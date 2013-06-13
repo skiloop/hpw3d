@@ -361,12 +361,12 @@ void fdtd::initCoeff() {
     gamma = 1 + a;
     alpha = (1 - a) / gamma;
     Cvxex = Cvyey = Cvzez = e * dt / 2 / me / gamma;
-	Coeff_velocity = half_e * dt / me;
+    Coeff_velocity = half_e * dt / me;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // update collision frequency
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if (srcType == fdtd::SOURCE_GAUSSIAN){
+    if (srcType == fdtd::SOURCE_GAUSSIAN) {
         Nu_c.ResetStructData(vm);
     }
 
@@ -562,7 +562,7 @@ void fdtd::initialize() {
         Nu_c.setName("nu_c");
     }
     createCoeff();
-    Ne.setName("Ne"); 
+    Ne.setName("Ne");
 #endif
 }
 
@@ -577,29 +577,30 @@ void fdtd::setUp() {
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
         t0 = 4.5 * tw;
+        t0 = 3.0 * tw;
     } else {
         t0 = tw;
     }
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //temporary variables that often used
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     dtDivEps0DivDxyz = dt / eps_0 / dx / dy / dz;
 #ifdef WITH_DENSITY
     dsf = dx / neGrid;
     half_dt = dt / 2;
     half_e = e / 2;
-	dtDivEps0DivDx = dt/eps_0/dx;
-	dtDivEps0DivDy = dt/eps_0/dy;
-	dtDivEps0DivDz = dt/eps_0/dz;
-	e2Dt2Div4DivEps0DivMe = 0.25 * e * e * dt * dt / me / eps_0;
-	eMDtDiv2DivEps0 = half_e*dt/eps_0;    
+    dtDivEps0DivDx = dt / eps_0 / dx;
+    dtDivEps0DivDy = dt / eps_0 / dy;
+    dtDivEps0DivDz = dt / eps_0 / dz;
+    e2Dt2Div4DivEps0DivMe = 0.25 * e * e * dt * dt / me / eps_0;
+    eMDtDiv2DivEps0 = half_e * dt / eps_0;
     halfNeGrid = neGrid / 2;
 #endif
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	// fluid variables
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // fluid variables
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef WITH_DENSITY	
     mu_e = e / me / vm; //3.7e-2;
     mu_i = mu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
@@ -625,10 +626,11 @@ void fdtd::setUp() {
 
     // source position
     isp = Imax / 2;
-    //jsp = Jmax - pmlWidth - 35;
+    jsp = Jmax - pmlWidth - 35;
     //jsp = pmlWidth+10;
-    jsp = Jmax / 2;
-    ksp = Kmax / 2;
+    //jsp = Jmax / 2;
+    //ksp = Kmax / 2;
+    ksp = pmlWidth + 10;
 
     if (iend < istart)iend = istart + 1;
     if (jend < jstart)jend = jstart + 1;
@@ -648,9 +650,9 @@ void fdtd::setUp() {
     MyDataF alphaMax = 0.24;
     int pmlOrder = 4;
 
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//  PML initials
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  PML initials
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     pml.setCPMLRegion(pmlWidth);
     pml.createCPMLArrays(Imax, Jmax, Kmax);
     pml.initCoefficientArrays(pmlOrder, sigmaMax, kappaMax, alphaMax, epsR, dt, dx, dy, dz,
@@ -659,7 +661,7 @@ void fdtd::setUp() {
             Ceyhx, Cexhy, Chyex, Chxey);
 
 #ifdef WITH_DENSITY
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients for Density
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     initCoeff();
@@ -719,18 +721,18 @@ void fdtd::compute() {
 
         cout << "Ez at time step " << n << " at (" << ic << ", " << jc << ", " << kc;
         cout << ") :  ";
-		//cout<<Ez.p[ic][jc][kc]<<endl;
-	   cout	<< Ez.p[isp][jsp+30][ksp] << '\t';
-	   cout	<< Ez.p[isp+30][jsp][ksp] << '\t';
-	   cout	<< Ez.p[isp][jsp][ksp+30] << endl;
-	   //cout	<< Ez.p[isp][jsp+10][ksp] << '\t';
-	   //cout	<< Ez.p[isp][jsp+15][ksp] << '\t';
-	   //cout	<< Ez.p[isp][jsp+20][ksp] << '\t';
-	   //cout	<< Ez.p[isp][jsp+25][ksp] << '\t';
-	   //cout	<< Ez.p[isp][jsp+30][ksp] << '\t';
-	   //cout	<< Ez.p[isp][jsp+35][ksp] << '\t';
-	   //cout	<< Ez.p[isp][jsp+40][ksp] << '\t';
-	   //cout	<< Ez.p[isp][jsp+45][ksp] << endl;
+        //cout<<Ez.p[ic][jc][kc]<<endl;
+        cout << Ez.p[isp][jsp + 30][ksp] << '\t';
+        cout << Ez.p[isp + 30][jsp][ksp] << '\t';
+        cout << Ez.p[isp][jsp][ksp + 30] << endl;
+        //cout	<< Ez.p[isp][jsp+10][ksp] << '\t';
+        //cout	<< Ez.p[isp][jsp+15][ksp] << '\t';
+        //cout	<< Ez.p[isp][jsp+20][ksp] << '\t';
+        //cout	<< Ez.p[isp][jsp+25][ksp] << '\t';
+        //cout	<< Ez.p[isp][jsp+30][ksp] << '\t';
+        //cout	<< Ez.p[isp][jsp+35][ksp] << '\t';
+        //cout	<< Ez.p[isp][jsp+40][ksp] << '\t';
+        //cout	<< Ez.p[isp][jsp+45][ksp] << endl;
 
         updateMagneitcFields();
         pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
@@ -1000,8 +1002,8 @@ void fdtd::updateHx() {
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
     for (k = 0; k < Kmax; ++k) {
-        for (i = 0; i < Imax + 1; ++i) {
-            for (j = 0; j < Jmax; ++j) {
+        for (j = 0; j < Jmax; ++j) {
+            for (i = 0; i <= Imax; ++i) {
                 Hx.p[i][j][k] = Chxh.p[i][j][k] * Hx.p[i][j][k] +
                         Chxez.p[i][j][k]*(Ez.p[i][j + 1][k] - Ez.p[i][j][k]) +
                         Chxey.p[i][j][k]*(Ey.p[i][j][k + 1] - Ey.p[i][j][k]);
@@ -1022,7 +1024,7 @@ void fdtd::updateHy() {
 #endif
     for (k = 0; k < Kmax; ++k) {
         for (i = 0; i < Imax; ++i) {
-            for (j = 0; j < Jmax + 1; ++j) {
+            for (j = 0; j <= Jmax; ++j) {
                 Hy.p[i][j][k] = Chyh.p[i][j][k] * Hy.p[i][j][k] +
                         Chyez.p[i][j][k]*(Ez.p[i + 1][j][k] - Ez.p[i][j][k]) +
                         Chyex.p[i][j][k]*(Ex.p[i][j][k + 1] - Ex.p[i][j][k]);
@@ -1044,7 +1046,7 @@ void fdtd::updateHz() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
 #endif
-    for (k = 0; k < Kmax + 1; ++k) {
+    for (k = 0; k <= Kmax; ++k) {
         for (i = 0; i < Imax; ++i) {
             for (j = 0; j < Jmax; ++j) {
                 Hz.p[i][j][k] = Chzh.p[i][j][k] * Hz.p[i][j][k] +
@@ -1069,8 +1071,8 @@ void fdtd::updateEx() {
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
     for (k = 1; k < Kmax; ++k) {
-        for (i = 0; i < Imax; ++i) {
-            for (j = 1; j < Jmax; ++j) {
+        for (j = 1; j < Jmax; ++j) {
+            for (i = 0; i < Imax; ++i) {
 #ifdef WITH_DENSITY
                 MyDataF Exp = Ex.p[i][j][k];
 #endif
@@ -1137,8 +1139,9 @@ void fdtd::updateEz() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
-    for (k = 0; k < Kmax; ++k) {
-        for (i = 1; i < Imax; ++i) {
+
+    for (i = 1; i < Imax; ++i) {
+        for (k = 0; k < Kmax; ++k) {
             for (j = 1; j < Jmax; ++j) {
 #ifdef WITH_DENSITY
                 MyDataF Ezp = Ez.p[i][j][k];

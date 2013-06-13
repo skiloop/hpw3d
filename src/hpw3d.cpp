@@ -23,16 +23,17 @@ int main(int argc, char*argv[]) {
 
     epsR = 1.0;
 
-	T = 1/checker.frequency;
-	switch(checker.waveType){
-		case GAUSSIAN_WAVE:
-			tw = 1.5174271293851462339/M_PI/checker.frequency;
-			break;
-		case DERIVATIVE_GAUSSIAN_WAVE:
-			break;
-		default:
-			tw = T;
-	}
+    T = 1 / checker.frequency;
+    switch (checker.waveType) {
+        case GAUSSIAN_WAVE:
+            tw = 1.5174271293851462339 / M_PI / checker.frequency;
+            tw = T;
+            break;
+        case DERIVATIVE_GAUSSIAN_WAVE:
+            break;
+        default:
+            tw = T;
+    }
 
     omega = 2 * M_PI / T;
     dx = C * T / checker.yeeCellSizeX;
