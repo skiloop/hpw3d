@@ -493,7 +493,17 @@ void fdtd::updateBeta() {
 }
 
 void fdtd::initDensity() {
-
+    MyDataF tmp=pow(50e-6,3);
+    int i0=isp;
+    int j0=jsp+30;
+    int k0=ksp;
+    for(unsigned i=0;i<Ne.nx;i++){
+        for(unsigned j=0;j<Ne.ny;j++){
+            for(unsigned k=0;k<Ne.nz;k++){
+                Ne.p[i][j][k]=Ne0*exp((pow((i-i0)*dx,2)+pow((j-j0)*dx,2)+pow((k-k0)*dx,2))/tmp);
+            }
+        }
+    }
 }
 #endif
 
@@ -626,11 +636,11 @@ void fdtd::setUp() {
 
     // source position
     isp = Imax / 2;
-    jsp = Jmax - pmlWidth - 35;
+//    jsp = Jmax - pmlWidth - 35;
     //jsp = pmlWidth+10;
-    //jsp = Jmax / 2;
-    //ksp = Kmax / 2;
-    ksp = pmlWidth + 10;
+    jsp = Jmax / 2;
+    ksp = Kmax / 2;
+//    ksp = pmlWidth + 10;
 
     if (iend < istart)iend = istart + 1;
     if (jend < jstart)jend = jstart + 1;
@@ -661,6 +671,11 @@ void fdtd::setUp() {
             Ceyhx, Cexhy, Chyex, Chxey);
 
 #ifdef WITH_DENSITY
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // initial density
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    initDensity();
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients for Density
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

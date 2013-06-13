@@ -68,3 +68,9 @@ large
 # ctag file
 ./tags
 nbproject/
+
+# qt ide project files
+hpw3d.config
+hpw3d.includes
+hpw3d.files
+hpw3d.creator
