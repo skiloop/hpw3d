@@ -14,7 +14,7 @@ public:
             MyDataF _amp = 1000, unsigned _savemodulus = 10, unsigned _ksource = 12,
             unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, unsigned _nmatrial = 50, unsigned _neGrid = 16);
 
-    void SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
+    /*void SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);*/
 #else
     fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
@@ -78,7 +78,10 @@ private:
     unsigned Kmax;
     //  Specify the Impulsive Source (Differentiated Gaussian) parameters
     MyDataF tw; //pulse width
-    MyDataF dt, dx, dy, dz;
+public:
+    MyDataF dt;
+private:
+	MyDataF dx, dy, dz;
 
     MyDataF amp; // Amplitude
     // Specify the Time Step at which the data has to be saved for Visualization
@@ -99,15 +102,17 @@ private:
 
     //Max number of materials allowed
     unsigned numMaterials;
-#ifdef WITH_DENSITY
-    //how many fine grids per coarse grid 
-    unsigned neGrid;
-    //initial plasma value
-    MyDataF Ne0;
-#endif
-    // source type
+//#ifdef WITH_DENSITY
+//    //how many fine grids per coarse grid 
+//    unsigned neGrid;
+//    //initial plasma value
+//    MyDataF Ne0;
+//#endif
+//  
+public:
+	// source type
     int srcType;
-
+private:
     //permittivity, permeability and conductivity of different materials
     MyDataF *epsilon;
     MyDataF *sigma;
@@ -127,7 +132,7 @@ private:
 
     // common data
     MyDataF dtDivEps0DivDxyz;
-
+	public:
     // H & E Field components
     data3d<MyDataF> Hx;
     data3d<MyDataF> Hy;
@@ -135,7 +140,7 @@ private:
     data3d<MyDataF> Ex;
     data3d<MyDataF> Ey;
     data3d<MyDataF> Ez;
-
+	private:
     data3d<unsigned> ID1; //medium definition array for Ex
     data3d<unsigned> ID2; //medium definition array for Ey
     data3d<unsigned> ID3; //medium definition array for Ez
@@ -147,81 +152,82 @@ private:
     //H field update coefficients
     MyDataF DA;
     MyDataF DB;
-
+public:
     data3d<MyDataF> Cexe, Ceye, Ceze;
-    data3d<MyDataF> Chxh, Chyh, Chzh;
-    data3d<MyDataF> Cexhy, Ceyhz, Cezhx, Cexhz, Ceyhx, Cezhy;
+	data3d<MyDataF> Cexhy, Ceyhz, Cezhx, Cexhz, Ceyhx, Cezhy;
+private:
+    data3d<MyDataF> Chxh, Chyh, Chzh;    
     data3d<MyDataF> Chxey, Chyez, Chzex, Chxez, Chyex, Chzey;
     void initCoeficients();
-
-#ifdef WITH_DENSITY
-
-    int niutype;
-    //Fine Grid size
-    MyDataF dsf;
-    //time step of plasma
-    MyDataF dtf;
-    int neSkipStep;
-
-    // temporary variables that often used
-    MyDataF half_dt;
-    MyDataF half_e;
-	MyDataF eMDtDiv2DivEps0;
-	MyDataF dtDivEps0DivDx;
-	MyDataF e2Dt2Div4DivEps0DivMe;
-	MyDataF dtDivEps0DivDy;
-	MyDataF dtDivEps0DivDz;
-    MyDataF Coeff_velocity;
-    unsigned halfNeGrid;
-
-    //plasma variables
-    MyDataF vm; //collision frequency
-    MyDataF p; // air pressure
-    MyDataF De;
-    MyDataF Da;
-    MyDataF rei;
-    MyDataF mu_i;
-    MyDataF mu_e;
-    MyDataF gamma;
-    MyDataF a;
-    MyDataF alpha;
-
-    // update coefficients
-    //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
-    data3d<MyDataF> Cezvz, Ceyvy, Cexvx;
-    data3d<MyDataF> Cvxex_guassian, Cvyey_guassian, Cvzez_guassian;
-    MyDataF Cvxex, Cvyey, Cvzez;
-
-    //Plasma
-    data3d<MyDataF> Ne, Ne_pre;
-    //
-    data3d<MyDataF> Erms;
-    // Beta
-    data3d<MyDataF> beta;
-
-    // collision frequency
-    data3d<MyDataF> Nu_c;
-    //
-    data3d<MyDataF> Vx;
-    data3d<MyDataF> Vy;
-    data3d<MyDataF> Vz;
-
-    //initials
-    void initCoeff();
-    void initDensity();
-    void createCoeff();
-    void updateCoeff();
-    void updateBeta();
-
-    // Erms or Eeff operation
-    void IntegerEeff();
-    void UpdateErms(void);
-    void updateCollisionFrequency();
-    void InterpErms();
-    void UpdateDensity(void);
-    void UpdateVeloity(void);
-    void WallCircleBound(data3d<MyDataF> &stru);
-#endif
+//
+//#ifdef WITH_DENSITY
+//
+//    int niutype;
+//    //Fine Grid size
+//    MyDataF dsf;
+//    //time step of plasma
+//    MyDataF dtf;
+//    int neSkipStep;
+//
+//    // temporary variables that often used
+//    MyDataF half_dt;
+//    MyDataF half_e;
+//	MyDataF eMDtDiv2DivEps0;
+//	MyDataF dtDivEps0DivDx;
+//	MyDataF e2Dt2Div4DivEps0DivMe;
+//	MyDataF dtDivEps0DivDy;
+//	MyDataF dtDivEps0DivDz;
+//    MyDataF Coeff_velocity;
+//    unsigned halfNeGrid;
+//
+//    //plasma variables
+//    MyDataF vm; //collision frequency
+//    MyDataF p; // air pressure
+//    MyDataF De;
+//    MyDataF Da;
+//    MyDataF rei;
+//    MyDataF mu_i;
+//    MyDataF mu_e;
+//    MyDataF gamma;
+//    MyDataF a;
+//    MyDataF alpha;
+//
+//    // update coefficients
+//    //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
+//    data3d<MyDataF> Cezvz, Ceyvy, Cexvx;
+//    data3d<MyDataF> Cvxex_guassian, Cvyey_guassian, Cvzez_guassian;
+//    MyDataF Cvxex, Cvyey, Cvzez;
+//
+//    //Plasma
+//    data3d<MyDataF> Ne, Ne_pre;
+//    //
+//    data3d<MyDataF> Erms;
+//    // Beta
+//    data3d<MyDataF> beta;
+//
+//    // collision frequency
+//    data3d<MyDataF> Nu_c;
+//    //
+//    data3d<MyDataF> Vx;
+//    data3d<MyDataF> Vy;
+//    data3d<MyDataF> Vz;
+//
+//    //initials
+//    void initCoeff();
+//    void initDensity();
+//    void createCoeff();
+//    void updateCoeff();
+//    void updateBeta();
+//
+//    // Erms or Eeff operation
+//    void IntegerEeff();
+//    void UpdateErms(void);
+//    void updateCollisionFrequency();
+//    void InterpErms();
+//    void UpdateDensity(void);
+//    void UpdateVeloity(void);
+//    void WallCircleBound(data3d<MyDataF> &stru);
+//#endif
     void updateHx();
     void updateHy();
     void updateHz();
