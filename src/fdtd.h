@@ -232,6 +232,8 @@ private:
     void updateElectricAndVeloityFields();
     void updateSource(unsigned n);
     cpml<MyDataF> pml;
+private:
+	void ApplyNiu(int i,int j,int k,MyDataF &va,MyDataF &vi,MyDataF &Deff);
 
 };
 
