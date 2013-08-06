@@ -191,9 +191,7 @@ void fdtd::InterpErms() {
 }
 
 
-/************************************************************************/
-/* update vi,va and Deff with Density Ne at point (i,j,k)                                                                     */
-/************************************************************************/
+
 void fdtd::ApplyNiu(int i,int j,int k,MyDataF &va,MyDataF &vi,MyDataF &Deff){
 	MyDataF Eeff, alpha_t, tau_m, kasi;
 	switch (srcType) {
@@ -625,10 +623,13 @@ void fdtd::initialize() {
     Ne.CreateStruct(Imax*neGrid, Jmax*neGrid, Kmax*neGrid, Ne0);
     Erms.CreateStruct(Ne, 0.0);
     Ne_pre.CreateStruct(Ne, 0.0);
+
+	// Gaussian need niu_c from previous step
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
         Nu_c.CreateStruct(Ne, 0.0);
         Nu_c.setName("nu_c");
     }
+
     createCoeff();
     Ne.setName("Ne");
 #endif

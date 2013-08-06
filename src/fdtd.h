@@ -199,9 +199,9 @@ private:
     // Beta
     data3d<MyDataF> beta;
 
-    // collision frequency
+    // collision frequency for reused mode
     data3d<MyDataF> Nu_c;
-    //
+    //velocity
     data3d<MyDataF> Vx;
     data3d<MyDataF> Vy;
     data3d<MyDataF> Vz;
@@ -233,6 +233,9 @@ private:
     void updateSource(unsigned n);
     cpml<MyDataF> pml;
 private:
+	/************************************************************************/
+	/* update vi,va and Deff with Density Ne at point (i,j,k)               */
+	/************************************************************************/
 	void ApplyNiu(int i,int j,int k,MyDataF &va,MyDataF &vi,MyDataF &Deff);
 
 };
