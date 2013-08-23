@@ -190,11 +190,67 @@ void fdtd::InterpErms() {
     }
 }
 
+
+
+void fdtd::ApplyNiu(int i,int j,int k,MyDataF &va,MyDataF &vi,MyDataF &Deff){
+	MyDataF Eeff, alpha_t, tau_m, kasi;
+	switch (srcType) {
+	case SOURCE_GAUSSIAN:
+		Eeff = Erms.p[i][j][k] / 100; //convert to V/cm
+		break;
+	default:
+		Eeff = Erms.p[i][j][k] / 100 * pow(1 / (1 + omega * omega / vm / vm), 0.5);
+	}
+
+	switch (niutype) {
+	case MORROW_AND_LOWKE:
+		Niu_MorrowAndLowke(&vi, &va, Eeff, Ne.p[i][j][k] * 1e6);
+		break;
+	case NIKONOV:
+		Niu_Nikonov(&vi, &va, Eeff, p);
+		break;
+	case KANG:
+		Niu_Kang(&vi, &va, Eeff);
+		break;
+	case ALI:
+	default:
+		alpha_t = Eeff / p;
+		if (alpha_t < 30) {
+			if (alpha_t < 1e-12) {
+				vi = 0;
+			} else if (alpha_t >= 1) {
+				vi = (1.45 + 0.01 * pow(alpha_t, 1.5))*2.5e7 * exp(-208 / alpha_t) * p;
+			} else {
+				vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
+			}
+		} else if (alpha_t > 120) {
+			if (alpha_t <= 3000) {
+				vi = 54.08e6 * pow(alpha_t, 0.5) * exp(-359 / alpha_t) * p;
+			} else {
+				vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
+			}
+		} else if (alpha_t > 54) {
+			vi = (1.32 + 0.054 * alpha_t)*1e7 * exp(-208 / alpha_t) * p;
+		} else {
+			vi = (5.0 + 0.19 * alpha_t)*1e7 * exp(-273.8 / alpha_t) * p;
+		}
+		va = 7.6e-4 * pow(alpha_t / (alpha_t + 218), 2) / p;
+	}
+	if (Ne.p[i][j][k] < 1) {
+		Deff = De;
+	} else {
+		tau_m = eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
+		kasi = vi * tau_m;
+		Deff = (kasi * De + Da) / (kasi + 1);
+	}
+}
+
+/************************************************************************/
+/* update density                                                                     */
+/************************************************************************/
 void fdtd::UpdateDensity(void) {
 
-    int i, j, k, mt = 1;
-
-    MyDataF Eeff, alpha_t, tau_m, kasi;
+    int i, j, k, mt = 1;    
     MyDataF Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1;
     MyDataF Deff;
     MyDataF maxvi = 0, minvi = 0;
@@ -204,68 +260,68 @@ void fdtd::UpdateDensity(void) {
     Ne_pre = Ne;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) \
-        schedule(dynamic) private(i,j,k,Eeff,Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1,vi,va,alpha_t,Deff,tau_m,kasi)
+        schedule(dynamic) private(i,j,k,Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1,vi,va,Deff)
 #endif
     for (i = mt; i < Ne.nx - mt; i++) {
         for (j = mt; j < Ne.ny - mt; j++) {
             for (k = mt; k < Ne.nz - mt; k++) {
-                switch (srcType) {
-                    case SOURCE_GAUSSIAN:
-                        Eeff = Erms.p[i][j][k] / 100; //convert to V/cm
-                        break;
-                    default:
-                        Eeff = Erms.p[i][j][k] / 100 * pow(1 / (1 + omega * omega / vm / vm), 0.5);
-                }
+                //switch (srcType) {
+                //    case SOURCE_GAUSSIAN:
+                //        Eeff = Erms.p[i][j][k] / 100; //convert to V/cm
+                //        break;
+                //    default:
+                //        Eeff = Erms.p[i][j][k] / 100 * pow(1 / (1 + omega * omega / vm / vm), 0.5);
+                //}
 
-                Ne_ijk = Ne_pre.p[i][j][k];
-                Neip1 = Ne_pre.p[i + 1][j][k];
-                Neim1 = Ne_pre.p[i - 1][j][k];
-                Nejp1 = Ne_pre.p[i][j + 1][k];
-                Nejm1 = Ne_pre.p[i][j - 1][k];
-                Nekp1 = Ne_pre.p[i][j][k + 1];
-                Nekm1 = Ne_pre.p[i][j][k - 1];
-
-                switch (niutype) {
-                    case MORROW_AND_LOWKE:
-                        Niu_MorrowAndLowke(&vi, &va, Eeff, Ne_ijk * 1e6);
-                        break;
-                    case NIKONOV:
-                        Niu_Nikonov(&vi, &va, Eeff, p);
-                        break;
-                    case KANG:
-                        Niu_Kang(&vi, &va, Eeff);
-                        break;
-                    case ALI:
-                    default:
-                        alpha_t = Eeff / p;
-                        if (alpha_t < 30) {
-                            if (alpha_t < 1e-12) {
-                                vi = 0;
-                            } else if (alpha_t >= 1) {
-                                vi = (1.45 + 0.01 * pow(alpha_t, 1.5))*2.5e7 * exp(-208 / alpha_t) * p;
-                            } else {
-                                vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
-                            }
-                        } else if (alpha_t > 120) {
-                            if (alpha_t <= 3000) {
-                                vi = 54.08e6 * pow(alpha_t, 0.5) * exp(-359 / alpha_t) * p;
-                            } else {
-                                vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
-                            }
-                        } else if (alpha_t > 54) {
-                            vi = (1.32 + 0.054 * alpha_t)*1e7 * exp(-208 / alpha_t) * p;
-                        } else {
-                            vi = (5.0 + 0.19 * alpha_t)*1e7 * exp(-273.8 / alpha_t) * p;
-                        }
-                        va = 7.6e-4 * pow(alpha_t / (alpha_t + 218), 2) / p;
-                }
-                if (Ne_ijk < 1) {
-                    Deff = De;
-                } else {
-                    tau_m = eps_0 / (e * Ne_ijk * (mu_e + mu_i));
-                    kasi = vi * tau_m;
-                    Deff = (kasi * De + Da) / (kasi + 1);
-                }
+				Ne_ijk = Ne_pre.p[i][j][k];
+				Neip1 = Ne_pre.p[i + 1][j][k];
+				Neim1 = Ne_pre.p[i - 1][j][k];
+				Nejp1 = Ne_pre.p[i][j + 1][k];
+				Nejm1 = Ne_pre.p[i][j - 1][k];
+				Nekp1 = Ne_pre.p[i][j][k + 1];
+				Nekm1 = Ne_pre.p[i][j][k - 1];
+				ApplyNiu(i,j,k,va,vi,Deff);
+                //switch (niutype) {
+                //    case MORROW_AND_LOWKE:
+                //        Niu_MorrowAndLowke(&vi, &va, Eeff, Ne_ijk * 1e6);
+                //        break;
+                //    case NIKONOV:
+                //        Niu_Nikonov(&vi, &va, Eeff, p);
+                //        break;
+                //    case KANG:
+                //        Niu_Kang(&vi, &va, Eeff);
+                //        break;
+                //    case ALI:
+                //    default:
+                //        alpha_t = Eeff / p;
+                //        if (alpha_t < 30) {
+                //            if (alpha_t < 1e-12) {
+                //                vi = 0;
+                //            } else if (alpha_t >= 1) {
+                //                vi = (1.45 + 0.01 * pow(alpha_t, 1.5))*2.5e7 * exp(-208 / alpha_t) * p;
+                //            } else {
+                //                vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
+                //            }
+                //        } else if (alpha_t > 120) {
+                //            if (alpha_t <= 3000) {
+                //                vi = 54.08e6 * pow(alpha_t, 0.5) * exp(-359 / alpha_t) * p;
+                //            } else {
+                //                vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
+                //            }
+                //        } else if (alpha_t > 54) {
+                //            vi = (1.32 + 0.054 * alpha_t)*1e7 * exp(-208 / alpha_t) * p;
+                //        } else {
+                //            vi = (5.0 + 0.19 * alpha_t)*1e7 * exp(-273.8 / alpha_t) * p;
+                //        }
+                //        va = 7.6e-4 * pow(alpha_t / (alpha_t + 218), 2) / p;
+                //}
+                //if (Ne_ijk < 1) {
+                //    Deff = De;
+                //} else {
+                //    tau_m = eps_0 / (e * Ne_ijk * (mu_e + mu_i));
+                //    kasi = vi * tau_m;
+                //    Deff = (kasi * De + Da) / (kasi + 1);
+                //}
                 Ne.p[i][j][k] =
                         (
                         Ne_ijk * (1 + dtf * vi)
@@ -567,10 +623,13 @@ void fdtd::initialize() {
     Ne.CreateStruct(Imax*neGrid, Jmax*neGrid, Kmax*neGrid, Ne0);
     Erms.CreateStruct(Ne, 0.0);
     Ne_pre.CreateStruct(Ne, 0.0);
+
+	// Gaussian need niu_c from previous step
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
         Nu_c.CreateStruct(Ne, 0.0);
         Nu_c.setName("nu_c");
     }
+
     createCoeff();
     Ne.setName("Ne");
 #endif

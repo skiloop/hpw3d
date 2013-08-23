@@ -155,7 +155,7 @@ for sine wave
 E_{eff}=\sqrt{\frac{E_{rms}}{1+\omega^{2}/\nu^{2}_{m}}}
 \end{equation}
 Gaussian pulse density formula
-$\nu_{i},\nu_c$ approximation
+$\nu_{i}$,$\nu_{c}$ (i.e. $\nu_{m}$) approximation
 \begin{equation}\label{nu_i_1}
 \nu_{i}/p=\left\lbrace\begin{array}{ll}
 1.32+0.54\times 10^7A \exp \left(-208/A\right),&30\leqslant A\leqslant 54\\
@@ -171,4 +171,9 @@ $\nu_{i},\nu_c$ approximation
 \end{array}\right.
 \end{equation}
 where $A=E_{eff}/p/133.3$ ,$E_{eff}$in $V/cm$
+\section{Density updating with Gaussian Wave}
+When deal with Gaussian Pulse,value of  $\nu_{c}$ at  previous step when calculating $E_{eff}$.
+So some coefficients may not be used as a single at all grids.These variables are $Cese$,$Cesvs$,$Ceshr$ and $Cvses$ where
+$s,r=x,y,z$ and $r\nq s$.
 \end{document}
+
