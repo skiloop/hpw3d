@@ -636,9 +636,9 @@ void fdtd::setUp() {
 
     // source position
     isp = Imax / 2;
-//    jsp = Jmax - pmlWidth - 35;
+    jsp = Jmax - pmlWidth - 35;
     //jsp = pmlWidth+10;
-    jsp = Jmax / 2;
+    //jsp = Jmax / 2;
     ksp = Kmax / 2;
 //    ksp = pmlWidth + 10;
 
