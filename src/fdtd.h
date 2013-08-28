@@ -166,11 +166,11 @@ private:
     // temporary variables that often used
     MyDataF half_dt;
     MyDataF half_e;
-	MyDataF eMDtDiv2DivEps0;
-	MyDataF dtDivEps0DivDx;
-	MyDataF e2Dt2Div4DivEps0DivMe;
-	MyDataF dtDivEps0DivDy;
-	MyDataF dtDivEps0DivDz;
+    MyDataF eMDtDiv2DivEps0;
+    MyDataF dtDivEps0DivDx;
+    MyDataF e2Dt2Div4DivEps0DivMe;
+    MyDataF dtDivEps0DivDy;
+    MyDataF dtDivEps0DivDz;
     MyDataF Coeff_velocity;
     unsigned halfNeGrid;
 
@@ -233,10 +233,10 @@ private:
     void updateSource(unsigned n);
     cpml<MyDataF> pml;
 private:
-	/************************************************************************/
-	/* update vi,va and Deff with Density Ne at point (i,j,k)               */
-	/************************************************************************/
-	void ApplyNiu(int i,int j,int k,MyDataF &va,MyDataF &vi,MyDataF &Deff);
+    /************************************************************************/
+    /* update vi,va and Deff with Density Ne at point (i,j,k)               */
+    /************************************************************************/
+    void ApplyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
 
 };
 
