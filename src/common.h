@@ -32,7 +32,7 @@ typedef pMyDataF* ppMyDataF;
 #define DEFAULT_NU_FORMAT ALI
 
 // default value for max density
-#define DEFAULT_DENSITY_MAX (0)
+#define DEFAULT_DENSITY_MAX (1e9)
 
 // some common constants
 const MyDataF C = 2.99792458E8; // speed of light in free space
