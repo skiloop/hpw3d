@@ -822,7 +822,7 @@ void fdtd::compute() {
         //====================================
         // update Source
         //====================================
-        //updateSource(n);
+        updateSource(n);
 
 #ifdef WITH_DENSITY
         UpdateErms();
@@ -943,7 +943,6 @@ void fdtd::buildDipole() {
             }
         }
     }
-
 }
 
 //creates a dielectric cube (yee cell) made up of the selected material
@@ -1093,7 +1092,7 @@ void fdtd::updateHx() {
                         Chxey.p[i][j][k]*(Ey.p[i][j][k + 1] - Ey.p[i][j][k]);
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
-                Hx.nanOperator(i, j, k);
+                Hx.isValid(i, j, k);
 #endif
 #endif
             }
@@ -1114,7 +1113,7 @@ void fdtd::updateHy() {
                         Chyex.p[i][j][k]*(Ex.p[i][j][k + 1] - Ex.p[i][j][k]);
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
-                Hy.nanOperator(i, j, k);
+                Hy.isValid(i, j, k);
 #endif
 #endif
             }
@@ -1138,7 +1137,7 @@ void fdtd::updateHz() {
                         (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * Chzex.p[i][j][k];
 #ifdef WITH_DENSITY
 #if (DEBUG>=4&&!_OPENMP)
-                Hz.nanOperator(i, j, k);
+                Hz.isValid(i, j, k);
 #endif
 #endif
             }
@@ -1200,7 +1199,7 @@ void fdtd::updateEy() {
                 Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
 
 #if (DEBUG>=4&&!_OPENMP)
-                Ey.nanOperator(i, j, k);
+                Ey.isValid(i, j, k);
 #endif
                 // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
                 if (srcType == fdtd::SOURCE_GAUSSIAN) {

@@ -401,9 +401,9 @@ public:
 public:
     static int InitMatlabEngine();
     static int CloseEngine();
-#if DEBUG
-    void nanOperator(unsigned i, unsigned j, unsigned k);
-#endif
+    bool isNaN(unsigned i, unsigned j, unsigned k);
+	bool isInf(unsigned i,unsigned j,unsigned k);
+	bool isValid(unsigned i,unsigned j,unsigned k);
 
 };
 
@@ -871,15 +871,38 @@ void data3d<DataType>::InitPlot() {
 #endif
 }
 
-#if DEBUG
-
+/**
+ * check if is nan at point (i,j,k)
+ *
+ */
 template<class DataType>
-void data3d<DataType>::nanOperator(unsigned i, unsigned j, unsigned k) {
+bool data3d<DataType>::isNaN(unsigned i, unsigned j, unsigned k) {
     if (isnan(p[i][j][k])) {
         cout << "nan var found for " << getName() << " at:(" << i << "," << j << "," << k << ")" << endl;
+		return true;
     }
+	return false;
 }
-#endif
+/**
+ * check if is inf at point (i,j,k)
+ *
+ */
+template<class DataType>
+bool data3d<DataType>::isInf(unsigned i, unsigned j, unsigned k) {
+    if (isinf(p[i][j][k])) {
+        cout << "inf var found for " << getName() << " at:(" << i << "," << j << "," << k << ")" << endl;
+		return true;
+    }
+	return false;
+}
+
+/**
+ * check if is valid var at point (i,j,k)
+ */
+template<class DataType>
+bool data3d<DataType>::isValid(unsigned i, unsigned j, unsigned k) {
+	return isNaN(i,j,k)|isInf(i,j,k);
+}
 
 //#include "datastruct.cpp"
 

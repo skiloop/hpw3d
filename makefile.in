@@ -11,8 +11,10 @@ CFLAGS=-Wl,--hash-style=sysv -MMD -Wall -Wno-sign-compare
 #CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 
 # debug mode
-CXXFLAGS+=-g -DDEBUG=4
-CFLAGS+=-g -DDEBUG=4
+CXXFLAGS+=-DDEBUG=4
+CFLAGS+=-DDEBUG=4
+CXXFLAGS+=-g
+CFLAGS+=-g
 #CXXFLAGS+=-O3
 #CFLAGS+=-O3
 
