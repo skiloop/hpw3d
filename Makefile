@@ -4,7 +4,7 @@ include makefile.in
 SRC=src
 #TEST=testCPML sine testMain gaussian cpmlfdtd3d
 #TEST_SRC_DIR=./test/
-OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o inputChecker.o source.o
+OBJS=cpml.o hpw3d.o fdtd.o InonizationFormula.o inputChecker.o source.o Point.o
 #CPPOBJECT=sine.o testMain.o testcpml.o gaussian.o openmp.o
 #TEST_OBJ=$(CPPOBJECTS) cpmlfdtd3d.o
 VPATH = $(SRC):$(TEST_SRC_DIR)
@@ -39,7 +39,7 @@ cpmlfdtd3d.o:cpmlfdtd3d.c
 openmp:openmp.o
 	$(CXX) -o $@ openmp.o $(CXXFLAGS) $(LIB)
 datastruct.h:datastruct.cpp	common.h
-fdtd.o:cpml.o
+fdtd.o:cpml.o Point.o
 cpml.o:cpml.cpp datastruct.h datastruct.cpp common.h cpml.h 
 	$(CXX) -c $< $(CXXFLAGS)
 

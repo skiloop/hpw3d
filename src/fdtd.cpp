@@ -19,6 +19,7 @@ extern int thread_count;
 #include "fdtd.h"
 #include "source.h"
 #include "InonizationFormula.h"
+#include "Point.h"
 
 extern MyDataF epsR;
 //extern MyDataF dt, dx, dy, dz;
@@ -554,9 +555,9 @@ void fdtd::updateBeta() {
 
 void fdtd::initDensity() {
     MyDataF tmp = pow(50e-2, 3);
-    int i0 = isp;
-    int j0 = jsp + 30;
-    int k0 = ksp;
+    int i0 = mSourcePosition.x;
+    int j0 = mSourcePosition.y + 30;
+    int k0 = mSourcePosition.z;
     for (int i = 0; i < Ne.nx; i++) {
         for (int j = 0; j < Ne.ny; j++) {
             for (int k = 0; k < Ne.nz; k++) {
@@ -697,16 +698,14 @@ void fdtd::setUp() {
     kstart = pmlWidth;
     kend = Kmax - pmlWidth;
 
-    // source position
-    isp = Imax / 2;
-    jsp = Jmax - pmlWidth - 35;
-    //jsp = pmlWidth+10;
-    //jsp = Jmax / 2;
-    ksp = Kmax / 2;
-    //    ksp = pmlWidth + 10;
-    checkmax(isp,1,Imax);
-    checkmax(jsp,1,Jmax);
-    checkmax(ksp,1,Kmax);
+    // source position    
+    mSourcePosition.x = Imax / 2;
+   mSourcePosition.y = Jmax - pmlWidth - 35;
+    mSourcePosition.z = Kmax / 2;
+    //    mSourcePosition.z = pmlWidth + 10;
+    checkmax(mSourcePosition.x,1,Imax);
+    checkmax(mSourcePosition.y,1,Jmax);
+    checkmax(mSourcePosition.z,1,Kmax);
 
     if (iend < istart)iend = istart + 1;
     if (jend < jstart)jend = jstart + 1;
@@ -760,34 +759,34 @@ void fdtd::setUp() {
 void fdtd::compute() {
 
     unsigned n;
-    unsigned ic, jc, kc; //capture field
-    //    ic = isp + 1;
-    //    jc = jsp + 1;
-    //    kc = ksp + 2;
-    ic = isp; // + (Imax - isp) / 2;
-    jc = jsp + 30;
+    Point capturePosition;
+    capturePosition.x=mSourcePosition.x;
+    capturePosition.y=mSourcePosition.y+30;
+    capturePosition.z=mSourcePosition.z;
+    
 #if DEBUG>=3
-    if (jc + 30 < Jmax) {
-        jc = jsp + 30;
+    if (capturePosition.y + 30 < Jmax) {
+        capturePosition.y = mSourcePosition.y + 30;
     }
 #endif
-    kc = ksp;
-    if (jc >= Jmax) {
-        jc = Jmax - 1;
+    
+    if(!capturePosition.checkMax(Imax,Jmax,Kmax)){
+        if (capturePosition.y >= Jmax) {
+            capturePosition.y = Jmax - 1;
+        }
+        if (capturePosition.x >= Imax) {
+            capturePosition.x = Imax - 1;
+        }
+        if (capturePosition.z >= Kmax) {
+            capturePosition.z = Kmax - 1;
+        }
     }
-    if (ic >= Imax) {
-        ic = Imax - 1;
-    }
-    if (kc >= Kmax) {
-        kc = Kmax - 1;
-    }
-    cout << "ic=" << ic << endl;
-    cout << "jc=" << jc << endl;
-    cout << "kc=" << kc << endl;
-    cout << "isp=" << isp << endl;
-    cout << "jsp=" << jsp << endl;
-    cout << "ksp=" << ksp << endl;
-    assert(ic < Imax && jc < Jmax && kc < Kmax);
+    cout << "capturePosition.x=" << capturePosition.x << endl;
+    cout << "capturePosition.y=" << capturePosition.y << endl;
+    cout << "capturePosition.z=" << capturePosition.z << endl;
+    cout << "mSourcePosition.x=" << mSourcePosition.x << endl;
+    cout << "mSourcePosition.y=" << mSourcePosition.y << endl;
+    cout << "mSourcePosition.z=" << mSourcePosition.z << endl;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  BEGIN TIME STEP
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -800,20 +799,20 @@ void fdtd::compute() {
 #endif
     for (n = 1; n <= totalTimeSteps; ++n) {
 
-        cout << "Ez at time step " << n << " at (" << ic << ", " << jc << ", " << kc;
+        cout << "Ez at time step " << n << " at (" << capturePosition.x << ", " << capturePosition.y << ", " << capturePosition.z;
         cout << ") :  ";
-        //cout<<Ez.p[ic][jc][kc]<<endl;
-        cout << Ez.p[isp][jc][ksp] << '\t';
-        cout << Ez.p[ic][jsp][ksp] << '\t';
-        cout << Ez.p[isp][jsp][kc] << endl;
-        //cout	<< Ez.p[isp][jsp+10][ksp] << '\t';
-        //cout	<< Ez.p[isp][jsp+15][ksp] << '\t';
-        //cout	<< Ez.p[isp][jsp+20][ksp] << '\t';
-        //cout	<< Ez.p[isp][jsp+25][ksp] << '\t';
-        //cout	<< Ez.p[isp][jsp+30][ksp] << '\t';
-        //cout	<< Ez.p[isp][jsp+35][ksp] << '\t';
-        //cout	<< Ez.p[isp][jsp+40][ksp] << '\t';
-        //cout	<< Ez.p[isp][jsp+45][ksp] << endl;
+        //cout<<Ez.p[capturePosition.x][capturePosition.y][capturePosition.z]<<endl;
+        cout << Ez.p[mSourcePosition.x][capturePosition.y][mSourcePosition.z] << '\t';
+        cout << Ez.p[capturePosition.x][mSourcePosition.y][mSourcePosition.z] << '\t';
+        cout << Ez.p[mSourcePosition.x][mSourcePosition.y][capturePosition.z] << endl;
+        //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+10][mSourcePosition.z] << '\t';
+        //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+15][mSourcePosition.z] << '\t';
+        //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+20][mSourcePosition.z] << '\t';
+        //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+25][mSourcePosition.z] << '\t';
+        //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+30][mSourcePosition.z] << '\t';
+        //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+35][mSourcePosition.z] << '\t';
+        //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+40][mSourcePosition.z] << '\t';
+        //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+45][mSourcePosition.z] << endl;
 
         updateMagneitcFields();
         pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
@@ -836,11 +835,11 @@ void fdtd::compute() {
 #endif
         if ((n % save_modulus) == 0) {
             writeField(n);
-            //Ez.save(isp + 10, 1, n, 1);
-            //Ez.save(jsp + 10, 1, n, 2);
-            Ez.save(ksp + 10, 1, n, 3);
-            Ex.save(ksp + 10, 1, n, 3);
-            Ey.save(ksp + 10, 1, n, 3);
+            //Ez.save(mSourcePosition.x + 10, 1, n, 1);
+            //Ez.save(mSourcePosition.y + 10, 1, n, 2);
+            Ez.save(mSourcePosition.z + 10, 1, n, 3);
+            Ex.save(mSourcePosition.z + 10, 1, n, 3);
+            Ey.save(mSourcePosition.z + 10, 1, n, 3);
             /*
             pml.Psi_exz_zp.setName("psi");
             pml.Psi_exz_zp.save(0, 1, n, 3);
@@ -880,7 +879,7 @@ void fdtd::updateSource(unsigned n) {
         default:
             source = 0;
     }
-    Ez.p[isp][jsp][ksp] = Ez.p[isp][jsp][ksp] + dtDivEps0DivDxyz * source;
+    Ez.p[mSourcePosition.x][mSourcePosition.y][mSourcePosition.z] = Ez.p[mSourcePosition.x][mSourcePosition.y][mSourcePosition.z] + dtDivEps0DivDxyz * source;
     //cout<<"source="<<source<<"\t"<<amp<<"\t"<<n<<"\t"<<dt<<"\t"<<
     //        amp * -2.0 * ((n * dt - t0) / tw / tw) * exp(-pow(((n * dt - t0) / tw), 2))<<endl;
 

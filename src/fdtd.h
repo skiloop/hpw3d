@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cpml.h"
+#include "Point.h"
 
 #ifndef WITH_DENSITY
 //#define WITH_DENSITY
@@ -124,6 +125,7 @@ private:
 
     // source position
     unsigned isp, jsp, ksp;
+    Point mSourcePosition;
 
     // common data
     MyDataF dtDivEps0DivDxyz;

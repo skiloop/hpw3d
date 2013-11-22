@@ -1,5 +1,5 @@
-CXX=g++
-#CXX=icpc
+#CXX=g++
+CXX=icpc
 CC=gcc
 
 # MATH lib
@@ -13,13 +13,13 @@ CFLAGS=-Wl,--hash-style=sysv -MMD -Wall -Wno-sign-compare
 # debug mode
 CXXFLAGS+=-DDEBUG=4
 CFLAGS+=-DDEBUG=4
-CXXFLAGS+=-g
-CFLAGS+=-g
-#CXXFLAGS+=-O3
-#CFLAGS+=-O3
+#CXXFLAGS+=-g
+#CFLAGS+=-g
+CXXFLAGS+=-O3
+CFLAGS+=-O3
 
 #Add DENSITY
-CXXFLAGS+=-DWITH_DENSITY
+#CXXFLAGS+=-DWITH_DENSITY
 
 # matlab path 
 MATPATH=/opt/Matlab/R2011a# for local server
