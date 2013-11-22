@@ -16,12 +16,50 @@ public:
     unsigned int x;
     unsigned int y;
     unsigned int z;
-    
-    bool  checkMax(const Point&maxPoint) const;
-        bool  checkMax(unsigned xMax,unsigned yMax,unsigned zMax) const;
+
+    /**
+     * 
+     * @param maxPoint
+     * @return 
+     */
+    bool checkMax(const Point&maxPoint) const;
+
+    /**
+     * 
+     * @param xMax
+     * @param yMax
+     * @param zMax
+     * @return 
+     */
+    bool checkMax(unsigned xMax, unsigned yMax, unsigned zMax) const;
+
+    void increaseX() {
+        x++;
+    }
+
+    void increaseY() {
+        y++;
+    }
+
+    void increaseZ() {
+        z++;
+    }
+
+    void decreaseX() {
+        x--;
+    }
+
+    void decreaseY() {
+        y--;
+    }
+
+    void decreaseZ() {
+        z--;
+    }
+
 
 private:
-    
+
 
 };
 
