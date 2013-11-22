@@ -10,7 +10,7 @@
 
 class Point {
 public:
-    Point(unsigned i=0,unsigned j=0,unsigned k=0);
+    Point(unsigned i = 0, unsigned j = 0, unsigned k = 0);
     Point(const Point& orig);
     virtual ~Point();
     unsigned int x;
@@ -58,8 +58,8 @@ public:
     }
 
     void operator=(Point const &obj);
-    
-    void setValue(unsigned i,unsigned j,unsigned k);
+
+    void setValue(unsigned i, unsigned j, unsigned k);
 
 private:
 

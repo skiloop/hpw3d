@@ -301,14 +301,14 @@ public:
      * @param other
      */
     void operator=(data3d< DataType > const &other);
-    
+
     /**
      *  return this.p[index.x][index.y][index.z]
      * 
      * @param index
      * @return 
      */
-    DataType operator[](const Point index)const;
+    DataType operator[](const Point index) const;
 
     /**
      * initial array to @c initVal
@@ -411,8 +411,8 @@ public:
     static int initMatlabEngine();
     static int closeMatlabEngine();
     bool isNaN(unsigned i, unsigned j, unsigned k);
-	bool isInf(unsigned i,unsigned j,unsigned k);
-	bool isValid(unsigned i,unsigned j,unsigned k);
+    bool isInf(unsigned i, unsigned j, unsigned k);
+    bool isValid(unsigned i, unsigned j, unsigned k);
 
 };
 
@@ -597,7 +597,7 @@ void data3d<DataType>::operator =(data3d< DataType > const &other) {
 }
 
 template<class DataType>
-DataType data3d<DataType>::operator[](const Point index)const {
+DataType data3d<DataType>::operator[](const Point index) const {
     return p[index.x][index.y][index.z];
 }
 
@@ -657,7 +657,7 @@ void data3d<DataType>::save(unsigned k, unsigned leap, unsigned step, int type) 
  * @param leap
  */
 template<class DataType>
-void data3d<DataType>::savePlain(unsigned k, unsigned leap, unsigned step, int type=3) {
+void data3d<DataType>::savePlain(unsigned k, unsigned leap, unsigned step, int type = 3) {
     switch (type) {
         case 1:
             saveXPlain(k, leap, step);
@@ -883,10 +883,11 @@ template<class DataType>
 bool data3d<DataType>::isNaN(unsigned i, unsigned j, unsigned k) {
     if (isnan(p[i][j][k])) {
         cout << "nan var found for " << getName() << " at:(" << i << "," << j << "," << k << ")" << endl;
-		return true;
+        return true;
     }
-	return false;
+    return false;
 }
+
 /**
  * check if is inf at point (i,j,k)
  *
@@ -895,9 +896,9 @@ template<class DataType>
 bool data3d<DataType>::isInf(unsigned i, unsigned j, unsigned k) {
     if (isinf(p[i][j][k])) {
         cout << "inf var found for " << getName() << " at:(" << i << "," << j << "," << k << ")" << endl;
-		return true;
+        return true;
     }
-	return false;
+    return false;
 }
 
 /**
@@ -905,7 +906,7 @@ bool data3d<DataType>::isInf(unsigned i, unsigned j, unsigned k) {
  */
 template<class DataType>
 bool data3d<DataType>::isValid(unsigned i, unsigned j, unsigned k) {
-	return isNaN(i,j,k)|isInf(i,j,k);
+    return isNaN(i, j, k) | isInf(i, j, k);
 }
 
 //#include "datastruct.cpp"

@@ -39,7 +39,7 @@ int main(int argc, char*argv[]) {
     dx = C * T / checker.yeeCellSizeX;
     dy = C * T / checker.yeeCellSizeY;
     dz = C * T / checker.yeeCellSizeZ;
-    
+
 #ifdef _OPENMP
     thread_count = checker.threadCount;
 #endif

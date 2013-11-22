@@ -41,11 +41,11 @@ public:
      * @param amptidute
      */
     void intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amptidute);
-    
+
     void setUp(); //Coefficients, parameters etc will get computed
-    
+
     void compute(); //E & H Field update equation
-    
+
     void startUp();
 
     /**
