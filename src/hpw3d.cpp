@@ -97,6 +97,6 @@ int main(int argc, char*argv[]) {
             ;
     }
     //hpw.initialize();
-    hpw.StartUp();
+    hpw.startUp();
     return 0;
 }

@@ -254,7 +254,7 @@ public:
     /**
      * print p in struct data3d
      */
-    void PrintData();
+    void printArray();
 
     /**
      * free space created for data3d @c mst
@@ -264,24 +264,24 @@ public:
     /**
      * Set Data to val
      */
-    int ResetStructData(DataType val = 0);
+    int resetArrar(DataType val = 0);
 
     /**
      * check p of data3d @c mst is valid
      * if p is not NULL and none of its subpointers,then 
      * return true,otherwise false
      */
-    bool CheckStruct();
+    bool checkArray();
 
     /**
      * Create Space for struct data3d and initialize its @c nx and @c ny
      */
-    int CreateStruct(unsigned nnx, unsigned nny, unsigned nnz);
+    int create3DArray(unsigned nnx, unsigned nny, unsigned nnz);
 
     /**
      * Create Space for struct data3d and initialize its @c nx and @c ny
      */
-    int CreateStruct(unsigned nnx, unsigned nny, unsigned nnz, DataType initVal);
+    int create3DArray(unsigned nnx, unsigned nny, unsigned nnz, DataType initVal);
 
     /**
      * Copy all p in st to stpre
@@ -294,7 +294,7 @@ public:
      * @brief Save p of  data3d data skipping p rows and p columns 
      * 
      */
-    void CaptData(const unsigned num, unsigned leap = 0);
+    void saveArrayData(const unsigned num, unsigned leap = 0);
 
     /**
      * 
@@ -314,14 +314,14 @@ public:
      * initial array to @c initVal
      * @param initVal
      */
-    void InitStructData(DataType initVal = 0);
+    void initArray(DataType initVal = 0);
 
     /**
      * save array 
      * @param leap
      * @param step
      */
-    void SaveData(unsigned leap, unsigned step);
+    void saveData(unsigned leap, unsigned step);
 
     /**
      * 
@@ -329,7 +329,7 @@ public:
      * @param leap
      * @param step
      */
-    void SaveData(unsigned k, unsigned leap, unsigned step);
+    void saveData(unsigned k, unsigned leap, unsigned step);
 
     /**
      * 
@@ -337,7 +337,7 @@ public:
      * @param leap
      * @param step
      */
-    void SaveXPlain(unsigned i, unsigned leap, unsigned step);
+    void saveXPlain(unsigned i, unsigned leap, unsigned step);
 
     /**
      * 
@@ -345,7 +345,7 @@ public:
      * @param leap
      * @param step
      */
-    void SaveYPlain(unsigned j, unsigned leap, unsigned step);
+    void saveYPlain(unsigned j, unsigned leap, unsigned step);
 
     /**
      * 
@@ -353,7 +353,7 @@ public:
      * @param leap
      * @param step
      */
-    void SaveZPlain(unsigned k, unsigned leap, unsigned step);
+    void saveZPlain(unsigned k, unsigned leap, unsigned step);
 
     /**
      * 
@@ -362,7 +362,7 @@ public:
      * @param step
      * @param type
      */
-    void SaveData(unsigned k, unsigned leap, unsigned step, int type);
+    void savePlain(unsigned k, unsigned leap, unsigned step, int type);
 
     /**
      * 
@@ -378,13 +378,13 @@ public:
      * @param stru the source data3d to be copied.
      * @return
      */
-    int CreateStruct(const data3d< DataType > &stru);
+    int create3DArray(const data3d< DataType > &stru);
 
     /**
      * @brief Create a data3d with the same size as @c stru and initial all var to @c initVal;
      * @param stru the source data3d to be copied.
      */
-    int CreateStruct(const data3d< DataType > &stru, DataType initVal);
+    int create3DArray(const data3d< DataType > &stru, DataType initVal);
 
     /**
      * set @name to @sn
@@ -404,12 +404,12 @@ public:
 
 public:
 
-    void ClearSim();
-    void PlotArrays();
-    void InitPlot();
+    void clearMatlabEngineArray();
+    void plotArrays();
+    void preparePlotting();
 public:
-    static int InitMatlabEngine();
-    static int CloseEngine();
+    static int initMatlabEngine();
+    static int closeMatlabEngine();
     bool isNaN(unsigned i, unsigned j, unsigned k);
 	bool isInf(unsigned i,unsigned j,unsigned k);
 	bool isValid(unsigned i,unsigned j,unsigned k);
@@ -437,7 +437,7 @@ template<class DataType> bool data3d<DataType>::isMatlabEngineStarted = false;
 #endif
 
 template<class DataType> data3d<DataType>::data3d(const data3d< DataType >& obj) : p(NULL) {
-    CreateStruct(obj);
+    create3DArray(obj);
     try {
         unsigned i, j;
         for (i = 0; i < obj.nx; i++) {
@@ -470,7 +470,7 @@ data3d<DataType>::~data3d() {
 }
 
 template<class DataType>
-int data3d<DataType>::CreateStruct(unsigned nnx, unsigned nny, unsigned nnz) {
+int data3d<DataType>::create3DArray(unsigned nnx, unsigned nny, unsigned nnz) {
 #if(DEBUG>=6)
     cout << "(" << nnx << ',' << nny << ',' << nnz << ')' << endl;
 #endif
@@ -512,16 +512,16 @@ int data3d<DataType>::CreateStruct(unsigned nnx, unsigned nny, unsigned nnz) {
 }
 
 template<class DataType>
-int data3d<DataType>::CreateStruct(unsigned nnx, unsigned nny, unsigned nnz, DataType initVal) {
-    if (CreateStruct(nnx, nny, nnz) < 0)
+int data3d<DataType>::create3DArray(unsigned nnx, unsigned nny, unsigned nnz, DataType initVal) {
+    if (create3DArray(nnx, nny, nnz) < 0)
         return -1;
-    return ResetStructData(initVal);
+    return resetArrar(initVal);
 }
 
 template<class DataType>
-int data3d<DataType>::ResetStructData(DataType Val) {
+int data3d<DataType>::resetArrar(DataType Val) {
     unsigned i, j, k;
-    if (!CheckStruct())
+    if (!checkArray())
         return -1;
     for (i = 0; i < nx; i++) {
         for (j = 0; j < ny; j++) {
@@ -534,7 +534,7 @@ int data3d<DataType>::ResetStructData(DataType Val) {
 }
 
 template<class DataType>
-void data3d<DataType>::PrintData() {
+void data3d<DataType>::printArray() {
     unsigned i, j, k;
     for (i = 0; i < nx; i++) {
         for (j = 0; j < ny; j++) {
@@ -548,7 +548,7 @@ void data3d<DataType>::PrintData() {
 }
 
 template<class DataType>
-bool data3d<DataType>::CheckStruct() {
+bool data3d<DataType>::checkArray() {
     if (ny <= 0 || nx <= 0 || nz <= 0 || p == NULL) {
         return false;
     }
@@ -556,7 +556,7 @@ bool data3d<DataType>::CheckStruct() {
 }
 
 template<class DataType>
-void data3d<DataType>::CaptData(const unsigned num, unsigned leap) {
+void data3d<DataType>::saveArrayData(const unsigned num, unsigned leap) {
     unsigned i, j, k;
 
     stringstream ss;
@@ -602,7 +602,7 @@ DataType data3d<DataType>::operator[](const Point index)const {
 }
 
 template<class DataType>
-void data3d<DataType>::InitStructData(DataType initVal) {
+void data3d<DataType>::initArray(DataType initVal) {
     unsigned i, j, k;
     for (i = 0; i < nx; i++) {
         for (j = 0; j < ny; j++) {
@@ -614,7 +614,7 @@ void data3d<DataType>::InitStructData(DataType initVal) {
 }
 
 template<class DataType>
-void data3d<DataType>::SaveData(unsigned leap, unsigned step) {
+void data3d<DataType>::saveData(unsigned leap, unsigned step) {
     stringstream ss;
     ss << name << "_" << step << tail;
     string fname = ss.str();
@@ -648,7 +648,7 @@ void data3d<DataType>::SaveData(unsigned leap, unsigned step) {
  */
 template<class DataType>
 void data3d<DataType>::save(unsigned k, unsigned leap, unsigned step, int type) {
-    SaveData(k, leap, step, type);
+    savePlain(k, leap, step, type);
 }
 
 /**
@@ -657,30 +657,20 @@ void data3d<DataType>::save(unsigned k, unsigned leap, unsigned step, int type) 
  * @param leap
  */
 template<class DataType>
-void data3d<DataType>::SaveData(unsigned k, unsigned leap, unsigned step, int type) {
+void data3d<DataType>::savePlain(unsigned k, unsigned leap, unsigned step, int type=3) {
     switch (type) {
         case 1:
-            SaveXPlain(k, leap, step);
+            saveXPlain(k, leap, step);
             break;
         case 2:
-            SaveYPlain(k, leap, step);
+            saveYPlain(k, leap, step);
             break;
         case 3:
-            SaveZPlain(k, leap, step);
+            saveZPlain(k, leap, step);
             break;
         default:
-            SaveZPlain(k, leap, step);
+            saveZPlain(k, leap, step);
     }
-}
-
-/**
- * 
- * @param k
- * @param leap
- */
-template<class DataType>
-void data3d<DataType>::SaveData(unsigned k, unsigned leap, unsigned step) {
-    SaveZPlain(k, leap, step);
 }
 
 /**
@@ -690,7 +680,7 @@ void data3d<DataType>::SaveData(unsigned k, unsigned leap, unsigned step) {
  * @param step
  */
 template<class DataType>
-void data3d<DataType>::SaveZPlain(unsigned k, unsigned leap, unsigned step) {
+void data3d<DataType>::saveZPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
     ss << name << "_z_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
@@ -722,7 +712,7 @@ void data3d<DataType>::SaveZPlain(unsigned k, unsigned leap, unsigned step) {
  * @param step
  */
 template<class DataType>
-void data3d<DataType>::SaveYPlain(unsigned k, unsigned leap, unsigned step) {
+void data3d<DataType>::saveYPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
     ss << name << "_y_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
@@ -754,7 +744,7 @@ void data3d<DataType>::SaveYPlain(unsigned k, unsigned leap, unsigned step) {
  * @param step
  */
 template<class DataType>
-void data3d<DataType>::SaveXPlain(unsigned k, unsigned leap, unsigned step) {
+void data3d<DataType>::saveXPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
     ss << name << "_x_" << step << tail;
     if (leap >= nx || leap >= ny || leap >= nz) {
@@ -780,7 +770,7 @@ void data3d<DataType>::SaveXPlain(unsigned k, unsigned leap, unsigned step) {
 }
 
 template<class DataType>
-int data3d<DataType>::InitMatlabEngine() {
+int data3d<DataType>::initMatlabEngine() {
 
 #ifdef MATLAB_SIMULATION
     if (isMatlabEngineStarted) {
@@ -800,7 +790,7 @@ int data3d<DataType>::InitMatlabEngine() {
 }
 
 template<class DataType>
-int data3d<DataType>::CloseEngine() {
+int data3d<DataType>::closeMatlabEngine() {
 #ifdef MATLAB_SIMULATION
     if (isMatlabEngineStarted) {
         engEvalString(ep, "close all;clear;");
@@ -811,17 +801,17 @@ int data3d<DataType>::CloseEngine() {
 }
 
 template<class DataType>
-int data3d<DataType>::CreateStruct(const data3d< DataType > &stru) {
-    return CreateStruct(stru.nx, stru.ny, stru.nz);
+int data3d<DataType>::create3DArray(const data3d< DataType > &stru) {
+    return create3DArray(stru.nx, stru.ny, stru.nz);
 }
 
 template<class DataType>
-int data3d<DataType>::CreateStruct(const data3d< DataType > &stru, DataType initVal) {
-    return CreateStruct(stru.nx, stru.ny, stru.nz, initVal);
+int data3d<DataType>::create3DArray(const data3d< DataType > &stru, DataType initVal) {
+    return create3DArray(stru.nx, stru.ny, stru.nz, initVal);
 }
 
 template<class DataType>
-void data3d<DataType>::ClearSim() {
+void data3d<DataType>::clearMatlabEngineArray() {
 #ifdef MATLAB_SIMULATION
     if (!isMatlabEngineStarted)return;
     mxDestroyArray(MyArray);
@@ -830,7 +820,7 @@ void data3d<DataType>::ClearSim() {
 }
 
 template<class DataType>
-void data3d<DataType>::PlotArrays() {
+void data3d<DataType>::plotArrays() {
 #ifdef MATLAB_SIMULATION
     if (!isMatlabEngineStarted)return;
 
@@ -849,7 +839,7 @@ void data3d<DataType>::PlotArrays() {
 }
 
 template<class DataType>
-void data3d<DataType>::InitPlot() {
+void data3d<DataType>::preparePlotting() {
 #ifdef MATLAB_SIMULATION
     if (!isMatlabEngineStarted)return;
 #endif
