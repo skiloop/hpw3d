@@ -38,7 +38,7 @@ cpmlfdtd3d.o:cpmlfdtd3d.c
 	$(CC) -c $< $(CFLAGS)
 openmp:openmp.o
 	$(CXX) -o $@ openmp.o $(CXXFLAGS) $(LIB)
-datastruct.h:datastruct.cpp	common.h
+datastruct.h:datastruct.cpp	common.h Point.o
 fdtd.o:cpml.o Point.o
 cpml.o:cpml.cpp datastruct.h datastruct.cpp common.h cpml.h 
 	$(CXX) -c $< $(CXXFLAGS)

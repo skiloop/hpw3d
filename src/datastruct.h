@@ -43,6 +43,7 @@ using namespace std;
 //#include "microdef.h"
 #define MAX_ARRAY_SIZE 300000
 #include "common.h"
+#include "Point.h"
 
 template<typename T>
 class data1d {
@@ -300,6 +301,14 @@ public:
      * @param other
      */
     void operator=(data3d< DataType > const &other);
+    
+    /**
+     *  return this.p[index.x][index.y][index.z]
+     * 
+     * @param index
+     * @return 
+     */
+    DataType operator[](const Point index)const;
 
     /**
      * initial array to @c initVal
@@ -585,6 +594,11 @@ void data3d<DataType>::operator =(data3d< DataType > const &other) {
             memcpy(p[i][j], other.p[i][j], nz * sizeof (DataType));
         }
     }
+}
+
+template<class DataType>
+DataType data3d<DataType>::operator[](const Point index)const {
+    return p[index.x][index.y][index.z];
 }
 
 template<class DataType>
