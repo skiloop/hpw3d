@@ -88,9 +88,9 @@ void fdtd::IntegerEeff() {
     unsigned i, j, k;
     unsigned io, jo, ko;
     //MyDataF vxIJK,vyIJK;
-    for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
-        for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
-            for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
+    for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
+        for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
+            for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
                 Erms.p[io][jo][ko] = m / e * sqrt(Erms.p[io][jo][ko] / dtf * Nu_c.p[i][j][k] / 2);
             }
         }
@@ -103,9 +103,9 @@ void fdtd::UpdateErms(void) {
     switch (srcType) {
         case SOURCE_GAUSSIAN:
             MyDataF vxIJK, vyIJK;
-            for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
-                for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
-                    for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
+            for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
+                for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
+                    for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
                         vxIJK = (Vx.p[i - 1][j][k - 1] + Vx.p[i + 1][j][k - 1] + Vx.p[i - 1][j][k + 1] + Vx.p[i + 1][j][k + 1]) / 4;
                         vyIJK = (Vy.p[i][j - 1][k - 1] + Vy.p[i][j + 1][k - 1] + Vy.p[i][j - 1][k + 1] + Vy.p[i][j + 1][k + 1]) / 4;
                         Erms.p[io][jo][ko] += (Vz.p[i][j][k] * Vz.p[i][j][k] + vxIJK * vxIJK + vyIJK * vyIJK) * dt;
@@ -116,9 +116,9 @@ void fdtd::UpdateErms(void) {
         case SOURCE_SINE:
         default:
             MyDataF exIJK, eyIJK;
-            for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
-                for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
-                    for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
+            for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
+                for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
+                    for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
                         exIJK = (Ex.p[i - 1][j][k - 1] + Ex.p[i + 1][j][k - 1] + Ex.p[i - 1][j][k + 1] + Ex.p[i + 1][j][k + 1]) / 4;
                         eyIJK = (Ey.p[i][j - 1][k - 1] + Ey.p[i][j + 1][k - 1] + Ey.p[i][j - 1][k + 1] + Ey.p[i][j + 1][k + 1]) / 4;
                         Erms.p[io][jo][ko] = sqrt(Ez.p[i][j][k] * Ez.p[i][j][k] + exIJK * exIJK + eyIJK * eyIJK);
@@ -136,9 +136,9 @@ void fdtd::updateCollisionFrequency() {
     MyDataF C1 = 5.20e8 * p;
     MyDataF C2 = 2.93e8 * p;
     MyDataF C3 = 3.24e8 * p;
-    //    for (i = istart, io = istart * neGrid; i <= iend; i++, io += neGrid) {
-    //        for (j = jstart, jo = jstart * neGrid; j <= jend; j++, jo += neGrid) {
-    //            for (k = kstart, ko = kstart * neGrid; k <= kend; k++, ko += neGrid) {
+    //    for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
+    //        for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
+    //            for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
     //                EeffDivP = Erms.p[io][jo][ko] / DivParam;
     //                if (EeffDivP >= 120) {
     //                    Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP);
@@ -176,9 +176,9 @@ void fdtd::InterpErms() {
     unsigned im, jm, km;
     unsigned iu, ju, ku;
     unsigned ngred = neGrid * neGrid*neGrid;
-    for (is = istart, in = istart + neGrid; is < iend; is = in, in += neGrid) {
-        for (js = jstart, jn = jstart + neGrid; js < jend; js = jn, jn += neGrid) {
-            for (ks = kstart, kn = kstart + neGrid; ks < kend; ks = kn, kn += neGrid) {
+    for (is = mStartIndex.x, in = mStartIndex.x + neGrid; is < mEndIndex.x; is = in, in += neGrid) {
+        for (js = mStartIndex.y, jn = mStartIndex.y + neGrid; js < mEndIndex.y; js = jn, jn += neGrid) {
+            for (ks = mStartIndex.z, kn = mStartIndex.z + neGrid; ks < mEndIndex.z; ks = kn, kn += neGrid) {
                 // integrate Erms
                 for (i = is, im = 0, iu = neGrid; i < in; i++, im++, iu--) {
                     for (j = js, jm = 0, ju = neGrid; j < jn; j++, jm++, ju--) {
@@ -520,12 +520,12 @@ void fdtd::updateCoeff() {
 }
 
 void fdtd::updateBeta() {
-    unsigned is = istart*neGrid;
-    unsigned ie = iend*neGrid;
-    unsigned js = jstart*neGrid;
-    unsigned je = jend*neGrid;
-    unsigned ks = kstart*neGrid;
-    unsigned ke = kend*neGrid;
+    unsigned is = mStartIndex.x*neGrid;
+    unsigned ie = mEndIndex.x*neGrid;
+    unsigned js = mStartIndex.y*neGrid;
+    unsigned je = mEndIndex.y*neGrid;
+    unsigned ks = mStartIndex.z*neGrid;
+    unsigned ke = mEndIndex.z*neGrid;
     MyDataF temp = e2Dt2Div4DivEps0DivMe;
     if (srcType != fdtd::SOURCE_GAUSSIAN) {
         temp = temp / gamma;
@@ -691,25 +691,19 @@ void fdtd::setUp() {
     //exit(0);
 #endif
     //  Specify the dipole size 
-    istart = pmlWidth;
-    iend = Imax - pmlWidth;
-    jstart = pmlWidth;
-    jend = Jmax - pmlWidth;
-    kstart = pmlWidth;
-    kend = Kmax - pmlWidth;
-
+    mStartIndex.setValue(pmlWidth,pmlWidth,pmlWidth);
+    mEndIndex.setValue(Imax - pmlWidth, Jmax - pmlWidth,Kmax - pmlWidth);
+    
     // source position    
-    mSourcePosition.x = Imax / 2;
-   mSourcePosition.y = Jmax - pmlWidth - 35;
-    mSourcePosition.z = Kmax / 2;
-    //    mSourcePosition.z = pmlWidth + 10;
+    mSourcePosition.setValue( Imax / 2, Jmax - pmlWidth - 35,Kmax / 2);            
+    
     checkmax(mSourcePosition.x,1,Imax);
     checkmax(mSourcePosition.y,1,Jmax);
     checkmax(mSourcePosition.z,1,Kmax);
 
-    if (iend < istart)iend = istart + 1;
-    if (jend < jstart)jend = jstart + 1;
-    if (kend < kstart)kend = kstart + 1;
+    if (mEndIndex.x < mStartIndex.x)mEndIndex.x = mStartIndex.x + 1;
+    if (mEndIndex.y < mStartIndex.y)mEndIndex.y = mStartIndex.y + 1;
+    if (mEndIndex.z < mStartIndex.z)mEndIndex.z = mStartIndex.z + 1;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  COMPUTING FIELD UPDATE EQUATION COEFFICIENTS
@@ -759,10 +753,7 @@ void fdtd::setUp() {
 void fdtd::compute() {
 
     unsigned n;
-    Point capturePosition;
-    capturePosition.x=mSourcePosition.x;
-    capturePosition.y=mSourcePosition.y+30;
-    capturePosition.z=mSourcePosition.z;
+    Point capturePosition(mSourcePosition.x,mSourcePosition.y+30,mSourcePosition.z);
     
 #if DEBUG>=3
     if (capturePosition.y + 30 < Jmax) {
@@ -879,7 +870,7 @@ void fdtd::updateSource(unsigned n) {
         default:
             source = 0;
     }
-    Ez.p[mSourcePosition.x][mSourcePosition.y][mSourcePosition.z] = Ez.p[mSourcePosition.x][mSourcePosition.y][mSourcePosition.z] + dtDivEps0DivDxyz * source;
+    Ez.p[mSourcePosition.x][mSourcePosition.y][mSourcePosition.z] = Ez[mSourcePosition] + dtDivEps0DivDxyz * source;
     //cout<<"source="<<source<<"\t"<<amp<<"\t"<<n<<"\t"<<dt<<"\t"<<
     //        amp * -2.0 * ((n * dt - t0) / tw / tw) * exp(-pow(((n * dt - t0) / tw), 2))<<endl;
 
@@ -927,13 +918,13 @@ void fdtd::buildSphere() {
 
 void fdtd::buildDipole() {
     unsigned i, j, k;
-    unsigned centre = (jstart + jend) / 2;
+    unsigned centre = (mStartIndex.y + mEndIndex.y) / 2;
 
-    for (i = istart; i <= iend; ++i) {
+    for (i = mStartIndex.x; i <= mEndIndex.x; ++i) {
 
-        for (j = jstart; j <= jend; ++j) {
+        for (j = mStartIndex.y; j <= mEndIndex.y; ++j) {
 
-            for (k = kstart; k <= kend; ++k) {
+            for (k = mStartIndex.z; k <= mEndIndex.z; ++k) {
 
                 if (j != centre) {
 
@@ -1012,7 +1003,7 @@ void fdtd::writeField(unsigned iteration) {
 
 //start up
 
-void fdtd::StartUp() {
+void fdtd::startUp() {
     cout << "initializing(in Startup)..." << endl;
     initialize();
     //    cout << "initial pml (in Statup)" << endl;
@@ -1045,8 +1036,8 @@ void fdtd::printParameters() {
     cout << "save_modulus = " << save_modulus << endl;
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
-    cout << "(istart, iend, jstart) = (" << istart << ',' << iend << ',' << jstart << ')' << endl;
-    cout << "(jend, kstart, kend) = (" << jend << ',' << kstart << ',' << kend << ')' << endl;
+    cout << "(mStartIndex.x, mEndIndex.x, mStartIndex.y) = (" << mStartIndex.x << ',' << mEndIndex.x << ',' << mStartIndex.y << ')' << endl;
+    cout << "(mEndIndex.y, mStartIndex.z, mEndIndex.z) = (" << mEndIndex.y << ',' << mStartIndex.z << ',' << mEndIndex.z << ')' << endl;
 
     //Output recording point
     cout << "ksource = " << ksource << endl;
@@ -1073,7 +1064,7 @@ void fdtd::setSourceType(int sourceType) {
     srcType = sourceType;
 }
 
-void fdtd::SetSineSource(MyDataF omega_) {
+void fdtd::defineSineSource(MyDataF omega_) {
     srcType = SOURCE_SINE;
     omega = omega_;
 }

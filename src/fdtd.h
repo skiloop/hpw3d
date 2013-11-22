@@ -41,15 +41,18 @@ public:
      * @param amptidute
      */
     void intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amptidute);
+    
     void setUp(); //Coefficients, parameters etc will get computed
+    
     void compute(); //E & H Field update equation
-    void StartUp();
+    
+    void startUp();
 
     /**
      * 
      * @param omega_
      */
-    void SetSineSource(MyDataF omega_);
+    void defineSineSource(MyDataF omega_);
 
     /**
      * 
@@ -120,11 +123,10 @@ private:
     MyDataF omega; //wave angle frequency
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
-    unsigned istart, iend, jstart;
-    unsigned jend, kstart, kend;
+    Point mStartIndex;
+    Point mEndIndex;
 
     // source position
-    unsigned isp, jsp, ksp;
     Point mSourcePosition;
 
     // common data

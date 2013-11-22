@@ -82,7 +82,7 @@ int main(int argc, char*argv[]) {
     switch (checker.waveType) {
         case GAUSSIAN_WAVE:break;
         case SINE_WAVE:
-            hpw.SetSineSource(omega);
+            hpw.defineSineSource(omega);
             break;
         case DERIVATIVE_GAUSSIAN_WAVE:break;
         case ZERO_TYPE:break;
