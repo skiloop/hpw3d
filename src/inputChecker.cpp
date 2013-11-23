@@ -44,7 +44,7 @@ void inputChecker::check() {
     if (threadCount <= 0) {
         threadCount = DEFAULT_THREAD_COUNT;
     }
-    if (pmlSize <= 3) {
+    if (pmlSize <= -1) {
         pmlSize = DEFAULT_PML_SIZE;
     }
     if (fluidGridSize <= 0) {
