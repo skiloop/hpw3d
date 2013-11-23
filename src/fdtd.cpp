@@ -17,6 +17,8 @@ extern int thread_count;
 
 #include "cpml.h"
 #include "fdtd.h"
+#include "data1d.h"
+#include "data3d.h"
 #include "source.h"
 #include "InonizationFormula.h"
 #include "Point.h"
@@ -196,7 +198,7 @@ void fdtd::InterpErms() {
     }
 }
 
-void fdtd::ApplyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff) {
+void fdtd::applyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff) {
     MyDataF Eeff, alpha_t, tau_m, kasi;
     switch (srcType) {
         case SOURCE_GAUSSIAN:
@@ -650,8 +652,7 @@ void fdtd::setUp() {
 
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
-        t0 = 4.5 * tw;
-        t0 = 3.0 * tw;
+        t0 = 4.5 * tw;        
     } else {
         t0 = tw;
     }
@@ -695,11 +696,11 @@ void fdtd::setUp() {
     mEndIndex.setValue(Imax - pmlWidth, Jmax - pmlWidth,Kmax - pmlWidth);
     
     // source position    
-    mSourcePosition.setValue( Imax / 2, Jmax - pmlWidth - 35,Kmax / 2);            
+    mSourceIndex.setValue( Imax / 2, Jmax - pmlWidth - 35,Kmax / 2);            
     
-    checkmax(mSourcePosition.x,1,Imax);
-    checkmax(mSourcePosition.y,1,Jmax);
-    checkmax(mSourcePosition.z,1,Kmax);
+    checkmax(mSourceIndex.x,1,Imax);
+    checkmax(mSourceIndex.y,1,Jmax);
+    checkmax(mSourceIndex.z,1,Kmax);
 
     if (mEndIndex.x < mStartIndex.x)mEndIndex.x = mStartIndex.x + 1;
     if (mEndIndex.y < mStartIndex.y)mEndIndex.y = mStartIndex.y + 1;
@@ -753,11 +754,11 @@ void fdtd::setUp() {
 void fdtd::compute() {
 
     unsigned n;
-    Point capturePosition(mSourcePosition.x,mSourcePosition.y+30,mSourcePosition.z);
+    Point capturePosition(mSourceIndex.x,mSourceIndex.y+30,mSourceIndex.z);
     
 #if DEBUG>=3
     if (capturePosition.y + 30 < Jmax) {
-        capturePosition.y = mSourcePosition.y + 30;
+        capturePosition.y = mSourceIndex.y + 30;
     }
 #endif
     
@@ -775,9 +776,9 @@ void fdtd::compute() {
     cout << "capturePosition.x=" << capturePosition.x << endl;
     cout << "capturePosition.y=" << capturePosition.y << endl;
     cout << "capturePosition.z=" << capturePosition.z << endl;
-    cout << "mSourcePosition.x=" << mSourcePosition.x << endl;
-    cout << "mSourcePosition.y=" << mSourcePosition.y << endl;
-    cout << "mSourcePosition.z=" << mSourcePosition.z << endl;
+    cout << "mSourcePosition.x=" << mSourceIndex.x << endl;
+    cout << "mSourcePosition.y=" << mSourceIndex.y << endl;
+    cout << "mSourcePosition.z=" << mSourceIndex.z << endl;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  BEGIN TIME STEP
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -793,9 +794,9 @@ void fdtd::compute() {
         cout << "Ez at time step " << n << " at (" << capturePosition.x << ", " << capturePosition.y << ", " << capturePosition.z;
         cout << ") :  ";
         //cout<<Ez.p[capturePosition.x][capturePosition.y][capturePosition.z]<<endl;
-        cout << Ez.p[mSourcePosition.x][capturePosition.y][mSourcePosition.z] << '\t';
-        cout << Ez.p[capturePosition.x][mSourcePosition.y][mSourcePosition.z] << '\t';
-        cout << Ez.p[mSourcePosition.x][mSourcePosition.y][capturePosition.z] << endl;
+        cout << Ez.p[mSourceIndex.x][capturePosition.y][mSourceIndex.z] << '\t';
+        cout << Ez.p[capturePosition.x][mSourceIndex.y][mSourceIndex.z] << '\t';
+        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][capturePosition.z] << endl;
         //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+10][mSourcePosition.z] << '\t';
         //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+15][mSourcePosition.z] << '\t';
         //cout	<< Ez.p[mSourcePosition.x][mSourcePosition.y+20][mSourcePosition.z] << '\t';
@@ -828,9 +829,9 @@ void fdtd::compute() {
             writeField(n);
             //Ez.save(mSourcePosition.x + 10, 1, n, 1);
             //Ez.save(mSourcePosition.y + 10, 1, n, 2);
-            Ez.save(mSourcePosition.z + 10, 1, n, 3);
-            Ex.save(mSourcePosition.z + 10, 1, n, 3);
-            Ey.save(mSourcePosition.z + 10, 1, n, 3);
+            Ez.save(mSourceIndex.z + 10, 1, n, 3);
+            Ex.save(mSourceIndex.z + 10, 1, n, 3);
+            Ey.save(mSourceIndex.z + 10, 1, n, 3);
             /*
             pml.Psi_exz_zp.setName("psi");
             pml.Psi_exz_zp.save(0, 1, n, 3);
@@ -870,7 +871,7 @@ void fdtd::updateSource(unsigned n) {
         default:
             source = 0;
     }
-    Ez.p[mSourcePosition.x][mSourcePosition.y][mSourcePosition.z] = Ez[mSourcePosition] + dtDivEps0DivDxyz * source;
+    Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] = Ez[mSourceIndex] + dtDivEps0DivDxyz * source;
     //cout<<"source="<<source<<"\t"<<amp<<"\t"<<n<<"\t"<<dt<<"\t"<<
     //        amp * -2.0 * ((n * dt - t0) / tw / tw) * exp(-pow(((n * dt - t0) / tw), 2))<<endl;
 
@@ -1036,8 +1037,8 @@ void fdtd::printParameters() {
     cout << "save_modulus = " << save_modulus << endl;
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
-    cout << "(mStartIndex.x, mEndIndex.x, mStartIndex.y) = (" << mStartIndex.x << ',' << mEndIndex.x << ',' << mStartIndex.y << ')' << endl;
-    cout << "(mEndIndex.y, mStartIndex.z, mEndIndex.z) = (" << mEndIndex.y << ',' << mStartIndex.z << ',' << mEndIndex.z << ')' << endl;
+    cout << "(mStartIndex.x,mStartIndex.y, mStartIndex.z) = (" << mStartIndex.x << ',' << mStartIndex.y << ',' << mStartIndex.z << ')' << endl;
+    cout << "(mEndIndex.x,  mEndIndex.y, mEndIndex.z) = (" << mEndIndex.x << ',' << mEndIndex.y << ',' << mEndIndex.z << ')' << endl;
 
     //Output recording point
     cout << "ksource = " << ksource << endl;

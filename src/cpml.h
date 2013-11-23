@@ -8,7 +8,8 @@
 #ifndef CPML_H
 #define	CPML_H
 
-#include "datastruct.h"
+#include "data1d.h"
+#include "data3d.h"
 #include <math.h>
 
 #ifndef COMMON_H

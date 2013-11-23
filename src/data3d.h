@@ -1,29 +1,6 @@
-/*
-<one line to give the program's name and a brief idea of what it does.>
-Copyright (C) 2011  skiloop <skiloop@126.com>
+#ifndef DATA3D_H
+#define DATA3D_H
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
- * @file datastruct.h
- * @version 0.0.0
- * @author skiloop ( skiloop@126.com )
- * @date 31/08/2011 0.0.0 created, by skiloop
- */
-#ifndef DATASTRUCT_H
-#define DATASTRUCT_H
 
 #ifdef MATLAB_SIMULATION
 
@@ -44,126 +21,6 @@ using namespace std;
 #define MAX_ARRAY_SIZE 300000
 #include "common.h"
 #include "Point.h"
-
-template<typename T>
-class data1d {
-public:
-
-    /**
-     * constructor
-     * @param num array length
-     * @param val initial variable
-     */
-    data1d(unsigned num, T val = 0) : p(NULL), n(num) {
-        createArray(num);
-        initArray(val);
-    };
-
-    /**
-     * default donstructor
-     * set @c p NULL
-     * array length zero
-     */
-    data1d() : p(NULL), n(0) {
-    };
-
-    /**
-     * copy constructor
-     * @param orig
-     */
-    data1d(const data1d& orig) {
-        if (orig.p != NULL && orig.n > 0) {
-            p = new T[orig.n];
-            for (unsigned i = 0; i < orig.n; i++)p[i] = orig.p[i];
-            this->n = orig.n;
-        } else if (orig.n != 0) {
-            createArray(orig.n, 0);
-            this->n = orig.n;
-        }
-    };
-
-    /**
-     * deconstructor
-     */
-    ~data1d() {
-        if (p != NULL)delete []p;
-        p = NULL;
-        n = 0;
-    };
-
-    /**
-     * create array with length @c num
-     * @param num
-     */
-    void createArray(unsigned num) {
-        if (num > 0) {
-            p = new T[num];
-            n = num;
-        }
-    };
-
-    /**
-     * create array with length @c num
-     * @param num
-     */
-    void CreateStruct(unsigned num) {
-        createArray(num);
-    };
-
-    /**
-     * create array with length @c num and initial array with @c val
-     * @param num
-     * @param val
-     */
-    void CreateStruct(unsigned num, T val) {
-        createArray(num, val);
-    };
-
-    /**
-     * initial array to @c initval
-     * @param initval
-     */
-    void initArray(T initval = 0) {
-        if (p == NULL)return;
-        for (unsigned i = 0; i < n; i++)p[i] = initval;
-    };
-
-    /**
-     * reset array to zero
-     */
-    void resetArray() {
-        initArray();
-    };
-
-    /**
-     * create array with length @c num and initial array with @c val
-     * @param num
-     * @param val
-     */
-    void createArray(unsigned num, T val) {
-        createArray(num);
-        initArray(val);
-    };
-
-    /**
-     * save array with file name @c name
-     * @param name
-     */
-    void save(const string name) {
-        ofstream out;
-        out.open(name.c_str());
-        if (out.is_open()) {
-            for (int i = 0; i < n; i++) {
-                out.setf(ios::fixed);
-                out << p[i] << endl;
-            }
-            out.close();
-        }
-    };
-public:
-    T* p;
-    unsigned n;
-};
 
 /**
  * nx:point count in x direction
@@ -200,10 +57,10 @@ public:
     /**
      * if cx==0 then p = NULL
      * else p has cx pointers;
-     * 
+     *
      * if cy == 0 then all cx pointers of p is NULL
      * else p[i] has cy pointers with i from 0 to cx-1;
-     * 
+     *
      * when cannot create space for p and p[i],exit program;
      */
     data3d(unsigned int cx, unsigned int cy, unsigned cz)
@@ -268,7 +125,7 @@ public:
 
     /**
      * check p of data3d @c mst is valid
-     * if p is not NULL and none of its subpointers,then 
+     * if p is not NULL and none of its subpointers,then
      * return true,otherwise false
      */
     bool checkArray();
@@ -285,28 +142,28 @@ public:
 
     /**
      * Copy all p in st to stpre
-     * Dimensions of @c st and that of @c pstruct must macth,and both with valid 
+     * Dimensions of @c st and that of @c pstruct must macth,and both with valid
      * p
      */
     int Backupdata3d(const data3d< DataType > &mstru);
 
     /**
-     * @brief Save p of  data3d data skipping p rows and p columns 
-     * 
+     * @brief Save p of  data3d data skipping p rows and p columns
+     *
      */
     void saveArrayData(const unsigned num, unsigned leap = 0);
 
     /**
-     * 
+     *
      * @param other
      */
     void operator=(data3d< DataType > const &other);
 
     /**
      *  return this.p[index.x][index.y][index.z]
-     * 
+     *
      * @param index
-     * @return 
+     * @return
      */
     DataType operator[](const Point index) const;
 
@@ -317,14 +174,14 @@ public:
     void initArray(DataType initVal = 0);
 
     /**
-     * save array 
+     * save array
      * @param leap
      * @param step
      */
     void saveData(unsigned leap, unsigned step);
 
     /**
-     * 
+     *
      * @param k
      * @param leap
      * @param step
@@ -332,7 +189,7 @@ public:
     void saveData(unsigned k, unsigned leap, unsigned step);
 
     /**
-     * 
+     *
      * @param i
      * @param leap
      * @param step
@@ -340,7 +197,7 @@ public:
     void saveXPlain(unsigned i, unsigned leap, unsigned step);
 
     /**
-     * 
+     *
      * @param j
      * @param leap
      * @param step
@@ -348,7 +205,7 @@ public:
     void saveYPlain(unsigned j, unsigned leap, unsigned step);
 
     /**
-     * 
+     *
      * @param k
      * @param leap
      * @param step
@@ -356,7 +213,7 @@ public:
     void saveZPlain(unsigned k, unsigned leap, unsigned step);
 
     /**
-     * 
+     *
      * @param k
      * @param leap
      * @param step
@@ -365,7 +222,7 @@ public:
     void savePlain(unsigned k, unsigned leap, unsigned step, int type);
 
     /**
-     * 
+     *
      * @param k
      * @param leap
      * @param step
@@ -395,7 +252,7 @@ public:
     }
 
     /**
-     * get name 
+     * get name
      * @return @c name
      */
     string getName() {
@@ -642,7 +499,7 @@ void data3d<DataType>::saveData(unsigned leap, unsigned step) {
 }
 
 /**
- * 
+ *
  * @param k
  * @param leap
  */
@@ -652,7 +509,7 @@ void data3d<DataType>::save(unsigned k, unsigned leap, unsigned step, int type) 
 }
 
 /**
- * 
+ *
  * @param k
  * @param leap
  */
@@ -674,7 +531,7 @@ void data3d<DataType>::savePlain(unsigned k, unsigned leap, unsigned step, int t
 }
 
 /**
- * 
+ *
  * @param k
  * @param leap
  * @param step
@@ -706,7 +563,7 @@ void data3d<DataType>::saveZPlain(unsigned k, unsigned leap, unsigned step) {
 }
 
 /**
- * 
+ *
  * @param k
  * @param leap
  * @param step
@@ -738,7 +595,7 @@ void data3d<DataType>::saveYPlain(unsigned k, unsigned leap, unsigned step) {
 }
 
 /**
- * 
+ *
  * @param k
  * @param leap
  * @param step
@@ -909,6 +766,6 @@ bool data3d<DataType>::isValid(unsigned i, unsigned j, unsigned k) {
     return isNaN(i, j, k) | isInf(i, j, k);
 }
 
-//#include "datastruct.cpp"
 
-#endif // DATASTRUCT_H
+
+#endif // DATA3D_H

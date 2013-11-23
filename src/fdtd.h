@@ -127,7 +127,7 @@ private:
     Point mEndIndex;
 
     // source position
-    Point mSourcePosition;
+    Point mSourceIndex;
 
     // common data
     MyDataF dtDivEps0DivDxyz;
@@ -240,7 +240,7 @@ private:
     /************************************************************************/
     /* update vi,va and Deff with Density Ne at point (i,j,k)               */
     /************************************************************************/
-    void ApplyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
+    void applyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
 
 };
 
