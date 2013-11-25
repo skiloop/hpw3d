@@ -1,25 +1,25 @@
 #CXX=g++
 CXX=icpc
-CC=gcc
+CC=icc
 
 # MATH lib
 LIB= -lm
 # CFlags and CXXFlags
 CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall -Wno-sign-compare
 CFLAGS=-Wl,--hash-style=sysv -MMD -Wall -Wno-sign-compare
-#CXXFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
-#CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+# CXXFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+# CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 
 # debug mode
 CXXFLAGS+=-DDEBUG=4
 CFLAGS+=-DDEBUG=4
-#CXXFLAGS+=-g
-#CFLAGS+=-g
+# CXXFLAGS+=-g
+# CFLAGS+=-g
 CXXFLAGS+=-O3
 CFLAGS+=-O3
 
 #Add DENSITY
-#CXXFLAGS+=-DWITH_DENSITY
+# CXXFLAGS+=-DWITH_DENSITY
 
 # matlab path 
 MATPATH=/opt/Matlab/R2011a# for local server
@@ -35,10 +35,10 @@ MATLINK=-Wl,-rpath=$(MATPATH)/bin/glnxa64
 MATINC=-I$(MATPATH)/extern/include
 
 # Matlab Engine
-#CXXFLAGS+=-DMATLAB_SIMULATION $(MATINC)
-#LIB+=$(MATLIB)
+# CXXFLAGS+=-DMATLAB_SIMULATION $(MATINC)
+# LIB+=$(MATLIB)
 
 # enable OpenMP
-#CXXFLAGS+=-fopenmp
-#LIB+=-fopenmp
+# CXXFLAGS+=-fopenmp
+# LIB+=-fopenmp
 

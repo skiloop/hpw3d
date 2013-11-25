@@ -41,7 +41,7 @@ openmp:openmp.o
 data3d.h:common.h Point.o
 fdtd.o:cpml.o Point.o
 cpml.o:cpml.cpp data3d.h data3d.cpp data1d.h data1d.cpp common.h cpml.h 
-	$(CXX) -c $< $(CXXFLAGS)
+	$(CXX) $(CXXFLAGS) -c $<
 
 # ==========================================
 # 3DFormulaTransforming.pdf

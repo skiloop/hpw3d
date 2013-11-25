@@ -52,8 +52,6 @@ public:
      */
     ~data1d() {
         if (p != NULL)delete []p;
-        p = NULL;
-        n = 0;
     };
 
     /**

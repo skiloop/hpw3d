@@ -264,21 +264,16 @@ void fdtd::UpdateDensity(void) {
     MyDataF vi, va;
 
     unsigned ci = 0, cj = 0, ck = 0;
+
     Ne_pre = Ne;
+
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) \
         schedule(dynamic) private(i,j,k,Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1,vi,va,Deff)
 #endif
     for (i = mt; i < Ne.nx - mt; i++) {
         for (j = mt; j < Ne.ny - mt; j++) {
-            for (k = mt; k < Ne.nz - mt; k++) {
-                //switch (srcType) {
-                //    case SOURCE_GAUSSIAN:
-                //        Eeff = Erms.p[i][j][k] / 100; //convert to V/cm
-                //        break;
-                //    default:
-                //        Eeff = Erms.p[i][j][k] / 100 * pow(1 / (1 + omega * omega / vm / vm), 0.5);
-                //}
+            for (k = mt; k < Ne.nz - mt; k++) {                
 
                 Ne_ijk = Ne_pre.p[i][j][k];
                 Neip1 = Ne_pre.p[i + 1][j][k];
@@ -287,48 +282,9 @@ void fdtd::UpdateDensity(void) {
                 Nejm1 = Ne_pre.p[i][j - 1][k];
                 Nekp1 = Ne_pre.p[i][j][k + 1];
                 Nekm1 = Ne_pre.p[i][j][k - 1];
+
                 ApplyNiu(i, j, k, va, vi, Deff);
-                //switch (niutype) {
-                //    case MORROW_AND_LOWKE:
-                //        Niu_MorrowAndLowke(&vi, &va, Eeff, Ne_ijk * 1e6);
-                //        break;
-                //    case NIKONOV:
-                //        Niu_Nikonov(&vi, &va, Eeff, p);
-                //        break;
-                //    case KANG:
-                //        Niu_Kang(&vi, &va, Eeff);
-                //        break;
-                //    case ALI:
-                //    default:
-                //        alpha_t = Eeff / p;
-                //        if (alpha_t < 30) {
-                //            if (alpha_t < 1e-12) {
-                //                vi = 0;
-                //            } else if (alpha_t >= 1) {
-                //                vi = (1.45 + 0.01 * pow(alpha_t, 1.5))*2.5e7 * exp(-208 / alpha_t) * p;
-                //            } else {
-                //                vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
-                //            }
-                //        } else if (alpha_t > 120) {
-                //            if (alpha_t <= 3000) {
-                //                vi = 54.08e6 * pow(alpha_t, 0.5) * exp(-359 / alpha_t) * p;
-                //            } else {
-                //                vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
-                //            }
-                //        } else if (alpha_t > 54) {
-                //            vi = (1.32 + 0.054 * alpha_t)*1e7 * exp(-208 / alpha_t) * p;
-                //        } else {
-                //            vi = (5.0 + 0.19 * alpha_t)*1e7 * exp(-273.8 / alpha_t) * p;
-                //        }
-                //        va = 7.6e-4 * pow(alpha_t / (alpha_t + 218), 2) / p;
-                //}
-                //if (Ne_ijk < 1) {
-                //    Deff = De;
-                //} else {
-                //    tau_m = eps_0 / (e * Ne_ijk * (mu_e + mu_i));
-                //    kasi = vi * tau_m;
-                //    Deff = (kasi * De + Da) / (kasi + 1);
-                //}
+
                 Ne.p[i][j][k] =
                         (
                         Ne_ijk * (1 + dtf * vi)
@@ -639,6 +595,7 @@ void fdtd::initialize() {
 
     createCoeff();
     Ne.setName("Ne");
+
 #endif
 }
 
@@ -1243,20 +1200,25 @@ void fdtd::initCoeficients() {
     //////////////////////////
     // E Field coefficients
     //////////////////////////
+    MyDataF dtDivEps0DivDz,dtDivEps0DivDy,dtDivEps0DivDx;
+    dtDivEps0DivDz=dt/eps_0/dz;
+    dtDivEps0DivDy=dt/eps_0/dy;
+    dtDivEps0DivDx=dt/eps_0/dx;
     for (unsigned i = 0; i < Ex.nx; i++) {
         for (unsigned j = 0; j < Ex.ny; j++) {
             for (unsigned k = 0; k < Ex.nz; k++) {
-                Cexhy.p[i][j][k] = -dt / eps_0 / dz;
-                Cexhz.p[i][j][k] = dt / eps_0 / dy;
+                Cexhy.p[i][j][k] = -dtDivEps0DivDz;
+                Cexhz.p[i][j][k] = dtDivEps0DivDy;
                 Cexe.p[i][j][k] = 1;
             }
         }
     }
+
     for (unsigned i = 0; i < Ey.nx; i++) {
         for (unsigned j = 0; j < Ey.ny; j++) {
             for (unsigned k = 0; k < Ey.nz; k++) {
-                Ceyhx.p[i][j][k] = dt / eps_0 / dz;
-                Ceyhz.p[i][j][k] = -dt / eps_0 / dx;
+                Ceyhx.p[i][j][k] = dtDivEps0DivDz;
+                Ceyhz.p[i][j][k] = -dtDivEps0DivDx;
                 Ceye.p[i][j][k] = 1;
             }
         }
@@ -1264,20 +1226,25 @@ void fdtd::initCoeficients() {
     for (unsigned i = 0; i < Ez.nx; i++) {
         for (unsigned j = 0; j < Ez.ny; j++) {
             for (unsigned k = 0; k < Ez.nz; k++) {
-                Cezhx.p[i][j][k] = -dt / eps_0 / dy;
-                Cezhy.p[i][j][k] = dt / eps_0 / dx;
+                Cezhx.p[i][j][k] = -dtDivEps0DivDy;
+                Cezhy.p[i][j][k] = dtDivEps0DivDx;
                 Ceze.p[i][j][k] = 1;
             }
         }
     }
+
     //////////////////////////
     // M Field coefficients
     //////////////////////////
+    MyDataF dtDivMu0DivDx,dtDivMu0DivDy,dtDivMu0DivDz;
+    dtDivMu0DivDx=dt/mu_0/dx;
+    dtDivMu0DivDy=dt/mu_0/dy;
+    dtDivMu0DivDz=dt/mu_0/dz;
     for (unsigned i = 0; i < Hx.nx; i++) {
         for (unsigned j = 0; j < Hx.ny; j++) {
             for (unsigned k = 0; k < Hx.nz; k++) {
-                Chxey.p[i][j][k] = dt / mu_0 / dz;
-                Chxez.p[i][j][k] = -dt / mu_0 / dy;
+                Chxey.p[i][j][k] = dtDivMu0DivDz;
+                Chxez.p[i][j][k] = -dtDivMu0DivDy;
                 Chxh.p[i][j][k] = 1;
             }
         }
@@ -1285,8 +1252,8 @@ void fdtd::initCoeficients() {
     for (unsigned i = 0; i < Hy.nx; i++) {
         for (unsigned j = 0; j < Hy.ny; j++) {
             for (unsigned k = 0; k < Hy.nz; k++) {
-                Chyex.p[i][j][k] = -dt / mu_0 / dz;
-                Chyez.p[i][j][k] = dt / mu_0 / dx;
+                Chyex.p[i][j][k] = -dtDivMu0DivDz;
+                Chyez.p[i][j][k] = dtDivMu0DivDx;
                 Chyh.p[i][j][k] = 1;
             }
         }
@@ -1294,8 +1261,8 @@ void fdtd::initCoeficients() {
     for (unsigned i = 0; i < Hz.nx; i++) {
         for (unsigned j = 0; j < Hz.ny; j++) {
             for (unsigned k = 0; k < Hz.nz; k++) {
-                Chzex.p[i][j][k] = dt / mu_0 / dy;
-                Chzey.p[i][j][k] = -dt / mu_0 / dx;
+                Chzex.p[i][j][k] = dtDivMu0DivDy;
+                Chzey.p[i][j][k] = -dtDivMu0DivDx;
                 Chzh.p[i][j][k] = 1;
             }
         }
