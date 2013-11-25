@@ -474,115 +474,115 @@ cpml<T>::cpml(const cpml& orig)
     //============================================
     // xn arrays
     Psi_eyx_xn.create3DArray(orig. Psi_eyx_xn);
-    Psi_eyx_xn.Backupdata3d(orig. Psi_eyx_xn);
+    Psi_eyx_xn.backup3DArray(orig. Psi_eyx_xn);
     Psi_ezx_xn.create3DArray(orig. Psi_ezx_xn);
-    Psi_ezx_xn.Backupdata3d(orig. Psi_ezx_xn);
+    Psi_ezx_xn.backup3DArray(orig. Psi_ezx_xn);
     Psi_hyx_xn.create3DArray(orig. Psi_hyx_xn);
-    Psi_hyx_xn.Backupdata3d(orig. Psi_hyx_xn);
+    Psi_hyx_xn.backup3DArray(orig. Psi_hyx_xn);
     Psi_hzx_xn.create3DArray(orig. Psi_hzx_xn);
-    Psi_hzx_xn.Backupdata3d(orig. Psi_hzx_xn);
+    Psi_hzx_xn.backup3DArray(orig. Psi_hzx_xn);
     // xp arrays
     Psi_eyx_xp.create3DArray(orig. Psi_eyx_xp);
-    Psi_eyx_xp.Backupdata3d(orig. Psi_eyx_xp);
+    Psi_eyx_xp.backup3DArray(orig. Psi_eyx_xp);
     Psi_ezx_xp.create3DArray(orig. Psi_ezx_xp);
-    Psi_ezx_xp.Backupdata3d(orig. Psi_ezx_xp);
+    Psi_ezx_xp.backup3DArray(orig. Psi_ezx_xp);
     Psi_hyx_xp.create3DArray(orig. Psi_hyx_xp);
-    Psi_hyx_xp.Backupdata3d(orig. Psi_hyx_xp);
+    Psi_hyx_xp.backup3DArray(orig. Psi_hyx_xp);
     Psi_hzx_xp.create3DArray(orig. Psi_hzx_xp);
-    Psi_hzx_xp.Backupdata3d(orig. Psi_hzx_xp);
+    Psi_hzx_xp.backup3DArray(orig. Psi_hzx_xp);
     // yn arrays
     Psi_exy_yn.create3DArray(orig. Psi_exy_yn);
-    Psi_exy_yn.Backupdata3d(orig. Psi_exy_yn);
+    Psi_exy_yn.backup3DArray(orig. Psi_exy_yn);
     Psi_ezy_yn.create3DArray(orig. Psi_ezy_yn);
-    Psi_ezy_yn.Backupdata3d(orig. Psi_ezy_yn);
+    Psi_ezy_yn.backup3DArray(orig. Psi_ezy_yn);
     Psi_hxy_yn.create3DArray(orig. Psi_hxy_yn);
-    Psi_hxy_yn.Backupdata3d(orig. Psi_hxy_yn);
+    Psi_hxy_yn.backup3DArray(orig. Psi_hxy_yn);
     Psi_hzy_yn.create3DArray(orig. Psi_hzy_yn);
-    Psi_hzy_yn.Backupdata3d(orig. Psi_hzy_yn);
+    Psi_hzy_yn.backup3DArray(orig. Psi_hzy_yn);
     // yp arrays
     Psi_exy_yp.create3DArray(orig. Psi_exy_yp);
-    Psi_exy_yp.Backupdata3d(orig. Psi_exy_yp);
+    Psi_exy_yp.backup3DArray(orig. Psi_exy_yp);
     Psi_ezy_yp.create3DArray(orig. Psi_ezy_yp);
-    Psi_ezy_yp.Backupdata3d(orig. Psi_ezy_yp);
+    Psi_ezy_yp.backup3DArray(orig. Psi_ezy_yp);
     Psi_hxy_yp.create3DArray(orig. Psi_hxy_yp);
-    Psi_hxy_yp.Backupdata3d(orig. Psi_hxy_yp);
+    Psi_hxy_yp.backup3DArray(orig. Psi_hxy_yp);
     Psi_hzy_yp.create3DArray(orig. Psi_hzy_yp);
-    Psi_hzy_yp.Backupdata3d(orig. Psi_hzy_yp);
+    Psi_hzy_yp.backup3DArray(orig. Psi_hzy_yp);
     // zn arrays
     Psi_exz_zn.create3DArray(orig. Psi_exz_zn);
-    Psi_exz_zn.Backupdata3d(orig. Psi_exz_zn);
+    Psi_exz_zn.backup3DArray(orig. Psi_exz_zn);
     Psi_eyz_zn.create3DArray(orig. Psi_eyz_zn);
-    Psi_eyz_zn.Backupdata3d(orig. Psi_eyz_zn);
+    Psi_eyz_zn.backup3DArray(orig. Psi_eyz_zn);
     Psi_hxz_zn.create3DArray(orig. Psi_hxz_zn);
-    Psi_hxz_zn.Backupdata3d(orig. Psi_hxz_zn);
+    Psi_hxz_zn.backup3DArray(orig. Psi_hxz_zn);
     Psi_hyz_zn.create3DArray(orig. Psi_hyz_zn);
-    Psi_hyz_zn.Backupdata3d(orig. Psi_hyz_zn);
+    Psi_hyz_zn.backup3DArray(orig. Psi_hyz_zn);
     // zp arrays
     Psi_exz_zp.create3DArray(orig. Psi_exz_zp);
-    Psi_exz_zp.Backupdata3d(orig. Psi_exz_zp);
+    Psi_exz_zp.backup3DArray(orig. Psi_exz_zp);
     Psi_eyz_zp.create3DArray(orig. Psi_eyz_zp);
-    Psi_eyz_zp.Backupdata3d(orig. Psi_eyz_zp);
+    Psi_eyz_zp.backup3DArray(orig. Psi_eyz_zp);
     Psi_hxz_zp.create3DArray(orig. Psi_hxz_zp);
-    Psi_hxz_zp.Backupdata3d(orig. Psi_hxz_zp);
+    Psi_hxz_zp.backup3DArray(orig. Psi_hxz_zp);
     Psi_hyz_zp.create3DArray(orig. Psi_hyz_zp);
-    Psi_hyz_zp.Backupdata3d(orig. Psi_hyz_zp);
+    Psi_hyz_zp.backup3DArray(orig. Psi_hyz_zp);
     //============================================
     // cpml coefficient arrays
     //============================================
     // xn arrays
     CPsi_eyx_xn.create3DArray(orig. CPsi_eyx_xn);
-    CPsi_eyx_xn.Backupdata3d(orig. CPsi_eyx_xn);
+    CPsi_eyx_xn.backup3DArray(orig. CPsi_eyx_xn);
     CPsi_ezx_xn.create3DArray(orig. CPsi_ezx_xn);
-    CPsi_ezx_xn.Backupdata3d(orig. CPsi_ezx_xn);
+    CPsi_ezx_xn.backup3DArray(orig. CPsi_ezx_xn);
     CPsi_hyx_xn.create3DArray(orig. CPsi_hyx_xn);
-    CPsi_hyx_xn.Backupdata3d(orig. CPsi_hyx_xn);
+    CPsi_hyx_xn.backup3DArray(orig. CPsi_hyx_xn);
     CPsi_hzx_xn.create3DArray(orig. CPsi_hzx_xn);
-    CPsi_hzx_xn.Backupdata3d(orig. CPsi_hzx_xn);
+    CPsi_hzx_xn.backup3DArray(orig. CPsi_hzx_xn);
     // xp arrays
     CPsi_eyx_xp.create3DArray(orig. CPsi_eyx_xp);
-    CPsi_eyx_xp.Backupdata3d(orig. CPsi_eyx_xp);
+    CPsi_eyx_xp.backup3DArray(orig. CPsi_eyx_xp);
     CPsi_ezx_xp.create3DArray(orig. CPsi_ezx_xp);
-    CPsi_ezx_xp.Backupdata3d(orig. CPsi_ezx_xp);
+    CPsi_ezx_xp.backup3DArray(orig. CPsi_ezx_xp);
     CPsi_hyx_xp.create3DArray(orig. CPsi_hyx_xp);
-    CPsi_hyx_xp.Backupdata3d(orig. CPsi_hyx_xp);
+    CPsi_hyx_xp.backup3DArray(orig. CPsi_hyx_xp);
     CPsi_hzx_xp.create3DArray(orig. CPsi_hzx_xp);
-    CPsi_hzx_xp.Backupdata3d(orig. CPsi_hzx_xp);
+    CPsi_hzx_xp.backup3DArray(orig. CPsi_hzx_xp);
     // yn arrays
     CPsi_exy_yn.create3DArray(orig. CPsi_exy_yn);
-    CPsi_exy_yn.Backupdata3d(orig. CPsi_exy_yn);
+    CPsi_exy_yn.backup3DArray(orig. CPsi_exy_yn);
     CPsi_ezy_yn.create3DArray(orig. CPsi_ezy_yn);
-    CPsi_ezy_yn.Backupdata3d(orig. CPsi_ezy_yn);
+    CPsi_ezy_yn.backup3DArray(orig. CPsi_ezy_yn);
     CPsi_hxy_yn.create3DArray(orig. CPsi_hxy_yn);
-    CPsi_hxy_yn.Backupdata3d(orig. CPsi_hxy_yn);
+    CPsi_hxy_yn.backup3DArray(orig. CPsi_hxy_yn);
     CPsi_hzy_yn.create3DArray(orig. CPsi_hzy_yn);
-    CPsi_hzy_yn.Backupdata3d(orig. CPsi_hzy_yn);
+    CPsi_hzy_yn.backup3DArray(orig. CPsi_hzy_yn);
     // yp arrays
     CPsi_exy_yp.create3DArray(orig. CPsi_exy_yp);
-    CPsi_exy_yp.Backupdata3d(orig. CPsi_exy_yp);
+    CPsi_exy_yp.backup3DArray(orig. CPsi_exy_yp);
     CPsi_ezy_yp.create3DArray(orig. CPsi_ezy_yp);
-    CPsi_ezy_yp.Backupdata3d(orig. CPsi_ezy_yp);
+    CPsi_ezy_yp.backup3DArray(orig. CPsi_ezy_yp);
     CPsi_hxy_yp.create3DArray(orig. CPsi_hxy_yp);
-    CPsi_hxy_yp.Backupdata3d(orig. CPsi_hxy_yp);
+    CPsi_hxy_yp.backup3DArray(orig. CPsi_hxy_yp);
     CPsi_hzy_yp.create3DArray(orig. CPsi_hzy_yp);
-    CPsi_hzy_yp.Backupdata3d(orig. CPsi_hzy_yp);
+    CPsi_hzy_yp.backup3DArray(orig. CPsi_hzy_yp);
     // zn arrays
     CPsi_exz_zn.create3DArray(orig. CPsi_exz_zn);
-    CPsi_exz_zn.Backupdata3d(orig. CPsi_exz_zn);
+    CPsi_exz_zn.backup3DArray(orig. CPsi_exz_zn);
     CPsi_eyz_zn.create3DArray(orig. CPsi_eyz_zn);
-    CPsi_eyz_zn.Backupdata3d(orig. CPsi_eyz_zn);
+    CPsi_eyz_zn.backup3DArray(orig. CPsi_eyz_zn);
     CPsi_hxz_zn.create3DArray(orig. CPsi_hxz_zn);
-    CPsi_hxz_zn.Backupdata3d(orig. CPsi_hxz_zn);
+    CPsi_hxz_zn.backup3DArray(orig. CPsi_hxz_zn);
     CPsi_hyz_zn.create3DArray(orig. CPsi_hyz_zn);
-    CPsi_hyz_zn.Backupdata3d(orig. CPsi_hyz_zn);
+    CPsi_hyz_zn.backup3DArray(orig. CPsi_hyz_zn);
     // zp arrays
     CPsi_exz_zp.create3DArray(orig. CPsi_exz_zp);
-    CPsi_exz_zp.Backupdata3d(orig. CPsi_exz_zp);
+    CPsi_exz_zp.backup3DArray(orig. CPsi_exz_zp);
     CPsi_eyz_zp.create3DArray(orig. CPsi_eyz_zp);
-    CPsi_eyz_zp.Backupdata3d(orig. CPsi_eyz_zp);
+    CPsi_eyz_zp.backup3DArray(orig. CPsi_eyz_zp);
     CPsi_hxz_zp.create3DArray(orig. CPsi_hxz_zp);
-    CPsi_hxz_zp.Backupdata3d(orig. CPsi_hxz_zp);
+    CPsi_hxz_zp.backup3DArray(orig. CPsi_hxz_zp);
     CPsi_hyz_zp.create3DArray(orig. CPsi_hyz_zp);
-    CPsi_hyz_zp.Backupdata3d(orig. CPsi_hyz_zp);
+    CPsi_hyz_zp.backup3DArray(orig. CPsi_hyz_zp);
 }
 
 template<class T>

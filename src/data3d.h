@@ -145,7 +145,7 @@ public:
      * Dimensions of @c st and that of @c pstruct must macth,and both with valid
      * p
      */
-    int Backupdata3d(const data3d< DataType > &mstru);
+    int backup3DArray(const data3d< DataType > &mstru);
 
     /**
      * @brief Save p of  data3d data skipping p rows and p columns
