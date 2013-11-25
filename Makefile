@@ -32,7 +32,7 @@ cpmlfdtd3d:cpmlfdtd3d.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIB)
 testCPML:testcpml.o cpml.o
 	$(CXX) $(CXXFLAGS) -o $@  $^ $(LIB)
-$(CPPOBJECT): %.o:%.cpp
+$(CPPOBJECT):%.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c $<	
 cpmlfdtd3d.o:cpmlfdtd3d.c
 	$(CC) -c $< $(CFLAGS)

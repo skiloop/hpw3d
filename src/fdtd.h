@@ -156,6 +156,7 @@ private:
     data3d<MyDataF> Chxh, Chyh, Chzh;
     data3d<MyDataF> Cexhy, Ceyhz, Cezhx, Cexhz, Ceyhx, Cezhy;
     data3d<MyDataF> Chxey, Chyez, Chzex, Chxez, Chyex, Chzey;
+    
     void initCoeficients();
 
 #ifdef WITH_DENSITY

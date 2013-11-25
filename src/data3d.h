@@ -121,7 +121,7 @@ public:
     /**
      * Set Data to val
      */
-    int resetArrar(DataType val = 0);
+    int resetArray(DataType val = 0);
 
     /**
      * check p of data3d @c mst is valid
@@ -372,11 +372,11 @@ template<class DataType>
 int data3d<DataType>::create3DArray(unsigned nnx, unsigned nny, unsigned nnz, DataType initVal) {
     if (create3DArray(nnx, nny, nnz) < 0)
         return -1;
-    return resetArrar(initVal);
+    return resetArray(initVal);
 }
 
 template<class DataType>
-int data3d<DataType>::resetArrar(DataType Val) {
+int data3d<DataType>::resetArray(DataType Val) {
     unsigned i, j, k;
     if (!checkArray())
         return -1;

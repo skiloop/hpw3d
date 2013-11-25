@@ -60,26 +60,22 @@ public:
      */
     void createArray(unsigned num) {
         if (num > 0) {
+            if(NULL!=p){
+                delete []p;
+            }
             p = new T[num];
             n = num;
         }
     };
-
-    /**
-     * create array with length @c num
-     * @param num
-     */
-    void CreateStruct(unsigned num) {
-        createArray(num);
-    };
-
+    
     /**
      * create array with length @c num and initial array with @c val
      * @param num
      * @param val
      */
-    void CreateStruct(unsigned num, T val) {
-        createArray(num, val);
+    void createArray(unsigned num, T val) {
+        createArray(num);
+        initArray(val);
     };
 
     /**
@@ -97,17 +93,7 @@ public:
     void resetArray() {
         initArray();
     };
-
-    /**
-     * create array with length @c num and initial array with @c val
-     * @param num
-     * @param val
-     */
-    void createArray(unsigned num, T val) {
-        createArray(num);
-        initArray(val);
-    };
-
+    
     /**
      * save array with file name @c name
      * @param name

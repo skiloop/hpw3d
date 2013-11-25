@@ -600,10 +600,10 @@ void cpml<T>::createCPMLArrays(unsigned nx, unsigned ny, unsigned nz) {
     unsigned nzp1 = nz + 1;
     if (is_cpml_xn) {
         // x direction
-        cpml_a_ex_xn.CreateStruct(n_cpml_xn, 0.0);
-        cpml_b_ex_xn.CreateStruct(n_cpml_xn, 0.0);
-        cpml_a_mx_xn.CreateStruct(n_cpml_xn, 0.0);
-        cpml_b_mx_xn.CreateStruct(n_cpml_xn, 0.0);
+        cpml_a_ex_xn.createArray(n_cpml_xn, 0.0);
+        cpml_b_ex_xn.createArray(n_cpml_xn, 0.0);
+        cpml_a_mx_xn.createArray(n_cpml_xn, 0.0);
+        cpml_b_mx_xn.createArray(n_cpml_xn, 0.0);
         Psi_eyx_xn.create3DArray(n_cpml_xn, ny, nzp1, 0.0);
         Psi_ezx_xn.create3DArray(n_cpml_xn, nyp1, nz, 0.0);
         Psi_hyx_xn.create3DArray(n_cpml_xn, nyp1, nz, 0.0);
@@ -615,10 +615,10 @@ void cpml<T>::createCPMLArrays(unsigned nx, unsigned ny, unsigned nz) {
     }
     // xp arrays
     if (is_cpml_xp) {
-        cpml_a_ex_xp.CreateStruct(n_cpml_xp, 0.0);
-        cpml_b_ex_xp.CreateStruct(n_cpml_xp, 0.0);
-        cpml_a_mx_xp.CreateStruct(n_cpml_xp, 0.0);
-        cpml_b_mx_xp.CreateStruct(n_cpml_xp, 0.0);
+        cpml_a_ex_xp.createArray(n_cpml_xp, 0.0);
+        cpml_b_ex_xp.createArray(n_cpml_xp, 0.0);
+        cpml_a_mx_xp.createArray(n_cpml_xp, 0.0);
+        cpml_b_mx_xp.createArray(n_cpml_xp, 0.0);
         Psi_eyx_xp.create3DArray(n_cpml_xp, ny, nzp1, 0.0);
         Psi_ezx_xp.create3DArray(n_cpml_xp, nyp1, nz, 0.0);
         Psi_hyx_xp.create3DArray(n_cpml_xp, nyp1, nz, 0.0);
@@ -631,10 +631,10 @@ void cpml<T>::createCPMLArrays(unsigned nx, unsigned ny, unsigned nz) {
     // yn arrays
     if (is_cpml_yn) {
         // y direction
-        cpml_a_ey_yn.CreateStruct(n_cpml_yn, 0.0);
-        cpml_b_ey_yn.CreateStruct(n_cpml_yn, 0.0);
-        cpml_a_my_yn.CreateStruct(n_cpml_yn, 0.0);
-        cpml_b_my_yn.CreateStruct(n_cpml_yn, 0.0);
+        cpml_a_ey_yn.createArray(n_cpml_yn, 0.0);
+        cpml_b_ey_yn.createArray(n_cpml_yn, 0.0);
+        cpml_a_my_yn.createArray(n_cpml_yn, 0.0);
+        cpml_b_my_yn.createArray(n_cpml_yn, 0.0);
         Psi_exy_yn.create3DArray(nx, n_cpml_yn, nzp1, 0.0);
         Psi_ezy_yn.create3DArray(nxp1, n_cpml_yn, nz, 0.0);
         Psi_hxy_yn.create3DArray(nxp1, n_cpml_yn, nz, 0.0);
@@ -646,10 +646,10 @@ void cpml<T>::createCPMLArrays(unsigned nx, unsigned ny, unsigned nz) {
     }
     // yp arrays
     if (is_cpml_yp) {
-        cpml_a_ey_yp.CreateStruct(n_cpml_yp, 0.0);
-        cpml_b_ey_yp.CreateStruct(n_cpml_yp, 0.0);
-        cpml_a_my_yp.CreateStruct(n_cpml_yp, 0.0);
-        cpml_b_my_yp.CreateStruct(n_cpml_yp, 0.0);
+        cpml_a_ey_yp.createArray(n_cpml_yp, 0.0);
+        cpml_b_ey_yp.createArray(n_cpml_yp, 0.0);
+        cpml_a_my_yp.createArray(n_cpml_yp, 0.0);
+        cpml_b_my_yp.createArray(n_cpml_yp, 0.0);
         Psi_exy_yp.create3DArray(nx, n_cpml_yp, nzp1, 0.0);
         Psi_ezy_yp.create3DArray(nxp1, n_cpml_yp, nz, 0.0);
         Psi_hxy_yp.create3DArray(nxp1, n_cpml_yp, nz, 0.0);
@@ -662,10 +662,10 @@ void cpml<T>::createCPMLArrays(unsigned nx, unsigned ny, unsigned nz) {
     // zn arrays
     if (is_cpml_zn) {
         // z direction
-        cpml_a_ez_zn.CreateStruct(n_cpml_zn, 0.0);
-        cpml_b_ez_zn.CreateStruct(n_cpml_zn, 0.0);
-        cpml_a_mz_zn.CreateStruct(n_cpml_zn, 0.0);
-        cpml_b_mz_zn.CreateStruct(n_cpml_zn, 0.0);
+        cpml_a_ez_zn.createArray(n_cpml_zn, 0.0);
+        cpml_b_ez_zn.createArray(n_cpml_zn, 0.0);
+        cpml_a_mz_zn.createArray(n_cpml_zn, 0.0);
+        cpml_b_mz_zn.createArray(n_cpml_zn, 0.0);
         Psi_exz_zn.create3DArray(nx, nyp1, n_cpml_zn, 0.0);
         Psi_eyz_zn.create3DArray(nxp1, ny, n_cpml_zn, 0.0);
         Psi_hxz_zn.create3DArray(nxp1, ny, n_cpml_zn, 0.0);
@@ -677,10 +677,10 @@ void cpml<T>::createCPMLArrays(unsigned nx, unsigned ny, unsigned nz) {
     }
     // zp arrays
     if (is_cpml_zp) {
-        cpml_a_ez_zp.CreateStruct(n_cpml_zp, 0.0);
-        cpml_b_ez_zp.CreateStruct(n_cpml_zp, 0.0);
-        cpml_a_mz_zp.CreateStruct(n_cpml_zp, 0.0);
-        cpml_b_mz_zp.CreateStruct(n_cpml_zp, 0.0);
+        cpml_a_ez_zp.createArray(n_cpml_zp, 0.0);
+        cpml_b_ez_zp.createArray(n_cpml_zp, 0.0);
+        cpml_a_mz_zp.createArray(n_cpml_zp, 0.0);
+        cpml_b_mz_zp.createArray(n_cpml_zp, 0.0);
         Psi_exz_zp.create3DArray(nx, nyp1, n_cpml_zp, 0.0);
         Psi_eyz_zp.create3DArray(nxp1, ny, n_cpml_zp, 0.0);
         Psi_hxz_zp.create3DArray(nxp1, ny, n_cpml_zp, 0.0);
