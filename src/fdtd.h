@@ -76,10 +76,9 @@ private:
     //  Specify Number of Time Steps and Grid Size Parameters
     unsigned totalTimeSteps; // total number of time steps
 
-    // grid size corresponding to the number of Ez field components
-    unsigned Imax;
-    unsigned Jmax;
-    unsigned Kmax;
+    // grid size corresponding to the number of Ez field components   
+    Point mMaxIndex;
+    
     //  Specify the Impulsive Source (Differentiated Gaussian) parameters
     MyDataF tw; //pulse width
     MyDataF dt, dx, dy, dz;
@@ -219,13 +218,13 @@ private:
     void updateBeta();
 
     // Erms or Eeff operation
-    void IntegerEeff();
-    void UpdateErms(void);
+    void integerEeff();
+    void updateErms(void);
     void updateCollisionFrequency();
-    void InterpErms();
-    void UpdateDensity(void);
-    void UpdateVeloity(void);
-    void WallCircleBound(data3d<MyDataF> &stru);
+    void interpErms();
+    void updateDensity(void);
+    void updateVeloity(void);
+    void wallCircleBound(data3d<MyDataF> &stru);
 #endif
     void updateHx();
     void updateHy();

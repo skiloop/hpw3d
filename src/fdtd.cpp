@@ -39,7 +39,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial, unsigned _neGrid)
-: totalTimeSteps(_totalTimeSteps), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
+: totalTimeSteps(_totalTimeSteps), mMaxIndex(_imax,_jmax,_kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWidth(pmlw)
@@ -55,7 +55,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial)
-: totalTimeSteps(_totalTimeSteps), Imax(_imax), Jmax(_jmax), Kmax(_kmax)
+: totalTimeSteps(_totalTimeSteps),  mMaxIndex(_imax,_jmax,_kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWidth(pmlw)
@@ -86,7 +86,7 @@ void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
     niutype = _ftype;
 }
 
-void fdtd::IntegerEeff() {
+void fdtd::integerEeff() {
     unsigned i, j, k;
     unsigned io, jo, ko;
     //MyDataF vxIJK,vyIJK;
@@ -99,7 +99,7 @@ void fdtd::IntegerEeff() {
     }
 }
 
-void fdtd::UpdateErms(void) {
+void fdtd::updateErms(void) {
     unsigned i, j, k;
     unsigned io, jo, ko;
     switch (srcType) {
@@ -171,7 +171,7 @@ void fdtd::updateCollisionFrequency() {
     }
 }
 
-void fdtd::InterpErms() {
+void fdtd::interpErms() {
     unsigned is, js, ks;
     unsigned in, jn, kn;
     unsigned i, j, k;
@@ -255,7 +255,7 @@ void fdtd::applyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff
 /* update density                                                                     */
 
 /************************************************************************/
-void fdtd::UpdateDensity(void) {
+void fdtd::updateDensity(void) {
 
     int i, j, k, mt = 1;
     MyDataF Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1;
@@ -300,16 +300,16 @@ void fdtd::UpdateDensity(void) {
             }
         }
     }
-    WallCircleBound(Ne);
+    wallCircleBound(Ne);
     cout << Ne.p[Ne.nx / 2][Ne.ny / 2][Ne.nz / 2] << '\t';
     cout << maxvi << '\t' << minvi << '\t' << Ne.p[ci][cj][ck] << '\t' << Erms.p[ci][cj][ck] << '\t';
 }
 
-void fdtd::UpdateVeloity(void) {
+void fdtd::updateVeloity(void) {
     //return 0;
 }
 
-void fdtd::WallCircleBound(data3d<MyDataF> &stru) {
+void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
     unsigned i, j, k;
     unsigned endx, endy, endz;
 
@@ -524,20 +524,20 @@ void fdtd::initDensity() {
 void fdtd::initialize() {
     // initial PML
     //    pml.InitialMuEps();
-    //    pml.Initial(Imax, Jmax, Kmax, pmlWidth);
+    //    pml.Initial(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z, pmlWidth);
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << "Imax=" << Imax << endl;
-    cout << "Jmax=" << Jmax << endl;
-    cout << "Kmax=" << Kmax << endl;
+    cout << "mMaxIndex.x=" << mMaxIndex.x << endl;
+    cout << "mMaxIndex.y=" << mMaxIndex.y << endl;
+    cout << "mMaxIndex.z=" << mMaxIndex.z << endl;
 #endif
-    Ez.create3DArray(Imax + 1, Jmax + 1, Kmax, 0);
-    Ey.create3DArray(Imax + 1, Jmax, Kmax + 1, 0);
-    Ex.create3DArray(Imax, Jmax + 1, Kmax + 1, 0);
+    Ez.create3DArray(mMaxIndex.x + 1, mMaxIndex.y + 1, mMaxIndex.z, 0);
+    Ey.create3DArray(mMaxIndex.x + 1, mMaxIndex.y, mMaxIndex.z + 1, 0);
+    Ex.create3DArray(mMaxIndex.x, mMaxIndex.y + 1, mMaxIndex.z + 1, 0);
 
-    Hx.create3DArray(Imax + 1, Jmax, Kmax, 0);
-    Hy.create3DArray(Imax, Jmax + 1, Kmax, 0);
-    Hz.create3DArray(Imax, Jmax, Kmax + 1, 0);
+    Hx.create3DArray(mMaxIndex.x + 1, mMaxIndex.y, mMaxIndex.z, 0);
+    Hy.create3DArray(mMaxIndex.x, mMaxIndex.y + 1, mMaxIndex.z, 0);
+    Hz.create3DArray(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z + 1, 0);
 
     //coefficients
     Cexe.create3DArray(Ex, 0.0);
@@ -578,7 +578,7 @@ void fdtd::initialize() {
     cout << __FILE__ << ":" << __LINE__ << endl;
     cout << " neGrid = " << neGrid << endl;
 #endif
-    Ne.create3DArray((Imax + 1) * neGrid, (Jmax + 1) * neGrid, (Kmax + 1) * neGrid, Ne0);
+    Ne.create3DArray((mMaxIndex.x + 1) * neGrid, (mMaxIndex.y + 1) * neGrid, (mMaxIndex.z + 1) * neGrid, Ne0);
     Erms.create3DArray(Ne, 0.0);
     Ne_pre.create3DArray(Ne, 0.0);
 
@@ -645,14 +645,14 @@ void fdtd::setUp() {
 #endif
     //  Specify the dipole size 
     mStartIndex.setValue(pmlWidth, pmlWidth, pmlWidth);
-    mEndIndex.setValue(Imax - pmlWidth, Jmax - pmlWidth, Kmax - pmlWidth);
+    mEndIndex.setValue(mMaxIndex.x - pmlWidth, mMaxIndex.y - pmlWidth, mMaxIndex.z - pmlWidth);
 
     // source position    
-    mSourceIndex.setValue(Imax / 2, Jmax - pmlWidth - 35, Kmax / 2);
+    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y - pmlWidth - 35, mMaxIndex.z / 2);
 
-    checkmax(mSourceIndex.x, 1, Imax);
-    checkmax(mSourceIndex.y, 1, Jmax);
-    checkmax(mSourceIndex.z, 1, Kmax);
+    checkmax(mSourceIndex.x, 1, mMaxIndex.x);
+    checkmax(mSourceIndex.y, 1, mMaxIndex.y);
+    checkmax(mSourceIndex.z, 1, mMaxIndex.z);
 
     if (mEndIndex.x < mStartIndex.x)mEndIndex.x = mStartIndex.x + 1;
     if (mEndIndex.y < mStartIndex.y)mEndIndex.y = mStartIndex.y + 1;
@@ -676,7 +676,7 @@ void fdtd::setUp() {
     //  PML initials
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     pml.setCPMLRegion(pmlWidth);
-    pml.createCPMLArrays(Imax, Jmax, Kmax);
+    pml.createCPMLArrays(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z);
     pml.initCoefficientArrays(pmlOrder, sigmaMax, kappaMax, alphaMax, epsR, dt, dx, dy, dz,
             Ceyhz, Cezhy, Chyez, Chzey,
             Cexhz, Cezhx, Chxez, Chzex,
@@ -709,20 +709,20 @@ void fdtd::compute() {
     Point capturePosition(mSourceIndex.x, mSourceIndex.y + 30, mSourceIndex.z);
 
 #if DEBUG>=3
-    if (mSourceIndex.y + 30 < Jmax) {
+    if (mSourceIndex.y + 30 < mMaxIndex.y) {
         capturePosition.y = mSourceIndex.y + 30;
     }
 #endif
 
-    if (!capturePosition.checkMax(Imax, Jmax, Kmax)) {
-        if (capturePosition.y >= Jmax) {
-            capturePosition.y = Jmax - 1;
+    if (!capturePosition.checkMax(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z)) {
+        if (capturePosition.y >= mMaxIndex.y) {
+            capturePosition.y = mMaxIndex.y - 1;
         }
-        if (capturePosition.x >= Imax) {
-            capturePosition.x = Imax - 1;
+        if (capturePosition.x >= mMaxIndex.x) {
+            capturePosition.x = mMaxIndex.x - 1;
         }
-        if (capturePosition.z >= Kmax) {
-            capturePosition.z = Kmax - 1;
+        if (capturePosition.z >= mMaxIndex.z) {
+            capturePosition.z = mMaxIndex.z - 1;
         }
     }
     cout << "capturePosition.x=" << capturePosition.x << endl;
@@ -768,12 +768,12 @@ void fdtd::compute() {
         updateSource(n);
 
 #ifdef WITH_DENSITY
-        UpdateErms();
+        updateErms();
         if (n % neSkipStep == 0) {
-            InterpErms();
+            interpErms();
             if (srcType == fdtd::SOURCE_GAUSSIAN)
                 updateCollisionFrequency();
-            UpdateDensity();
+            updateDensity();
             updateCoeff();
         }
 #endif
@@ -841,15 +841,15 @@ void fdtd::buildObject() {
 void fdtd::buildSphere() {
 
     MyDataF dist; //distance
-    MyDataF rad = 8; //(MyDataF)Imax / 5.0; // sphere radius
-    MyDataF sc = (MyDataF) Imax / 2.0; //sphere centre
-    //MyDataF rad2 = 0.3; //(MyDataF)Imax / 5.0 - 3.0; // sphere radius
+    MyDataF rad = 8; //(MyDataF)mMaxIndex.x / 5.0; // sphere radius
+    MyDataF sc = (MyDataF) mMaxIndex.x / 2.0; //sphere centre
+    //MyDataF rad2 = 0.3; //(MyDataF)mMaxIndex.x / 5.0 - 3.0; // sphere radius
 
     unsigned i, j, k;
 
-    for (i = 0; i < Imax; ++i) {
-        for (j = 0; j < Jmax; ++j) {
-            for (k = 0; k < Kmax; ++k) {
+    for (i = 0; i < mMaxIndex.x; ++i) {
+        for (j = 0; j < mMaxIndex.y; ++j) {
+            for (k = 0; k < mMaxIndex.z; ++k) {
                 //compute distance form centre to the point i, j, k
                 dist = sqrt((i + 0.5 - sc) * (i + 0.5 - sc) +
                         (j + 0.5 - sc) * (j + 0.5 - sc) +
@@ -926,8 +926,8 @@ void fdtd::writeField(unsigned iteration) {
     out.open(fileBaseName.c_str());
     if (out.is_open()) {
 
-        for (i = 0; i < Imax - 1; i++) {
-            for (j = 0; j < Jmax - 1; j++) { // |E|
+        for (i = 0; i < mMaxIndex.x - 1; i++) {
+            for (j = 0; j < mMaxIndex.y - 1; j++) { // |E|
                 out << sqrt(pow(Ex.p[i][j][ksource], 2) +
                         pow(Ey.p[i][j][ksource], 2) + pow(Ez.p[i][j][ksource], 2)) << '\t';
             }
@@ -942,9 +942,9 @@ void fdtd::writeField(unsigned iteration) {
     out.open(fileBaseName.c_str());
     if (out.is_open()) {
         unsigned jsource = ksource + 10;
-        checkmax(jsource, 1, Jmax);
-        for (i = 0; i < Imax - 1; i++) {
-            for (j = 0; j < Kmax - 1; j++) { // |E|
+        checkmax(jsource, 1, mMaxIndex.y);
+        for (i = 0; i < mMaxIndex.x - 1; i++) {
+            for (j = 0; j < mMaxIndex.z - 1; j++) { // |E|
                 out << sqrt(pow(Ex.p[i][jsource][j], 2) +
                         pow(Ey.p[i][jsource][j], 2) + pow(Ez.p[i][jsource][j], 2)) << '\t';
             }
@@ -960,7 +960,7 @@ void fdtd::startUp() {
     cout << "initializing(in Startup)..." << endl;
     initialize();
     //    cout << "initial pml (in Statup)" << endl;
-    //    pml.Initial(Imax, Jmax, Kmax, 11);
+    //    pml.Initial(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z, 11);
     cout << "setUp (in Startup)" << endl;
     setUp();
     cout << "buildObject (in Startup)" << endl;
@@ -974,7 +974,7 @@ void fdtd::printParameters() {
     cout << "dx = " << dx << endl;
     cout << "dy = " << dy << endl;
     cout << "dz = " << dz << endl;
-    cout << "(Imax,Jmax,Kmax) = (" << Imax << "," << Jmax << "," << Kmax << ")" << endl;
+    cout << "(mMaxIndex.x,mMaxIndex.y,mMaxIndex.z) = (" << mMaxIndex.x << "," << mMaxIndex.y << "," << mMaxIndex.z << ")" << endl;
     // time step increment
     cout << "dt = " << dt << endl;
 
@@ -1027,9 +1027,9 @@ void fdtd::updateHx() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
-    for (k = 0; k < Kmax; ++k) {
-        for (j = 0; j < Jmax; ++j) {
-            for (i = 0; i <= Imax; ++i) {
+    for (k = 0; k < mMaxIndex.z; ++k) {
+        for (j = 0; j < mMaxIndex.y; ++j) {
+            for (i = 0; i <= mMaxIndex.x; ++i) {
                 Hx.p[i][j][k] = Chxh.p[i][j][k] * Hx.p[i][j][k] +
                         Chxez.p[i][j][k]*(Ez.p[i][j + 1][k] - Ez.p[i][j][k]) +
                         Chxey.p[i][j][k]*(Ey.p[i][j][k + 1] - Ey.p[i][j][k]);
@@ -1048,9 +1048,9 @@ void fdtd::updateHy() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Hy,Ez,Ex,pml,DA,DB,dx,dz)
 #endif
-    for (k = 0; k < Kmax; ++k) {
-        for (i = 0; i < Imax; ++i) {
-            for (j = 0; j <= Jmax; ++j) {
+    for (k = 0; k < mMaxIndex.z; ++k) {
+        for (i = 0; i < mMaxIndex.x; ++i) {
+            for (j = 0; j <= mMaxIndex.y; ++j) {
                 Hy.p[i][j][k] = Chyh.p[i][j][k] * Hy.p[i][j][k] +
                         Chyez.p[i][j][k]*(Ez.p[i + 1][j][k] - Ez.p[i][j][k]) +
                         Chyex.p[i][j][k]*(Ex.p[i][j][k + 1] - Ex.p[i][j][k]);
@@ -1072,9 +1072,9 @@ void fdtd::updateHz() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Hz,Ey,Ex,pml,DA,DB,dx,dy)
 #endif
-    for (k = 0; k <= Kmax; ++k) {
-        for (i = 0; i < Imax; ++i) {
-            for (j = 0; j < Jmax; ++j) {
+    for (k = 0; k <= mMaxIndex.z; ++k) {
+        for (i = 0; i < mMaxIndex.x; ++i) {
+            for (j = 0; j < mMaxIndex.y; ++j) {
                 Hz.p[i][j][k] = Chzh.p[i][j][k] * Hz.p[i][j][k] +
                         (Ey.p[i + 1][j][k] - Ey.p[i][j][k]) * Chzey.p[i][j][k] +
                         (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * Chzex.p[i][j][k];
@@ -1096,9 +1096,9 @@ void fdtd::updateEx() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k)//shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
-    for (k = 1; k < Kmax; ++k) {
-        for (j = 1; j < Jmax; ++j) {
-            for (i = 0; i < Imax; ++i) {
+    for (k = 1; k < mMaxIndex.z; ++k) {
+        for (j = 1; j < mMaxIndex.y; ++j) {
+            for (i = 0; i < mMaxIndex.x; ++i) {
 #ifdef WITH_DENSITY
                 MyDataF Exp = Ex.p[i][j][k];
 #endif
@@ -1128,9 +1128,9 @@ void fdtd::updateEy() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
-    for (k = 1; k < Kmax; ++k) {
-        for (i = 1; i < Imax; ++i) {
-            for (j = 0; j < Jmax; ++j) {
+    for (k = 1; k < mMaxIndex.z; ++k) {
+        for (i = 1; i < mMaxIndex.x; ++i) {
+            for (j = 0; j < mMaxIndex.y; ++j) {
 #ifdef WITH_DENSITY
                 MyDataF Eyp = Ey.p[i][j][k];
 #endif  /* WITH_DENSITY */
@@ -1166,9 +1166,9 @@ void fdtd::updateEz() {
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
 #endif
 
-    for (i = 1; i < Imax; ++i) {
-        for (k = 0; k < Kmax; ++k) {
-            for (j = 1; j < Jmax; ++j) {
+    for (i = 1; i < mMaxIndex.x; ++i) {
+        for (k = 0; k < mMaxIndex.z; ++k) {
+            for (j = 1; j < mMaxIndex.y; ++j) {
 #ifdef WITH_DENSITY
                 MyDataF Ezp = Ez.p[i][j][k];
 #endif
