@@ -38,10 +38,11 @@ cpmlfdtd3d.o:cpmlfdtd3d.c
 	$(CC) -c $< $(CFLAGS)
 openmp:openmp.o
 	$(CXX) -o $@ openmp.o $(CXXFLAGS) $(LIB)
-data3d.h:common.h Point.o
+Point.o:Point.h
+data3d.h:common.h Point.o data3d.hpp
+data1d.h:Point.o
 fdtd.o:cpml.o Point.o
-cpml.o:cpml.cpp data3d.h data3d.cpp data1d.h data1d.cpp common.h cpml.h 
-	$(CXX) $(CXXFLAGS) -c $<
+cpml.o:cpml.cpp data3d.h data1d.h data1d.cpp common.h cpml.h 
 
 # ==========================================
 # 3DFormulaTransforming.pdf

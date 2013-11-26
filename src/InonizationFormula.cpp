@@ -1,6 +1,6 @@
 
-#include "InonizationFormula.h"
 #include <math.h>
+#include "InonizationFormula.h"
 //////////////////////////////////////////////////////////////////////////
 //int sign(MyDataF val)
 //if val>0 return 1
