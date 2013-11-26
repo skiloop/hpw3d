@@ -17,6 +17,7 @@
 #include <string>
 
 using namespace std;
+
 //#include "microdef.h"
 #define MAX_ARRAY_SIZE 300000
 #include "common.h"

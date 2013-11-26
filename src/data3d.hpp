@@ -17,6 +17,7 @@ using namespace std;
 template<class DataType> Engine* data3d<DataType>::ep = NULL;
 template<class DataType> bool data3d<DataType>::isMatlabEngineStarted = false;
 #endif
+
 template<class DataType> string data3d<DataType>::tail = ".dat";
 template<class DataType> unsigned int data3d<DataType>::cnt = 0;
 template<class DataType> data3d<DataType>::data3d(const data3d< DataType >& obj) : p(NULL) {
