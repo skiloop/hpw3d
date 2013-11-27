@@ -6,8 +6,8 @@ CC=gcc
 # MATH lib
 LIB= -lm
 # CFlags and CXXFlags
-CXXFLAGS=-Wl,--hash-style=sysv -MMD -Wall -Wno-sign-compare
-CFLAGS=-Wl,--hash-style=sysv -MMD -Wall -Wno-sign-compare
+CXXFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 # CXXFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 # CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 
@@ -20,7 +20,7 @@ CXXFLAGS+=-O3
 CFLAGS+=-O3
 
 #Add DENSITY
-# CXXFLAGS+=-DWITH_DENSITY
+#CXXFLAGS+=-DWITH_DENSITY
 
 # matlab path 
 MATPATH=/opt/Matlab/R2011a# for local server
