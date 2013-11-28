@@ -1008,7 +1008,7 @@ void fdtd::printParameters() {
     cout << "Da=" << Da << endl;
     cout << "De=" << De << endl;
 #endif
-    cout << endl << "TIme step = " << dt << endl;
+    cout << endl << "Time step = " << dt << endl;
     cout << endl << "Number of steps = " << totalTimeSteps << endl;
     cout << endl << "Total Simulation time = " << totalTimeSteps * dt << " Seconds" << endl;
 }
