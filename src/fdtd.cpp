@@ -39,7 +39,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial, unsigned _neGrid)
-: totalTimeSteps(_totalTimeSteps), mMaxIndex(_imax,_jmax,_kmax)
+: totalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWidth(pmlw)
@@ -55,7 +55,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial)
-: totalTimeSteps(_totalTimeSteps),  mMaxIndex(_imax,_jmax,_kmax)
+: totalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWidth(pmlw)
@@ -605,6 +605,7 @@ void fdtd::setUp() {
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
         t0 = 4.5 * tw;
+        t0 = 3.0 * tw;
     } else {
         t0 = tw;
     }
@@ -667,17 +668,18 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MyDataF sigmaMax = 1.0;
+    MyDataF sigmaMax = 1.4;
     MyDataF kappaMax = 15;
-    MyDataF alphaMax = 0.24;
-    int pmlOrder = 4;
+    MyDataF alphaMax = 0.0;
+    int pmlOrder = 3;
+    MyDataF alphaOrder = 1;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML initials
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     pml.setCPMLRegion(pmlWidth);
     pml.createCPMLArrays(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z);
-    pml.initCoefficientArrays(pmlOrder, sigmaMax, kappaMax, alphaMax, epsR, dt, dx, dy, dz,
+    pml.initCoefficientArrays(pmlOrder, alphaOrder, sigmaMax, kappaMax, alphaMax, epsR, dt, dx, dy, dz,
             Ceyhz, Cezhy, Chyez, Chzey,
             Cexhz, Cezhx, Chxez, Chzex,
             Ceyhx, Cexhy, Chyex, Chxey);
