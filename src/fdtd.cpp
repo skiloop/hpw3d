@@ -668,8 +668,8 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MyDataF sigmaMax = 1.4;
-    MyDataF kappaMax = 15;
+    MyDataF sigmaMax = 1;
+    MyDataF kappaMax = 1;
     MyDataF alphaMax = 0.0;
     int pmlOrder = 3;
     MyDataF alphaOrder = 1;
