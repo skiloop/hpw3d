@@ -604,8 +604,7 @@ void fdtd::setUp() {
 
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
-        t0 = 4.5 * tw;
-        t0 = 3.0 * tw;
+        t0 = 4.5 * tw;        ;
     } else {
         t0 = tw;
     }

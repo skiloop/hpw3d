@@ -26,8 +26,7 @@ int main(int argc, char*argv[]) {
     T = 1 / checker.frequency;
     switch (checker.waveType) {
         case GAUSSIAN_WAVE:
-            tw = 1.5174271293851462339 / M_PI / checker.frequency;            
-			tw = T;
+            tw = 1.5174271293851462339 / M_PI / checker.frequency;            			
             break;
         case DERIVATIVE_GAUSSIAN_WAVE:
             break;
