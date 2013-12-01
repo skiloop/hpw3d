@@ -605,6 +605,7 @@ void fdtd::setUp() {
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
         t0 = 4.5 * tw;        ;
+        t0 = 3.0 * tw;        ;
     } else {
         t0 = tw;
     }
@@ -667,12 +668,18 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MyDataF sigmaMax = 1;
-    MyDataF kappaMax = 1;
+    MyDataF sigmaMax = 0.55;
+    MyDataF kappaMax = 0.1;
     MyDataF alphaMax = 0.0;
     int pmlOrder = 3;
     MyDataF alphaOrder = 1;
 
+    cout<<"alphaMax="<<alphaMax<<endl;
+    cout<<"kappaMax="<<kappaMax<<endl;
+    cout<<"sigmaMax="<<sigmaMax<<endl;
+    cout<<"alphaOrder="<<alphaOrder<<endl;
+    cout<<"pmlOrder="<<pmlOrder<<endl;
+    
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML initials
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
