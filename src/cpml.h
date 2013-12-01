@@ -831,7 +831,7 @@ void cpml<T>::initCoefficientArraysXN(short pmlOrder, T alphaOrder, T sigmaMax, 
 }
 
 template<class T>
-void cpml<T>::initCoefficientArraysXP(short pmlOrder, TalphaOrder, T sigmaMax, T kappaMax, T alphaMax, T epsR, T dt, T dx,
+void cpml<T>::initCoefficientArraysXP(short pmlOrder, T alphaOrder, T sigmaMax, T kappaMax, T alphaMax, T epsR, T dt, T dx,
         data3d<T>&Ceyhz, data3d<T>&Cezhy, data3d<T>&Chyez, data3d<T>&Chzey) {
     if (is_cpml_xp) {
         T sigmaOpt = sigmaMax * (pmlOrder + 1) / (150 * M_PI * dx * sqrt(epsR));
