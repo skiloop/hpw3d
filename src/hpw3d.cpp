@@ -43,8 +43,7 @@ int main(int argc, char*argv[]) {
     thread_count = checker.threadCount;
 #endif
     unsigned xlen, ylen, zlen, tlen;
-    unsigned minTimeLen = 2000;
-
+    
     //    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
     MyDataF dt = dx / 2 / C;
     xlen = (unsigned) (T * checker.xZoneLen * C / dx);
@@ -56,9 +55,6 @@ int main(int argc, char*argv[]) {
         tlen = (unsigned) (tw * checker.tZoneLen / dt);
     }
 
-    if (tlen < minTimeLen) {
-        tlen = minTimeLen;
-    }
     xlen += 2 * checker.pmlSize;
     ylen += 2 * checker.pmlSize;
     zlen += 2 * checker.pmlSize;
