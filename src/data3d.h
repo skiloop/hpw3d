@@ -37,21 +37,22 @@ public:
     DataType*** p;
 
 public:
-    static unsigned int cnt;
-    static std::string tail;
+    static const std::string OUTPUT_FILE_NAME_TAIL;
+
 #ifdef MATLAB_SIMULATION
+    static unsigned int mMatlabFigureCount;
     static Engine *ep;
 private:
     static bool isMatlabEngineStarted;
 #endif
 private:
-    std::string name; // name for this to save file
+    std::string mName; // name for this to save file
 
 private:
-    int Number;
 #ifdef MATLAB_SIMULATION
+    int mMatlabFigureIndex;
     mxArray *num;
-    mxArray *MyArray;
+    mxArray *mMatlabMXArray;
 #endif
 public:
 
@@ -65,7 +66,11 @@ public:
      * when cannot create space for p and p[i],exit program;
      */
     data3d(unsigned int cx, unsigned int cy, unsigned cz)
-    : nx(cx), ny(cy), nz(cz), p(NULL) {
+    : nx(cx), ny(cy), nz(cz), p(NULL)
+#ifdef MATLAB_SIMULATION
+    , mMatlabFigureIndex(-1)
+#endif
+    {
         unsigned i, j;
         if (cx == 0 || cy == 0 || cz == 0) {
             return;
@@ -95,7 +100,11 @@ public:
      *  @c nz = 0
      *  @c p=NULL
      */
-    data3d() : nx(0), ny(0), nz(0), p(NULL) {
+    data3d() : nx(0), ny(0), nz(0), p(NULL)
+#ifdef MATLAB_SIMULATION
+    , mMatlabFigureIndex(-1)
+#endif
+    {
     };
 
     /**
@@ -249,7 +258,7 @@ public:
      * @param sn
      */
     void setName(const std::string &sn) {
-        name = sn;
+        mName = sn;
     }
 
     /**
@@ -257,7 +266,7 @@ public:
      * @return @c name
      */
     string getName() {
-        return name;
+        return mName;
     }
 
 public:
