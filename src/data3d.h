@@ -43,7 +43,7 @@ public:
     static unsigned int mMatlabFigureCount;
     static Engine *ep;
 private:
-    static bool isMatlabEngineStarted;
+    static bool mIsMatlabEngineStarted;
 #endif
 private:
     std::string mName; // name for this to save file
@@ -280,6 +280,14 @@ public:
     bool isNaN(unsigned i, unsigned j, unsigned k);
     bool isInf(unsigned i, unsigned j, unsigned k);
     bool isValid(unsigned i, unsigned j, unsigned k);
+    private:
+    static void setMatlabEngineStarted(bool MatlabEngineStarted) {
+        mIsMatlabEngineStarted = MatlabEngineStarted;
+    }
+    public:
+    static bool isMatlabEngineStarted() {
+        return mIsMatlabEngineStarted;
+    }
 
 };
 

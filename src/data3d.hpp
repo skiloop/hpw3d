@@ -15,11 +15,14 @@ using namespace std;
 
 #ifdef MATLAB_SIMULATION
 template<class DataType> Engine* data3d<DataType>::ep = NULL;
-template<class DataType> bool data3d<DataType>::isMatlabEngineStarted = false;
+template<class DataType> bool data3d<DataType>::mIsMatlabEngineStarted = false;
 #endif
 
 template<class DataType> const string data3d<DataType>::OUTPUT_FILE_NAME_TAIL = ".dat";
+
+#ifdef MATLAB_SIMULATION
 template<class DataType> unsigned int data3d<DataType>::mMatlabFigureCount = 0;
+#endif
 
 template<class DataType> data3d<DataType>::data3d(const data3d< DataType >& obj) : p(NULL) {
 #ifdef MATLAB_SIMULATION
@@ -358,7 +361,7 @@ template<class DataType>
 int data3d<DataType>::initMatlabEngine() {
 
 #ifdef MATLAB_SIMULATION
-    if (!isMatlabEngineStarted) {
+    if (!mIsMatlabEngineStarted) {
         if (ep != NULL) {
             return -2;
         }
@@ -366,7 +369,7 @@ int data3d<DataType>::initMatlabEngine() {
             cerr << "Can't start matlab engine!" << endl;
             return -1;
         }
-        isMatlabEngineStarted = true;
+        setMatlabEngineStarted(true);
     }
 #endif
     return 0;
@@ -376,10 +379,10 @@ int data3d<DataType>::initMatlabEngine() {
 template<class DataType>
 int data3d<DataType>::closeMatlabEngine() {
 #ifdef MATLAB_SIMULATION
-    if (isMatlabEngineStarted) {
+    if (mIsMatlabEngineStarted) {
         engEvalString(ep, "close all;clear;");
         engClose(ep);
-        isMatlabEngineStarted = false;
+        setMatlabEngineStarted(false);
     }
 #endif
     return 0;
@@ -398,7 +401,7 @@ int data3d<DataType>::create3DArray(const data3d< DataType > &stru, DataType ini
 template<class DataType>
 void data3d<DataType>::clearMatlabEngineArray() {
 #ifdef MATLAB_SIMULATION
-    if (isMatlabEngineStarted && mMatlabFigureIndex > 0) {
+    if (mIsMatlabEngineStarted && mMatlabFigureIndex > 0) {
         mxDestroyArray(mMatlabMXArray);
         mxDestroyArray(num);
     }
@@ -408,7 +411,7 @@ void data3d<DataType>::clearMatlabEngineArray() {
 template<class DataType>
 void data3d<DataType>::plotArrays() {
 #ifdef MATLAB_SIMULATION
-    if (isMatlabEngineStarted) {
+    if (mIsMatlabEngineStarted) {
         DataType *pData = (DataType*) malloc(nx * ny * sizeof (DataType));
         for (unsigned i = 0; i < nx; i++) {
             for (unsigned j = 0; j < ny; j++) {
@@ -429,7 +432,7 @@ void data3d<DataType>::plotArrays() {
 template<class DataType>
 void data3d<DataType>::preparePlotting() {
 #ifdef MATLAB_SIMULATION
-    if (isMatlabEngineStarted) {
+    if (mIsMatlabEngineStarted) {
         string filename = mName + OUTPUT_FILE_NAME_TAIL;
         mMatlabFigureIndex = ++mMatlabFigureCount;
 
