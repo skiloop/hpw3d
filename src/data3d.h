@@ -282,11 +282,17 @@ public:
     bool isValid(unsigned i, unsigned j, unsigned k);
     private:
     static void setMatlabEngineStarted(bool MatlabEngineStarted) {
+#ifdef MATLAB_SIMULATION
         mIsMatlabEngineStarted = MatlabEngineStarted;
+#endif
     }
     public:
     static bool isMatlabEngineStarted() {
+#ifdef MATLAB_SIMULATION
         return mIsMatlabEngineStarted;
+#else
+		return false;
+#endif
     }
 
 };

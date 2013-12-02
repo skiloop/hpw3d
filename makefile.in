@@ -36,8 +36,8 @@ MATLIB=$(MATLINK) -L$(MATPATH)/bin/glnxa64 -lmx -leng
 MATINC=-I$(MATPATH)/extern/include
 
 # Matlab Engine
- CXXFLAGS+=-DMATLAB_SIMULATION $(MATINC)
- LIB+=$(MATLIB)
+# CXXFLAGS+=-DMATLAB_SIMULATION $(MATINC)
+# LIB+=$(MATLIB)
 
 # enable OpenMP
 CXXFLAGS+=-fopenmp
