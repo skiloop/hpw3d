@@ -1297,19 +1297,21 @@ void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF 
 #ifdef MATLAB_SIMULATION
 
 int fdtd::initMatlabSimulation() {
-    if (Ez.InitMatlabEngine() < 0)return -1;
-    Ez.InitPlot();
+    if (Ez.initMatlabEngine() < 0){
+        return -1;
+    }
+    Ez.preparePlotting();
     return 0;
 
 }
 
 void fdtd::doMatlabSimulation() {
-    Ez.PlotArrays();
+    Ez.plotArrays();
 }
 
 void fdtd::finishMatlabSimulation() {
-    Ez.ClearSim();
-    Ez.CloseEngine();
+    Ez.clearMatlabEngineArray();
+    Ez.closeMatlabEngine();
 }
 #endif
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

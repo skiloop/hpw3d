@@ -30,14 +30,14 @@ MATPATH=/opt/Matlab/R2011a# for local server
 MATLINK=-Wl,-rpath=$(MATPATH)/bin/glnxa64
 
 # Matlab link option
-#MATLIB=$(MATLINK) -L$(MATPATH)/bin/glnxa64 -lmx -leng
+MATLIB=$(MATLINK) -L$(MATPATH)/bin/glnxa64 -lmx -leng
 
 # Matlab link path
 MATINC=-I$(MATPATH)/extern/include
 
 # Matlab Engine
-# CXXFLAGS+=-DMATLAB_SIMULATION $(MATINC)
-# LIB+=$(MATLIB)
+ CXXFLAGS+=-DMATLAB_SIMULATION $(MATINC)
+ LIB+=$(MATLIB)
 
 # enable OpenMP
 CXXFLAGS+=-fopenmp
