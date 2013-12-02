@@ -38,12 +38,11 @@ void checkmax(unsigned &u_2check, unsigned max, unsigned min) {
 fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial, unsigned _neGrid)
+        unsigned _m, unsigned _ma, unsigned pmlw, unsigned _neGrid)
 : totalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWidth(pmlw)
-, numMaterials(_nmaterial)
 , neGrid(_neGrid)
 , Ne0(DEFAULT_DENSITY_MAX)
 , srcType(SOURCE_GAUSSIAN)
@@ -54,12 +53,11 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned pmlw, unsigned _nmaterial)
+        unsigned _m, unsigned _ma, unsigned pmlw)
 : totalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
 , tw(_tw), dx(_dx), dy(_dy), dz(_dz)
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWidth(pmlw)
-, numMaterials(_nmaterial)
 , srcType(SOURCE_GAUSSIAN)
 , epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
@@ -604,8 +602,10 @@ void fdtd::setUp() {
 
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
-        t0 = 4.5 * tw;        ;
-        t0 = 3.0 * tw;        ;
+        t0 = 4.5 * tw;
+        ;
+        t0 = 3.0 * tw;
+        ;
     } else {
         t0 = tw;
     }
@@ -668,18 +668,18 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MyDataF sigmaMax = 0.55;
-    MyDataF kappaMax = 0.1;
-    MyDataF alphaMax = 0.0;
-    int pmlOrder = 3;
+    MyDataF sigmaMax = 0.601;
+    MyDataF kappaMax = 0.5;
+    MyDataF alphaMax = 0.1;
+    int pmlOrder = 4;
     MyDataF alphaOrder = 1;
 
-    cout<<"alphaMax="<<alphaMax<<endl;
-    cout<<"kappaMax="<<kappaMax<<endl;
-    cout<<"sigmaMax="<<sigmaMax<<endl;
-    cout<<"alphaOrder="<<alphaOrder<<endl;
-    cout<<"pmlOrder="<<pmlOrder<<endl;
-    
+    cout << "alphaMax=" << alphaMax << endl;
+    cout << "kappaMax=" << kappaMax << endl;
+    cout << "sigmaMax=" << sigmaMax << endl;
+    cout << "alphaOrder=" << alphaOrder << endl;
+    cout << "pmlOrder=" << pmlOrder << endl;
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML initials
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

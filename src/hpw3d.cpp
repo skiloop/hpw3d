@@ -26,8 +26,7 @@ int main(int argc, char*argv[]) {
     T = 1 / checker.frequency;
     switch (checker.waveType) {
         case GAUSSIAN_WAVE:
-            tw = 1.5174271293851462339 / M_PI / checker.frequency;            			
-			tw=T;
+            tw = 1.5174271293851462339 / M_PI / checker.frequency;
             break;
         case DERIVATIVE_GAUSSIAN_WAVE:
             break;
@@ -71,9 +70,7 @@ int main(int argc, char*argv[]) {
     cout << "dt=" << dt << endl;
 
 #ifdef WITH_DENSITY
-    int nmaterial = 50;
-    cout << "nmaterial=" << nmaterial << endl;
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize, nmaterial, checker.fluidGridSize);
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,checker.fluidGridSize);
     hpw.SetPlasmaVar(0, 760 * 5.3E9, 760, 0);
 #else
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize);
