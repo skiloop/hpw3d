@@ -603,9 +603,6 @@ void fdtd::setUp() {
     //delay
     if (srcType == fdtd::SOURCE_GAUSSIAN) {
         t0 = 4.5 * tw;
-        ;
-        t0 = 3.0 * tw;
-        ;
     } else {
         t0 = tw;
     }
@@ -753,10 +750,14 @@ void fdtd::compute() {
 
         cout << "Ez at time step " << n << " at (" << capturePosition.x << ", " << capturePosition.y << ", " << capturePosition.z;
         cout << ") :  ";
-        //cout<<Ez.p[capturePosition.x][capturePosition.y][capturePosition.z]<<endl;
+        cout << Ez.p[capturePosition.x][capturePosition.y][capturePosition.z] << '\t';
         cout << Ez.p[mSourceIndex.x][capturePosition.y][mSourceIndex.z] << '\t';
         cout << Ez.p[capturePosition.x][mSourceIndex.y][mSourceIndex.z] << '\t';
-        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][capturePosition.z] << endl;
+        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][capturePosition.z] << '\t';
+        cout << endl;
+        cout << "Source Value:";
+        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
+        cout << endl;
         //cout	<< Ez.p[mSourceIndex.x][mSourceIndex.y+10][mSourceIndex.z] << '\t';
         //cout	<< Ez.p[mSourceIndex.x][mSourceIndex.y+15][mSourceIndex.z] << '\t';
         //cout	<< Ez.p[mSourceIndex.x][mSourceIndex.y+20][mSourceIndex.z] << '\t';
@@ -789,9 +790,9 @@ void fdtd::compute() {
             writeField(n);
             //Ez.save(mSourceIndex.x + 10, 1, n, 1);
             //Ez.save(mSourceIndex.y + 10, 1, n, 2);
-            Ez.save(mSourceIndex.z + 10, 1, n, 3);
-            Ex.save(mSourceIndex.z + 10, 1, n, 3);
-            Ey.save(mSourceIndex.z + 10, 1, n, 3);
+            Ez.save(mMaxIndex.z - pmlWidth - 5, 1, n, 3);
+            Ex.save(mMaxIndex.z - pmlWidth - 5, 1, n, 3);
+            Ey.save(mMaxIndex.z - pmlWidth - 5, 1, n, 3);
             /*
             pml.Psi_exz_zp.setName("psi");
             pml.Psi_exz_zp.save(0, 1, n, 3);
@@ -820,6 +821,7 @@ void fdtd::updateSource(unsigned n) {
         case SOURCE_GAUSSIAN:
             source = amp * -2.0 * ((n * dt - t0) / tw / tw)
                     * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
+            cout << "Gaussian source:" << source << endl;
             break;
         case SOURCE_SINE:
             // sine wave
