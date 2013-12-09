@@ -78,7 +78,7 @@ private:
 
     // grid size corresponding to the number of Ez field components   
     Point mMaxIndex;
-    
+
     //  Specify the Impulsive Source (Differentiated Gaussian) parameters
     MyDataF tw; //pulse width
     MyDataF dt, dx, dy, dz;
@@ -155,12 +155,12 @@ private:
     data3d<MyDataF> Chxh, Chyh, Chzh;
     data3d<MyDataF> Cexhy, Ceyhz, Cezhx, Cexhz, Ceyhx, Cezhy;
     data3d<MyDataF> Chxey, Chyez, Chzex, Chxez, Chyex, Chzey;
-    
+
     void initCoeficients();
 
 #ifdef WITH_DENSITY
-	// neutral gas density in cm^-3
-	static const MyDataF mNeutralGasDensity;
+    // neutral gas density in cm^-3
+    static const MyDataF mNeutralGasDensity;
 
     int niutype;
     //Fine Grid size

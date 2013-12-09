@@ -46,8 +46,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , neGrid(_neGrid)
 , Ne0(DEFAULT_DENSITY_MAX)
 , srcType(SOURCE_GAUSSIAN)
-, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL)
-{
+, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
 #else
 
@@ -60,8 +59,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWidth(pmlw)
 , srcType(SOURCE_GAUSSIAN)
-, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL)
-{
+, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
 }
 #endif
 
@@ -78,7 +76,8 @@ fdtd::~fdtd(void) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef WITH_DENSITY
-const MyDataF fdtd::mNeutralGasDensity=2.44e19;
+const MyDataF fdtd::mNeutralGasDensity = 2.44e19;
+
 void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
     rei = _rei;
     vm = _vm;
@@ -220,7 +219,7 @@ void fdtd::calculateIonizationParameters(int i, int j, int k, MyDataF &va, MyDat
             break;
         case ALI:
         default:
-           Niu_Ali(&vi,&va,Eeff,p);
+            Niu_Ali(&vi, &va, Eeff, p);
     }
     if (Ne.p[i][j][k] < 1) {
         Deff = De;

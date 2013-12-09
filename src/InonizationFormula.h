@@ -52,5 +52,6 @@ void Niu_Kang(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E);
 void Niu_Nikonov(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E, MyDataF P);
 void Niu_MorrowAndLowke(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E, MyDataF N);
 
-void Niu_Ali(MyDataF *pNiu_i,MyDataF *pNiu_a,MyDataF Eeff,MyDataF p);
+void Niu_Ali(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF Eeff, MyDataF p);
+
 #endif
