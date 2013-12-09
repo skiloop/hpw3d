@@ -159,6 +159,8 @@ private:
     void initCoeficients();
 
 #ifdef WITH_DENSITY
+	// neutral gas density in cm^-3
+	static const MyDataF mNeutralGasDensity;
 
     int niutype;
     //Fine Grid size
@@ -240,8 +242,7 @@ private:
     /************************************************************************/
     /* update vi,va and Deff with Density Ne at point (i,j,k)               */
     /************************************************************************/
-    void applyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
-
+    void calculateIonizationParameters(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
 };
 
 

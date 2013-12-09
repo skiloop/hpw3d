@@ -46,7 +46,8 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , neGrid(_neGrid)
 , Ne0(DEFAULT_DENSITY_MAX)
 , srcType(SOURCE_GAUSSIAN)
-, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
+, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL)
+{
 }
 #else
 
@@ -59,7 +60,8 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
 , m(_m), ma(_ma), pmlWidth(pmlw)
 , srcType(SOURCE_GAUSSIAN)
-, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
+, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL)
+{
 }
 #endif
 
@@ -76,7 +78,7 @@ fdtd::~fdtd(void) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef WITH_DENSITY
-
+const MyDataF fdtd::mNeutralGasDensity=2.44e19;
 void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
     rei = _rei;
     vm = _vm;
@@ -196,8 +198,8 @@ void fdtd::interpErms() {
     }
 }
 
-void fdtd::applyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff) {
-    MyDataF Eeff, alpha_t, tau_m, kasi;
+void fdtd::calculateIonizationParameters(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff) {
+    MyDataF Eeff;
     switch (srcType) {
         case SOURCE_GAUSSIAN:
             Eeff = Erms.p[i][j][k] / 100; //convert to V/cm
@@ -208,7 +210,7 @@ void fdtd::applyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff
 
     switch (niutype) {
         case MORROW_AND_LOWKE:
-            Niu_MorrowAndLowke(&vi, &va, Eeff, Ne.p[i][j][k] * 1e6);
+            Niu_MorrowAndLowke(&vi, &va, Eeff, mNeutralGasDensity);
             break;
         case NIKONOV:
             Niu_Nikonov(&vi, &va, Eeff, p);
@@ -218,33 +220,13 @@ void fdtd::applyNiu(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff
             break;
         case ALI:
         default:
-            alpha_t = Eeff / p;
-            if (alpha_t < 30) {
-                if (alpha_t < 1e-12) {
-                    vi = 0;
-                } else if (alpha_t >= 1) {
-                    vi = (1.45 + 0.01 * pow(alpha_t, 1.5))*2.5e7 * exp(-208 / alpha_t) * p;
-                } else {
-                    vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
-                }
-            } else if (alpha_t > 120) {
-                if (alpha_t <= 3000) {
-                    vi = 54.08e6 * pow(alpha_t, 0.5) * exp(-359 / alpha_t) * p;
-                } else {
-                    vi = 5.14e11 * exp(-73 * pow(alpha_t, -0.44)) * p;
-                }
-            } else if (alpha_t > 54) {
-                vi = (1.32 + 0.054 * alpha_t)*1e7 * exp(-208 / alpha_t) * p;
-            } else {
-                vi = (5.0 + 0.19 * alpha_t)*1e7 * exp(-273.8 / alpha_t) * p;
-            }
-            va = 7.6e-4 * pow(alpha_t / (alpha_t + 218), 2) / p;
+           Niu_Ali(&vi,&va,Eeff,p);
     }
     if (Ne.p[i][j][k] < 1) {
         Deff = De;
     } else {
-        tau_m = eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
-        kasi = vi * tau_m;
+        // tau_m = eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
+        MyDataF kasi = vi * eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
         Deff = (kasi * De + Da) / (kasi + 1);
     }
 }
@@ -281,7 +263,7 @@ void fdtd::updateDensity(void) {
                 Nekp1 = Ne_pre.p[i][j][k + 1];
                 Nekm1 = Ne_pre.p[i][j][k - 1];
 
-                applyNiu(i, j, k, va, vi, Deff);
+                calculateIonizationParameters(i, j, k, va, vi, Deff);
 
                 Ne.p[i][j][k] =
                         (
