@@ -39,14 +39,14 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, unsigned _neGrid)
-: totalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
-, tw(_tw), dx(_dx), dy(_dy), dz(_dz)
-, amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
-, m(_m), ma(_ma), pmlWidth(pmlw)
-, neGrid(_neGrid)
+: mTotalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
+, tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
+, mAmplitude(_amp), save_modulus(_savemodulus), mKSource(_ksource)
+, mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
+, mNeGridSize(_neGrid)
 , Ne0(DEFAULT_DENSITY_MAX)
-, srcType(SOURCE_GAUSSIAN)
-, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
+, mSrcType(SOURCE_GAUSSIAN)
+, mEpsilon(NULL), mSigma(NULL), mMu(NULL), CA(NULL), CB(NULL) {
 }
 #else
 
@@ -54,19 +54,19 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw)
-: totalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
-, tw(_tw), dx(_dx), dy(_dy), dz(_dz)
-, amp(_amp), save_modulus(_savemodulus), ksource(_ksource)
-, m(_m), ma(_ma), pmlWidth(pmlw)
-, srcType(SOURCE_GAUSSIAN)
-, epsilon(NULL), sigma(NULL), mu(NULL), CA(NULL), CB(NULL) {
+: mTotalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
+, tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
+, mAmplitude(_amp), save_modulus(_savemodulus), mKSource(_ksource)
+, mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
+, mSrcType(SOURCE_GAUSSIAN)
+, mEpsilon(NULL), mSigma(NULL), mMu(NULL), CA(NULL), CB(NULL) {
 }
 #endif
 
 fdtd::~fdtd(void) {
-    if (epsilon != NULL)delete []epsilon;
-    if (sigma != NULL)delete []sigma;
-    if (mu != NULL)delete[]mu;
+    if (mEpsilon != NULL)delete []mEpsilon;
+    if (mSigma != NULL)delete []mSigma;
+    if (mMu != NULL)delete[]mMu;
     if (CA != NULL)delete[]CA;
     if (CB != NULL)delete[]CB;
 }
@@ -78,21 +78,21 @@ fdtd::~fdtd(void) {
 #ifdef WITH_DENSITY
 const MyDataF fdtd::mNeutralGasDensity = 2.44e19;
 
-void fdtd::SetPlasmaVar(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
-    rei = _rei;
-    vm = _vm;
-    p = _p;
-    niutype = _ftype;
+void fdtd::setPlasmaParam(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
+    mRei = _rei;
+    mNiu_m = _vm;
+    mAirPressure = _p;
+    mNiuType = _ftype;
 }
 
 void fdtd::integerEeff() {
     unsigned i, j, k;
     unsigned io, jo, ko;
     //MyDataF vxIJK,vyIJK;
-    for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
-        for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
-            for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
-                Erms.p[io][jo][ko] = m / e * sqrt(Erms.p[io][jo][ko] / dtf * Nu_c.p[i][j][k] / 2);
+    for (i = mStartIndex.x, io = mStartIndex.x * mNeGridSize; i <= mEndIndex.x; i++, io += mNeGridSize) {
+        for (j = mStartIndex.y, jo = mStartIndex.y * mNeGridSize; j <= mEndIndex.y; j++, jo += mNeGridSize) {
+            for (k = mStartIndex.z, ko = mStartIndex.z * mNeGridSize; k <= mEndIndex.z; k++, ko += mNeGridSize) {
+                Erms.p[io][jo][ko] = mPMLOrder / e * sqrt(Erms.p[io][jo][ko] / mDeltaTimeFluid * Nu_c.p[i][j][k] / 2);
             }
         }
     }
@@ -101,15 +101,15 @@ void fdtd::integerEeff() {
 void fdtd::updateErms(void) {
     unsigned i, j, k;
     unsigned io, jo, ko;
-    switch (srcType) {
+    switch (mSrcType) {
         case SOURCE_GAUSSIAN:
             MyDataF vxIJK, vyIJK;
-            for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
-                for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
-                    for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
+            for (i = mStartIndex.x, io = mStartIndex.x * mNeGridSize; i <= mEndIndex.x; i++, io += mNeGridSize) {
+                for (j = mStartIndex.y, jo = mStartIndex.y * mNeGridSize; j <= mEndIndex.y; j++, jo += mNeGridSize) {
+                    for (k = mStartIndex.z, ko = mStartIndex.z * mNeGridSize; k <= mEndIndex.z; k++, ko += mNeGridSize) {
                         vxIJK = (Vx.p[i - 1][j][k - 1] + Vx.p[i + 1][j][k - 1] + Vx.p[i - 1][j][k + 1] + Vx.p[i + 1][j][k + 1]) / 4;
                         vyIJK = (Vy.p[i][j - 1][k - 1] + Vy.p[i][j + 1][k - 1] + Vy.p[i][j - 1][k + 1] + Vy.p[i][j + 1][k + 1]) / 4;
-                        Erms.p[io][jo][ko] += (Vz.p[i][j][k] * Vz.p[i][j][k] + vxIJK * vxIJK + vyIJK * vyIJK) * dt;
+                        Erms.p[io][jo][ko] += (Vz.p[i][j][k] * Vz.p[i][j][k] + vxIJK * vxIJK + vyIJK * vyIJK) * mDt;
                     }
                 }
             }
@@ -117,9 +117,9 @@ void fdtd::updateErms(void) {
         case SOURCE_SINE:
         default:
             MyDataF exIJK, eyIJK;
-            for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
-                for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
-                    for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
+            for (i = mStartIndex.x, io = mStartIndex.x * mNeGridSize; i <= mEndIndex.x; i++, io += mNeGridSize) {
+                for (j = mStartIndex.y, jo = mStartIndex.y * mNeGridSize; j <= mEndIndex.y; j++, jo += mNeGridSize) {
+                    for (k = mStartIndex.z, ko = mStartIndex.z * mNeGridSize; k <= mEndIndex.z; k++, ko += mNeGridSize) {
                         exIJK = (Ex.p[i - 1][j][k - 1] + Ex.p[i + 1][j][k - 1] + Ex.p[i - 1][j][k + 1] + Ex.p[i + 1][j][k + 1]) / 4;
                         eyIJK = (Ey.p[i][j - 1][k - 1] + Ey.p[i][j + 1][k - 1] + Ey.p[i][j - 1][k + 1] + Ey.p[i][j + 1][k + 1]) / 4;
                         Erms.p[io][jo][ko] = sqrt(Ez.p[i][j][k] * Ez.p[i][j][k] + exIJK * exIJK + eyIJK * eyIJK);
@@ -133,10 +133,10 @@ void fdtd::updateCollisionFrequency() {
     int i, j, k;
     //unsigned io, jo, ko;
     MyDataF EeffDivP;
-    MyDataF DivParam = 100 * p * 133.3;
-    MyDataF C1 = 5.20e8 * p;
-    MyDataF C2 = 2.93e8 * p;
-    MyDataF C3 = 3.24e8 * p;
+    MyDataF DivParam = 100 * mAirPressure * 133.3;
+    MyDataF C1 = 5.20e8 * mAirPressure;
+    MyDataF C2 = 2.93e8 * mAirPressure;
+    MyDataF C3 = 3.24e8 * mAirPressure;
     //    for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
     //        for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
     //            for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
@@ -176,14 +176,14 @@ void fdtd::interpErms() {
     unsigned i, j, k;
     unsigned im, jm, km;
     unsigned iu, ju, ku;
-    unsigned ngred = neGrid * neGrid*neGrid;
-    for (is = mStartIndex.x, in = mStartIndex.x + neGrid; is < mEndIndex.x; is = in, in += neGrid) {
-        for (js = mStartIndex.y, jn = mStartIndex.y + neGrid; js < mEndIndex.y; js = jn, jn += neGrid) {
-            for (ks = mStartIndex.z, kn = mStartIndex.z + neGrid; ks < mEndIndex.z; ks = kn, kn += neGrid) {
+    unsigned ngred = mNeGridSize * mNeGridSize*mNeGridSize;
+    for (is = mStartIndex.x, in = mStartIndex.x + mNeGridSize; is < mEndIndex.x; is = in, in += mNeGridSize) {
+        for (js = mStartIndex.y, jn = mStartIndex.y + mNeGridSize; js < mEndIndex.y; js = jn, jn += mNeGridSize) {
+            for (ks = mStartIndex.z, kn = mStartIndex.z + mNeGridSize; ks < mEndIndex.z; ks = kn, kn += mNeGridSize) {
                 // integrate Erms
-                for (i = is, im = 0, iu = neGrid; i < in; i++, im++, iu--) {
-                    for (j = js, jm = 0, ju = neGrid; j < jn; j++, jm++, ju--) {
-                        for (k = ks, km = 0, ku = neGrid; k < kn; k++, km++, ku--) {
+                for (i = is, im = 0, iu = mNeGridSize; i < in; i++, im++, iu--) {
+                    for (j = js, jm = 0, ju = mNeGridSize; j < jn; j++, jm++, ju--) {
+                        for (k = ks, km = 0, ku = mNeGridSize; k < kn; k++, km++, ku--) {
                             //if (im == 0 && jm == 0 && km == 0)continue;
                             Erms.p[i][j][k] = (iu * ju * ku * Erms.p[is][js][ks] + im * ju * ku * Erms.p[in][js][ks] +
                                     im * jm * ku * Erms.p[in][jn][ks] + im * jm * km * Erms.p[in][jn][kn] +
@@ -199,34 +199,34 @@ void fdtd::interpErms() {
 
 void fdtd::calculateIonizationParameters(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff) {
     MyDataF Eeff;
-    switch (srcType) {
+    switch (mSrcType) {
         case SOURCE_GAUSSIAN:
             Eeff = Erms.p[i][j][k] / 100; //convert to V/cm
             break;
         default:
-            Eeff = Erms.p[i][j][k] / 100 * pow(1 / (1 + omega * omega / vm / vm), 0.5);
+            Eeff = Erms.p[i][j][k] / 100 * pow(1 / (1 + mOmega * mOmega / mNiu_m / mNiu_m), 0.5);
     }
 
-    switch (niutype) {
+    switch (mNiuType) {
         case MORROW_AND_LOWKE:
             Niu_MorrowAndLowke(&vi, &va, Eeff, mNeutralGasDensity);
             break;
         case NIKONOV:
-            Niu_Nikonov(&vi, &va, Eeff, p);
+            Niu_Nikonov(&vi, &va, Eeff, mAirPressure);
             break;
         case KANG:
             Niu_Kang(&vi, &va, Eeff);
             break;
         case ALI:
         default:
-            Niu_Ali(&vi, &va, Eeff, p);
+            Niu_Ali(&vi, &va, Eeff, mAirPressure);
     }
     if (Ne.p[i][j][k] < 1) {
-        Deff = De;
+        Deff = mDe;
     } else {
         // tau_m = eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
-        MyDataF kasi = vi * eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
-        Deff = (kasi * De + Da) / (kasi + 1);
+        MyDataF kasi = vi * eps_0 / (e * Ne.p[i][j][k] * (mMu_e + mMu_i));
+        Deff = (kasi * mDe + mDa) / (kasi + 1);
     }
 }
 
@@ -264,9 +264,9 @@ void fdtd::updateDensity(void) {
 
                 calculateIonizationParameters(i, j, k, va, vi, Deff);
 
-                Ne.p[i][j][k] = (Ne_ijk * (1 + dtf * vi) + Deff * dtf *
+                Ne.p[i][j][k] = (Ne_ijk * (1 + mDeltaTimeFluid * vi) + Deff * mDeltaTimeFluid *
                         (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk)
-                        / dsf / dsf / dsf) / (1 + dtf * (va + rei * Ne_ijk));
+                        / mDeltaSizeFluid / mDeltaSizeFluid / mDeltaSizeFluid) / (1 + mDeltaTimeFluid * (va + mRei * Ne_ijk));
                 if (vi > maxvi) {
                     maxvi = vi;
                     ci = i;
@@ -338,9 +338,9 @@ void fdtd::createCoeff() {
     Ceyvy.create3DArray(Ey, 0.0);
     Cezvz.create3DArray(Ez, 0.0);
     // beta
-    beta.create3DArray(Ne, 0.0);
+    Beta.create3DArray(Ne, 0.0);
     // velocity coefficients
-    if (srcType == fdtd::SOURCE_GAUSSIAN) {
+    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
         Cvxex_guassian.create3DArray(Vx, 0.0);
         Cvyey_guassian.create3DArray(Vy, 0.0);
         Cvzez_guassian.create3DArray(Vz, 0.0);
@@ -353,17 +353,17 @@ void fdtd::initCoeff() {
     // Velocity Coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    a = vm * dt / 2;
-    gamma = 1 + a;
-    alpha = (1 - a) / gamma;
-    Cvxex = Cvyey = Cvzez = e * dt / 2 / me / gamma;
-    Coeff_velocity = half_e * dt / me;
+    mA = mNiu_m * mDt / 2;
+    mGamma = 1 + mA;
+    mAlpha = (1 - mA) / mGamma;
+    Cvxex = Cvyey = Cvzez = e * mDt / 2 / me / mGamma;
+    Coeff_velocity = mHalf_e * mDt / me;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // update collision frequency
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if (srcType == fdtd::SOURCE_GAUSSIAN) {
-        Nu_c.resetArray(vm);
+    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+        Nu_c.resetArray(mNiu_m);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -381,24 +381,23 @@ void fdtd::updateCoeff() {
     //electricity coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     int i, j, k;
-    unsigned im, jm, km;
-    MyDataF tmp = eMDtDiv2DivEps0 * (1 + alpha);
+    unsigned im, jm = 0, km;
+    MyDataF tmp = eMDtDiv2DivEps0 * (1 + mAlpha);
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif    
-    for (j = 0; j < Ex.ny; j++) {
-        jm = j*neGrid;
-        for (i = 0, im = halfNeGrid; i < Ex.nx; i++, im += neGrid) {
-            for (k = 0, km = halfNeGrid; k < Ex.nz; k++, km += neGrid) {
-                MyDataF kappa = (1 + beta.p[im][jm][km]);
-                Cexe.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+    for (j = 0; j < Ex.ny; j++, jm += mNeGridSize) {
+        for (i = 0, im = mHalfNeGridSize; i < Ex.nx; i++, im += mNeGridSize) {
+            for (k = 0, km = mHalfNeGridSize; k < Ex.nz; k++, km += mNeGridSize) {
+                MyDataF kappa = (1 + Beta.p[im][jm][km]);
+                Cexe.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cexhy.p[i][j][k] = -dtDivEps0DivDz / kappa;
                 Cexhz.p[i][j][k] = dtDivEps0DivDy / kappa;
-                if (srcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = half_dt * Nu_c.p[im][jm][km];
-                    MyDataF gamma_t = 1 + a;
-                    MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma_t);
-                    Cvxex_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
+                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = mHalfDelta_t * Nu_c.p[im][jm][km];
+                    MyDataF gamma = 1 + a;
+                    MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma);
+                    Cvxex_guassian.p[i][j][k] = Coeff_velocity / gamma;
                     Cexvx.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
                 } else {
                     Cexvx.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
@@ -410,15 +409,15 @@ void fdtd::updateCoeff() {
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif    
     for (i = 0; i < Ey.nx; i++) {
-        im = i*neGrid;
-        for (j = 0, jm = halfNeGrid; j < Ey.ny; j++, jm += neGrid) {
-            for (k = 0, km = halfNeGrid; k < Ey.nz; k++, km += neGrid) {
-                MyDataF kappa = (1 + beta.p[im][jm][km]);
-                Ceye.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+        im = i*mNeGridSize;
+        for (j = 0, jm = mHalfNeGridSize; j < Ey.ny; j++, jm += mNeGridSize) {
+            for (k = 0, km = mHalfNeGridSize; k < Ey.nz; k++, km += mNeGridSize) {
+                MyDataF kappa = (1 + Beta.p[im][jm][km]);
+                Ceye.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Ceyhx.p[i][j][k] = dtDivEps0DivDz / kappa;
                 Ceyhz.p[i][j][k] = -dtDivEps0DivDx / kappa;
-                if (srcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = half_dt * Nu_c.p[im][jm][km];
+                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = mHalfDelta_t * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
                     MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma_t);
                     Cvyey_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
@@ -433,15 +432,15 @@ void fdtd::updateCoeff() {
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif   
     for (i = 0; i < Ez.nx; i++) {
-        im = i*neGrid;
-        for (j = 0, jm = 0; j < Ez.ny; j++, jm += neGrid) {
-            for (k = 0, km = 0; k < Ez.nz; k++, km += neGrid) {
-                MyDataF kappa = (1 + beta.p[im][jm][km]);
-                Ceze.p[i][j][k] = (1 - beta.p[im][jm][km]) / kappa;
+        im = i*mNeGridSize;
+        for (j = 0, jm = 0; j < Ez.ny; j++, jm += mNeGridSize) {
+            for (k = 0, km = 0; k < Ez.nz; k++, km += mNeGridSize) {
+                MyDataF kappa = (1 + Beta.p[im][jm][km]);
+                Ceze.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cezhy.p[i][j][k] = dtDivEps0DivDx / kappa;
                 Cezhx.p[i][j][k] = -dtDivEps0DivDy / kappa;
-                if (srcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = half_dt * Nu_c.p[im][jm][km];
+                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = mHalfDelta_t * Nu_c.p[im][jm][km];
                     MyDataF gamma_t = 1 + a;
                     MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma_t);
                     Cvzez_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
@@ -455,18 +454,18 @@ void fdtd::updateCoeff() {
 }
 
 void fdtd::updateBeta() {
-    Point start(mStartIndex.x*neGrid, mStartIndex.y*neGrid, mStartIndex.z * neGrid);
-    Point end(mEndIndex.x*neGrid, mEndIndex.y*neGrid, mEndIndex.z * neGrid);
+    Point start(mStartIndex.x*mNeGridSize, mStartIndex.y*mNeGridSize, mStartIndex.z * mNeGridSize);
+    Point end(mEndIndex.x*mNeGridSize, mEndIndex.y*mNeGridSize, mEndIndex.z * mNeGridSize);
     MyDataF temp = e2Dt2Div4DivEps0DivMe;
-    if (srcType != fdtd::SOURCE_GAUSSIAN) {
-        temp = temp / gamma;
+    if (mSrcType != fdtd::SOURCE_GAUSSIAN) {
+        temp = temp / mGamma;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)  //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
         for (int i = start.x; i < end.x; i++) {
             for (unsigned j = start.y; j < end.y; j++) {
                 for (unsigned k = start.z; k < end.z; k++) {
-                    beta.p[i][j][k] = temp * Ne.p[i][j][k];
+                    Beta.p[i][j][k] = temp * Ne.p[i][j][k];
                 }
             }
         }
@@ -477,7 +476,7 @@ void fdtd::updateBeta() {
         for (int i = start.x; i < end.x; i++) {
             for (unsigned j = start.y; j < end.y; j++) {
                 for (unsigned k = start.z; k < end.z; k++) {
-                    beta.p[i][j][k] = temp / (1 + half_dt * Nu_c.p[i][j][k]) * Ne.p[i][j][k];
+                    Beta.p[i][j][k] = temp / (1 + mHalfDelta_t * Nu_c.p[i][j][k]) * Ne.p[i][j][k];
                 }
             }
         }
@@ -485,8 +484,8 @@ void fdtd::updateBeta() {
 }
 
 void fdtd::initDensity() {
-    MyDataF tmp = 2 * pow(4 * dx, 2);
-    Point srcPos(mSourceIndex.x*neGrid, mSourceIndex.y*neGrid, mSourceIndex.z*neGrid);
+    MyDataF tmp = 2 * pow(4 * mDx, 2);
+    Point srcPos(mSourceIndex.x*mNeGridSize, mSourceIndex.y*mNeGridSize, mSourceIndex.z * mNeGridSize);
 
     for (int i = 0; i < Ne.nx; i++) {
         for (int j = 0; j < Ne.ny; j++) {
@@ -495,16 +494,16 @@ void fdtd::initDensity() {
                 MyDataF sx, sy, sz;
                 MyDataF px, py, pz;
                 MyDataF ea;
-                sx = (i - (int)srcPos.x) * dx;
-                sy = (j - (int)srcPos.y) * dy;
-                sz = (k - (int)srcPos.z) * dz;
+                sx = (i - (int) srcPos.x) * mDx;
+                sy = (j - (int) srcPos.y) * mDy;
+                sz = (k - (int) srcPos.z) * mDz;
                 px = sx*sx;
                 py = sy*sy;
                 pz = sz*sz;
                 ea = exp(-(px + py + pz) / tmp);
                 Ne.p[i][j][k] = Ne0*ea;
 #else
-                Ne.p[i][j][k] = Ne0 * exp(-(pow((i -  (int)srcPos.x) * dx, 2) + pow((j -  (int)srcPos.y) * dy, 2) + pow((k -  (int)srcPos.z) * dz, 2)) / tmp);
+                Ne.p[i][j][k] = Ne0 * exp(-(pow((i - (int) srcPos.x) * mDx, 2) + pow((j - (int) srcPos.y) * mDy, 2) + pow((k - (int) srcPos.z) * mDz, 2)) / tmp);
 #endif
             }
         }
@@ -512,7 +511,7 @@ void fdtd::initDensity() {
 }
 #endif
 
-void fdtd::initialize() {
+void fdtd::createFieldArray() {
     // initial PML
     //    pml.InitialMuEps();
     //    pml.Initial(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z, pmlWidth);
@@ -567,14 +566,14 @@ void fdtd::initialize() {
 
 #if(DEBUG>=3)
     cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << " neGrid = " << neGrid << endl;
+    cout << " neGrid = " << mNeGridSize << endl;
 #endif
-    Ne.create3DArray((mMaxIndex.x + 1) * neGrid, (mMaxIndex.y + 1) * neGrid, (mMaxIndex.z + 1) * neGrid, Ne0);
+    Ne.create3DArray((mMaxIndex.x + 1) * mNeGridSize, (mMaxIndex.y + 1) * mNeGridSize, (mMaxIndex.z + 1) * mNeGridSize, Ne0);
     Erms.create3DArray(Ne, 0.0);
     Ne_pre.create3DArray(Ne, 0.0);
 
     // Gaussian need niu_c from previous step
-    if (srcType == fdtd::SOURCE_GAUSSIAN) {
+    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
         Nu_c.create3DArray(Ne, 0.0);
         Nu_c.setName("nu_c");
     }
@@ -591,10 +590,10 @@ void fdtd::setUp() {
     //Time step
     //    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
     //            1.0 / (dz * dz)));
-    dt = dx / 2 / C;
+    mDt = mDx / 2 / C;
 
     //delay
-    if (srcType == fdtd::SOURCE_GAUSSIAN) {
+    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
         t0 = 4.5 * tw;
     } else {
         t0 = tw;
@@ -603,46 +602,46 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //temporary variables that often used
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-    dtDivEps0DivDxyz = dt / eps_0 / dx / dy / dz;
+    dtDivEps0DivDxyz = mDt / eps_0 / mDx / mDy / mDz;
 #ifdef WITH_DENSITY
-    dsf = dx / neGrid;
-    half_dt = dt / 2;
-    half_e = e / 2;
-    dtDivEps0DivDx = dt / eps_0 / dx;
-    dtDivEps0DivDy = dt / eps_0 / dy;
-    dtDivEps0DivDz = dt / eps_0 / dz;
-    e2Dt2Div4DivEps0DivMe = 0.25 * e * e * dt * dt / me / eps_0;
-    eMDtDiv2DivEps0 = half_e * dt / eps_0;
-    halfNeGrid = neGrid / 2;
+    mDeltaSizeFluid = mDx / mNeGridSize;
+    mHalfDelta_t = mDt / 2;
+    mHalf_e = e / 2;
+    dtDivEps0DivDx = mDt / eps_0 / mDx;
+    dtDivEps0DivDy = mDt / eps_0 / mDy;
+    dtDivEps0DivDz = mDt / eps_0 / mDz;
+    e2Dt2Div4DivEps0DivMe = 0.25 * e * e * mDt * mDt / me / eps_0;
+    eMDtDiv2DivEps0 = mHalf_e * mDt / eps_0;
+    mHalfNeGridSize = mNeGridSize / 2;
 #endif
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // fluid variables
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef WITH_DENSITY	
-    mu_e = e / me / vm; //3.7e-2;
-    mu_i = mu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
-    De = mu_e * 2 * 1.602e-19 / e; //
-    Da = mu_i * 2 * 1.602e-19 / e; //
-    MyDataF Dmax = De > Da ? De : Da;
+    mMu_e = e / me / mNiu_m; //3.7e-2;
+    mMu_i = mMu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
+    mDe = mMu_e * 2 * 1.602e-19 / e; //
+    mDa = mMu_i * 2 * 1.602e-19 / e; //
+    MyDataF Dmax = mDe > mDa ? mDe : mDa;
     //Fine Time Step Size
-    dtf = 0.05 * dsf * dsf / 2 / Dmax;
-    neSkipStep = dtf / dt;
+    mDeltaTimeFluid = 0.05 * mDeltaSizeFluid * mDeltaSizeFluid / 2 / Dmax;
+    mNeSkipStep = mDeltaTimeFluid / mDt;
 
 
-    cout << "neSkipStep=" << neSkipStep << endl;
-    cout << tw / dt / neSkipStep << endl;
+    cout << "neSkipStep=" << mNeSkipStep << endl;
+    cout << tw / mDt / mNeSkipStep << endl;
     //exit(0);
 #endif
     //  Specify the dipole size 
-    mStartIndex.setValue(pmlWidth, pmlWidth, pmlWidth);
-    mEndIndex.setValue(mMaxIndex.x - pmlWidth, mMaxIndex.y - pmlWidth, mMaxIndex.z - pmlWidth);
+    mStartIndex.setValue(mPMLWidth, mPMLWidth, mPMLWidth);
+    mEndIndex.setValue(mMaxIndex.x - mPMLWidth, mMaxIndex.y - mPMLWidth, mMaxIndex.z - mPMLWidth);
 
     // source position    
 #ifdef DEBUG
     mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2, mMaxIndex.z / 2);
 #else
-    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y - pmlWidth - 35, mMaxIndex.z / 2);
+    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y - mPMLWidth - 35, mMaxIndex.z / 2);
 #endif    
 
     checkmax(mSourceIndex.x, 1, mMaxIndex.x);
@@ -677,9 +676,9 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML initials
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    pml.setCPMLRegion(pmlWidth);
+    pml.setCPMLRegion(mPMLWidth);
     pml.createCPMLArrays(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z);
-    pml.initCoefficientArrays(pmlOrder, alphaOrder, sigmaMax, kappaMax, alphaMax, epsR, dt, dx, dy, dz,
+    pml.initCoefficientArrays(pmlOrder, alphaOrder, sigmaMax, kappaMax, alphaMax, epsR, mDt, mDx, mDy, mDz,
             Ceyhz, Cezhy, Chyez, Chzey,
             Cexhz, Cezhx, Chxez, Chzex,
             Ceyhx, Cexhy, Chyex, Chxey);
@@ -748,7 +747,7 @@ void fdtd::compute() {
         return;
     }
 #endif
-    for (n = 1; n <= totalTimeSteps; ++n) {
+    for (n = 1; n <= mTotalTimeSteps; ++n) {
 
         cout << "Ez at time step " << n << " at (" << capturePosition.x << ", " << capturePosition.y << ", " << capturePosition.z;
         cout << ") :  ";
@@ -780,9 +779,9 @@ void fdtd::compute() {
 
 #ifdef WITH_DENSITY
         updateErms();
-        if (n % neSkipStep == 0) {
+        if (n % mNeSkipStep == 0) {
             interpErms();
-            if (srcType == fdtd::SOURCE_GAUSSIAN)
+            if (mSrcType == fdtd::SOURCE_GAUSSIAN)
                 updateCollisionFrequency();
             updateDensity();
             updateCoeff();
@@ -792,9 +791,9 @@ void fdtd::compute() {
             writeField(n);
             //Ez.save(mSourceIndex.x + 10, 1, n, 1);
             //Ez.save(mSourceIndex.y + 10, 1, n, 2);
-            Ez.save(mMaxIndex.z - pmlWidth - 5, 1, n, 3);
-            Ex.save(mMaxIndex.z - pmlWidth - 5, 1, n, 3);
-            Ey.save(mMaxIndex.z - pmlWidth - 5, 1, n, 3);
+            Ez.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
+            Ex.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
+            Ey.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
             /*
             pml.Psi_exz_zp.setName("psi");
             pml.Psi_exz_zp.save(0, 1, n, 3);
@@ -819,18 +818,18 @@ void fdtd::compute() {
 
 void fdtd::updateSource(unsigned n) {
     MyDataF source;
-    switch (srcType) {
+    switch (mSrcType) {
         case SOURCE_GAUSSIAN:
-            source = amp * -2.0 * ((n * dt - t0) / tw / tw)
-                    * exp(-pow(((n * dt - t0) / tw), 2)); //Differentiated Gaussian pulse
+            source = mAmplitude * -2.0 * ((n * mDt - t0) / tw / tw)
+                    * exp(-pow(((n * mDt - t0) / tw), 2)); //Differentiated Gaussian pulse
             cout << "Gaussian source:" << source << endl;
             break;
         case SOURCE_SINE:
             // sine wave
-            source = M_PI_TWO * omega * amp * cos((n * dt - t0) * M_PI_TWO * omega);
+            source = M_PI_TWO * mOmega * mAmplitude * cos((n * mDt - t0) * M_PI_TWO * mOmega);
             break;
         case ONE_SINE_PULSE:
-            source = M_PI_TWO * omega * amp * Source::SinePulse(n * dt - t0, omega, t_up, t_down);
+            source = M_PI_TWO * mOmega * mAmplitude * Source::SinePulse(n * mDt - t0, mOmega, t_up, t_down);
             break;
         default:
             source = 0;
@@ -940,8 +939,8 @@ void fdtd::writeField(unsigned iteration) {
 
         for (i = 0; i < mMaxIndex.x - 1; i++) {
             for (j = 0; j < mMaxIndex.y - 1; j++) { // |E|
-                out << sqrt(pow(Ex.p[i][j][ksource], 2) +
-                        pow(Ey.p[i][j][ksource], 2) + pow(Ez.p[i][j][ksource], 2)) << '\t';
+                out << sqrt(pow(Ex.p[i][j][mKSource], 2) +
+                        pow(Ey.p[i][j][mKSource], 2) + pow(Ez.p[i][j][mKSource], 2)) << '\t';
             }
             out << endl;
         }
@@ -953,7 +952,7 @@ void fdtd::writeField(unsigned iteration) {
     // open file
     out.open(fileBaseName.c_str());
     if (out.is_open()) {
-        unsigned jsource = ksource + 10;
+        unsigned jsource = mKSource + 10;
         checkmax(jsource, 1, mMaxIndex.y);
         for (i = 0; i < mMaxIndex.x - 1; i++) {
             for (j = 0; j < mMaxIndex.z - 1; j++) { // |E|
@@ -970,7 +969,7 @@ void fdtd::writeField(unsigned iteration) {
 
 void fdtd::startUp() {
     cout << "initializing(in Startup)..." << endl;
-    initialize();
+    createFieldArray();
     //    cout << "initial pml (in Statup)" << endl;
     //    pml.Initial(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z, 11);
     cout << "setUp (in Startup)" << endl;
@@ -983,19 +982,19 @@ void fdtd::startUp() {
 }
 
 void fdtd::printParameters() {
-    cout << "dx = " << dx << endl;
-    cout << "dy = " << dy << endl;
-    cout << "dz = " << dz << endl;
+    cout << "dx = " << mDx << endl;
+    cout << "dy = " << mDy << endl;
+    cout << "dz = " << mDz << endl;
     cout << "(mMaxIndex.x,mMaxIndex.y,mMaxIndex.z) = (" << mMaxIndex.x << "," << mMaxIndex.y << "," << mMaxIndex.z << ")" << endl;
     // time step increment
-    cout << "dt = " << dt << endl;
+    cout << "dt = " << mDt << endl;
 
     //  Specify the Impulsive Source (Differentiated Gaussian) parameters
     cout << "tw = " << tw << endl; //pulse width
     cout << "t0 = " << t0 << endl; //delay
     cout << "source = " << source << endl; //Differentiated Gaussian source
-    cout << "amp = " << amp << endl; // Amplitude
-    cout << "omega = " << omega << endl; // angle speed for sine wave
+    cout << "amp = " << mAmplitude << endl; // Amplitude
+    cout << "omega = " << mOmega << endl; // angle speed for sine wave
 
     //Specify the Time Step at which the data has to be saved for Visualization
     cout << "save_modulus = " << save_modulus << endl;
@@ -1005,33 +1004,33 @@ void fdtd::printParameters() {
     cout << "(mEndIndex.x,  mEndIndex.y, mEndIndex.z) = (" << mEndIndex.x << ',' << mEndIndex.y << ',' << mEndIndex.z << ')' << endl;
 
     //Output recording point
-    cout << "ksource = " << ksource << endl;
+    cout << "ksource = " << mKSource << endl;
 
     //  Specify the CPML Order and Other Parameters:
-    cout << " m = " << m << endl;
-    cout << " ma = " << ma << endl;
+    cout << " m = " << mPMLOrder << endl;
+    cout << " ma = " << mAlphaOrder << endl;
 #ifdef WITH_DENSITY 
-    cout << "neGrid=" << neGrid << endl;
-    cout << "neSkipStep=" << neSkipStep << endl;
-    cout << "dtf=" << dtf << endl;
-    cout << "dsf=" << dsf << endl;
-    cout << "mu_i=" << mu_i << endl;
-    cout << "mu_e=" << mu_e << endl;
-    cout << "Da=" << Da << endl;
-    cout << "De=" << De << endl;
+    cout << "neGrid=" << mNeGridSize << endl;
+    cout << "neSkipStep=" << mNeSkipStep << endl;
+    cout << "dtf=" << mDeltaTimeFluid << endl;
+    cout << "dsf=" << mDeltaSizeFluid << endl;
+    cout << "mu_i=" << mMu_i << endl;
+    cout << "mu_e=" << mMu_e << endl;
+    cout << "Da=" << mDa << endl;
+    cout << "De=" << mDe << endl;
 #endif
-    cout << endl << "Time step = " << dt << endl;
-    cout << endl << "Number of steps = " << totalTimeSteps << endl;
-    cout << endl << "Total Simulation time = " << totalTimeSteps * dt << " Seconds" << endl;
+    cout << endl << "Time step = " << mDt << endl;
+    cout << endl << "Number of steps = " << mTotalTimeSteps << endl;
+    cout << endl << "Total Simulation time = " << mTotalTimeSteps * mDt << " Seconds" << endl;
 }
 
 void fdtd::setSourceType(int sourceType) {
-    srcType = sourceType;
+    mSrcType = sourceType;
 }
 
 void fdtd::defineSineSource(MyDataF omega_) {
-    srcType = SOURCE_SINE;
-    omega = omega_;
+    mSrcType = SOURCE_SINE;
+    mOmega = omega_;
 }
 
 void fdtd::updateHx() {
@@ -1120,11 +1119,11 @@ void fdtd::updateEx() {
 #ifdef WITH_DENSITY
                 Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
 
-                if (srcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = Nu_c.p[i * neGrid][j * neGrid + halfNeGrid][k * neGrid];
+                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = Nu_c.p[i * mNeGridSize][j * mNeGridSize + mHalfNeGridSize][k * mNeGridSize];
                     Vx.p[i][j][k] = (1 - a) / (1 + a) * Vx.p[i][j][k] - Cvxex_guassian.p[i][j][k] * (Exp + Ex.p[i][j][k]);
                 } else {
-                    Vx.p[i][j][k] = alpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
+                    Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
                 }
 #endif
             }
@@ -1157,11 +1156,11 @@ void fdtd::updateEy() {
                 Ey.isValid(i, j, k);
 #endif
                 // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
-                if (srcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = Nu_c.p[i * neGrid + halfNeGrid][j * neGrid][k * neGrid];
+                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = Nu_c.p[i * mNeGridSize + mHalfNeGridSize][j * mNeGridSize][k * mNeGridSize];
                     Vy.p[i][j][k] = (1 - a) / (1 + a) * Vy.p[i][j][k] - Cvyey_guassian.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
                 } else {
-                    Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                    Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
                 }
 #endif /* WITH_DENSITY */
             }
@@ -1191,11 +1190,11 @@ void fdtd::updateEz() {
                 Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
 
                 // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
-                if (srcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = Nu_c.p[i * neGrid ][j * neGrid][k * neGrid];
+                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                    MyDataF a = Nu_c.p[i * mNeGridSize ][j * mNeGridSize][k * mNeGridSize];
                     Vz.p[i][j][k] = (1 - a) / (1 + a) * Vz.p[i][j][k] - Cvzez_guassian.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
                 } else {
-                    Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                    Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
                 }
 #endif
 #if DEBUG>=4
@@ -1213,9 +1212,9 @@ void fdtd::initCoeficients() {
     // E Field coefficients
     //////////////////////////
     MyDataF dtDivEps0DivDz, dtDivEps0DivDy, dtDivEps0DivDx;
-    dtDivEps0DivDz = dt / eps_0 / dz;
-    dtDivEps0DivDy = dt / eps_0 / dy;
-    dtDivEps0DivDx = dt / eps_0 / dx;
+    dtDivEps0DivDz = mDt / eps_0 / mDz;
+    dtDivEps0DivDy = mDt / eps_0 / mDy;
+    dtDivEps0DivDx = mDt / eps_0 / mDx;
     for (unsigned i = 0; i < Ex.nx; i++) {
         for (unsigned j = 0; j < Ex.ny; j++) {
             for (unsigned k = 0; k < Ex.nz; k++) {
@@ -1249,9 +1248,9 @@ void fdtd::initCoeficients() {
     // M Field coefficients
     //////////////////////////
     MyDataF dtDivMu0DivDx, dtDivMu0DivDy, dtDivMu0DivDz;
-    dtDivMu0DivDx = dt / mu_0 / dx;
-    dtDivMu0DivDy = dt / mu_0 / dy;
-    dtDivMu0DivDz = dt / mu_0 / dz;
+    dtDivMu0DivDx = mDt / mu_0 / mDx;
+    dtDivMu0DivDy = mDt / mu_0 / mDy;
+    dtDivMu0DivDz = mDt / mu_0 / mDz;
     for (unsigned i = 0; i < Hx.nx; i++) {
         for (unsigned j = 0; j < Hx.ny; j++) {
             for (unsigned k = 0; k < Hx.nz; k++) {
@@ -1295,10 +1294,10 @@ void fdtd::updateElectricAndVeloityFields() {
 
 void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amptidute) {
     t0 = t_0;
-    omega = omega_;
+    mOmega = omega_;
     t_up = tUp;
     t_down = tDown;
-    amp = amptidute;
+    mAmplitude = amptidute;
 }
 // =================================================================
 // MATLAB SIMULATION
