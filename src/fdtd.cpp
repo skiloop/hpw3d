@@ -485,8 +485,8 @@ void fdtd::updateBeta() {
 }
 
 void fdtd::initDensity() {
-    MyDataF tmp = 2*pow(4*dx, 2);
-    Point srcPos(mSourceIndex.x, mSourceIndex.y + 30, mSourceIndex.z);
+    MyDataF tmp = 2 * pow(4 * dx, 2);
+    Point srcPos(mSourceIndex.x*neGrid, mSourceIndex.y*neGrid, mSourceIndex.z*neGrid);
 
     for (int i = 0; i < Ne.nx; i++) {
         for (int j = 0; j < Ne.ny; j++) {
@@ -495,16 +495,16 @@ void fdtd::initDensity() {
                 MyDataF sx, sy, sz;
                 MyDataF px, py, pz;
                 MyDataF ea;
-                sx = (i - srcPos.x) * dx;
-                sy = (j - srcPos.y) * dy;
-                sz = (k - srcPos.z) * dz;
-                px = pow(sx, 2);
-                py = pow(sy, 2);
-                pz = pow(sz, 2);
+                sx = (i - (int)srcPos.x) * dx;
+                sy = (j - (int)srcPos.y) * dy;
+                sz = (k - (int)srcPos.z) * dz;
+                px = sx*sx;
+                py = sy*sy;
+                pz = sz*sz;
                 ea = exp(-(px + py + pz) / tmp);
                 Ne.p[i][j][k] = Ne0*ea;
 #else
-                Ne.p[i][j][k] = Ne0 * exp(-(pow((i - srcPos.x) * dx, 2) + pow((j - srcPos.y) * dy, 2) + pow((k - srcPos.z) * dz, 2)) / tmp);
+                Ne.p[i][j][k] = Ne0 * exp(-(pow((i -  (int)srcPos.x) * dx, 2) + pow((j -  (int)srcPos.y) * dy, 2) + pow((k -  (int)srcPos.z) * dz, 2)) / tmp);
 #endif
             }
         }
@@ -639,7 +639,11 @@ void fdtd::setUp() {
     mEndIndex.setValue(mMaxIndex.x - pmlWidth, mMaxIndex.y - pmlWidth, mMaxIndex.z - pmlWidth);
 
     // source position    
+#ifdef DEBUG
+    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2, mMaxIndex.z / 2);
+#else
     mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y - pmlWidth - 35, mMaxIndex.z / 2);
+#endif    
 
     checkmax(mSourceIndex.x, 1, mMaxIndex.x);
     checkmax(mSourceIndex.y, 1, mMaxIndex.y);
@@ -686,9 +690,10 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     initDensity();
 #ifdef DEBUG
-    Ne.save(Ne.ny/2,0,0,3);
-    Ne.save(Ne.ny/2,0,0,1);
-    Ne.save(Ne.ny/2,0,0,2);
+    Ne.save(Ne.ny / 2, 0, 0, 3);
+    Ne.save(Ne.ny / 2, 0, 0, 1);
+    Ne.save(Ne.ny / 2, 0, 0, 2);
+    Ne.save();
 #endif
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients for Density

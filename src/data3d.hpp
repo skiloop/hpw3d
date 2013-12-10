@@ -239,6 +239,31 @@ void data3d<DataType>::save(unsigned k, unsigned leap, unsigned step, int type) 
     savePlain(k, leap, step, type);
 }
 
+template<class DataType>
+void data3d<DataType>::save(int leap) {
+    stringstream ss;
+    ss << mName << OUTPUT_FILE_NAME_TAIL;
+    string fname = ss.str();
+
+    ofstream out(fname.c_str(), ios_base::binary);
+    if (!out.is_open()) {
+        cerr << "File " << fname << "cannot be opened!" << endl;
+        return;
+    }
+    if (leap <= 0)leap = 1;
+    unsigned i, j, k;
+    for (i = 0; i < nx; i += leap) {
+        for (j = 0; j < ny; j += leap) {
+            for (k = 0; k < ny; k += leap) {
+                out << p[i][j][k] << '\t';
+            }
+            out << endl;
+        }
+       // out << endl;
+    }
+    out.close();
+}
+
 /**
  *
  * @param k

@@ -232,13 +232,19 @@ public:
     void savePlain(unsigned k, unsigned leap, unsigned step, int type);
 
     /**
-     *
+     *  Save data at plain s=@c k where s=x,y or z which define by @c type
      * @param k
      * @param leap
      * @param step
      * @param type
      */
     void save(unsigned k, unsigned leap, unsigned step, int type);
+
+    /**
+     * save every @c leap cells data to file 
+     * @param leap
+     */
+    void save(int leap=1);
 
     /**
      * @brief Create a data3d with the same size;
@@ -280,18 +286,20 @@ public:
     bool isNaN(unsigned i, unsigned j, unsigned k);
     bool isInf(unsigned i, unsigned j, unsigned k);
     bool isValid(unsigned i, unsigned j, unsigned k);
-    private:
+private:
+
     static void setMatlabEngineStarted(bool MatlabEngineStarted) {
 #ifdef MATLAB_SIMULATION
         mIsMatlabEngineStarted = MatlabEngineStarted;
 #endif
     }
-    public:
+public:
+
     static bool isMatlabEngineStarted() {
 #ifdef MATLAB_SIMULATION
         return mIsMatlabEngineStarted;
 #else
-		return false;
+        return false;
 #endif
     }
 
