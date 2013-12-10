@@ -264,11 +264,9 @@ void fdtd::updateDensity(void) {
 
                 calculateIonizationParameters(i, j, k, va, vi, Deff);
 
-                Ne.p[i][j][k] =
-                        (
-                        Ne_ijk * (1 + dtf * vi)
-                        + Deff * dtf * (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk) / dtf / dtf
-                        ) / (1 + dtf * (va + rei * Ne_ijk));
+                Ne.p[i][j][k] = (Ne_ijk * (1 + dtf * vi) + Deff * dtf *
+                        (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk)
+                        / dsf / dsf / dsf) / (1 + dtf * (va + rei * Ne_ijk));
                 if (vi > maxvi) {
                     maxvi = vi;
                     ci = i;
@@ -487,13 +485,27 @@ void fdtd::updateBeta() {
 }
 
 void fdtd::initDensity() {
-    MyDataF tmp = pow(50e-2, 3);
+    MyDataF tmp = 2*pow(4*dx, 2);
     Point srcPos(mSourceIndex.x, mSourceIndex.y + 30, mSourceIndex.z);
 
     for (int i = 0; i < Ne.nx; i++) {
         for (int j = 0; j < Ne.ny; j++) {
             for (int k = 0; k < Ne.nz; k++) {
-                Ne.p[i][j][k] = Ne0 * exp((pow((i - srcPos.x) * dx, 2) + pow((j - srcPos.y) * dy, 2) + pow((k - srcPos.z) * dz, 2)) / tmp);
+#ifdef DEBUG
+                MyDataF sx, sy, sz;
+                MyDataF px, py, pz;
+                MyDataF ea;
+                sx = (i - srcPos.x) * dx;
+                sy = (j - srcPos.y) * dy;
+                sz = (k - srcPos.z) * dz;
+                px = pow(sx, 2);
+                py = pow(sy, 2);
+                pz = pow(sz, 2);
+                ea = exp(-(px + py + pz) / tmp);
+                Ne.p[i][j][k] = Ne0*ea;
+#else
+                Ne.p[i][j][k] = Ne0 * exp(-(pow((i - srcPos.x) * dx, 2) + pow((j - srcPos.y) * dy, 2) + pow((k - srcPos.z) * dz, 2)) / tmp);
+#endif
             }
         }
     }
@@ -673,7 +685,11 @@ void fdtd::setUp() {
     // initial density
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     initDensity();
-
+#ifdef DEBUG
+    Ne.save(Ne.ny/2,0,0,3);
+    Ne.save(Ne.ny/2,0,0,1);
+    Ne.save(Ne.ny/2,0,0,2);
+#endif
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial Coefficients for Density
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -780,7 +796,7 @@ void fdtd::compute() {
             pml.Psi_exz_zp.save(4, 1, n, 3);
              */
 #ifdef WITH_DENSITY
-            Ne.save(Ne.nz / 2, neGrid, n, 2);
+            Ne.save(Ne.nz / 2, 1, n, 2);
 #endif
         }
 #ifdef MATLAB_SIMULATION
@@ -1175,6 +1191,11 @@ void fdtd::updateEz() {
                     Vz.p[i][j][k] = (1 - a) / (1 + a) * Vz.p[i][j][k] - Cvzez_guassian.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
                 } else {
                     Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                }
+#endif
+#if DEBUG>=4
+                if (isnan(Ez.p[i][j][k])) {
+                    cout << "Ez is nan at " << i << "," << j << "," << k << endl;
                 }
 #endif
             }
