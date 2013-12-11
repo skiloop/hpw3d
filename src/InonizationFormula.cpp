@@ -1,6 +1,7 @@
 
 #include <math.h>
 #include "InonizationFormula.h"
+
 //////////////////////////////////////////////////////////////////////////
 //int sign(MyDataF val)
 //if val>0 return 1
@@ -10,7 +11,6 @@
 int sign(MyDataF val) {
     return (val < 0 ? -1 : (val > 0 ? 1 : 0));
 }
-
 //////////////////////////////////////////////////////////////////////////
 // Nikonov formula
 //////////////////////////////////////////////////////////////////////////
@@ -19,9 +19,9 @@ int sign(MyDataF val) {
 MyDataF Alpha_Nikonov(MyDataF E, MyDataF P) {
     MyDataF EDivP = fabs(E) / P;
     if (EDivP < 108.0) {
-        return 3.9 * P * exp(-213 / EDivP);
+        return 3.9 * P * exp(-213.0 / EDivP);
     } else {
-        return 14.5 * P * exp(-316 / EDivP);
+        return 14.5 * P * exp(-316.0 / EDivP);
     }
 }
 // Calculate Eta by Nikonov formula
@@ -98,15 +98,14 @@ MyDataF We_MorrowAndLowke(MyDataF E, MyDataF N) {
 
     if (edn > 1.0) {
         if (edn <= 20.00)
-            return -sign(E)*(1.03 * edn + 1.3)*1e-10;
+            return -sign(E)*(1.03e6 * edn + 1.3e6);
         else
-            return -sign(E)*(7.4e5 * edn + 7.1e6)*1e-16;
+            return -sign(E)*(7.4e5 * edn + 7.1e6);
     } else {
         if (edn <= 0.26)
-            return -sign(E)*(6.87e6 * edn + 3.38e4)*1e-16;
+            return -sign(E)*(6.87e6 * edn + 3.38e4);
         else
-            return -sign(E)*(7.2973 * edn + 16.3)*1e-11;
-        ;
+            return -sign(E)*(7.2973e5 * edn + 1.63e6);
     }
 }
 // Niu_a
@@ -126,17 +125,17 @@ MyDataF Niu_i_MorrowAndLowke(MyDataF E, MyDataF N) {
 // Calculate alpha by Kang formula
 
 MyDataF Alpha_Kang(MyDataF E) {
-    return 0.0035 * exp(-1.65e5 / E);
+    return 3.5e3 * exp(-1.65e5 / E);
 }
 // Calculate Eta by Kang formula
 
 MyDataF Eta_Kang(MyDataF E) {
-    return 0.15 * exp(-2.5e4 / E);
+    return 15.0 * exp(-2.5e4 / E);
 }
 // Calculate We by Kang formula
 
 MyDataF We_Kang(MyDataF E) {
-    return -6060 * pow(E, 0.75);
+    return -6060.0 * pow(E, 0.75);
 }
 
 
@@ -173,4 +172,28 @@ void Niu_MorrowAndLowke(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E, MyDataF N) 
     we = fabs(We_MorrowAndLowke(E, N));
     *pNiu_a = Eta_MorrowAndLowke(E, N) * we;
     *pNiu_i = Alpha_MorrowAndLowke(E, N) * we;
+}
+
+void Niu_Ali(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF Eeff, MyDataF p) {
+    MyDataF alpha = Eeff / p;
+    if (alpha < 30) {
+        if (alpha < 1e-12) {
+            *pNiu_i = 0;
+        } else if (alpha >= 1) {
+            *pNiu_i = (1.45 + 0.01 * pow(alpha, 1.5))*2.5e7 * exp(-208 / alpha) * p;
+        } else {
+            *pNiu_i = 5.14e11 * exp(-73 * pow(alpha, -0.44)) * p;
+        }
+    } else if (alpha > 120) {
+        if (alpha <= 3000) {
+            *pNiu_i = 54.08e6 * pow(alpha, 0.5) * exp(-359 / alpha) * p;
+        } else {
+            *pNiu_i = 5.14e11 * exp(-73 * pow(alpha, -0.44)) * p;
+        }
+    } else if (alpha > 54) {
+        *pNiu_i = (1.32 + 0.054 * alpha)*1e7 * exp(-208 / alpha) * p;
+    } else {
+        *pNiu_i = (5.0 + 0.19 * alpha)*1e7 * exp(-273.8 / alpha) * p;
+    }
+    *pNiu_a = 7.6e-4 * pow(alpha / (alpha + 218), 2) / p;
 }

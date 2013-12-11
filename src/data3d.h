@@ -37,21 +37,22 @@ public:
     DataType*** p;
 
 public:
-    static unsigned int cnt;
-    static std::string tail;
+    static const std::string OUTPUT_FILE_NAME_TAIL;
+
 #ifdef MATLAB_SIMULATION
+    static unsigned int mMatlabFigureCount;
     static Engine *ep;
 private:
-    static bool isMatlabEngineStarted;
+    static bool mIsMatlabEngineStarted;
 #endif
 private:
-    std::string name; // name for this to save file
+    std::string mName; // name for this to save file
 
 private:
-    int Number;
 #ifdef MATLAB_SIMULATION
+    int mMatlabFigureIndex;
     mxArray *num;
-    mxArray *MyArray;
+    mxArray *mMatlabMXArray;
 #endif
 public:
 
@@ -65,7 +66,11 @@ public:
      * when cannot create space for p and p[i],exit program;
      */
     data3d(unsigned int cx, unsigned int cy, unsigned cz)
-    : nx(cx), ny(cy), nz(cz), p(NULL) {
+    : nx(cx), ny(cy), nz(cz), p(NULL)
+#ifdef MATLAB_SIMULATION
+    , mMatlabFigureIndex(-1)
+#endif
+    {
         unsigned i, j;
         if (cx == 0 || cy == 0 || cz == 0) {
             return;
@@ -95,7 +100,11 @@ public:
      *  @c nz = 0
      *  @c p=NULL
      */
-    data3d() : nx(0), ny(0), nz(0), p(NULL) {
+    data3d() : nx(0), ny(0), nz(0), p(NULL)
+#ifdef MATLAB_SIMULATION
+    , mMatlabFigureIndex(-1)
+#endif
+    {
     };
 
     /**
@@ -223,13 +232,19 @@ public:
     void savePlain(unsigned k, unsigned leap, unsigned step, int type);
 
     /**
-     *
+     *  Save data at plain s=@c k where s=x,y or z which define by @c type
      * @param k
      * @param leap
      * @param step
      * @param type
      */
     void save(unsigned k, unsigned leap, unsigned step, int type);
+
+    /**
+     * save every @c leap cells data to file 
+     * @param leap
+     */
+    void save(int leap = 1);
 
     /**
      * @brief Create a data3d with the same size;
@@ -249,7 +264,7 @@ public:
      * @param sn
      */
     void setName(const std::string &sn) {
-        name = sn;
+        mName = sn;
     }
 
     /**
@@ -257,7 +272,7 @@ public:
      * @return @c name
      */
     string getName() {
-        return name;
+        return mName;
     }
 
 public:
@@ -271,6 +286,31 @@ public:
     bool isNaN(unsigned i, unsigned j, unsigned k);
     bool isInf(unsigned i, unsigned j, unsigned k);
     bool isValid(unsigned i, unsigned j, unsigned k);
+    /**
+     * when value at (i,j,k) is larger than limit do something define by fun
+     * @param i
+     * @param j
+     * @param k
+     * @param limit
+     * @param fun
+     */
+    void whenLargerThan(unsigned i, unsigned j, unsigned k, MyDataF limit, void(*fun)());
+private:
+
+    static void setMatlabEngineStarted(bool MatlabEngineStarted) {
+#ifdef MATLAB_SIMULATION
+        mIsMatlabEngineStarted = MatlabEngineStarted;
+#endif
+    }
+public:
+
+    static bool isMatlabEngineStarted() {
+#ifdef MATLAB_SIMULATION
+        return mIsMatlabEngineStarted;
+#else
+        return false;
+#endif
+    }
 
 };
 

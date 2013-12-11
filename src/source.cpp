@@ -9,7 +9,8 @@
 #include "common.h"
 #include "source.h"
 
-Source::Source() {
+Source::Source() 
+{
 }
 
 Source::Source(const Source& orig) {

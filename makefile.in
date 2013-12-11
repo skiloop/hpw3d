@@ -14,15 +14,15 @@ CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 # debug mode
 CXXFLAGS+=-DDEBUG=4
 CFLAGS+=-DDEBUG=4
-# CXXFLAGS+=-g
-# CFLAGS+=-g
-CXXFLAGS+=-O3
-CFLAGS+=-O3
+CXXFLAGS+=-g
+CFLAGS+=-g
+#CXXFLAGS+=-O3
+#CFLAGS+=-O3
 
 #Add DENSITY
-#CXXFLAGS+=-DWITH_DENSITY
+CXXFLAGS+=-DWITH_DENSITY
 
-# matlab path 
+# matlab path
 MATPATH=/opt/Matlab/R2011a# for local server
 #MATPATH=/opt2/Matlab/R2011a# for servers of college
 
@@ -30,7 +30,7 @@ MATPATH=/opt/Matlab/R2011a# for local server
 MATLINK=-Wl,-rpath=$(MATPATH)/bin/glnxa64
 
 # Matlab link option
-#MATLIB=$(MATLINK) -L$(MATPATH)/bin/glnxa64 -lmx -leng
+MATLIB=$(MATLINK) -L$(MATPATH)/bin/glnxa64 -lmx -leng
 
 # Matlab link path
 MATINC=-I$(MATPATH)/extern/include
@@ -40,6 +40,6 @@ MATINC=-I$(MATPATH)/extern/include
 # LIB+=$(MATLIB)
 
 # enable OpenMP
-CXXFLAGS+=-fopenmp
-LIB+=-fopenmp
+#CXXFLAGS+=-fopenmp
+#LIB+=-fopenmp
 
