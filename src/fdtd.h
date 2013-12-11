@@ -65,6 +65,7 @@ public:
     void doMatlabSimulation();
     void finishMatlabSimulation();
 #endif
+    
 private:
     void buildObject(); //Creates the object geometry
     void yeeCube(unsigned, unsigned, unsigned, unsigned); //Sets material properties to a cell
@@ -92,7 +93,7 @@ private:
     // Specify the CPML Order and Other Parameters:
     unsigned mPMLOrder;
     unsigned mAlphaOrder;
-    unsigned mPMLWidth;
+    unsigned mPMLWidth;    
 
     /////////////////////////////////////////////////////////
     // SOURCE PARAMETRS
@@ -105,6 +106,8 @@ private:
     unsigned mNeGridSize;
     //initial plasma value
     MyDataF Ne0;
+    // start index of density zone in Maxwell domain
+    unsigned mNeStartIndex;
 #endif
     // source type
     int mSrcType;

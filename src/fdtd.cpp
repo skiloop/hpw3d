@@ -43,7 +43,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), save_modulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
-, mNeGridSize(_neGrid)
+, mNeGridSize(_neGrid),mNeStartIndex(pmlw+2)
 , Ne0(DEFAULT_DENSITY_MAX)
 , mSrcType(SOURCE_GAUSSIAN)
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL), CA(NULL), CB(NULL) {
@@ -127,21 +127,7 @@ void fdtd::updateCollisionFrequency() {
         MyDataF DivParam = 100 * mAirPressure * 133.3;
         MyDataF C1 = 5.20e8 * mAirPressure;
         MyDataF C2 = 2.93e8 * mAirPressure;
-        MyDataF C3 = 3.24e8 * mAirPressure;
-        //    for (i = mStartIndex.x, io = mStartIndex.x * neGrid; i <= mEndIndex.x; i++, io += neGrid) {
-        //        for (j = mStartIndex.y, jo = mStartIndex.y * neGrid; j <= mEndIndex.y; j++, jo += neGrid) {
-        //            for (k = mStartIndex.z, ko = mStartIndex.z * neGrid; k <= mEndIndex.z; k++, ko += neGrid) {
-        //                EeffDivP = Erms.p[io][jo][ko] / DivParam;
-        //                if (EeffDivP >= 120) {
-        //                    Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP);
-        //                } else if (EeffDivP >= 54) {
-        //                    Nu_c.p[i][j][k] = C2 * EeffDivP / (1 + 0.041 * EeffDivP);
-        //                } else {
-        //                    Nu_c.p[i][j][k] = C3 * EeffDivP / (1 + 0.04 * EeffDivP);
-        //                }
-        //            }
-        //        }
-        //    }
+        MyDataF C3 = 3.24e8 * mAirPressure;        
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,EeffDivP) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
@@ -348,7 +334,7 @@ void fdtd::initCoeffForDensity() {
     Coeff_velocity = mHalf_e * mDt / me;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // init collision frequency
+    // initials collision frequency
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     updateCollisionFrequency();
 
@@ -368,15 +354,15 @@ void fdtd::updateCoeffWithDensity() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     int i, j, k;
     unsigned im, jm = 0, km;
-    int ms = mPMLWidth + 2;
-    int me = Ez.ny - mPMLWidth - 2;
+    int startIndex = mNeStartIndex;
+    int endIndex = Ez.ny - mNeStartIndex;
     MyDataF tmp = eMDtDiv2DivEps0 * (1 + mAlpha);
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif    
-    for (j = ms; j <= me; j++, jm += mNeGridSize) {
-        for (i = ms, im = ms * mNeGridSize + mHalfNeGridSize; i <= me; i++, im += mNeGridSize) {
-            for (k = ms, km = ms * mNeGridSize + mHalfNeGridSize; k <= me; k++, km += mNeGridSize) {
+    for (j = startIndex; j <= endIndex; j++, jm += mNeGridSize) {
+        for (i = startIndex, im = startIndex * mNeGridSize + mHalfNeGridSize; i <= endIndex; i++, im += mNeGridSize) {
+            for (k = startIndex, km = startIndex * mNeGridSize + mHalfNeGridSize; k <= endIndex; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Cexe.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cexhy.p[i][j][k] = -dtDivEps0DivDz / kappa;
@@ -396,10 +382,10 @@ void fdtd::updateCoeffWithDensity() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif    
-    for (i = ms; i <= me; i++) {
+    for (i = startIndex; i <= endIndex; i++) {
         im = i*mNeGridSize;
-        for (j = ms, jm = ms * mNeGridSize + mHalfNeGridSize; j <= me; j++, jm += mNeGridSize) {
-            for (k = ms, km = ms * mNeGridSize + mHalfNeGridSize; k <= me; k++, km += mNeGridSize) {
+        for (j = startIndex, jm = startIndex * mNeGridSize + mHalfNeGridSize; j <= endIndex; j++, jm += mNeGridSize) {
+            for (k = startIndex, km = startIndex * mNeGridSize + mHalfNeGridSize; k <= endIndex; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Ceye.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Ceyhx.p[i][j][k] = dtDivEps0DivDz / kappa;
@@ -419,10 +405,10 @@ void fdtd::updateCoeffWithDensity() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif   
-    for (i = ms; i <= me; i++) {
+    for (i = startIndex; i <= endIndex; i++) {
         im = i*mNeGridSize;
-        for (j = ms, jm = ms * mNeGridSize; j <= me; j++, jm += mNeGridSize) {
-            for (k = ms, km = ms * mNeGridSize; k <= me; k++, km += mNeGridSize) {
+        for (j = startIndex, jm = startIndex * mNeGridSize; j <= endIndex; j++, jm += mNeGridSize) {
+            for (k = startIndex, km = startIndex * mNeGridSize; k <= endIndex; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Ceze.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cezhy.p[i][j][k] = dtDivEps0DivDx / kappa;
@@ -553,10 +539,6 @@ void fdtd::createFieldArray() {
     Vy.create3DArray(Ey, 0.0);
     Vz.create3DArray(Ez, 0.0);
 
-#if(DEBUG>=3)
-    cout << __FILE__ << ":" << __LINE__ << endl;
-    cout << " neGrid = " << mNeGridSize << endl;
-#endif
     Ne.create3DArray((mMaxIndex.x + 1) * mNeGridSize,
             (mMaxIndex.y + 1) * mNeGridSize,
             (mMaxIndex.z + 1) * mNeGridSize, Ne0);
@@ -649,6 +631,27 @@ void fdtd::setUp() {
 
     initCoeficients();
 
+#ifdef WITH_DENSITY
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // initial density
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    initDensity();
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Initial Coefficients for Density
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    initCoeffForDensity();
+#ifdef DEBUG
+    Ne.save();
+    Cvxex_guassian.setName("cv");
+    Cezhx.setName("cezhx");
+    Ceze.setName("ceze");
+    Cezvz.setName("cezvz");
+    Cvzez_gaussian.setName("cvzzg");
+#endif
+    
+#endif
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -673,32 +676,7 @@ void fdtd::setUp() {
             Ceyhz, Cezhy, Chyez, Chzey,
             Cexhz, Cezhx, Chxez, Chzex,
             Ceyhx, Cexhy, Chyex, Chxey);
-
-#ifdef WITH_DENSITY
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // initial density
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    initDensity();
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Initial Coefficients for Density
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    initCoeffForDensity();
-#ifdef DEBUG
-    Ne.save(Ne.ny / 2, 0, 0, 3);
-    Ne.save(Ne.ny / 2, 0, 0, 1);
-    Ne.save(Ne.ny / 2, 0, 0, 2);
-    Ne.save();
-    Cvxex_guassian.setName("cv");
-    Cvxex_guassian.save(Cvxex_guassian.nz / 2, 1, 0, 1);
-    Cvxex_guassian.save(Cvxex_guassian.nz / 2, 1, 0, 2);
-    Cvxex_guassian.save(Cvxex_guassian.nz / 2, 1, 0, 3);
-    Cezhx.setName("cezhx");
-    Ceze.setName("ceze");
-    Cezvz.setName("cezvz");
-    Cvzez_gaussian.setName("cvzzg");
-#endif
-#endif
+    
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // print parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -769,22 +747,22 @@ void fdtd::compute() {
         //cout	<< Ez.p[mSourceIndex.x][mSourceIndex.y+45][mSourceIndex.z] << endl;
 
         updateMagneitcFields();
-        //pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
+        pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
         updateElectricAndVeloityFields();
-        //pml.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
+        pml.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         //====================================
         // update Source
         //====================================
         updateSource(n);
 
 #ifdef WITH_DENSITY
-        //        captureEFieldForErms();
-        //        if (n % mNeSkipStep == 0) {
-        //            updateErms();
-        //            updateCollisionFrequency();
-        //            updateDensity();
-        //            updateCoeff();
-        //        }
+        captureEFieldForErms();
+        if (n % mNeSkipStep == 0) {
+            updateErms();
+            updateCollisionFrequency();
+            updateDensity();
+            updateCoeffWithDensity();
+        }
 #endif
         if ((n % save_modulus) == 0) {
             writeField(n);

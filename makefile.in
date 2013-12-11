@@ -20,7 +20,7 @@ CFLAGS+=-g
 #CFLAGS+=-O3
 
 #Add DENSITY
-CXXFLAGS+=-DWITH_DENSITY
+#CXXFLAGS+=-DWITH_DENSITY
 
 # matlab path
 MATPATH=/opt/Matlab/R2011a# for local server
@@ -40,6 +40,6 @@ MATINC=-I$(MATPATH)/extern/include
 # LIB+=$(MATLIB)
 
 # enable OpenMP
-#CXXFLAGS+=-fopenmp
-#LIB+=-fopenmp
+CXXFLAGS+=-fopenmp
+LIB+=-fopenmp
 
