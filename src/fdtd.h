@@ -71,7 +71,7 @@ private:
     void writeField(unsigned); //Writes output
     void buildSphere(); //Builds a spherical object
     void buildDipole(); //Builds a dipole
-    void printParameters();
+    void printParam();
 private:
     //  Specify Number of Time Steps and Grid Size Parameters
     unsigned mTotalTimeSteps; // total number of time steps
@@ -162,9 +162,9 @@ private:
 
     int mNiuType;
     //Fine Grid size
-    MyDataF mDeltaSizeFluid;
+    MyDataF mDsFluid;
     //time step of plasma
-    MyDataF mDeltaTimeFluid;
+    MyDataF mDtFluid;
     int mNeSkipStep;
 
     // temporary variables that often used
@@ -193,7 +193,7 @@ private:
     // update coefficients
     //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
     data3d<MyDataF> Cezvz, Ceyvy, Cexvx;
-    data3d<MyDataF> Cvxex_guassian, Cvyey_guassian, Cvzez_guassian;
+    data3d<MyDataF> Cvxex_guassian, Cvyey_guassian, Cvzez_gaussian;
     MyDataF Cvxex, Cvyey, Cvzez;
 
     //Plasma
@@ -211,19 +211,18 @@ private:
     data3d<MyDataF> Vz;
 
     //initials
-    void initCoeff();
-    void initDensity();
+    void initCoeffForDensity();
+    void initDensity();    
     void createCoeff();
-    void updateCoeff();
+    void updateCoeffWithDensity();
     void updateBeta();
 
     // Erms or Eeff operation
-    void integerEeff();
-    void updateErms(void);
+    void captureEFieldForErms(void);
     void updateCollisionFrequency();
-    void interpErms();
+    void updateErms();
     void updateDensity(void);
-    void updateVeloity(void);
+    void updateVelocity(void);
     void wallCircleBound(data3d<MyDataF> &stru);
 #endif
     void updateHx();

@@ -244,7 +244,7 @@ public:
      * save every @c leap cells data to file 
      * @param leap
      */
-    void save(int leap=1);
+    void save(int leap = 1);
 
     /**
      * @brief Create a data3d with the same size;
@@ -286,6 +286,15 @@ public:
     bool isNaN(unsigned i, unsigned j, unsigned k);
     bool isInf(unsigned i, unsigned j, unsigned k);
     bool isValid(unsigned i, unsigned j, unsigned k);
+    /**
+     * when value at (i,j,k) is larger than limit do something define by fun
+     * @param i
+     * @param j
+     * @param k
+     * @param limit
+     * @param fun
+     */
+    void whenLargerThan(unsigned i, unsigned j, unsigned k, MyDataF limit, void(*fun)());
 private:
 
     static void setMatlabEngineStarted(bool MatlabEngineStarted) {
