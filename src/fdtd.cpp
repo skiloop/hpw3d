@@ -213,7 +213,9 @@ void fdtd::calculateIonizationParameters(int i, int j, int k, MyDataF &va, MyDat
 
 void fdtd::updateDensity(void) {
 
-    int i, j, k, mt = 1;
+    int i, j, k;
+    int ms = mNeStartIndex*mNeGridSize;
+    int me = Ne.nz - ms;
     MyDataF Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1;
     MyDataF Deff;
     MyDataF maxvi = 0, minvi = 0;
@@ -227,9 +229,9 @@ void fdtd::updateDensity(void) {
 #pragma omp parallel for num_threads(thread_count) \
         schedule(dynamic) private(i,j,k,Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1,vi,va,Deff)
 #endif
-    for (i = mt; i < Ne.nx - mt; i++) {
-        for (j = mt; j < Ne.ny - mt; j++) {
-            for (k = mt; k < Ne.nz - mt; k++) {
+    for (i = ms; i < me; i++) {
+        for (j = ms; j < me; j++) {
+            for (k = ms; k < me; k++) {
 
                 Ne_ijk = Ne_pre.p[i][j][k];
                 Neip1 = Ne_pre.p[i + 1][j][k];
@@ -265,39 +267,37 @@ void fdtd::updateVelocity(void) {
 
 void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
     unsigned i, j, k;
-    unsigned endx, endy, endz;
 
-    endx = stru.nx - 1;
-    endy = stru.ny - 1;
-    endz = stru.nz - 1;
+    for (int widthLeft = mPMLWidth * mNeGridSize - 1; widthLeft >= 0; widthLeft--) {
 
-    //bottom and top
-    unsigned endz1 = endz - 1;
-    unsigned endz2 = endz - 2;
-    for (i = 1; i < endx; i++) {
-        for (j = 1; j < endy; j++) {
-            stru.p[i][j][0] = 2 * stru.p[i][j][1] - stru.p[i][j][2];
-            stru.p[i][j][endz] = 2 * stru.p[i][j][endz1] - stru.p[i][j][endz2];
+        unsigned start = widthLeft;
+        unsigned end = stru.nz - widthLeft - 1;
+        unsigned start1 = widthLeft + 1;
+        unsigned start2 = widthLeft + 2;
+        unsigned end1 = end - 1;
+        unsigned end2 = end - 2;
+        //bottom and top
+        for (i = start; i <= end; i++) {
+            for (j = start; j <= end; j++) {
+                stru.p[i][j][start] = 2 * stru.p[i][j][start1] - stru.p[i][j][start2];
+                stru.p[i][j][end] = 2 * stru.p[i][j][end1] - stru.p[i][j][end2];
+            }
         }
-    }
 
-    //left and right
-    unsigned endx1 = endx - 1;
-    unsigned endx2 = endx - 2;
-    for (j = 1; j < endy; j++) {
-        for (k = 1; k < endz; k++) {
-            stru.p[0][j][k] = 2 * stru.p[1][j][k] - stru.p[2][j][k];
-            stru.p[endx][j][k] = 2 * stru.p[endx1][j][k] - stru.p[endx2][j][k];
+        //left and right
+        for (j = start; j <= end; j++) {
+            for (k = start; k <= end; k++) {
+                stru.p[start][j][k] = 2 * stru.p[start1][j][k] - stru.p[start2][j][k];
+                stru.p[end][j][k] = 2 * stru.p[end1][j][k] - stru.p[end2][j][k];
+            }
         }
-    }
 
-    //front and back
-    unsigned endy1 = endy - 1;
-    unsigned endy2 = endy - 2;
-    for (i = 1; i < endx; i++) {
-        for (k = 1; k < endz; k++) {
-            stru.p[i][0][k] = 2 * stru.p[i][1][k] - stru.p[i][2][k];
-            stru.p[i][endy][k] = 2 * stru.p[i][endy1][k] - stru.p[i][endy2][k];
+        //front and back
+        for (i = start; i <= end; i++) {
+            for (k = start; k <= end; k++) {
+                stru.p[i][start][k] = 2 * stru.p[i][start1][k] - stru.p[i][start2][k];
+                stru.p[i][end][k] = 2 * stru.p[i][end1][k] - stru.p[i][end2][k];
+            }
         }
     }
 }
@@ -356,16 +356,18 @@ void fdtd::updateCoeffWithDensity() {
     //electricity coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     int i, j, k;
-    unsigned im, jm = 0, km;
+    unsigned im, jm, km;
     int startIndex = mNeStartIndex;
+    int ermsStartIndex = startIndex*mNeGridSize;
     int endIndex = Ez.ny - mNeStartIndex;
     MyDataF tmp = eMDtDiv2DivEps0 * (1 + mAlpha);
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif    
-    for (j = startIndex; j <= endIndex; j++, jm += mNeGridSize) {
-        for (i = startIndex, im = startIndex * mNeGridSize + mHalfNeGridSize; i <= endIndex; i++, im += mNeGridSize) {
-            for (k = startIndex, km = startIndex * mNeGridSize + mHalfNeGridSize; k <= endIndex; k++, km += mNeGridSize) {
+    for (j = startIndex; j <= endIndex; j++) {
+        jm = j*mNeGridSize;
+        for (i = startIndex, im = ermsStartIndex + mHalfNeGridSize; i <= endIndex; i++, im += mNeGridSize) {
+            for (k = startIndex, km = ermsStartIndex + mHalfNeGridSize; k <= endIndex; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Cexe.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cexhy.p[i][j][k] = -dtDivEps0DivDz / kappa;
@@ -387,8 +389,8 @@ void fdtd::updateCoeffWithDensity() {
 #endif    
     for (i = startIndex; i <= endIndex; i++) {
         im = i*mNeGridSize;
-        for (j = startIndex, jm = startIndex * mNeGridSize + mHalfNeGridSize; j <= endIndex; j++, jm += mNeGridSize) {
-            for (k = startIndex, km = startIndex * mNeGridSize + mHalfNeGridSize; k <= endIndex; k++, km += mNeGridSize) {
+        for (j = startIndex, jm = ermsStartIndex + mHalfNeGridSize; j <= endIndex; j++, jm += mNeGridSize) {
+            for (k = startIndex, km = ermsStartIndex + mHalfNeGridSize; k <= endIndex; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Ceye.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Ceyhx.p[i][j][k] = dtDivEps0DivDz / kappa;
@@ -410,8 +412,8 @@ void fdtd::updateCoeffWithDensity() {
 #endif   
     for (i = startIndex; i <= endIndex; i++) {
         im = i*mNeGridSize;
-        for (j = startIndex, jm = startIndex * mNeGridSize; j <= endIndex; j++, jm += mNeGridSize) {
-            for (k = startIndex, km = startIndex * mNeGridSize; k <= endIndex; k++, km += mNeGridSize) {
+        for (j = startIndex, jm = ermsStartIndex; j <= endIndex; j++, jm += mNeGridSize) {
+            for (k = startIndex, km = ermsStartIndex; k <= endIndex; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Ceze.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cezhy.p[i][j][k] = dtDivEps0DivDx / kappa;
@@ -544,7 +546,7 @@ void fdtd::createFieldArray() {
 
     Ne.create3DArray((mMaxIndex.x + 1) * mNeGridSize,
             (mMaxIndex.y + 1) * mNeGridSize,
-            (mMaxIndex.z + 1) * mNeGridSize, Ne0);
+            (mMaxIndex.z + 1) * mNeGridSize, 0.0);
     Erms.create3DArray(Ne, 0.0);
     Ne_pre.create3DArray(Ne, 0.0);
 
