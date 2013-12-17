@@ -19,7 +19,7 @@ extern int thread_count;
 #include "fdtd.h"
 #include "data1d.h"
 #include "data3d.h"
-#include "source.h"
+#include "sourceType.h"
 #include "InonizationFormula.h"
 #include "Point.h"
 
@@ -46,7 +46,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , mNeGridSize(_neGrid), mNeStartIndex(pmlw + 2)
 , Ne0(DEFAULT_DENSITY_MAX)
 , mSrcType(SOURCE_GAUSSIAN)
-, mEpsilon(NULL), mSigma(NULL), mMu(NULL), CA(NULL), CB(NULL) {
+, mEpsilon(NULL), mSigma(NULL), mMu(NULL), pSource(NULL), CA(NULL), CB(NULL) {
 }
 #else
 
@@ -59,7 +59,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , mAmplitude(_amp), save_modulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mSrcType(SOURCE_GAUSSIAN)
-, mEpsilon(NULL), mSigma(NULL), mMu(NULL), CA(NULL), CB(NULL) {
+, mEpsilon(NULL), mSigma(NULL), mMu(NULL), pSource(NULL), CA(NULL), CB(NULL) {
 }
 #endif
 
@@ -92,20 +92,7 @@ void fdtd::captureEFieldForErms(void) {
 
     Point start(mStartIndex.x*mNeGridSize, mStartIndex.y*mNeGridSize, mStartIndex.z * mNeGridSize);
     switch (mSrcType) {
-        case SOURCE_GAUSSIAN:
-            for (i = mStartIndex.x, io = start.x; i <= mEndIndex.x; i++, io += mNeGridSize) {
-                for (j = mStartIndex.y, jo = start.y; j <= mEndIndex.y; j++, jo += mNeGridSize) {
-                    for (k = mStartIndex.z, ko = start.z; k <= mEndIndex.z; k++, ko += mNeGridSize) {
-                        sxIJK = (Vx.p[i][j][k] + Vx.p[i + 1][j][k]) / 2;
-                        syIJK = (Vy.p[i][j][k] + Vy.p[i][j + 1][k]) / 2;
-                        szIJK = (Vz.p[i][j][k] + Vz.p[i][j][k + 1]) / 2;
-                        Erms.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK) * mDt;
-                    }
-                }
-            }
-            break;
         case SOURCE_SINE:
-        default:
             for (i = mStartIndex.x, io = start.x; i <= mEndIndex.x; i++, io += mNeGridSize) {
                 for (j = mStartIndex.y, jo = start.y; j <= mEndIndex.y; j++, jo += mNeGridSize) {
                     for (k = mStartIndex.z, ko = start.z; k <= mEndIndex.z; k++, ko += mNeGridSize) {
@@ -116,6 +103,19 @@ void fdtd::captureEFieldForErms(void) {
                         if (tmp > Erms.p[io][jo][ko]) {
                             Erms.p[io][jo][ko] = tmp;
                         }
+                    }
+                }
+            }
+            break;
+        case SOURCE_GAUSSIAN:
+        default:
+            for (i = mStartIndex.x, io = start.x; i <= mEndIndex.x; i++, io += mNeGridSize) {
+                for (j = mStartIndex.y, jo = start.y; j <= mEndIndex.y; j++, jo += mNeGridSize) {
+                    for (k = mStartIndex.z, ko = start.z; k <= mEndIndex.z; k++, ko += mNeGridSize) {
+                        sxIJK = (Vx.p[i][j][k] + Vx.p[i + 1][j][k]) / 2;
+                        syIJK = (Vy.p[i][j][k] + Vy.p[i][j + 1][k]) / 2;
+                        szIJK = (Vz.p[i][j][k] + Vz.p[i][j][k + 1]) / 2;
+                        Erms.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK) * mDt;
                     }
                 }
             }
@@ -221,8 +221,6 @@ void fdtd::updateDensity(void) {
     MyDataF maxvi = 0, minvi = 0;
     MyDataF vi, va;
 
-    unsigned ci = 0, cj = 0, ck = 0;
-
     Ne_pre = Ne;
 
 #ifdef _OPENMP
@@ -248,15 +246,15 @@ void fdtd::updateDensity(void) {
                         / mDsFluid / mDsFluid / mDsFluid) / (1 + mDtFluid * (va + mRei * Ne_ijk));
                 if (vi > maxvi) {
                     maxvi = vi;
-                    ci = i;
-                    cj = j;
-                    ck = k;
+                    //                    ci = i;
+                    //                    cj = j;
+                    //                    ck = k;
                 }
                 if (vi < minvi) minvi = vi;
             }
         }
     }
-    wallCircleBound(Ne);
+    //wallCircleBound(Ne);
     //    cout << Ne.p[Ne.nx / 2][Ne.ny / 2][Ne.nz / 2] << '\t';
     //    cout << maxvi << '\t' << minvi << '\t' << Ne.p[ci][cj][ck] << '\t' << Erms.p[ci][cj][ck] << '\t';
 }
@@ -647,7 +645,7 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     initCoeffForDensity();
 #ifdef DEBUG
-    Ne.save();
+    //Ne.save();
     Erms.setName("erms");
     Cvxex_guassian.setName("cv");
     Cezhx.setName("cezhx");
@@ -657,6 +655,19 @@ void fdtd::setUp() {
 #endif
 
 #endif
+
+    // initial coeffcients at source position
+    switch (pSource->getDirection()) {
+        case source::Z:
+            pSource->initUpdateCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
+            break;
+        case source::X:
+            pSource->initUpdateCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
+            break;
+        case source::Y:
+            pSource->initUpdateCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
+            break;
+    }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
@@ -759,7 +770,8 @@ void fdtd::compute() {
         //====================================
         // update Source
         //====================================
-        updateSource(n);
+        // updateSource(n);        
+        pSource->updateSource(Ex, Ey, Ez, n * mDt);
 
 #ifdef WITH_DENSITY
         captureEFieldForErms();
@@ -808,6 +820,12 @@ void fdtd::compute() {
 #ifdef MATLAB_SIMULATION
     finishMatlabSimulation();
 #endif
+
+#if WITH_DENSITY
+#ifdef DEBUG
+    Ne.save();
+#endif
+#endif
     //  END TIME STEP
     cout << "Done time-stepping..." << endl;
 
@@ -826,7 +844,7 @@ void fdtd::updateSource(unsigned n) {
             source = M_PI_TWO * mOmega * mAmplitude * cos((n * mDt - t0) * M_PI_TWO * mOmega);
             break;
         case ONE_SINE_PULSE:
-            source = M_PI_TWO * mOmega * mAmplitude * Source::SinePulse(n * mDt - t0, mOmega, t_up, t_down);
+            source = M_PI_TWO * mOmega * mAmplitude * sourceType::SinePulse(n * mDt - t0, mOmega, t_up, t_down);
 
             break;
         default:
@@ -994,8 +1012,7 @@ void fdtd::printParam() {
 
     //  Specify the Impulsive Source (Differentiated Gaussian) parameters
     cout << "tw = " << tw << endl; //pulse width
-    cout << "t0 = " << t0 << endl; //delay
-    cout << "source = " << source << endl; //Differentiated Gaussian source
+    cout << "t0 = " << t0 << endl; //delay    
     cout << "Amplitude = " << mAmplitude << endl; // Amplitude
     cout << "omega = " << mOmega << endl; // angle speed for sine wave
 

@@ -126,7 +126,7 @@ public:
     /**
      * free space created for data3d @c mst
      */
-    void FreeStructData();
+    void freeArray();
 
     /**
      * Set Data to val

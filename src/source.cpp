@@ -2,31 +2,34 @@
  * File:   source.cpp
  * Author: skiloop
  * 
- * Created on 2013年5月10日, 下午9:58
+ * Created on 2013年12月16日, 下午12:11
  */
-#include <math.h>
 
-#include "common.h"
 #include "source.h"
 
-Source::Source() 
-{
+source::source(int direction, MyDataF R, Point lower, Point upper, MyDataF amp)
+: mDirection(direction)
+, mResistancePerComponent(R)
+, mAmplitude(amp)
+, mLowerIndex(lower)
+, mUpperIndex(upper)
+, mPSource(NULL) {
+    Cese.create3DArray(upper.x - lower.x + 1, upper.y - lower.y + 1, upper.z - lower.z + 1);
 }
 
-Source::Source(const Source& orig) {
-}
-
-Source::~Source() {
-}
-
-MyDataF Source::SinePulse(MyDataF t, MyDataF omega, MyDataF t_max, MyDataF t_min) {
-    if (t >= t_min && t <= t_max) {
-        return cos(M_PI_TWO * omega * t);
-    } else {
-        return 0.0;
+source::source(const source& orig) {
+    if (this != &orig) {
+        mDirection = orig.mDirection;
+        mResistancePerComponent = orig.mResistancePerComponent;
+        mAmplitude = orig.mAmplitude;
+        mLowerIndex = orig.mLowerIndex;
+        mUpperIndex = orig.mUpperIndex;
+        Cese.freeArray();
+        Cese.create3DArray(orig.Cese);
+        mPSource = orig.mPSource;
     }
 }
 
-MyDataF Source::SineWave(MyDataF t, MyDataF omega) {
-    return cos(M_PI_TWO * omega * t);
+source::~source() {
 }
+

@@ -2,6 +2,7 @@
 
 #include "cpml.h"
 #include "Point.h"
+#include "source.h"
 
 #ifndef WITH_DENSITY
 //#define WITH_DENSITY
@@ -60,12 +61,16 @@ public:
      */
     void setSourceType(int sourceType);
 
+    void setSource(source*p) {
+        pSource = p;
+    };
+
 #ifdef MATLAB_SIMULATION
     int initMatlabSimulation();
     void doMatlabSimulation();
     void finishMatlabSimulation();
 #endif
-    
+
 private:
     void buildObject(); //Creates the object geometry
     void yeeCube(unsigned, unsigned, unsigned, unsigned); //Sets material properties to a cell
@@ -93,7 +98,7 @@ private:
     // Specify the CPML Order and Other Parameters:
     unsigned mPMLOrder;
     unsigned mAlphaOrder;
-    unsigned mPMLWidth;    
+    unsigned mPMLWidth;
 
     /////////////////////////////////////////////////////////
     // SOURCE PARAMETRS
@@ -104,10 +109,10 @@ private:
 #ifdef WITH_DENSITY
     //how many fine grids per coarse grid 
     unsigned mNeGridSize;
-    //initial plasma value
-    MyDataF Ne0;
     // start index of density zone in Maxwell domain
     unsigned mNeStartIndex;
+    //initial plasma value
+    MyDataF Ne0;
 #endif
     // source type
     int mSrcType;
@@ -118,8 +123,7 @@ private:
     MyDataF *mMu;
 
 
-    MyDataF t0; //delay
-    MyDataF source; //Differentiated Gaussian source    
+    MyDataF t0; //delay    
     MyDataF mOmega; //wave angle frequency
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
@@ -128,6 +132,9 @@ private:
 
     // source position
     Point mSourceIndex;
+
+    // Source 
+    source *pSource;
 
     // common data
     MyDataF dtDivEps0DivDxyz;
@@ -215,7 +222,7 @@ private:
 
     //initials
     void initCoeffForDensity();
-    void initDensity();    
+    void initDensity();
     void createCoeff();
     void updateCoeffWithDensity();
     void updateBeta();

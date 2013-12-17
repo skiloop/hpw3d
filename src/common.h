@@ -19,8 +19,9 @@ typedef pMyDataF* ppMyDataF;
 #define GAUSSIAN_WAVE (1)
 #define SINE_WAVE (2)
 #define DERIVATIVE_GAUSSIAN_WAVE (3)
-#define ZERO_TYPE (4)
-#define ONE_SINE_PULSE (5)
+#define COSINE_GAUSSIAN_WAVE (4)
+#define ZERO_TYPE (5)
+#define ONE_SINE_PULSE (6)
 #define DEFAULT_WAVE_TYPE GAUSSIAN_WAVE
 #define MAX_TYPE_VALUE ONE_SINE_PULSE
 

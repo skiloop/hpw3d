@@ -6,8 +6,13 @@
 int thread_count = 1;
 #endif
 //#define WITH_DENSITY
+
 #include "fdtd.h"
 #include "inputChecker.h"
+#include "currentSource.h"
+#include "SineWaveSource.h"
+#include "GaussianWaveSource.h"
+#include "CosineGaussianWave.h"
 
 MyDataF epsR;
 MyDataF dx, dy, dz;
@@ -43,7 +48,7 @@ int main(int argc, char*argv[]) {
     thread_count = checker.threadCount;
 #endif
     unsigned xlen, ylen, zlen, tlen;
-    
+
     //    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
     MyDataF dt = dx / 2 / C;
     xlen = (unsigned) (T * checker.xZoneLen * C / dx);
@@ -66,30 +71,39 @@ int main(int argc, char*argv[]) {
     cout << "dt=" << dt << endl;
 
 #ifdef WITH_DENSITY
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,checker.fluidGridSize);
-    hpw.setPlasmaParam(0, 760 * 5.3E9, 760, 0);
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize, checker.fluidGridSize);
+    hpw.setPlasmaParam(1e-300, 760 * 5.3E9, 760, 0);
 #else
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize);
 #endif
     hpw.setSourceType(checker.waveType);
 
+    GaussianWaveSource gaussianWave(checker.frequency);
+    SineWaveSource sineSource(omega);
+    CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
+    Point lower(xlen / 2 - 1, ylen / 2 - 1, zlen / 2 - 1);
+    Point upper(xlen / 2 + 1, ylen / 2 + 1, zlen / 2 + 1);
+    MyDataF R = 1e-20;
+    currentSource cSource(source::Z, R, lower, upper, checker.amptidute * 1e13);
+
     switch (checker.waveType) {
-        case GAUSSIAN_WAVE:break;
+        case GAUSSIAN_WAVE:
+            cSource.setSourceType(&gaussianWave);
+            break;
         case SINE_WAVE:
-            hpw.defineSineSource(omega);
+            cSource.setSourceType(&sineSource);
             break;
         case DERIVATIVE_GAUSSIAN_WAVE:break;
+        case COSINE_GAUSSIAN_WAVE:
+            cSource.setSourceType(&cosGaussian);
+            break;
         case ZERO_TYPE:break;
         case ONE_SINE_PULSE:
-            checker.t0 = 0.01 * T;
-            checker.omega = omega;
-            checker.tUp = 1.01 * T;
-            checker.tDown = 0;
-            hpw.intSourceSinePulse(checker.t0, checker.omega, checker.tUp, checker.tDown, checker.amptidute);
             break;
         default:
-            ;
+            cSource.setSourceType(&gaussianWave);
     }
+    hpw.setSource(&cSource);
     //hpw.initialize();
     hpw.startUp();
     return 0;

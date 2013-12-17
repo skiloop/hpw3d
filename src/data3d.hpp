@@ -43,18 +43,7 @@ template<class DataType> data3d<DataType>::data3d(const data3d< DataType >& obj)
 
 template<class DataType>
 data3d<DataType>::~data3d() {
-
-    if (p != NULL) {
-        for (unsigned i = 0; i < nx; i++) {
-            if (p[i] != NULL) {
-                for (unsigned j = 0; j < ny; j++) {
-                    if (p[i][j] != NULL) delete [] p[i][j];
-                }
-                delete [] p[i];
-            }
-        }
-        delete []p;
-    }
+    freeArray();
 }
 
 template<class DataType>
@@ -259,7 +248,7 @@ void data3d<DataType>::save(int leap) {
             }
             out << endl;
         }
-       // out << endl;
+        // out << endl;
     }
     out.close();
 }
@@ -524,12 +513,28 @@ template<class DataType>
 bool data3d<DataType>::isValid(unsigned i, unsigned j, unsigned k) {
     return isNaN(i, j, k) | isInf(i, j, k);
 }
+
 template<class DataType>
 void data3d<DataType>::whenLargerThan(unsigned i, unsigned j, unsigned k, MyDataF limit, void (*fun)()) {
-    if (p[i][j][k]>limit) {
+    if (p[i][j][k] > limit) {
         //cout << "larger var found for " << getName() << " at:(" << i << "," << j << "," << k << ")" << endl;
-        if(NULL!=fun){
+        if (NULL != fun) {
             (*fun)();
         }
-    }    
+    }
+}
+
+template<class DataType>
+void data3d<DataType>::freeArray() {
+    if (p != NULL) {
+        for (unsigned i = 0; i < nx; i++) {
+            if (p[i] != NULL) {
+                for (unsigned j = 0; j < ny; j++) {
+                    if (p[i][j] != NULL) delete [] p[i][j];
+                }
+                delete [] p[i];
+            }
+        }
+        delete []p;
+    }
 }
