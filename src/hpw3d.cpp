@@ -71,12 +71,13 @@ int main(int argc, char*argv[]) {
     cout << "dt=" << dt << endl;
 
 #ifdef WITH_DENSITY
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize, checker.fluidGridSize);
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
+            checker.useConnectingInterface, checker.fluidGridSize);
     hpw.setPlasmaParam(1e-300, 760 * 5.3E9, 760, 0);
 #else
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize);
-#endif
-    hpw.setSourceType(checker.waveType);
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize, 
+            checker.useConnectingInterface);
+#endif    
 
     GaussianWaveSource gaussianWave(checker.frequency);
     SineWaveSource sineSource(omega);
@@ -89,13 +90,16 @@ int main(int argc, char*argv[]) {
     switch (checker.waveType) {
         case GAUSSIAN_WAVE:
             cSource.setSourceType(&gaussianWave);
+            hpw.setSourceType(&gaussianWave);
             break;
         case SINE_WAVE:
             cSource.setSourceType(&sineSource);
+            hpw.setSourceType(&sineSource);
             break;
         case DERIVATIVE_GAUSSIAN_WAVE:break;
         case COSINE_GAUSSIAN_WAVE:
             cSource.setSourceType(&cosGaussian);
+            hpw.setSourceType(&cosGaussian);
             break;
         case ZERO_TYPE:break;
         case ONE_SINE_PULSE:

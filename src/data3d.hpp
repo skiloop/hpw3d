@@ -243,7 +243,7 @@ void data3d<DataType>::save(int leap) {
     unsigned i, j, k;
     for (i = 0; i < nx; i += leap) {
         for (j = 0; j < ny; j += leap) {
-            for (k = 0; k < ny; k += leap) {
+            for (k = 0; k < nz; k += leap) {
                 out << p[i][j][k] << '\t';
             }
             out << endl;

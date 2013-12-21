@@ -3,6 +3,7 @@
 #include "cpml.h"
 #include "Point.h"
 #include "source.h"
+#include "ConnectingInterface.h"
 
 #ifndef WITH_DENSITY
 //#define WITH_DENSITY
@@ -14,14 +15,14 @@ public:
     fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, unsigned _neGrid = 16);
+            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0, unsigned _neGrid = 16);
 
     void setPlasmaParam(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
 #else
     fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6);
+            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0);
 #endif
     ~fdtd(void);
 
@@ -59,7 +60,7 @@ public:
      * 
      * @param sourceType
      */
-    void setSourceType(int sourceType);
+    void setSourceType(sourceType* pSrcType);
 
     void setSource(source*p) {
         pSource = p;
@@ -116,7 +117,8 @@ private:
 #endif
     // source type
     int mSrcType;
-
+    // if use connecting interface
+    bool mUseConnectingInterface;
     //permittivity, permeability and conductivity of different materials
     MyDataF *mEpsilon;
     MyDataF *mSigma;
@@ -135,6 +137,9 @@ private:
 
     // Source 
     source *pSource;
+
+    // source type
+    sourceType *pSourceType;
 
     // common data
     MyDataF dtDivEps0DivDxyz;
@@ -244,7 +249,8 @@ private:
     void updateEz();
     void updateElectricAndVeloityFields();
     void updateSource(unsigned n);
-    cpml<MyDataF> pml;
+    cpml<MyDataF> mPML;
+    ConnectingInterface mConnectingInterface;
 private:
     /************************************************************************/
     /* update vi,va and Deff with Density Ne at point (i,j,k)               */

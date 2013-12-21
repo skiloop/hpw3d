@@ -56,6 +56,9 @@ public:
 
     // pml width
     int pmlSize;
+    
+    // if use connecting interface
+    int useConnectingInterface;
 
     // 
     int yeeCellSizeX;

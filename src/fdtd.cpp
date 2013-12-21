@@ -22,6 +22,7 @@ extern int thread_count;
 #include "sourceType.h"
 #include "InonizationFormula.h"
 #include "Point.h"
+#include "ConnectingInterface.h"
 
 extern MyDataF epsR;
 //extern MyDataF dt, dx, dy, dz;
@@ -38,7 +39,7 @@ void checkmax(unsigned &u_2check, unsigned max, unsigned min) {
 fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned pmlw, unsigned _neGrid)
+        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid)
 : mTotalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
 , tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), save_modulus(_savemodulus), mKSource(_ksource)
@@ -46,20 +47,26 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , mNeGridSize(_neGrid), mNeStartIndex(pmlw + 2)
 , Ne0(DEFAULT_DENSITY_MAX)
 , mSrcType(SOURCE_GAUSSIAN)
-, mEpsilon(NULL), mSigma(NULL), mMu(NULL), pSource(NULL), CA(NULL), CB(NULL) {
+, mUseConnectingInterface(useConnect)
+, mUseConnectingInterface(false)
+, mEpsilon(NULL), mSigma(NULL), mMu(NULL)
+, pSource(NULL), pSourceType(NULL), CA(NULL), CB(NULL) {
 }
 #else
 
 fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _kmax,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned pmlw)
+        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect)
 : mTotalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
 , tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), save_modulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mSrcType(SOURCE_GAUSSIAN)
-, mEpsilon(NULL), mSigma(NULL), mMu(NULL), pSource(NULL), CA(NULL), CB(NULL) {
+, mUseConnectingInterface(useConnect)
+, mEpsilon(NULL), mSigma(NULL), mMu(NULL)
+, pSource(NULL), pSourceType(NULL)
+, CA(NULL), CB(NULL) {
 }
 #endif
 
@@ -656,19 +663,27 @@ void fdtd::setUp() {
 
 #endif
 
-    // initial coeffcients at source position
-    switch (pSource->getDirection()) {
-        case source::Z:
-            pSource->initUpdateCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
-            break;
-        case source::X:
-            pSource->initUpdateCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
-            break;
-        case source::Y:
-            pSource->initUpdateCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
-            break;
+    if (mUseConnectingInterface) {
+        Point lower(mPMLWidth + 5, mPMLWidth + 5, mPMLWidth + 5);
+        Point upper(mMaxIndex.x - mPMLWidth - 5, mMaxIndex.y - mPMLWidth - 5, mMaxIndex.z - mPMLWidth - 5);
+        mConnectingInterface.setLowerAndUpper(lower, upper);
+        mConnectingInterface.setIncidentAngle(0.0*M_PI, 1.0*M_PI, 0.0*M_PI, tw*C, C, mDt, mDx);
+        mConnectingInterface.initCoefficients(mDx, mDt);
+        mConnectingInterface.invalidate();
+    } else {
+        // initial coeffcients at source position
+        switch (pSource->getDirection()) {
+            case source::Z:
+                pSource->initUpdateCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
+                break;
+            case source::X:
+                pSource->initUpdateCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
+                break;
+            case source::Y:
+                pSource->initUpdateCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
+                break;
+        }
     }
-
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -687,9 +702,9 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML initials
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    pml.setCPMLRegion(mPMLWidth);
-    pml.createCPMLArrays(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z);
-    pml.initCoefficientArrays(pmlOrder, alphaOrder, sigmaMax, kappaMax, alphaMax, epsR, mDt, mDx, mDy, mDz,
+    mPML.setCPMLRegion(mPMLWidth);
+    mPML.createCPMLArrays(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z);
+    mPML.initCoefficientArrays(pmlOrder, alphaOrder, sigmaMax, kappaMax, alphaMax, epsR, mDt, mDx, mDy, mDz,
             Ceyhz, Cezhy, Chyez, Chzey,
             Cexhz, Cezhx, Chxez, Chzex,
             Ceyhx, Cexhy, Chyex, Chxey);
@@ -762,16 +777,28 @@ void fdtd::compute() {
         //cout	<< Ez.p[mSourceIndex.x][mSourceIndex.y+35][mSourceIndex.z] << '\t';
         //cout	<< Ez.p[mSourceIndex.x][mSourceIndex.y+40][mSourceIndex.z] << '\t';
         //cout	<< Ez.p[mSourceIndex.x][mSourceIndex.y+45][mSourceIndex.z] << endl;
+        if (mUseConnectingInterface) {
 
-        updateMagneitcFields();
-        pml.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
-        updateElectricAndVeloityFields();
-        pml.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
-        //====================================
-        // update Source
-        //====================================
-        // updateSource(n);        
-        pSource->updateSource(Ex, Ey, Ez, n * mDt);
+            updateMagneitcFields();
+            mConnectingInterface.updateMSource();
+            mConnectingInterface.updateMConnect(Hx, Chxey, Chxez, Hy, Chyex, Chyez, Hz, Chzey, Chzex);
+            mPML.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
+
+            updateElectricAndVeloityFields();
+            mConnectingInterface.updateESource(pSourceType->valueAtTime(mDt * n));
+            mConnectingInterface.updateEConnect(Ex, Cexhy, Cexhz, Ey, Ceyhx, Ceyhz, Ez, Cezhy, Cezhx);
+            mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
+        } else {
+            updateMagneitcFields();
+            mPML.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
+            updateElectricAndVeloityFields();
+            mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
+            //====================================
+            // update Source
+            //====================================
+            // updateSource(n);        
+            pSource->updateSource(Ex, Ey, Ez, n * mDt);
+        }
 
 #ifdef WITH_DENSITY
         captureEFieldForErms();
@@ -792,12 +819,24 @@ void fdtd::compute() {
 #endif
         if ((n % save_modulus) == 0) {
 
-            writeField(n);
+            //writeField(n);
             //Ez.save(mSourceIndex.x + 10, 1, n, 1);
             //Ez.save(mSourceIndex.y + 10, 1, n, 2);
-            Ez.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
-            Ex.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
-            Ey.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
+            //            Ez.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
+            //            Ex.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
+            //            Ey.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
+            Ez.save(mMaxIndex.z / 2, 1, n, 3);
+            Ez.save(mMaxIndex.y / 2, 1, n, 2);
+            Ez.save(mMaxIndex.x / 2, 1, n, 1);
+            Ex.save(mMaxIndex.z / 2, 1, n, 3);
+            Ex.save(mMaxIndex.y / 2, 1, n, 2);
+            Ex.save(mMaxIndex.x / 2, 1, n, 1);
+            Ey.save(mMaxIndex.z / 2, 1, n, 3);
+            Ey.save(mMaxIndex.y / 2, 1, n, 2);
+            Ey.save(mMaxIndex.x / 2, 1, n, 1);
+            if (mUseConnectingInterface) {
+                mConnectingInterface.saveEMInc(n);
+            }
             /*
             pml.Psi_exz_zp.setName("psi");
             pml.Psi_exz_zp.save(0, 1, n, 3);
@@ -1044,9 +1083,8 @@ void fdtd::printParam() {
     cout << endl << "Total Simulation time = " << mTotalTimeSteps * mDt << " Seconds" << endl;
 }
 
-void fdtd::setSourceType(int sourceType) {
-
-    mSrcType = sourceType;
+void fdtd::setSourceType(sourceType* pSrcType) {
+    pSourceType = pSrcType;
 }
 
 void fdtd::defineSineSource(MyDataF omega_) {

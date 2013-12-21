@@ -17,6 +17,7 @@ inputChecker::inputChecker() :
 waveType(GAUSSIAN),
 threadCount(DEFAULT_THREAD_COUNT),
 pmlSize(DEFAULT_PML_SIZE),
+useConnectingInterface(0),
 yeeCellSizeX(0),
 yeeCellSizeY(0),
 yeeCellSizeZ(0),
@@ -84,6 +85,11 @@ void inputChecker::check() {
     if (frequency < 0) {
         frequency = DEFAULT_FREQUENCY;
     }
+    if (useConnectingInterface == 1) {
+        useConnectingInterface = 1;
+    } else {
+        useConnectingInterface = 0;
+    }
 }
 
 void inputChecker::help(char *prog) {
@@ -129,6 +135,7 @@ void inputChecker::help(char *prog) {
     cout << tab << "--z-zone-length=" << tab << "zone length in z-direction,in wave length" << endl;
     cout << tab << "--zone-size=" << tab << "zone size,in wave length,set x,y,z zone length together,setting yee cell cube" << endl;
     cout << tab << "--simulation-time=" << tab << "simulation time,in wave length size" << endl;
+    cout << tab << "--is-connecting=" << tab << "1 if use connecting interface " << endl;
     exit(0);
 }
 
@@ -171,6 +178,8 @@ void inputChecker::parseInput(int argc, char *argv[]) {
             yeeCellSize = strtol(argv[i] + 16, NULL, 10);
         } else if (strncmp(argv[i], "--fluid-grid-size=", 18) == 0) {
             fluidGridSize = strtol(argv[i] + 18, NULL, 10);
+        } else if (strncmp(argv[i], "--is-connecting=", 16) == 0) {
+            useConnectingInterface = strtol(argv[i] + 16, NULL, 10);
         }
     }
     check();
@@ -193,5 +202,6 @@ void inputChecker::print() {
     cout << "zoneLen=" << zoneLen << " lambda" << endl;
     cout << "frequency=" << frequency << " Hz" << endl;
     cout << "amptidute=" << amptidute << " V/m" << endl;
+    cout << "useConnecting=" << useConnectingInterface << endl;
     cout << "============================================" << endl;
 }
