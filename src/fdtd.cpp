@@ -46,9 +46,8 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mNeGridSize(_neGrid), mNeStartIndex(pmlw + 2)
 , Ne0(DEFAULT_DENSITY_MAX)
-, mSrcType(SOURCE_GAUSSIAN)
+, mSrcType(SOURCE_SINE)
 , mUseConnectingInterface(useConnect)
-, mUseConnectingInterface(false)
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
 , pSource(NULL), pSourceType(NULL), CA(NULL), CB(NULL) {
 }
@@ -62,7 +61,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), save_modulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
-, mSrcType(SOURCE_GAUSSIAN)
+, mSrcType(SOURCE_SINE)
 , mUseConnectingInterface(useConnect)
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
 , pSource(NULL), pSourceType(NULL)
@@ -227,6 +226,7 @@ void fdtd::updateDensity(void) {
     MyDataF Deff;
     MyDataF maxvi = 0, minvi = 0;
     MyDataF vi, va;
+    MyDataF dtfDivDsfSquare=mDtFluid/mDsFluid/mDsFluid;
 
     Ne_pre = Ne;
 
@@ -248,9 +248,9 @@ void fdtd::updateDensity(void) {
 
                 calculateIonizationParameters(i, j, k, va, vi, Deff);
 
-                Ne.p[i][j][k] = (Ne_ijk * (1 + mDtFluid * vi) + Deff * mDtFluid *
-                        (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk)
-                        / mDsFluid / mDsFluid / mDsFluid) / (1 + mDtFluid * (va + mRei * Ne_ijk));
+                Ne.p[i][j][k] = (Ne_ijk * (1 + mDtFluid * vi) + Deff * dtfDivDsfSquare *
+                        (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk) )
+                        / (1 + mDtFluid * (va + mRei * Ne_ijk));
                 if (vi > maxvi) {
                     maxvi = vi;
                     //                    ci = i;
@@ -487,7 +487,9 @@ void fdtd::initDensity() {
                 ea = exp(-(px + py + pz) / tmp);
                 Ne.p[i][j][k] = Ne0*ea;
 #else
-                Ne.p[i][j][k] = Ne0 * exp(-(pow((i - (int) srcPos.x) * mDsFluid, 2) + pow((j - (int) srcPos.y) * mDsFluid, 2) + pow((k - (int) srcPos.z) * mDsFluid, 2)) / tmp);
+                Ne.p[i][j][k] = Ne0 * exp(-(pow((i - (int) srcPos.x) * mDsFluid, 2)
+                        + pow((j - (int) srcPos.y) * mDsFluid, 2)
+                        + pow((k - (int) srcPos.z) * mDsFluid, 2)) / tmp);
 #endif
             }
         }
@@ -624,7 +626,8 @@ void fdtd::setUp() {
 #ifdef DEBUG
     mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2, mMaxIndex.z / 2);
 #else
-    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y - mPMLWidth - 35, mMaxIndex.z / 2);
+    mSourceIndex.setValue(mStartIndex.x + (unsigned) (((float) (mEndIndex.x - mStartIndex.x)*2.25) / 3.0),
+            mMaxIndex.y / 2, mMaxIndex.z / 2);
 #endif    
 
     checkmax(mSourceIndex.x, 1, mMaxIndex.x);
@@ -667,7 +670,7 @@ void fdtd::setUp() {
         Point lower(mPMLWidth + 5, mPMLWidth + 5, mPMLWidth + 5);
         Point upper(mMaxIndex.x - mPMLWidth - 5, mMaxIndex.y - mPMLWidth - 5, mMaxIndex.z - mPMLWidth - 5);
         mConnectingInterface.setLowerAndUpper(lower, upper);
-        mConnectingInterface.setIncidentAngle(0.0*M_PI, 1.0*M_PI, 0.0*M_PI, tw*C, C, mDt, mDx);
+        mConnectingInterface.setIncidentAngle(0.5 * M_PI, 0.0 * M_PI, 1.0 * M_PI, tw*C, C, mDt, mDx);
         mConnectingInterface.initCoefficients(mDx, mDt);
         mConnectingInterface.invalidate();
     } else {
@@ -765,6 +768,7 @@ void fdtd::compute() {
         cout << Ez.p[mSourceIndex.x][capturePosition.y][mSourceIndex.z] << '\t';
         cout << Ez.p[capturePosition.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         cout << Ez.p[mSourceIndex.x][mSourceIndex.y][capturePosition.z] << '\t';
+        cout << n * mDt / 1e-9 << "ns" << "\t";
         cout << endl;
         //        cout << "Source Value:";
         //        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
@@ -785,7 +789,7 @@ void fdtd::compute() {
             mPML.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
 
             updateElectricAndVeloityFields();
-            mConnectingInterface.updateESource(pSourceType->valueAtTime(mDt * n));
+            mConnectingInterface.updateESource(pSourceType->valueAtTime(mDt * n) * mAmplitude);
             mConnectingInterface.updateEConnect(Ex, Cexhy, Cexhz, Ey, Ceyhx, Ceyhz, Ez, Cezhy, Cezhx);
             mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         } else {
@@ -813,6 +817,11 @@ void fdtd::compute() {
 #if DEBUG>=4
             Ne.save(Ne.nz / 2, 1, n, 3);
             Nu_c.save(Nu_c.nz / 2, 1, n, 3);
+#else
+            Ne.save(Ne.nx / 2, 1, n, 1);
+            Ne.save(Ne.nz / 2, 1, n, 3);
+            Erms.save(Erms.nx / 2, 1, n, 1);
+            Ne.save(mSourceIndex.y*mNeGridSize, 1, n, 2);
 #endif
 
         }
@@ -825,23 +834,24 @@ void fdtd::compute() {
             //            Ez.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
             //            Ex.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
             //            Ey.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
-            Ez.save(mMaxIndex.z / 2, 1, n, 3);
-            Ez.save(mMaxIndex.y / 2, 1, n, 2);
-            Ez.save(mMaxIndex.x / 2, 1, n, 1);
-            Ex.save(mMaxIndex.z / 2, 1, n, 3);
-            Ex.save(mMaxIndex.y / 2, 1, n, 2);
-            Ex.save(mMaxIndex.x / 2, 1, n, 1);
-            Ey.save(mMaxIndex.z / 2, 1, n, 3);
-            Ey.save(mMaxIndex.y / 2, 1, n, 2);
-            Ey.save(mMaxIndex.x / 2, 1, n, 1);
+#ifdef DEBUG 
             if (mUseConnectingInterface) {
                 mConnectingInterface.saveEMInc(n);
+                Ez.save(mMaxIndex.z / 2, 1, n, 3);
+                Ez.save(mMaxIndex.y / 2, 1, n, 2);
+                Ez.save(mMaxIndex.x / 2, 1, n, 1);
+                Ex.save(mMaxIndex.z / 2, 1, n, 3);
+                Ex.save(mMaxIndex.y / 2, 1, n, 2);
+                Ex.save(mMaxIndex.x / 2, 1, n, 1);
+                Ey.save(mMaxIndex.z / 2, 1, n, 3);
+                Ey.save(mMaxIndex.y / 2, 1, n, 2);
+                Ey.save(mMaxIndex.x / 2, 1, n, 1);
             }
-            /*
-            pml.Psi_exz_zp.setName("psi");
-            pml.Psi_exz_zp.save(0, 1, n, 3);
-            pml.Psi_exz_zp.save(4, 1, n, 3);
-             */
+
+            //            pml.Psi_exz_zp.setName("psi");
+            //            pml.Psi_exz_zp.save(0, 1, n, 3);
+            //            pml.Psi_exz_zp.save(4, 1, n, 3);
+
 #ifdef WITH_DENSITY
             Cezhx.save(Ez.nz / 2, 1, n, 3);
             Cezhx.save(Ez.ny / 2, 1, n, 2);
@@ -849,7 +859,14 @@ void fdtd::compute() {
             Ceze.save(Ez.nz / 2, 1, n, 3);
             Cezvz.save(Ez.nz / 2, 1, n, 3);
             Cvzez_gaussian.save(Ez.nz / 2, 1, n, 3);
-#endif
+#endif  /*WITH_DENSITY*/
+
+#else /* not define DEBUG*/
+            Ez.save(mSourceIndex.x, 1, n, 1);
+            Ez.save(mSourceIndex.y, 1, n, 2);
+            Ez.save(mSourceIndex.z, 1, n, 3);
+#endif   /*DEBUG*/
+
         }
 #ifdef MATLAB_SIMULATION
         doMatlabSimulation();
@@ -1366,13 +1383,13 @@ void fdtd::updateElectricAndVeloityFields() {
     updateEz();
 }
 
-void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amptidute) {
+void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amplitude) {
 
     t0 = t_0;
     mOmega = omega_;
     t_up = tUp;
     t_down = tDown;
-    mAmplitude = amptidute;
+    mAmplitude = amplitude;
 }
 // =================================================================
 // MATLAB SIMULATION
@@ -1409,3 +1426,7 @@ void fdtd::finishMatlabSimulation() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // END OF PROGRAM CPMLFDTD3D
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void fdtd::setSrcType(int srcType) {
+    mSrcType = srcType;
+}

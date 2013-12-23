@@ -65,6 +65,8 @@ public:
     void setSource(source*p) {
         pSource = p;
     };
+    
+    void setSrcType(int srcType);
 
 #ifdef MATLAB_SIMULATION
     int initMatlabSimulation();

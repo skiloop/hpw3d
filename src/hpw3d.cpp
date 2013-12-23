@@ -75,7 +75,7 @@ int main(int argc, char*argv[]) {
             checker.useConnectingInterface, checker.fluidGridSize);
     hpw.setPlasmaParam(1e-300, 760 * 5.3E9, 760, 0);
 #else
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize, 
+    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
             checker.useConnectingInterface);
 #endif    
 
@@ -89,20 +89,28 @@ int main(int argc, char*argv[]) {
 
     switch (checker.waveType) {
         case GAUSSIAN_WAVE:
+            hpw.setSrcType(GAUSSIAN_WAVE);
             cSource.setSourceType(&gaussianWave);
             hpw.setSourceType(&gaussianWave);
             break;
         case SINE_WAVE:
+            hpw.setSrcType(SINE_WAVE);
             cSource.setSourceType(&sineSource);
             hpw.setSourceType(&sineSource);
             break;
-        case DERIVATIVE_GAUSSIAN_WAVE:break;
+        case DERIVATIVE_GAUSSIAN_WAVE:
+            hpw.setSrcType(DERIVATIVE_GAUSSIAN_WAVE);
+            break;
         case COSINE_GAUSSIAN_WAVE:
+            hpw.setSrcType(COSINE_GAUSSIAN_WAVE);
             cSource.setSourceType(&cosGaussian);
             hpw.setSourceType(&cosGaussian);
             break;
-        case ZERO_TYPE:break;
+        case ZERO_TYPE:
+            hpw.setSrcType(ZERO_TYPE);
+            break;
         case ONE_SINE_PULSE:
+            hpw.setSrcType(ONE_SINE_PULSE);
             break;
         default:
             cSource.setSourceType(&gaussianWave);
