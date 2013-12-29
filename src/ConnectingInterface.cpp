@@ -45,9 +45,10 @@ void ConnectingInterface::setIncidentAngle(MyDataF theta, MyDataF phi, MyDataF p
 }
 
 void ConnectingInterface::initCoefficients(MyDataF ds, MyDataF dt) {
-    mChe = dt / mu_0 / ds / mPhaseVelocityRatio;
-    mCeh = dt / eps_0 / ds / mPhaseVelocityRatio;
-    mCMur = (C * dt - ds) / (C * dt + ds);
+    MyDataF delta = ds * mPhaseVelocityRatio;
+    mChe = dt / mu_0 / delta;
+    mCeh = dt / eps_0 / delta;
+    mCMur = (C * dt - delta) / (C * dt + delta);
 }
 
 void ConnectingInterface::updateEConnect(data3d<MyDataF>& Ex, const data3d<MyDataF> &Cexhy, const data3d<MyDataF> &Cexhz,

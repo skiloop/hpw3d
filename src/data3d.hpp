@@ -16,13 +16,10 @@ using namespace std;
 #ifdef MATLAB_SIMULATION
 template<class DataType> Engine* data3d<DataType>::ep = NULL;
 template<class DataType> bool data3d<DataType>::mIsMatlabEngineStarted = false;
+template<class DataType> unsigned int data3d<DataType>::mMatlabFigureCount = 0;
 #endif
 
 template<class DataType> const string data3d<DataType>::OUTPUT_FILE_NAME_TAIL = ".dat";
-
-#ifdef MATLAB_SIMULATION
-template<class DataType> unsigned int data3d<DataType>::mMatlabFigureCount = 0;
-#endif
 
 template<class DataType> data3d<DataType>::data3d(const data3d< DataType >& obj) : p(NULL) {
 #ifdef MATLAB_SIMULATION

@@ -254,9 +254,16 @@ private:
     cpml<MyDataF> mPML;
     ConnectingInterface mConnectingInterface;
 private:
-    /************************************************************************/
-    /* update vi,va and Deff with Density Ne at point (i,j,k)               */
-    /************************************************************************/
+
+    /**
+     * Ionization parameters at point (i,j,k) for density updating
+     * @param i
+     * @param j
+     * @param k
+     * @param va
+     * @param vi
+     * @param Deff
+     */
     void calculateIonizationParameters(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
 };
 

@@ -248,9 +248,9 @@ void fdtd::updateDensity(void) {
 
                 calculateIonizationParameters(i, j, k, va, vi, Deff);
 
-                Ne.p[i][j][k] = (Ne_ijk * (1 + mDtFluid * vi) + Deff * dtfDivDsfSquare *
+                Ne.p[i][j][k] = (Ne_ijk * (1.0 + mDtFluid * vi) + Deff * dtfDivDsfSquare *
                         (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk) )
-                        / (1 + mDtFluid * (va + mRei * Ne_ijk));
+                        / (1.0 + mDtFluid * (va + mRei * Ne_ijk));
                 if (vi > maxvi) {
                     maxvi = vi;
                     //                    ci = i;
