@@ -55,7 +55,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, uns
 , pSource(NULL), pSourceType(NULL), CA(NULL), CB(NULL)
 , mNeBoundWidth(NE_BOUND_WIDTH) {
     mMaxIndex.setValue(xzoneSize + 2 * (pmlw + mAirBufferWidth),
-            yzoneSize + 2 * (pmlw + mAirBufferWidth), 
+            yzoneSize + 2 * (pmlw + mAirBufferWidth),
             zzoneSize + 2 * (pmlw + mAirBufferWidth));
     desideDomainZone();
 }
@@ -75,7 +75,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
 , pSource(NULL), pSourceType(NULL)
 , CA(NULL), CB(NULL) {
-    mMaxIndex.setValue(_imax + 2 * (pmlw + mAirBufferWidth), 
+    mMaxIndex.setValue(_imax + 2 * (pmlw + mAirBufferWidth),
             _jmax + 2 * (pmlw + mAirBufferWidth),
             _kmax + 2 * (pmlw + mAirBufferWidth));
     desideDomainZone();
@@ -109,12 +109,12 @@ void fdtd::captureEFieldForErms(void) {
     unsigned io, jo, ko;
     MyDataF sxIJK, syIJK, szIJK;
 
-    Point start(mNonPMLStartIndex.x*mNeGridSize, mNonPMLStartIndex.y*mNeGridSize, mNonPMLStartIndex.z * mNeGridSize);
+    Point start(0, 0, 0);
     switch (mSrcType) {
         case SOURCE_SINE:
-            for (i = mNonPMLStartIndex.x, io = start.x; i <= mNonPMLEndIndex.x; i++, io += mNeGridSize) {
-                for (j = mNonPMLStartIndex.y, jo = start.y; j <= mNonPMLEndIndex.y; j++, jo += mNeGridSize) {
-                    for (k = mNonPMLStartIndex.z, ko = start.z; k <= mNonPMLEndIndex.z; k++, ko += mNeGridSize) {
+            for (i = mDomainStartIndex.x, io = start.x; i <= mDomainEndIndex.x; i++, io += mNeGridSize) {
+                for (j = mDomainStartIndex.y, jo = start.y; j <= mDomainEndIndex.y; j++, jo += mNeGridSize) {
+                    for (k = mDomainStartIndex.z, ko = start.z; k <= mDomainEndIndex.z; k++, ko += mNeGridSize) {
                         sxIJK = (Ex.p[i][j][k] + Ex.p[i + 1][j][k]) / 2;
                         syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
                         szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
@@ -128,9 +128,9 @@ void fdtd::captureEFieldForErms(void) {
             break;
         case SOURCE_GAUSSIAN:
         default:
-            for (i = mNonPMLStartIndex.x, io = start.x; i <= mNonPMLEndIndex.x; i++, io += mNeGridSize) {
-                for (j = mNonPMLStartIndex.y, jo = start.y; j <= mNonPMLEndIndex.y; j++, jo += mNeGridSize) {
-                    for (k = mNonPMLStartIndex.z, ko = start.z; k <= mNonPMLEndIndex.z; k++, ko += mNeGridSize) {
+            for (i = mDomainStartIndex.x, io = start.x; i <= mDomainEndIndex.x; i++, io += mNeGridSize) {
+                for (j = mDomainStartIndex.y, jo = start.y; j <= mDomainEndIndex.y; j++, jo += mNeGridSize) {
+                    for (k = mDomainStartIndex.z, ko = start.z; k <= mDomainEndIndex.z; k++, ko += mNeGridSize) {
                         sxIJK = (Vx.p[i][j][k] + Vx.p[i + 1][j][k]) / 2;
                         syIJK = (Vy.p[i][j][k] + Vy.p[i][j + 1][k]) / 2;
                         szIJK = (Vz.p[i][j][k] + Vz.p[i][j][k + 1]) / 2;
@@ -233,8 +233,8 @@ void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyD
 void fdtd::updateDensity(void) {
 
     int i, j, k;
-    Point ms(mDomainStartIndex.x*mNeGridSize, mDomainStartIndex.y*mNeGridSize, mDomainStartIndex.z * mNeGridSize);
-    Point me(mDomainEndIndex.x*mNeGridSize, mDomainEndIndex.y*mNeGridSize, mDomainEndIndex.z * mNeGridSize);
+    Point ms(mNeBoundWidth, mNeBoundWidth, mNeBoundWidth);
+    Point me(Ne.nx - mNeBoundWidth, Ne.ny - mNeBoundWidth, Ne.nz - mNeBoundWidth);
     MyDataF Ne_ijk, Neip1, Neim1, Nejm1, Nejp1, Nekp1, Nekm1;
     MyDataF Deff;
     MyDataF maxvi = 0, minvi = 0;
@@ -383,10 +383,10 @@ void fdtd::updateCoeffWithDensity() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif    
-    for (j = mDomainStartIndex.x; j <= mDomainEndIndex.x; j++) {
-        jm = (j - mDomainStartIndex.x) * mNeGridSize;
-        for (i = mDomainStartIndex.y, im = mHalfNeGridSize; i < mDomainEndIndex.y; i++, im += mNeGridSize) {
-            for (k = mDomainStartIndex.z, km = mHalfNeGridSize; k <= mDomainEndIndex.z; k++, km += mNeGridSize) {
+    for (j = mDomainStartIndex.y; j <= mDomainEndIndex.y; j++) {
+        jm = (j - mDomainStartIndex.y) * mNeGridSize;
+        for (i = mDomainStartIndex.x, im = mHalfNeGridSize; i < mDomainEndIndex.x; i++, im += mNeGridSize) {
+            for (k = mDomainStartIndex.z, km = 0; k <= mDomainEndIndex.z; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Cexe.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cexhy.p[i][j][k] = -dtDivEps0DivDz / kappa;
@@ -406,10 +406,10 @@ void fdtd::updateCoeffWithDensity() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif    
-    for (j = mDomainStartIndex.x; j < mDomainEndIndex.x; j++) {
-        jm = (j - mDomainStartIndex.x) * mNeGridSize + mHalfNeGridSize;
-        for (i = mDomainStartIndex.y, im = mNeGridSize; i <= mDomainEndIndex.y; i++, im += mNeGridSize) {
-            for (k = mDomainStartIndex.z, km = mNeGridSize; k <= mDomainEndIndex.z; k++, km += mNeGridSize) {
+    for (j = mDomainStartIndex.y; j < mDomainEndIndex.y; j++) {
+        jm = (j - mDomainStartIndex.y) * mNeGridSize + mHalfNeGridSize;
+        for (i = mDomainStartIndex.x, im = 0; i <= mDomainEndIndex.x; i++, im += mNeGridSize) {
+            for (k = mDomainStartIndex.z, km = 0; k <= mDomainEndIndex.z; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Ceye.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Ceyhx.p[i][j][k] = dtDivEps0DivDz / kappa;
@@ -429,9 +429,9 @@ void fdtd::updateCoeffWithDensity() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,im,jm,km)//shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif   
-    for (j = mDomainStartIndex.x; j <= mDomainEndIndex.x; j++) {
-        jm = (j - mDomainStartIndex.x) * mNeGridSize;
-        for (i = mDomainStartIndex.y, im = mNeGridSize; i <= mDomainEndIndex.y; i++, im += mNeGridSize) {
+    for (j = mDomainStartIndex.y; j <= mDomainEndIndex.y; j++) {
+        jm = (j - mDomainStartIndex.y) * mNeGridSize;
+        for (i = mDomainStartIndex.x, im = 0; i <= mDomainEndIndex.x; i++, im += mNeGridSize) {
             for (k = mDomainStartIndex.z, km = mHalfNeGridSize; k < mDomainEndIndex.z; k++, km += mNeGridSize) {
                 MyDataF kappa = (1 + Beta.p[im][jm][km]);
                 Ceze.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
@@ -485,7 +485,9 @@ void fdtd::updateBeta() {
 
 void fdtd::initDensity() {
     MyDataF tmp = 2 * pow(4 * mDsFluid, 2); // 4 Maxwell grid size width
-    Point srcPos(mSourceIndex.x*mNeGridSize, mSourceIndex.y*mNeGridSize, mSourceIndex.z * mNeGridSize);
+    Point srcPos((mSourceIndex.x-mDomainStartIndex.x)*mNeGridSize+mNeBoundWidth, 
+            (mSourceIndex.y-mDomainStartIndex.y)*mNeGridSize+mNeBoundWidth, 
+            (mSourceIndex.z-mDomainStartIndex.z)*mNeGridSize+mNeBoundWidth);
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)
 #endif   
@@ -636,7 +638,7 @@ void fdtd::setUp() {
 #ifdef DEBUG
     mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2, mMaxIndex.z / 2);
 #else
-    mSourceIndex.setValue(mNonPMLStartIndex.x + (unsigned) (((float) (mNonPMLEndIndex.x - mNonPMLStartIndex.x)*2.25) / 3.0),
+    mSourceIndex.setValue(mDomainStartIndex.x + (unsigned) (((float) (mDomainEndIndex.x - mDomainStartIndex.x)*2.25) / 3.0),
             mMaxIndex.y / 2, mMaxIndex.z / 2);
 #endif    
 
@@ -775,7 +777,7 @@ void fdtd::compute() {
         cout << Ez.p[mSourceIndex.x][capturePosition.y][mSourceIndex.z] << '\t';
         cout << Ez.p[capturePosition.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         cout << Ez.p[mSourceIndex.x][mSourceIndex.y][capturePosition.z] << '\t';
-        cout << n * mDt / 1e-9 << "ns" << "\t";
+        cout << n * mDt / 1e-9 << " ns" << "\t";
         cout << endl;
         //        cout << "Source Value:";
         //        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
@@ -1203,16 +1205,21 @@ void fdtd::updateEx() {
                 Ex.p[i][j][k] = Cexe.p[i][j][k] * Ex.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * Cexhz.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i][j][k - 1]) * Cexhy.p[i][j][k];
-#ifdef WITH_DENSITY
-                Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
+#ifdef WITH_DENSITY        
+                if (i >= mDomainStartIndex.x && i < mDomainEndIndex.x
+                        && j >= mDomainStartIndex.y && j <= mDomainEndIndex.y
+                        && k >= mDomainStartIndex.z && k <= mDomainEndIndex.z) {
+                    Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
 #if DEBUG>=4
-                Ex.whenLargerThan(i, j, k, 1e30, NULL);
+                    Ex.whenLargerThan(i, j, k, 1e30, NULL);
 #endif
-                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = Nu_c.p[i * mNeGridSize + mHalfNeGridSize][j * mNeGridSize][k * mNeGridSize];
-                    Vx.p[i][j][k] = (1 - a) / (1 + a) * Vx.p[i][j][k] - Cvxex_guassian.p[i][j][k] * (Exp + Ex.p[i][j][k]);
-                } else {
-                    Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
+
+                    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                        MyDataF a = Nu_c.p[(i - mDomainStartIndex.x) * mNeGridSize + mHalfNeGridSize][(j - mDomainStartIndex.y) * mNeGridSize][(k - mDomainStartIndex.z) * mNeGridSize];
+                        Vx.p[i][j][k] = (1 - a) / (1 + a) * Vx.p[i][j][k] - Cvxex_guassian.p[i][j][k] * (Exp + Ex.p[i][j][k]);
+                    } else {
+                        Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
+                    }
                 }
 #endif
             }
@@ -1239,19 +1246,23 @@ void fdtd::updateEy() {
                         (Hz.p[i][j][k] - Hz.p[i - 1][j][k]) * Ceyhz.p[i][j][k] +
                         (Hx.p[i][j][k] - Hx.p[i][j][k - 1]) * Ceyhx.p[i][j][k];
 #ifdef WITH_DENSITY
-                Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
+                if (i >= mDomainStartIndex.x && i <= mDomainEndIndex.x
+                        && j >= mDomainStartIndex.y && j < mDomainEndIndex.y
+                        && k >= mDomainStartIndex.z && k <= mDomainEndIndex.z) {
+                    Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
 
 #if (DEBUG>=4&&!_OPENMP)
-                Ey.whenLargerThan(i, j, k, 1e30, NULL);
-                Ey.isValid(i, j, k);
+                    Ey.whenLargerThan(i, j, k, 1e30, NULL);
+                    Ey.isValid(i, j, k);
 #endif
-                // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
-                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = Nu_c.p[i * mNeGridSize ][j * mNeGridSize + mHalfNeGridSize][k * mNeGridSize];
-                    Vy.p[i][j][k] = (1 - a) / (1 + a) * Vy.p[i][j][k] - Cvyey_guassian.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
-                } else {
+                    // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                        MyDataF a = Nu_c.p[(i - mDomainStartIndex.x) * mNeGridSize ][(j - mDomainStartIndex.y) * mNeGridSize + mHalfNeGridSize][(k - mDomainStartIndex.z) * mNeGridSize];
+                        Vy.p[i][j][k] = (1 - a) / (1 + a) * Vy.p[i][j][k] - Cvyey_guassian.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
+                    } else {
 
-                    Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                        Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                    }
                 }
 #endif /* WITH_DENSITY */
             }
@@ -1278,22 +1289,26 @@ void fdtd::updateEz() {
                         (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k]+
                         (Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
 #ifdef WITH_DENSITY
-                Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
+                if (i >= mDomainStartIndex.x && i <= mDomainEndIndex.x
+                        && j >= mDomainStartIndex.y && j <= mDomainEndIndex.y
+                        && k >= mDomainStartIndex.z && k < mDomainEndIndex.z) {
+                    Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
 
-                // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
-                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
-                    MyDataF a = Nu_c.p[i * mNeGridSize ][j * mNeGridSize][k * mNeGridSize + mHalfNeGridSize];
-                    Vz.p[i][j][k] = (1 - a) / (1 + a) * Vz.p[i][j][k] - Cvzez_gaussian.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
-                } else {
-                    Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
-                }
+                    // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                        MyDataF a = Nu_c.p[(i - mDomainStartIndex.x) * mNeGridSize ][(j - mDomainStartIndex.y) * mNeGridSize][(k - mDomainStartIndex.z) * mNeGridSize + mHalfNeGridSize];
+                        Vz.p[i][j][k] = (1 - a) / (1 + a) * Vz.p[i][j][k] - Cvzez_gaussian.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
+                    } else {
+                        Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                    }
 #endif
 #if DEBUG>=4
-                Ez.whenLargerThan(i, j, k, 1e30, NULL);
-                //                if (isnan(Ez.p[i][j][k])) {
-                //                    cout << "Ez is nan at " << i << "," << j << "," << k << endl;
-                //                }
+                    Ez.whenLargerThan(i, j, k, 1e30, NULL);
+                    //                if (isnan(Ez.p[i][j][k])) {
+                    //                    cout << "Ez is nan at " << i << "," << j << "," << k << endl;
+                    //                }
 #endif
+                }
             }
         }
     }
