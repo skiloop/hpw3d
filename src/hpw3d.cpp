@@ -60,9 +60,6 @@ int main(int argc, char*argv[]) {
         tlen = (unsigned) (tw * checker.tZoneLen / dt);
     }
 
-    xlen += 2 * checker.pmlSize;
-    ylen += 2 * checker.pmlSize;
-    zlen += 2 * checker.pmlSize;
     cout << "xlen=" << xlen << endl;
     cout << "ylen=" << ylen << endl;
     cout << "zlen=" << zlen << endl;

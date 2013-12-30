@@ -67,6 +67,8 @@ public:
     };
     
     void setSrcType(int srcType);
+    
+    void desideDomainZone();
 
 #ifdef MATLAB_SIMULATION
     int initMatlabSimulation();
@@ -94,7 +96,7 @@ private:
 
     MyDataF mAmplitude; // Amplitude
     // Specify the Time Step at which the data has to be saved for Visualization
-    unsigned save_modulus;
+    unsigned mSaveModulus;
 
     // Output recording 
     unsigned mKSource;
@@ -102,6 +104,7 @@ private:
     unsigned mPMLOrder;
     unsigned mAlphaOrder;
     unsigned mPMLWidth;
+    unsigned mAirBufferWidth;
 
     /////////////////////////////////////////////////////////
     // SOURCE PARAMETRS
@@ -112,8 +115,6 @@ private:
 #ifdef WITH_DENSITY
     //how many fine grids per coarse grid 
     unsigned mNeGridSize;
-    // start index of density zone in Maxwell domain
-    unsigned mNeStartIndex;
     //initial plasma value
     MyDataF Ne0;
 #endif
@@ -131,9 +132,10 @@ private:
     MyDataF mOmega; //wave angle frequency
 
     //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
-    Point mStartIndex;
-    Point mEndIndex;
-
+    Point mNonPMLStartIndex;
+    Point mNonPMLEndIndex;
+    Point mDomainStartIndex;
+    Point mDomainEndIndex;    
     // source position
     Point mSourceIndex;
 
@@ -183,6 +185,7 @@ private:
     //time step of plasma
     MyDataF mDtFluid;
     int mNeSkipStep;
+    int mNeBoundWidth;
 
     // temporary variables that often used
     MyDataF mHalfDelta_t;
@@ -227,6 +230,7 @@ private:
     data3d<MyDataF> Vy;
     data3d<MyDataF> Vz;
 
+    void createDensityArrays();
     //initials
     void initCoeffForDensity();
     void initDensity();
@@ -264,7 +268,7 @@ private:
      * @param vi
      * @param Deff
      */
-    void calculateIonizationParameters(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
+    void calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
 };
 
 
