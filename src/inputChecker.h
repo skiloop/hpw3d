@@ -73,6 +73,7 @@ public:
     double zoneLen;
     double frequency;
     double amptidute;
+    double maxNe;
     //parameter for sine pulse
     double t0;
     double omega;

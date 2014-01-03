@@ -15,7 +15,8 @@ public:
     fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0, unsigned _neGrid = 16);
+            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0,
+            unsigned _neGrid = 16,MyDataF maxNe=DEFAULT_DENSITY_MAX);
 
     void setPlasmaParam(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
 #else

@@ -41,14 +41,14 @@ void checkmax(unsigned &u_2check, unsigned max, unsigned min) {
 fdtd::fdtd(unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, unsigned zzoneSize,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid)
+        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid,MyDataF maxNe)
 : mTotalTimeSteps(_totalTimeSteps)
 , tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mAirBufferWidth(AIR_BUFFER)
 , mNeGridSize(_neGrid)
-, Ne0(DEFAULT_DENSITY_MAX)
+, Ne0(maxNe)
 , mSrcType(SOURCE_SINE)
 , mUseConnectingInterface(useConnect)
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
@@ -274,7 +274,7 @@ void fdtd::updateDensity(void) {
             }
         }
     }
-    //wallCircleBound(Ne);
+    wallCircleBound(Ne);
     //    cout << Ne.p[Ne.nx / 2][Ne.ny / 2][Ne.nz / 2] << '\t';
     //    cout << maxvi << '\t' << minvi << '\t' << Ne.p[ci][cj][ck] << '\t' << Erms.p[ci][cj][ck] << '\t';
 }
@@ -286,7 +286,7 @@ void fdtd::updateVelocity(void) {
 void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
     unsigned i, j, k;
 
-    for (int widthLeft = mPMLWidth * mNeGridSize - 1; widthLeft >= 0; widthLeft--) {
+    for (int widthLeft = mNeBoundWidth-1; widthLeft >= 0; widthLeft--) {
 
         unsigned start = widthLeft;
         unsigned end = stru.nz - widthLeft - 1;
