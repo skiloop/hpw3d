@@ -79,6 +79,7 @@ public:
     double omega;
     double tUp;
     double tDown;
+    double rei;
 
     const static int GAUSSIAN = GAUSSIAN_WAVE;
     const static int SINE = SINE_WAVE;

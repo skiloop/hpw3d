@@ -30,8 +30,8 @@ tZoneLen(DEFAULT_TIME_ZONE_LENGTH),
 zoneLen(0),
 frequency(DEFAULT_FREQUENCY),
 amptidute(DEFAULT_AMPTIDUTE),
-maxNe(DEFAULT_DENSITY_MAX)
-{
+maxNe(DEFAULT_DENSITY_MAX),
+rei(0) {
 }
 
 inputChecker::inputChecker(const inputChecker& orig) {
@@ -92,8 +92,8 @@ void inputChecker::check() {
     } else {
         useConnectingInterface = 0;
     }
-    if(maxNe<0){
-      maxNe=DEFAULT_DENSITY_MAX;
+    if (maxNe < 0) {
+        maxNe = DEFAULT_DENSITY_MAX;
     }
 }
 
@@ -142,6 +142,7 @@ void inputChecker::help(char *prog) {
     cout << tab << "--simulation-time=" << tab << "simulation time,in wave length size" << endl;
     cout << tab << "--is-connecting=" << tab << "1 if use connecting interface " << endl;
     cout << tab << "--max-ne=" << tab << "set Ne max" << endl;
+    cout << tab << "--rei=" << tab << "set R_ei" << endl;
     exit(0);
 }
 
@@ -186,8 +187,10 @@ void inputChecker::parseInput(int argc, char *argv[]) {
             fluidGridSize = strtol(argv[i] + 18, NULL, 10);
         } else if (strncmp(argv[i], "--is-connecting=", 16) == 0) {
             useConnectingInterface = strtol(argv[i] + 16, NULL, 10);
-        }else if(strncmp(argv[i],"--max-ne=",9)==0){
-           maxNe=atof(argv[i]+9);
+        } else if (strncmp(argv[i], "--max-ne=", 9) == 0) {
+            maxNe = atof(argv[i] + 9);
+        } else if (strncmp(argv[i], "--rei=", 6) == 0) {
+            rei = atof(argv[i] + 6);
         }
     }
     check();
@@ -211,6 +214,7 @@ void inputChecker::print() {
     cout << "frequency=" << frequency << " Hz" << endl;
     cout << "amptidute=" << amptidute << " V/m" << endl;
     cout << "useConnecting=" << useConnectingInterface << endl;
-    cout << "max-ne="<<maxNe<<endl;
+    cout << "max-ne=" << maxNe << endl;
+    cout << "rei=" << rei << endl;
     cout << "============================================" << endl;
 }

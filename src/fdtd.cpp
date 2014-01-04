@@ -24,8 +24,6 @@ extern int thread_count;
 #include "Point.h"
 #include "ConnectingInterface.h"
 
-#define AIR_BUFFER 6
-#define NE_BOUND_WIDTH 6
 extern MyDataF epsR;
 //extern MyDataF dt, dx, dy, dz;
 extern MyDataF T;
@@ -41,7 +39,7 @@ void checkmax(unsigned &u_2check, unsigned max, unsigned min) {
 fdtd::fdtd(unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, unsigned zzoneSize,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid,MyDataF maxNe)
+        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid, MyDataF maxNe)
 : mTotalTimeSteps(_totalTimeSteps)
 , tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
@@ -104,7 +102,7 @@ void fdtd::setPlasmaParam(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
     mNiuType = _ftype;
 }
 
-void fdtd::captureEFieldForErms(void) {
+void fdtd::captureEFieldForEeff(void) {
     unsigned i, j, k;
     unsigned io, jo, ko;
     MyDataF sxIJK, syIJK, szIJK;
@@ -119,8 +117,8 @@ void fdtd::captureEFieldForErms(void) {
                         syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
                         szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
                         MyDataF tmp = sqrt(szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
-                        if (tmp > Erms.p[io][jo][ko]) {
-                            Erms.p[io][jo][ko] = tmp;
+                        if (tmp > Eeff.p[io][jo][ko]) {
+                            Eeff.p[io][jo][ko] = tmp;
                         }
                     }
                 }
@@ -134,7 +132,7 @@ void fdtd::captureEFieldForErms(void) {
                         sxIJK = (Vx.p[i][j][k] + Vx.p[i + 1][j][k]) / 2;
                         syIJK = (Vy.p[i][j][k] + Vy.p[i][j + 1][k]) / 2;
                         szIJK = (Vz.p[i][j][k] + Vz.p[i][j][k + 1]) / 2;
-                        Erms.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK) * mDt;
+                        Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK) * mDt;
                     }
                 }
             }
@@ -155,7 +153,7 @@ void fdtd::updateCollisionFrequency() {
         for (i = 0; i < Nu_c.nx; i++) {
             for (j = 0; j < Nu_c.ny; j++) {
                 for (k = 0; k < Nu_c.nz; k++) {
-                    EeffDivP = Erms.p[i][j][k] / DivParam;
+                    EeffDivP = Eeff.p[i][j][k] / DivParam;
                     if (EeffDivP >= 120) {
                         Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP);
                     } else if (EeffDivP >= 54) {
@@ -169,7 +167,18 @@ void fdtd::updateCollisionFrequency() {
     }
 }
 
-void fdtd::updateErms() {
+void fdtd::vec2Eeff() {
+    MyDataF tmp = me / e / sqrt(2.0*mDt);
+    for (unsigned i = 0; i < Eeff.nx; i += mNeGridSize) {
+        for (unsigned j = 0; j < Eeff.ny; j += mNeGridSize) {
+            for (unsigned k = 0; k < Eeff.nz; k += mNeGridSize) {
+                Eeff.p[i][j][k] = tmp * sqrt(Eeff.p[i][j][k] * Nu_c.p[i][j][k]);
+            }
+        }
+    }
+}
+
+void fdtd::updateEeff() {
     unsigned is, js, ks;
     unsigned in, jn, kn;
     unsigned i, j, k;
@@ -177,7 +186,10 @@ void fdtd::updateErms() {
     unsigned iu, ju, ku;
     unsigned ngred = mNeGridSize * mNeGridSize*mNeGridSize;
     Point start(0, 0, 0);
-    Point end(Erms.nx, Erms.ny, Erms.nz);
+    Point end(Eeff.nx, Eeff.ny, Eeff.nz);
+    if (fdtd::SOURCE_GAUSSIAN == mSrcType) {
+        vec2Eeff();
+    }
     for (is = start.x, in = is + mNeGridSize; in < end.x; is = in, in += mNeGridSize) {
         for (js = start.y, jn = js + mNeGridSize; jn < end.y; js = jn, jn += mNeGridSize) {
             for (ks = start.z, kn = ks + mNeGridSize; kn < end.z; ks = kn, kn += mNeGridSize) {
@@ -185,10 +197,10 @@ void fdtd::updateErms() {
                 for (i = is, im = 0, iu = mNeGridSize; i < in; i++, im++, iu--) {
                     for (j = js, jm = 0, ju = mNeGridSize; j < jn; j++, jm++, ju--) {
                         for (k = ks, km = 0, ku = mNeGridSize; k < kn; k++, km++, ku--) {
-                            Erms.p[i][j][k] = (iu * ju * ku * Erms.p[is][js][ks] + im * ju * ku * Erms.p[in][js][ks] +
-                                    im * jm * ku * Erms.p[in][jn][ks] + im * jm * km * Erms.p[in][jn][kn] +
-                                    iu * jm * ku * Erms.p[is][jn][ks] + iu * jm * km * Erms.p[is][jn][kn] +
-                                    iu * ju * km * Erms.p[is][js][kn] + im * ju * km * Erms.p[in][js][kn]) / ngred;
+                            Eeff.p[i][j][k] = (iu * ju * ku * Eeff.p[is][js][ks] + im * ju * ku * Eeff.p[in][js][ks] +
+                                    im * jm * ku * Eeff.p[in][jn][ks] + im * jm * km * Eeff.p[in][jn][kn] +
+                                    iu * jm * ku * Eeff.p[is][jn][ks] + iu * jm * km * Eeff.p[is][jn][kn] +
+                                    iu * ju * km * Eeff.p[is][js][kn] + im * ju * km * Eeff.p[in][js][kn]) / ngred;
                         }
                     }
                 }
@@ -198,28 +210,28 @@ void fdtd::updateErms() {
 }
 
 void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff) {
-    MyDataF Eeff;
+    MyDataF EeffVPerCM;
     switch (mSrcType) {
         case SOURCE_GAUSSIAN:
-            Eeff = Erms.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100; //convert to V/cm
+            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100; //convert to V/cm
             break;
         default:
-            Eeff = Erms.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100 * pow(1 / (1 + mOmega * mOmega / mNiu_m / mNiu_m), 0.5);
+            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100 * pow(1 / (1 + mOmega * mOmega / mNiu_m / mNiu_m), 0.5);
     }
 
     switch (mNiuType) {
         case MORROW_AND_LOWKE:
-            Niu_MorrowAndLowke(&vi, &va, Eeff, mNeutralGasDensity);
+            Niu_MorrowAndLowke(&vi, &va, EeffVPerCM, mNeutralGasDensity);
             break;
         case NIKONOV:
-            Niu_Nikonov(&vi, &va, Eeff, mAirPressure);
+            Niu_Nikonov(&vi, &va, EeffVPerCM, mAirPressure);
             break;
         case KANG:
-            Niu_Kang(&vi, &va, Eeff);
+            Niu_Kang(&vi, &va, EeffVPerCM);
             break;
         case ALI:
         default:
-            Niu_Ali(&vi, &va, Eeff, mAirPressure);
+            Niu_Ali(&vi, &va, EeffVPerCM, mAirPressure);
     }
     if (Ne.p[i][j][k] < 1) {
         Deff = mDe;
@@ -286,7 +298,7 @@ void fdtd::updateVelocity(void) {
 void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
     unsigned i, j, k;
 
-    for (int widthLeft = mNeBoundWidth-1; widthLeft >= 0; widthLeft--) {
+    for (int widthLeft = mNeBoundWidth - 1; widthLeft >= 0; widthLeft--) {
 
         unsigned start = widthLeft;
         unsigned end = stru.nz - widthLeft - 1;
@@ -333,13 +345,13 @@ void fdtd::createCoeff() {
     Ceyvy.create3DArray(Ey, 0.0);
     Cezvz.create3DArray(Ez, 0.0);
     // beta
-    Beta.create3DArray(Erms, 0.0);
+    Beta.create3DArray(Eeff, 0.0);
     // velocity coefficients
     if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
         Cvxex_guassian.create3DArray(Vx, 0.0);
         Cvyey_guassian.create3DArray(Vy, 0.0);
         Cvzez_gaussian.create3DArray(Vz, 0.0);
-        Nu_c.create3DArray(Erms, 0.0);
+        Nu_c.create3DArray(Eeff, 0.0);
         Nu_c.setName("nuc");
     }
 
@@ -460,10 +472,10 @@ void fdtd::updateBeta() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)  //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
-        for (int i = 0; i < Erms.nx; i++) {
+        for (int i = 0; i < Eeff.nx; i++) {
             int im = i + start.x;
-            for (unsigned j = 0, jm = start.y; j < Erms.ny; j++, jm++) {
-                for (unsigned k = 0, km = start.z; k < Erms.nz; k++, km++) {
+            for (unsigned j = 0, jm = start.y; j < Eeff.ny; j++, jm++) {
+                for (unsigned k = 0, km = start.z; k < Eeff.nz; k++, km++) {
                     Beta.p[i][j][k] = temp * Ne.p[im][jm][km];
                 }
             }
@@ -472,10 +484,10 @@ void fdtd::updateBeta() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
-        for (int i = 0; i < Erms.nx; i++) {
+        for (int i = 0; i < Eeff.nx; i++) {
             int im = i + start.x;
-            for (unsigned j = 0, jm = start.y; j < Erms.ny; j++, jm++) {
-                for (unsigned k = 0, km = start.z; k < Erms.nz; k++, km++) {
+            for (unsigned j = 0, jm = start.y; j < Eeff.ny; j++, jm++) {
+                for (unsigned k = 0, km = start.z; k < Eeff.nz; k++, km++) {
                     Beta.p[i][j][k] = temp / (1 + mHalfDelta_t * Nu_c.p[i][j][k]) * Ne.p[im][jm][km];
                 }
             }
@@ -485,9 +497,9 @@ void fdtd::updateBeta() {
 
 void fdtd::initDensity() {
     MyDataF tmp = 2 * pow(4 * mDsFluid, 2); // 4 Maxwell grid size width
-    Point srcPos((mSourceIndex.x-mDomainStartIndex.x)*mNeGridSize+mNeBoundWidth, 
-            (mSourceIndex.y-mDomainStartIndex.y)*mNeGridSize+mNeBoundWidth, 
-            (mSourceIndex.z-mDomainStartIndex.z)*mNeGridSize+mNeBoundWidth);
+    Point srcPos((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
+            (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
+            (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)
 #endif   
@@ -529,11 +541,11 @@ void fdtd::createDensityArrays() {
     unsigned ny = (mDomainEndIndex.y - mDomainStartIndex.y + 1) * mNeGridSize;
     unsigned nz = (mDomainEndIndex.z - mDomainStartIndex.z + 1) * mNeGridSize;
     Ne.create3DArray(nx + mNeBoundWidth, ny + mNeBoundWidth, nz + mNeBoundWidth, 0.0);
-    Erms.create3DArray(nx, ny, nz, 0.0);
+    Eeff.create3DArray(nx, ny, nz, 0.0);
     Ne_pre.create3DArray(Ne, 0.0);
 
     createCoeff();
-    Erms.setName("erms");
+    Eeff.setName("erms");
     Ne.setName("Ne");
 }
 #endif
@@ -814,11 +826,12 @@ void fdtd::compute() {
         }
 
 #ifdef WITH_DENSITY
-        captureEFieldForErms();
+        captureEFieldForEeff();
+
         if (n % mNeSkipStep == 0) {
-            updateErms();
+            updateEeff();
 #if DEBUG>=4
-            Erms.save(Erms.nz / 2, 1, n, 3);
+            Eeff.save(Eeff.nz / 2, 1, n, 3);
 #endif
             updateCollisionFrequency();
             updateDensity();
@@ -829,10 +842,12 @@ void fdtd::compute() {
 #else
             Ne.save(Ne.nx / 2, 1, n, 1);
             Ne.save(Ne.nz / 2, 1, n, 3);
-            Erms.save(Erms.nx / 2, 1, n, 1);
+            Eeff.save(Eeff.nx / 2, 1, n, 1);
             Ne.save(mSourceIndex.y*mNeGridSize, 1, n, 2);
 #endif
-
+            if (fdtd::SOURCE_GAUSSIAN == mSrcType) {
+                Eeff.resetArray();
+            }
         }
 #endif
         if ((n % mSaveModulus) == 0) {
@@ -840,9 +855,9 @@ void fdtd::compute() {
             //writeField(n);
             //Ez.save(mSourceIndex.x + 10, 1, n, 1);
             //Ez.save(mSourceIndex.y + 10, 1, n, 2);
-            //            Ez.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
-            //            Ex.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
-            //            Ey.save(mMaxIndex.z - mPMLWidth - 5, 1, n, 3);
+            Ez.save(Ez.nz / 2, 1, n, 3);
+            Ex.save(Ex.nz / 2, 1, n, 3);
+            Ey.save(Ey.nz / 2, 1, n, 3);
 #ifdef DEBUG 
             if (mUseConnectingInterface) {
                 mConnectingInterface.saveEMInc(n);

@@ -43,6 +43,10 @@ const MyDataF mu_0 = 4.0 * M_PI * 1.0E-7;
 const MyDataF eps_0 = 1.0 / (C * C * mu_0);
 const MyDataF M_PI_TWO = M_PI * 2;
 
+// default zone parameters
+#define AIR_BUFFER 6
+#define NE_BOUND_WIDTH 6
+
 //#define WITH_DENSITY
 
 //#define WITH_DENSITY

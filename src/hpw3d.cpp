@@ -70,7 +70,7 @@ int main(int argc, char*argv[]) {
 #ifdef WITH_DENSITY
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
             checker.useConnectingInterface, checker.fluidGridSize);
-    hpw.setPlasmaParam(1e-300, 760 * 5.3E9, 760, 0);
+    hpw.setPlasmaParam(checker.rei, 760 * 5.3E9, 760, 0);
 #else
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
             checker.useConnectingInterface);
@@ -79,8 +79,13 @@ int main(int argc, char*argv[]) {
     GaussianWaveSource gaussianWave(checker.frequency);
     SineWaveSource sineSource(omega);
     CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
-    Point lower(xlen / 2 - 1, ylen / 2 - 1, zlen / 2 - 1);
-    Point upper(xlen / 2 + 1, ylen / 2 + 1, zlen / 2 + 1);
+    Point lower(xlen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
+            ylen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
+            zlen / 2 - 1 + checker.pmlSize + AIR_BUFFER);
+    Point upper(xlen / 2 + 1 + checker.pmlSize + AIR_BUFFER,
+            ylen / 2 + 1 + checker.pmlSize + AIR_BUFFER,
+            zlen / 2 + 1 + checker.pmlSize + AIR_BUFFER);
+
     MyDataF R = 1e-20;
     currentSource cSource(source::Z, R, lower, upper, checker.amptidute * 1e13);
 

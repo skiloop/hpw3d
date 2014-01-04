@@ -220,7 +220,7 @@ private:
     //Plasma
     data3d<MyDataF> Ne, Ne_pre;
     //
-    data3d<MyDataF> Erms;
+    data3d<MyDataF> Eeff;
     // Beta
     data3d<MyDataF> Beta;
 
@@ -240,9 +240,10 @@ private:
     void updateBeta();
 
     // Erms or Eeff operation
-    void captureEFieldForErms(void);
+    void captureEFieldForEeff(void);
     void updateCollisionFrequency();
-    void updateErms();
+    void vec2Eeff();
+    void updateEeff();
     void updateDensity(void);
     void updateVelocity(void);
     void wallCircleBound(data3d<MyDataF> &stru);
