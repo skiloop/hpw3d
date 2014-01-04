@@ -48,7 +48,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, uns
 , mNeGridSize(_neGrid)
 , Ne0(maxNe)
 , mSrcType(SOURCE_SINE)
-, mUseConnectingInterface(useConnect)
+, mUseConnectingInterface(!(useConnect==0))
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
 , pSource(NULL), pSourceType(NULL), CA(NULL), CB(NULL)
 , mNeBoundWidth(NE_BOUND_WIDTH) {
@@ -69,7 +69,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mAirBufferWidth(AIR_BUFFER)
 , mSrcType(SOURCE_SINE)
-, mUseConnectingInterface(useConnect)
+, mUseConnectingInterface(~(useConnect==0))
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
 , pSource(NULL), pSourceType(NULL)
 , CA(NULL), CB(NULL) {
@@ -129,10 +129,10 @@ void fdtd::captureEFieldForEeff(void) {
             for (i = mDomainStartIndex.x, io = start.x; i <= mDomainEndIndex.x; i++, io += mNeGridSize) {
                 for (j = mDomainStartIndex.y, jo = start.y; j <= mDomainEndIndex.y; j++, jo += mNeGridSize) {
                     for (k = mDomainStartIndex.z, ko = start.z; k <= mDomainEndIndex.z; k++, ko += mNeGridSize) {
-                        sxIJK = (Vx.p[i][j][k] + Vx.p[i + 1][j][k]) / 2;
-                        syIJK = (Vy.p[i][j][k] + Vy.p[i][j + 1][k]) / 2;
-                        szIJK = (Vz.p[i][j][k] + Vz.p[i][j][k + 1]) / 2;
-                        Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK) * mDt;
+                        sxIJK = (Ex.p[i][j][k] + Ex.p[i + 1][j][k]) / 2;
+                        syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
+                        szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
+                        Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
                     }
                 }
             }
@@ -168,11 +168,11 @@ void fdtd::updateCollisionFrequency() {
 }
 
 void fdtd::vec2Eeff() {
-    MyDataF tmp = me / e / sqrt(2.0*mDt);
+    MyDataF tmp = mDtFluid / mDt;
     for (unsigned i = 0; i < Eeff.nx; i += mNeGridSize) {
         for (unsigned j = 0; j < Eeff.ny; j += mNeGridSize) {
             for (unsigned k = 0; k < Eeff.nz; k += mNeGridSize) {
-                Eeff.p[i][j][k] = tmp * sqrt(Eeff.p[i][j][k] * Nu_c.p[i][j][k]);
+                Eeff.p[i][j][k] =  sqrt(tmp*Eeff.p[i][j][k]);
             }
         }
     }

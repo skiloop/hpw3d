@@ -301,7 +301,7 @@ void ConnectingInterface::initData() {
     unsigned sz = sk + 1;
     MyDataF tmp;
 
-    unsigned len = ceil(sqrt(si * si + sj * sj + sk * sk)) + 3;
+    unsigned len = ceil(sqrt((MyDataF)(si * si + sj * sj + sk * sk))) + 3;
 
     mEinc.createArray(len, 0.0);
     mHinc.createArray(len - 1, 0.0);
