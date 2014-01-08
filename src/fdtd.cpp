@@ -48,7 +48,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, uns
 , mNeGridSize(_neGrid)
 , Ne0(maxNe)
 , mSrcType(SOURCE_SINE)
-, mUseConnectingInterface(!(useConnect==0))
+, mUseConnectingInterface(!(useConnect == 0))
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
 , pSource(NULL), pSourceType(NULL), CA(NULL), CB(NULL)
 , mNeBoundWidth(NE_BOUND_WIDTH) {
@@ -69,7 +69,7 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _k
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mAirBufferWidth(AIR_BUFFER)
 , mSrcType(SOURCE_SINE)
-, mUseConnectingInterface(~(useConnect==0))
+, mUseConnectingInterface(~(useConnect == 0))
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
 , pSource(NULL), pSourceType(NULL)
 , CA(NULL), CB(NULL) {
@@ -119,6 +119,11 @@ void fdtd::captureEFieldForEeff(void) {
                         MyDataF tmp = sqrt(szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
                         if (tmp > Eeff.p[io][jo][ko]) {
                             Eeff.p[io][jo][ko] = tmp;
+#if DEBUG>=4
+                            if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko])) {
+                                tmp = 0.0;
+                            }
+#endif
                         }
                     }
                 }
@@ -133,6 +138,11 @@ void fdtd::captureEFieldForEeff(void) {
                         syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
                         szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
                         Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
+#if DEBUG>=4
+                        if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko]) || fabs(Eeff.p[io][jo][ko])>1e30) {
+                            szIJK = 0.0;
+                        }
+#endif
                     }
                 }
             }
@@ -161,6 +171,11 @@ void fdtd::updateCollisionFrequency() {
                     } else {
                         Nu_c.p[i][j][k] = C3 * EeffDivP / (1 + 0.04 * EeffDivP);
                     }
+#if DEBUG>=4
+                    if (isnan(Nu_c.p[i][j][k])) {
+                        EeffDivP = 0;
+                    }
+#endif
                 }
             }
         }
@@ -172,7 +187,12 @@ void fdtd::vec2Eeff() {
     for (unsigned i = 0; i < Eeff.nx; i += mNeGridSize) {
         for (unsigned j = 0; j < Eeff.ny; j += mNeGridSize) {
             for (unsigned k = 0; k < Eeff.nz; k += mNeGridSize) {
-                Eeff.p[i][j][k] =  sqrt(tmp*Eeff.p[i][j][k]);
+                Eeff.p[i][j][k] = sqrt(tmp * Eeff.p[i][j][k]);
+#if DEBUG>=4
+                if (isnan(Eeff.p[i][j][k]) || isinf(Eeff.p[i][j][k])) {
+                    tmp = mDtFluid / mDt;
+                }
+#endif
             }
         }
     }
@@ -187,7 +207,7 @@ void fdtd::updateEeff() {
     unsigned ngred = mNeGridSize * mNeGridSize*mNeGridSize;
     Point start(0, 0, 0);
     Point end(Eeff.nx, Eeff.ny, Eeff.nz);
-    if (fdtd::SOURCE_GAUSSIAN == mSrcType) {
+    if (fdtd::SOURCE_SINE != mSrcType) {
         vec2Eeff();
     }
     for (is = start.x, in = is + mNeGridSize; in < end.x; is = in, in += mNeGridSize) {
@@ -201,6 +221,11 @@ void fdtd::updateEeff() {
                                     im * jm * ku * Eeff.p[in][jn][ks] + im * jm * km * Eeff.p[in][jn][kn] +
                                     iu * jm * ku * Eeff.p[is][jn][ks] + iu * jm * km * Eeff.p[is][jn][kn] +
                                     iu * ju * km * Eeff.p[is][js][kn] + im * ju * km * Eeff.p[in][js][kn]) / ngred;
+#if DEBUG>=4
+                            if (isnan(Eeff.p[i][j][k]) || isinf(Eeff.p[i][j][k])) {
+                                Eeff.p[i][j][k] += 1;
+                            }
+#endif
                         }
                     }
                 }
@@ -345,13 +370,16 @@ void fdtd::createCoeff() {
     Ceyvy.create3DArray(Ey, 0.0);
     Cezvz.create3DArray(Ez, 0.0);
     // beta
-    Beta.create3DArray(Eeff, 0.0);
+    Beta.create3DArray(Eeff.nx, Eeff.ny, Eeff.nz, 0.0);
     // velocity coefficients
-    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
-        Cvxex_guassian.create3DArray(Vx, 0.0);
-        Cvyey_guassian.create3DArray(Vy, 0.0);
-        Cvzez_gaussian.create3DArray(Vz, 0.0);
-        Nu_c.create3DArray(Eeff, 0.0);
+    if (fdtd::SOURCE_SINE != mSrcType) {
+        Cvxvx.create3DArray(Vx, mAlpha);
+        Cvyvy.create3DArray(Vy, mAlpha);
+        Cvzvz.create3DArray(Vz, mAlpha);
+        Cvxex.create3DArray(Vx, 0.0);
+        Cvyey.create3DArray(Vy, 0.0);
+        Cvzez.create3DArray(Vz, 0.0);
+        Nu_c.create3DArray(Eeff.nx, Eeff.ny, Eeff.nz, 0.0);
         Nu_c.setName("nuc");
     }
 
@@ -367,8 +395,8 @@ void fdtd::initCoeffForDensity() {
     mA = mNiu_m * mDt / 2;
     mGamma = 1 + mA;
     mAlpha = (1 - mA) / mGamma;
-    Cvxex = Cvyey = Cvzez = e * mDt / 2 / me / mGamma;
-    Coeff_velocity = mHalf_e * mDt / me;
+    mCvxex = mCvyey = mCvzez = e * mDt / 2 / me / mGamma;
+    mCoeffVelocity = mHalf_e * mDt / me;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // initials collision frequency
@@ -403,12 +431,18 @@ void fdtd::updateCoeffWithDensity() {
                 Cexe.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cexhy.p[i][j][k] = -dtDivEps0DivDz / kappa;
                 Cexhz.p[i][j][k] = dtDivEps0DivDy / kappa;
-                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                if (fdtd::SOURCE_SINE != mSrcType) {
                     MyDataF a = mHalfDelta_t * Nu_c.p[im][jm][km];
                     MyDataF gamma = 1 + a;
-                    MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma);
-                    Cvxex_guassian.p[i][j][k] = Coeff_velocity / gamma;
-                    Cexvx.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
+                    Cvxex.p[i][j][k] = mCoeffVelocity / gamma;
+                    Cvxvx.p[i][j][k] = (1 - a) / gamma;
+                    Cexvx.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                            * Ne.p[im][jm][km] / kappa;
+#if DEBUG>=4
+                    if (isnan(Cvxvx.p[i][j][k]) || isnan(Cvxex.p[i][j][k]) || isnan(Cexvx.p[i][j][k])) {
+                        a = 0;
+                    }
+#endif
                 } else {
                     Cexvx.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
                 }
@@ -426,12 +460,18 @@ void fdtd::updateCoeffWithDensity() {
                 Ceye.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Ceyhx.p[i][j][k] = dtDivEps0DivDz / kappa;
                 Ceyhz.p[i][j][k] = -dtDivEps0DivDx / kappa;
-                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                if (fdtd::SOURCE_SINE != mSrcType) {
                     MyDataF a = mHalfDelta_t * Nu_c.p[im][jm][km];
-                    MyDataF gamma_t = 1 + a;
-                    MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma_t);
-                    Cvyey_guassian.p[i][j][k] = Coeff_velocity / gamma_t;
-                    Ceyvy.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
+                    MyDataF gamma = 1 + a;
+                    Cvyvy.p[i][j][k] = (1 - a) / gamma;
+                    Cvyey.p[i][j][k] = mCoeffVelocity / gamma;
+                    Ceyvy.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                            * Ne.p[im][jm][km] / kappa;
+#if DEBUG>=4
+                    if (isnan(Cvyvy.p[i][j][k]) || isnan(Cvyey.p[i][j][k]) || isnan(Ceyvy.p[i][j][k])) {
+                        a = 0;
+                    }
+#endif
                 } else {
                     Ceyvy.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
                 }
@@ -449,12 +489,18 @@ void fdtd::updateCoeffWithDensity() {
                 Ceze.p[i][j][k] = (1 - Beta.p[im][jm][km]) / kappa;
                 Cezhy.p[i][j][k] = dtDivEps0DivDx / kappa;
                 Cezhx.p[i][j][k] = -dtDivEps0DivDy / kappa;
-                if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+                if (fdtd::SOURCE_SINE != mSrcType) {
                     MyDataF a = mHalfDelta_t * Nu_c.p[im][jm][km];
-                    MyDataF gamma_t = 1 + a;
-                    MyDataF tmpc = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma_t);
-                    Cvzez_gaussian.p[i][j][k] = Coeff_velocity / gamma_t;
-                    Cezvz.p[i][j][k] = tmpc * Ne.p[im][jm][km] / kappa;
+                    MyDataF gamma = 1 + a;
+                    Cvzvz.p[i][j][k] = (1 - a) / gamma;
+                    Cvzez.p[i][j][k] = mCoeffVelocity / gamma;
+                    Cezvz.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                            * Ne.p[im][jm][km] / kappa;
+#if DEBUG>=4
+                    if (isnan(Cvzvz.p[i][j][k]) || isnan(Cvzez.p[i][j][k]) || isnan(Cezvz.p[i][j][k])) {
+                        a = 0;
+                    }
+#endif
                 } else {
                     Cezvz.p[i][j][k] = tmp * Ne.p[im][jm][km] / kappa;
                 }
@@ -467,7 +513,7 @@ void fdtd::updateBeta() {
     Point start(mNeBoundWidth, mNeBoundWidth, mNeBoundWidth);
     Point end(Ne.nx - mNeBoundWidth, Ne.nz - mNeBoundWidth, Ne.nz - mNeBoundWidth);
     MyDataF temp = e2Dt2Div4DivEps0DivMe;
-    if (mSrcType != fdtd::SOURCE_GAUSSIAN) {
+    if (fdtd::SOURCE_SINE == mSrcType) {
         temp = temp / mGamma;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)  //shared(Hx,Ez,Ey,pml,DA,DB,dy)
@@ -605,7 +651,7 @@ void fdtd::setUp() {
     mDt = mDx / 2 / C;
 
     //delay
-    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
+    if (fdtd::SOURCE_SINE != mSrcType) {
         t0 = 4.5 * tw;
     } else {
         t0 = tw;
@@ -680,11 +726,11 @@ void fdtd::setUp() {
     initCoeffForDensity();
 #ifdef DEBUG
     //Ne.save();
-    Cvxex_guassian.setName("cv");
+    Cvxex.setName("cv");
     Cezhx.setName("cezhx");
     Ceze.setName("ceze");
     Cezvz.setName("cezvz");
-    Cvzez_gaussian.setName("cvzzg");
+    Cvzez.setName("cvzzg");
 #endif
 
 #endif
@@ -882,7 +928,7 @@ void fdtd::compute() {
             Cezhx.save(Ez.nx / 2, 1, n, 1);
             Ceze.save(Ez.nz / 2, 1, n, 3);
             Cezvz.save(Ez.nz / 2, 1, n, 3);
-            Cvzez_gaussian.save(Ez.nz / 2, 1, n, 3);
+            Cvzez.save(Ez.nz / 2, 1, n, 3);
 #endif  /*WITH_DENSITY*/
 
 #else /* not define DEBUG*/
@@ -1147,10 +1193,10 @@ void fdtd::updateHx() {
                         Chxez.p[i][j][k]*(Ez.p[i][j + 1][k] - Ez.p[i][j][k]) +
                         Chxey.p[i][j][k]*(Ey.p[i][j][k + 1] - Ey.p[i][j][k]);
 
-#if (DEBUG>=4&&!_OPENMP)
-                Hx.isValid(i, j, k);
-                Hx.whenLargerThan(i, j, k, 1e30 / 188, NULL);
-#endif
+                //#if (DEBUG>=4&&!_OPENMP)
+                //                Hx.isValid(i, j, k);
+                //                Hx.whenLargerThan(i, j, k, 1e30 / 188, NULL);
+                //#endif
 
             }
         }
@@ -1170,10 +1216,10 @@ void fdtd::updateHy() {
                         Chyez.p[i][j][k]*(Ez.p[i + 1][j][k] - Ez.p[i][j][k]) +
                         Chyex.p[i][j][k]*(Ex.p[i][j][k + 1] - Ex.p[i][j][k]);
 
-#if (DEBUG>=4&&!_OPENMP)
-                Hy.isValid(i, j, k);
-                Hy.whenLargerThan(i, j, k, 1e30 / 188, NULL);
-#endif
+                //#if (DEBUG>=4&&!_OPENMP)
+                //                Hy.isValid(i, j, k);
+                //                Hy.whenLargerThan(i, j, k, 1e30 / 188, NULL);
+                //#endif
 
             }
         }
@@ -1195,10 +1241,10 @@ void fdtd::updateHz() {
                 Hz.p[i][j][k] = Chzh.p[i][j][k] * Hz.p[i][j][k] +
                         (Ey.p[i + 1][j][k] - Ey.p[i][j][k]) * Chzey.p[i][j][k] +
                         (Ex.p[i][j + 1][k] - Ex.p[i][j][k]) * Chzex.p[i][j][k];
-#if (DEBUG>=4&&!_OPENMP)
-                Hz.isValid(i, j, k);
-                Hz.whenLargerThan(i, j, k, 1e30 / 188, NULL);
-#endif
+                //#if (DEBUG>=4&&!_OPENMP)
+                //                Hz.isValid(i, j, k);
+                //                Hz.whenLargerThan(i, j, k, 1e30 / 188, NULL);
+                //#endif
 
             }
         }
@@ -1221,21 +1267,19 @@ void fdtd::updateEx() {
                         (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * Cexhz.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i][j][k - 1]) * Cexhy.p[i][j][k];
 #ifdef WITH_DENSITY        
-                if (i >= mDomainStartIndex.x && i < mDomainEndIndex.x
-                        && j >= mDomainStartIndex.y && j <= mDomainEndIndex.y
-                        && k >= mDomainStartIndex.z && k <= mDomainEndIndex.z) {
-                    Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
-#if DEBUG>=4
-                    Ex.whenLargerThan(i, j, k, 1e30, NULL);
-#endif
+                Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
 
-                    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
-                        MyDataF a = Nu_c.p[(i - mDomainStartIndex.x) * mNeGridSize + mHalfNeGridSize][(j - mDomainStartIndex.y) * mNeGridSize][(k - mDomainStartIndex.z) * mNeGridSize];
-                        Vx.p[i][j][k] = (1 - a) / (1 + a) * Vx.p[i][j][k] - Cvxex_guassian.p[i][j][k] * (Exp + Ex.p[i][j][k]);
-                    } else {
-                        Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - Cvxex * (Exp + Ex.p[i][j][k]);
-                    }
+                if (fdtd::SOURCE_SINE != mSrcType) {
+                    Vx.p[i][j][k] = Cvxvx.p[i][j][k] * Vx.p[i][j][k] - Cvxex.p[i][j][k] * (Exp + Ex.p[i][j][k]);
+                } else {
+                    Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - mCvxex * (Exp + Ex.p[i][j][k]);
                 }
+#if DEBUG>=4
+                //                Ex.whenLargerThan(i, j, k, 1e30, NULL);
+                if (isnan(Ex.p[i][j][k])) {
+                    Exp = 0.0;
+                }
+#endif
 #endif
             }
         }
@@ -1261,24 +1305,22 @@ void fdtd::updateEy() {
                         (Hz.p[i][j][k] - Hz.p[i - 1][j][k]) * Ceyhz.p[i][j][k] +
                         (Hx.p[i][j][k] - Hx.p[i][j][k - 1]) * Ceyhx.p[i][j][k];
 #ifdef WITH_DENSITY
-                if (i >= mDomainStartIndex.x && i <= mDomainEndIndex.x
-                        && j >= mDomainStartIndex.y && j < mDomainEndIndex.y
-                        && k >= mDomainStartIndex.z && k <= mDomainEndIndex.z) {
-                    Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
 
-#if (DEBUG>=4&&!_OPENMP)
-                    Ey.whenLargerThan(i, j, k, 1e30, NULL);
-                    Ey.isValid(i, j, k);
-#endif
-                    // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
-                    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
-                        MyDataF a = Nu_c.p[(i - mDomainStartIndex.x) * mNeGridSize ][(j - mDomainStartIndex.y) * mNeGridSize + mHalfNeGridSize][(k - mDomainStartIndex.z) * mNeGridSize];
-                        Vy.p[i][j][k] = (1 - a) / (1 + a) * Vy.p[i][j][k] - Cvyey_guassian.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
-                    } else {
-
-                        Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
-                    }
+                Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
+                // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
+                if (fdtd::SOURCE_SINE != mSrcType) {
+                    Vy.p[i][j][k] = Cvyvy.p[i][j][k] * Vy.p[i][j][k] - Cvyey.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
+                } else {
+                    Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - mCvyey * (Eyp + Ey.p[i][j][k]);
                 }
+#if (DEBUG>=4&&!_OPENMP)
+                //                Ey.whenLargerThan(i, j, k, 1e30, NULL);
+                //                Ey.isValid(i, j, k);
+                if (isnan(Ey.p[i][j][k])) {
+                    Eyp = 0.0;
+                }
+#endif
+
 #endif /* WITH_DENSITY */
             }
         }
@@ -1303,27 +1345,22 @@ void fdtd::updateEz() {
                 Ez.p[i][j][k] = Ceze.p[i][j][k] * Ez.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k]+
                         (Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
-#ifdef WITH_DENSITY
-                if (i >= mDomainStartIndex.x && i <= mDomainEndIndex.x
-                        && j >= mDomainStartIndex.y && j <= mDomainEndIndex.y
-                        && k >= mDomainStartIndex.z && k < mDomainEndIndex.z) {
-                    Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
+#ifdef WITH_DENSITY                
+                Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
 
-                    // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
-                    if (mSrcType == fdtd::SOURCE_GAUSSIAN) {
-                        MyDataF a = Nu_c.p[(i - mDomainStartIndex.x) * mNeGridSize ][(j - mDomainStartIndex.y) * mNeGridSize][(k - mDomainStartIndex.z) * mNeGridSize + mHalfNeGridSize];
-                        Vz.p[i][j][k] = (1 - a) / (1 + a) * Vz.p[i][j][k] - Cvzez_gaussian.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
-                    } else {
-                        Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
-                    }
+                // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
+                if (fdtd::SOURCE_SINE != mSrcType) {
+                    Vz.p[i][j][k] = Cvzvz.p[i][j][k] * Vz.p[i][j][k] - Cvzez.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
+                } else {
+                    Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - mCvzez * (Ezp + Ez.p[i][j][k]);
+                }
 #endif
 #if DEBUG>=4
-                    Ez.whenLargerThan(i, j, k, 1e30, NULL);
-                    //                if (isnan(Ez.p[i][j][k])) {
-                    //                    cout << "Ez is nan at " << i << "," << j << "," << k << endl;
-                    //                }
-#endif
+                //                Ez.whenLargerThan(i, j, k, 1e30, NULL);
+                if (isnan(Ez.p[i][j][k])) {
+                    Ezp = 0.0;
                 }
+#endif
             }
         }
     }

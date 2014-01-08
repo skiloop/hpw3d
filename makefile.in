@@ -1,13 +1,13 @@
-CXX=g++
-#CXX=icpc
+#CXX=g++
+CXX=icpc
 CC=gcc
 #CC=icc
 
 # MATH lib
 LIB= -lm
 # CFlags and CXXFlags
-CXXFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
-CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+CXXFLAGS=#-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+CFLAGS=#-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 # CXXFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 # CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 
@@ -40,6 +40,6 @@ MATINC=-I$(MATPATH)/extern/include
 #LIB+=$(MATLIB)
 
 # enable OpenMP
-#CXXFLAGS+=-fopenmp
-#LIB+=-fopenmp
+CXXFLAGS+=-fopenmp
+LIB+=-fopenmp
 

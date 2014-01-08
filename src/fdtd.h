@@ -196,7 +196,7 @@ private:
     MyDataF e2Dt2Div4DivEps0DivMe;
     MyDataF dtDivEps0DivDy;
     MyDataF dtDivEps0DivDz;
-    MyDataF Coeff_velocity;
+    MyDataF mCoeffVelocity;
     unsigned mHalfNeGridSize;
 
     //plasma variables
@@ -214,15 +214,16 @@ private:
     // update coefficients
     //    MyDataF Chxey,Chxez,Chyez,Chyex,Chzex,Chzey;
     data3d<MyDataF> Cezvz, Ceyvy, Cexvx;
-    data3d<MyDataF> Cvxex_guassian, Cvyey_guassian, Cvzez_gaussian;
-    MyDataF Cvxex, Cvyey, Cvzez;
+    data3d<MyDataF> Cvzvz, Cvyvy, Cvxvx;
+    data3d<MyDataF> Cvxex, Cvyey, Cvzez;
+    MyDataF mCvxex, mCvyey, mCvzez;
 
     //Plasma
     data3d<MyDataF> Ne, Ne_pre;
     //
     data3d<MyDataF> Eeff;
     // Beta
-    data3d<MyDataF> Beta;
+    data3d<long double> Beta;
 
     // collision frequency for reused mode
     data3d<MyDataF> Nu_c;
