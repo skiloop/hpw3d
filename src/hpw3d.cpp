@@ -70,7 +70,7 @@ int main(int argc, char*argv[]) {
 #ifdef WITH_DENSITY
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
             checker.useConnectingInterface, checker.fluidGridSize);
-    hpw.setPlasmaParam(checker.rei, 760 * 5.3E9, 760, 0);
+    hpw.setPlasmaParam(checker.rei, 760 * 5.3E9, 760, checker.nu_type);
 #else
     fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
             checker.useConnectingInterface);
