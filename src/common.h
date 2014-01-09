@@ -47,6 +47,11 @@ const MyDataF M_PI_TWO = M_PI * 2;
 #define AIR_BUFFER 6
 #define NE_BOUND_WIDTH 6
 
+// use density or not
+#define USE_DENSITY     1
+#define NOT_USE_DENSITY 0
+#define IF_USE_DENSITY (NOT_USE_DENSITY)
+
 //#define WITH_DENSITY
 
 //#define WITH_DENSITY

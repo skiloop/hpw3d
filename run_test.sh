@@ -11,11 +11,14 @@ fgsize=6
 iscon=0
 maxne=1e18
 rei=0
+useDensity=0
 nuType=3
 echo "../hpw3d --fluid-grid-size=$fgsize --wave-type=$wavetype --pml-width=$pmlwidth --zone-size=$zonesize \
 	--amptidute=$amp --yee-cell-size=$yeecellsize  --simulation-time=$sim_time\
-   	--openmp-thread=$nthread --is-connecting=$iscon --max-ne=$maxne --rei=$rei --nu-type=$nuType | tee r.log > /dev/null &"
+   	--openmp-thread=$nthread --is-connecting=$iscon --max-ne=$maxne --rei=$rei --nu-type=$nuType \
+   	--use-density=$useDensity | tee r.log > /dev/null &"
 ../hpw3d --fluid-grid-size=$fgsize --wave-type=$wavetype --pml-width=$pmlwidth --zone-size=$zonesize \
 	--amptidute=$amp --yee-cell-size=$yeecellsize  --simulation-time=$sim_time \
-   	--openmp-thread=$nthread  --is-connecting=$iscon --max-ne=$maxne --rei=$rei --nu-type=$nuType | tee r.log > /dev/null &
+   	--openmp-thread=$nthread  --is-connecting=$iscon --max-ne=$maxne --rei=$rei --nu-type=$nuType \
+   	--use-density=$useDensity | tee r.log > /dev/null &
 

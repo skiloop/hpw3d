@@ -5,26 +5,23 @@
 #include "source.h"
 #include "ConnectingInterface.h"
 
-#ifndef WITH_DENSITY
-//#define WITH_DENSITY
-#endif
 
 class fdtd {
 public:
-#ifdef WITH_DENSITY
-    fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
+//#ifdef WITH_DENSITY
+    fdtd(int useDensity,unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
             unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0,
             unsigned _neGrid = 16,MyDataF maxNe=DEFAULT_DENSITY_MAX);
 
     void setPlasmaParam(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
-#else
-    fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
-            MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
-            MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0);
-#endif
+//#else
+//    fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
+//            MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
+//            MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
+//            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0);
+//#endif
     ~fdtd(void);
 
     static const int SOURCE_GAUSSIAN = GAUSSIAN_WAVE;
@@ -84,7 +81,10 @@ private:
     void buildSphere(); //Builds a spherical object
     void buildDipole(); //Builds a dipole
     void printParam();
+    
+    int mUseDensity;
 private:
+    
     //  Specify Number of Time Steps and Grid Size Parameters
     unsigned mTotalTimeSteps; // total number of time steps
 
@@ -113,12 +113,12 @@ private:
     MyDataF t_up; // up bound of Pulse for Sine Pulse
     MyDataF t_down; // down bound of Pulse for Sine Pulse
 
-#ifdef WITH_DENSITY
+//#ifdef WITH_DENSITY
     //how many fine grids per coarse grid 
     unsigned mNeGridSize;
     //initial plasma value
     MyDataF Ne0;
-#endif
+//#endif
     // source type
     int mSrcType;
     // if use connecting interface
@@ -176,7 +176,7 @@ private:
 
     void initCoeficients();
 
-#ifdef WITH_DENSITY
+//#ifdef WITH_DENSITY
     // neutral gas density in cm^-3
     static const MyDataF mNeutralGasDensity;
 
@@ -248,7 +248,7 @@ private:
     void updateDensity(void);
     void updateVelocity(void);
     void wallCircleBound(data3d<MyDataF> &stru);
-#endif
+//#endif
     void updateHx();
     void updateHy();
     void updateHz();
