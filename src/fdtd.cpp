@@ -741,7 +741,7 @@ void fdtd::setUp() {
         mConnectingInterface.initCoefficients(mDx, mDt);
         mConnectingInterface.invalidate();
     } else {
-        // initial coeffcients at source position
+        // initial coefficients at source position
         switch (pSource->getDirection()) {
             case source::Z:
                 pSource->initUpdateCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);

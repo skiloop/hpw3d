@@ -31,7 +31,7 @@ zoneLen(0),
 frequency(DEFAULT_FREQUENCY),
 amptidute(DEFAULT_AMPTIDUTE),
 maxNe(DEFAULT_DENSITY_MAX),
-rei(0) {
+rei(0), nu_type(DEFAULT_NU_FORMAT) {
 }
 
 inputChecker::inputChecker(const inputChecker& orig) {
@@ -143,6 +143,7 @@ void inputChecker::help(char *prog) {
     cout << tab << "--is-connecting=" << tab << "1 if use connecting interface " << endl;
     cout << tab << "--max-ne=" << tab << "set Ne max" << endl;
     cout << tab << "--rei=" << tab << "set R_ei" << endl;
+    cout << tab << "--nu-type=" << tab << "set nu type" << endl;
     exit(0);
 }
 
@@ -191,6 +192,8 @@ void inputChecker::parseInput(int argc, char *argv[]) {
             maxNe = atof(argv[i] + 9);
         } else if (strncmp(argv[i], "--rei=", 6) == 0) {
             rei = atof(argv[i] + 6);
+        } else if (strncmp(argv[i], "--nu-type=", 10) == 0) {
+            nu_type = strtol(argv[i] + 10, NULL, 10);
         }
     }
     check();
@@ -216,5 +219,6 @@ void inputChecker::print() {
     cout << "useConnecting=" << useConnectingInterface << endl;
     cout << "max-ne=" << maxNe << endl;
     cout << "rei=" << rei << endl;
+    cout << "nu-type=" << nu_type << endl;
     cout << "============================================" << endl;
 }

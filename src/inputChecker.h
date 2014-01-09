@@ -80,6 +80,8 @@ public:
     double tUp;
     double tDown;
     double rei;
+    
+    int nu_type;
 
     const static int GAUSSIAN = GAUSSIAN_WAVE;
     const static int SINE = SINE_WAVE;
