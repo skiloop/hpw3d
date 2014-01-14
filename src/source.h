@@ -24,13 +24,57 @@ public:
      * @param Cere
      * @param Cerhw
      * @param Cerhv
-     * @param dr
-     * @param dw
-     * @param dv
+     * @param dx
+     * @param dy
+     * @param dz
      * @param dt
      */
     virtual void initUpdateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv,
-            MyDataF dr, MyDataF dw, MyDataF dv, MyDataF dt) = 0;
+            MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
+    
+    /**
+     * 
+     * @param Cere
+     * @param Cerhw
+     * @param Cerhv
+     * @param Cervr
+     * @param Beta
+     * @param Ne
+     * @param Nu_c
+     * @param nes
+     * @param bes
+     * @param m
+     * @param dx
+     * @param dy
+     * @param dz
+     * @param dt
+     */
+    virtual void initUpdateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
+            const data3d<MyDataF>&Beta, const data3d<MyDataF>&Ne, const data3d<MyDataF>&Nu_c,
+            const Point& nes, const Point& bes, unsigned m,
+            MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
+
+    /**
+     * 
+     * @param Cere
+     * @param Cerhw
+     * @param Cerhv
+     * @param Cervr
+     * @param Beta
+     * @param Ne
+     * @param vm
+     * @param nes
+     * @param bes
+     * @param m
+     * @param dx
+     * @param dy
+     * @param dz
+     * @param dt
+     */
+    virtual void initUpdateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
+            const data3d<MyDataF>&Beta, const data3d<MyDataF>&Ne, const MyDataF vm,
+            const Point& nes, const Point& bes, unsigned m,
+            MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
 
     /**
      * 
