@@ -78,6 +78,7 @@ int main(int argc, char*argv[]) {
 
     GaussianWaveSource gaussianWave(checker.frequency);
     SineWaveSource sineSource(omega);
+    SinePulse sinePulse(T,0.5*t);
     CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
     Point lower(xlen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
             ylen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
@@ -113,6 +114,7 @@ int main(int argc, char*argv[]) {
             break;
         case ONE_SINE_PULSE:
             hpw.setSrcType(ONE_SINE_PULSE);
+            cSource.setSourceType(&sinePulse);
             break;
         default:
             cSource.setSourceType(&gaussianWave);
