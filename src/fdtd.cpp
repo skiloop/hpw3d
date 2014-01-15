@@ -325,7 +325,15 @@ void fdtd::updateDensity(void) {
 }
 
 void fdtd::updateVelocity(void) {
-    //return 0;
+    updateVx();
+    updateVy();
+    updateVz();
+}
+
+void fdtd::updateElectricFields() {
+    updateEx();
+    updateEy();
+    updateEz();
 }
 
 void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
@@ -588,6 +596,10 @@ void fdtd::createDensityArrays() {
     Vy.create3DArray(Ey, 0.0);
     Vz.create3DArray(Ez, 0.0);
 
+    Exn.create3DArray(Ex, 0.0);
+    Eyn.create3DArray(Ey, 0.0);
+    Ezn.create3DArray(Ez, 0.0);
+
     unsigned nx = (mDomainEndIndex.x - mDomainStartIndex.x + 1) * mNeGridSize;
     unsigned ny = (mDomainEndIndex.y - mDomainStartIndex.y + 1) * mNeGridSize;
     unsigned nz = (mDomainEndIndex.z - mDomainStartIndex.z + 1) * mNeGridSize;
@@ -651,8 +663,6 @@ void fdtd::createFieldArray() {
     Ceze.setName("ceze");
 #endif
 }
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void fdtd::setUp() {
     //Time step
@@ -856,6 +866,7 @@ void fdtd::compute() {
         cout << Ez.p[mSourceIndex.x][capturePosition.y][mSourceIndex.z] << '\t';
         cout << Ez.p[capturePosition.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         cout << Ez.p[mSourceIndex.x][mSourceIndex.y][capturePosition.z] << '\t';
+        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         cout << n * mDt / 1e-9 << " ns" << "\t";
         cout << endl;
         //        cout << "Source Value:";
@@ -876,21 +887,19 @@ void fdtd::compute() {
             mConnectingInterface.updateMConnect(Hx, Chxey, Chxez, Hy, Chyex, Chyez, Hz, Chzey, Chzex);
             mPML.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
 
-            updateElectricAndVeloityFields();
+            updateElectricFields();
+            if (USE_DENSITY == mIsUseDensity)updateVelocity();
             mConnectingInterface.updateESource(pSourceType->valueAtTime(mDt * n) * mAmplitude);
             mConnectingInterface.updateEConnect(Ex, Cexhy, Cexhz, Ey, Ceyhx, Ceyhz, Ez, Cezhy, Cezhx);
             mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         } else {
             updateMagneitcFields();
             mPML.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
-            pSource->updateSource(Ex, Ey, Ez, n * mDt);
-            updateElectricAndVeloityFields();
-            mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
-            //====================================
-            // update Source
-            //====================================
-            // updateSource(n);        
 
+            updateElectricFields();
+            pSource->updateSource(Ex, Ey, Ez, n * mDt);
+            if (USE_DENSITY == mIsUseDensity)updateVelocity();
+            mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         }
 
         if (USE_DENSITY == mIsUseDensity) {
@@ -1281,27 +1290,30 @@ void fdtd::updateHz() {
 
 void fdtd::updateEx() {
     int i, j, k;
-
+    if (USE_DENSITY == mIsUseDensity)Exn = Ex;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)  private(i,j,k)
 #endif // _OPENMP
     for (k = 1; k < mMaxIndex.z; ++k) {
         for (j = 1; j < mMaxIndex.y; ++j) {
             for (i = 0; i < mMaxIndex.x; ++i) {
-                //#ifdef WITH_DENSITY
-                MyDataF Exp = Ex.p[i][j][k];
-                //#endif // WITH_DENSITY
                 Ex.p[i][j][k] = Cexe.p[i][j][k] * Ex.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * Cexhz.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i][j][k - 1]) * Cexhy.p[i][j][k];
-                if (USE_DENSITY == mIsUseDensity) {
+            }
+        }
+    }
+    ///////////////////////////////////////////
+    // add velocity
+    ///////////////////////////////////////////
+    if (USE_DENSITY == mIsUseDensity) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic)  private(i,j,k)
+#endif // _OPENMP
+        for (k = 1; k < mMaxIndex.z; ++k) {
+            for (j = 1; j < mMaxIndex.y; ++j) {
+                for (i = 0; i < mMaxIndex.x; ++i) {
                     Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
-
-                    if (fdtd::SOURCE_SINE != mSrcType) {
-                        Vx.p[i][j][k] = Cvxvx.p[i][j][k] * Vx.p[i][j][k] - Cvxex.p[i][j][k] * (Exp + Ex.p[i][j][k]);
-                    } else {
-                        Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - mCvxex * (Exp + Ex.p[i][j][k]);
-                    }
 #if DEBUG>=4
                     //                Ex.whenLargerThan(i, j, k, 1e30, NULL);
                     if (isnan(Ex.p[i][j][k])) {
@@ -1309,6 +1321,34 @@ void fdtd::updateEx() {
                         Exp = 0.0;
                     }
 #endif
+
+                }
+            }
+        }
+    }
+}
+
+void fdtd::updateVx() {
+    int i, j, k;
+    if (fdtd::SOURCE_SINE != mSrcType) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vx.nx; i++) {
+            for (j = 0; j < Vx.ny; j++) {
+                for (k = 0; k < Vx.nz; k++) {
+                    Vx.p[i][j][k] = Cvxvx.p[i][j][k] * Vx.p[i][j][k] - Cvxex.p[i][j][k] * (Exn.p[i][j][k] + Ex.p[i][j][k]);
+                }
+            }
+        }
+    } else {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vx.nx; i++) {
+            for (j = 0; j < Vx.ny; j++) {
+                for (k = 0; k < Vx.nz; k++) {
+                    Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - mCvxex * (Exn.p[i][j][k] + Ex.p[i][j][k]);
                 }
             }
         }
@@ -1317,31 +1357,31 @@ void fdtd::updateEx() {
 
 void fdtd::updateEy() {
     int i, j, k;
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  UPDATE Ey
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if (USE_DENSITY == mIsUseDensity)Eyn = Ey;
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
     for (k = 1; k < mMaxIndex.z; ++k) {
         for (i = 1; i < mMaxIndex.x; ++i) {
             for (j = 0; j < mMaxIndex.y; ++j) {
-                //#ifdef WITH_DENSITY
-                MyDataF Eyp = Ey.p[i][j][k];
-                //#endif  /* WITH_DENSITY */
-
                 Ey.p[i][j][k] = Ceye.p[i][j][k] * Ey.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i - 1][j][k]) * Ceyhz.p[i][j][k] +
                         (Hx.p[i][j][k] - Hx.p[i][j][k - 1]) * Ceyhx.p[i][j][k];
-                if (USE_DENSITY == mIsUseDensity) {
+            }
+        }
+    }
 
+    ////////////////////////////////////////
+    // add velocity
+    ///////////////////////////////////////
+    if (USE_DENSITY == mIsUseDensity) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (k = 1; k < mMaxIndex.z; ++k) {
+            for (i = 1; i < mMaxIndex.x; ++i) {
+                for (j = 0; j < mMaxIndex.y; ++j) {
                     Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
-                    // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
-                    if (fdtd::SOURCE_SINE != mSrcType) {
-                        Vy.p[i][j][k] = Cvyvy.p[i][j][k] * Vy.p[i][j][k] - Cvyey.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
-                    } else {
-                        Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - mCvyey * (Eyp + Ey.p[i][j][k]);
-                    }
 #if (DEBUG>=4&&!_OPENMP)
                     //                Ey.whenLargerThan(i, j, k, 1e30, NULL);
                     //                Ey.isValid(i, j, k);
@@ -1350,7 +1390,33 @@ void fdtd::updateEy() {
                         Eyp = 0.0;
                     }
 #endif
+                }
+            }
+        }
+    }
+}
 
+void fdtd::updateVy() {
+    int i, j, k;
+    if (fdtd::SOURCE_SINE != mSrcType) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vy.nx; i++) {
+            for (j = 0; j < Vy.ny; j++) {
+                for (k = 0; k < Vy.nz; k++) {
+                    Vy.p[i][j][k] = Cvyvy.p[i][j][k] * Vy.p[i][j][k] - Cvyey.p[i][j][k] * (Eyn.p[i][j][k] + Ey.p[i][j][k]);
+                }
+            }
+        }
+    } else {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vy.nx; i++) {
+            for (j = 0; j < Vy.ny; j++) {
+                for (k = 0; k < Vy.nz; k++) {
+                    Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - mCvyey * (Eyn.p[i][j][k] + Ey.p[i][j][k]);
                 }
             }
         }
@@ -1359,39 +1425,65 @@ void fdtd::updateEy() {
 
 void fdtd::updateEz() {
     int i, j, k;
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  UPDATE Ez
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if (USE_DENSITY == mIsUseDensity)Ezn = Ez;
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
 
     for (i = 1; i < mMaxIndex.x; ++i) {
         for (k = 0; k < mMaxIndex.z; ++k) {
             for (j = 1; j < mMaxIndex.y; ++j) {
-                //#ifdef WITH_DENSITY
-                MyDataF Ezp = Ez.p[i][j][k];
-                //#endif
                 Ez.p[i][j][k] = Ceze.p[i][j][k] * Ez.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k]+
                         (Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
-                if (USE_DENSITY == mIsUseDensity) {
-                    Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
-
-                    // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
-                    if (fdtd::SOURCE_SINE != mSrcType) {
-                        Vz.p[i][j][k] = Cvzvz.p[i][j][k] * Vz.p[i][j][k] - Cvzez.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
-                    } else {
-                        Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - mCvzez * (Ezp + Ez.p[i][j][k]);
-                    }
-                }
-#if DEBUG>=4
-                //                Ez.whenLargerThan(i, j, k, 1e30, NULL);
-                if (isnan(Ez.p[i][j][k])) {
-
-                    Ezp = 0.0;
-                }
+            }
+        }
+    }
+    //===========================
+    // ADD VELOCITY
+    //===========================
+    if (USE_DENSITY == mIsUseDensity) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
+        for (i = 1; i < mMaxIndex.x; ++i) {
+            for (k = 0; k < mMaxIndex.z; ++k) {
+                for (j = 1; j < mMaxIndex.y; ++j) {
+                    Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
+#if DEBUG>=4
+                    //Ez.whenLargerThan(i, j, k, 1e30, NULL);
+                    if (isnan(Ez.p[i][j][k])) {
+                        Ezp = 0.0;
+                    }
+#endif
+                }
+            }
+        }
+    }
+}
+
+void fdtd::updateVz() {
+    int i, j, k;
+    if (fdtd::SOURCE_SINE != mSrcType) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vz.nx; i++) {
+            for (j = 0; j < Vz.ny; j++) {
+                for (k = 0; k < Vz.nz; k++) {
+                    Vz.p[i][j][k] = Cvzvz.p[i][j][k] * Vz.p[i][j][k] - Cvzez.p[i][j][k] * (Ezn.p[i][j][k] + Ez.p[i][j][k]);
+                }
+            }
+        }
+    } else {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vz.nx; i++) {
+            for (j = 0; j < Vz.ny; j++) {
+                for (k = 0; k < Vz.nz; k++) {
+                    Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - mCvzez * (Ezn.p[i][j][k] + Ez.p[i][j][k]);
+                }
             }
         }
     }
@@ -1478,13 +1570,6 @@ void fdtd::updateMagneitcFields() {
     updateHz();
 }
 
-void fdtd::updateElectricAndVeloityFields() {
-
-    updateEx();
-    updateEy();
-    updateEz();
-}
-
 void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amplitude) {
 
     t0 = t_0;
@@ -1538,6 +1623,7 @@ void fdtd::setSrcType(int srcType) {
 
 void fdtd::desideDomainZone() {
     //  Specify the dipole size 
+
     mNonPMLStartIndex.setValue(mPMLWidth, mPMLWidth, mPMLWidth);
     mNonPMLEndIndex.setValue(mMaxIndex.x - mPMLWidth, mMaxIndex.y - mPMLWidth, mMaxIndex.z - mPMLWidth);
     mDomainStartIndex.setValue(mNonPMLStartIndex.x + mAirBufferWidth,
@@ -1559,11 +1645,12 @@ void fdtd::updateSourceCoeff() {
             break;
         case source::Y:
             pSource->initUpdateCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
+
             break;
     }
 }
 
-void fdtd::updateSourceCoeff(const Point& nes, const Point& bes) {
+void fdtd::updateSourceCoeff(const Point& nes, const Point & bes) {
     // initial coefficients at source position
     if (fdtd::SOURCE_SINE != mSrcType) {
         switch (pSource->getDirection()) {

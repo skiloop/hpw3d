@@ -157,6 +157,10 @@ private:
     data3d<MyDataF> Ey;
     data3d<MyDataF> Ez;
 
+    data3d<MyDataF> Exn;
+    data3d<MyDataF> Eyn;
+    data3d<MyDataF> Ezn;
+
     data3d<unsigned> ID1; //medium definition array for Ex
     data3d<unsigned> ID2; //medium definition array for Ey
     data3d<unsigned> ID3; //medium definition array for Ez
@@ -247,6 +251,10 @@ private:
     void updateEeff();
     void updateDensity(void);
     void updateVelocity(void);
+        void updateVx();
+    void updateVy();
+    void updateVz();
+    
     void wallCircleBound(data3d<MyDataF> &stru);
     //#endif
     void updateHx();
@@ -256,6 +264,7 @@ private:
     void updateEx();
     void updateEy();
     void updateEz();
+    void updateElectricFields();
     void updateElectricAndVeloityFields();
     void updateSource(unsigned n);
     cpml<MyDataF> mPML;
@@ -272,9 +281,9 @@ private:
      * @param Deff
      */
     void calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
-    
+
     void updateSourceCoeff();
-    void updateSourceCoeff(const Point&nes,const Point&bes);
+    void updateSourceCoeff(const Point&nes, const Point&bes);
 #ifdef DEBUG
     ofstream mOfNeCheck;
 #endif

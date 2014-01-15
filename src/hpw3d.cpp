@@ -13,6 +13,7 @@ int thread_count = 1;
 #include "inputChecker.h"
 #include "currentSource.h"
 #include "SineWaveSource.h"
+#include "TestSourceType.h"
 #include "GaussianWaveSource.h"
 #include "CosineGaussianWave.h"
 
@@ -69,19 +70,20 @@ int main(int argc, char*argv[]) {
     cout << "dx=" << dx << endl;
     cout << "dt=" << dt << endl;
 
-//#ifdef WITH_DENSITY
-    fdtd hpw(checker.useDensity,tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
+    //#ifdef WITH_DENSITY
+    fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
             checker.useConnectingInterface, checker.fluidGridSize);
     hpw.setPlasmaParam(checker.rei, 760 * 5.3E9, 760, checker.nu_type);
-//#else
+    //#else
     //fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
     //        checker.useConnectingInterface);
-//#endif    
+    //#endif    
 
     GaussianWaveSource gaussianWave(checker.frequency);
     SineWaveSource sineSource(omega);
-    SinePulse sinePulse(T,0.5*T);
-    SquarePulse squarePulse(0.5*T,1.5*T);
+    SinePulse sinePulse(T, 0.5 * T);
+    SquarePulse squarePulse(0.5 * T, 1.5 * T);
+    TestSourceType testSource(2);
     CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
     Point lower(xlen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
             ylen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
@@ -122,6 +124,10 @@ int main(int argc, char*argv[]) {
         case SQUARE_PULSE:
             hpw.setSrcType(SQUARE_PULSE);
             cSource.setSourceType(&squarePulse);
+            break;
+        case TEST_SOURCE:
+            hpw.setSrcType(TEST_SOURCE);
+            cSource.setSourceType(&testSource);
             break;
         default:
             cSource.setSourceType(&gaussianWave);
