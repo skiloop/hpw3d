@@ -5,10 +5,12 @@
  * Created on 2014年1月14日, 下午9:44
  */
 
+#include <math.h>
+
 #include "SinePulse.h"
 
 SinePulse::SinePulse(MyDataF T, MyDataF t0)
-: mT(abs(T))
+: mT(fabs(T))
 , mTimeDelay(t0) {
     mFinishingTime = mT + t0;
     mOmega = M_PI_TWO / T;
@@ -24,7 +26,7 @@ SinePulse::SinePulse(const SinePulse& orig)
 SinePulse::~SinePulse() {
 }
 
-SinePulse::valueAtTime(MyDataF t) {
+MyDataF SinePulse::valueAtTime(MyDataF t) {
     if (t > mTimeDelay && t < mFinishingTime) {
         return sin(M_PI_TWO * (t - mTimeDelay) * mOmega);
     } else {

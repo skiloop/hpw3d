@@ -81,7 +81,7 @@ private:
     void buildDipole(); //Builds a dipole
     void printParam();
 
-    int mUseDensity;
+    int mIsUseDensity;
 private:
 
     //  Specify Number of Time Steps and Grid Size Parameters

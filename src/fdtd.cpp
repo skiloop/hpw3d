@@ -40,7 +40,7 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid, MyDataF maxNe)
-: mUseDensity(useDensity)
+: mIsUseDensity(useDensity)
 , mTotalTimeSteps(_totalTimeSteps)
 , tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
@@ -671,7 +671,7 @@ void fdtd::setUp() {
     //temporary variables that often used
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     dtDivEps0DivDxyz = mDt / eps_0 / mDx / mDy / mDz;
-    if (USE_DENSITY == mUseDensity) {
+    if (USE_DENSITY == mIsUseDensity) {
         mDsFluid = mDx / mNeGridSize;
         mHalfDelta_t = mDt / 2;
         mHalf_e = e / 2;
@@ -725,7 +725,7 @@ void fdtd::setUp() {
 
     initCoeficients();
 
-    if (USE_DENSITY == mUseDensity) {
+    if (USE_DENSITY == mIsUseDensity) {
         mNeSrcPos.setValue((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
                 (mSourceIndex.y - mDomainStartIndex.y + 8) * mNeGridSize + mNeBoundWidth,
                 (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
@@ -760,7 +760,11 @@ void fdtd::setUp() {
                 (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize,
                 (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize);
         // initial coefficients at source position
-        updateSourceCoeff(nes,bes);
+        if (USE_DENSITY == mIsUseDensity) {
+            updateSourceCoeff(nes, bes);
+        } else {
+            updateSourceCoeff();
+        }
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  PML parameters
@@ -889,7 +893,7 @@ void fdtd::compute() {
 
         }
 
-        if (USE_DENSITY == mUseDensity) {
+        if (USE_DENSITY == mIsUseDensity) {
             captureEFieldForEeff();
 
             if (n % mNeSkipStep == 0) {
@@ -943,7 +947,7 @@ void fdtd::compute() {
             Cezhy.save(Ez.ny / 2, 1, n, 3);
             Ceze.save(Ez.nz / 2, 1, n, 3);
 #endif
-            if (USE_DENSITY == mUseDensity) {
+            if (USE_DENSITY == mIsUseDensity) {
                 Cezvz.save(Ez.nz / 2, 1, n, 3);
                 Cvzez.save(Ez.nz / 2, 1, n, 3);
             }
@@ -964,7 +968,7 @@ void fdtd::compute() {
     finishMatlabSimulation();
 #endif
 
-    if (USE_DENSITY == mUseDensity) {
+    if (USE_DENSITY == mIsUseDensity) {
 #ifdef DEBUG
         Ne.save();
 #endif
@@ -1290,7 +1294,7 @@ void fdtd::updateEx() {
                 Ex.p[i][j][k] = Cexe.p[i][j][k] * Ex.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * Cexhz.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i][j][k - 1]) * Cexhy.p[i][j][k];
-                if (USE_DENSITY == mUseDensity) {
+                if (USE_DENSITY == mIsUseDensity) {
                     Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
 
                     if (fdtd::SOURCE_SINE != mSrcType) {
@@ -1329,7 +1333,7 @@ void fdtd::updateEy() {
                 Ey.p[i][j][k] = Ceye.p[i][j][k] * Ey.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i - 1][j][k]) * Ceyhz.p[i][j][k] +
                         (Hx.p[i][j][k] - Hx.p[i][j][k - 1]) * Ceyhx.p[i][j][k];
-                if (USE_DENSITY == mUseDensity) {
+                if (USE_DENSITY == mIsUseDensity) {
 
                     Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
                     // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
@@ -1371,7 +1375,7 @@ void fdtd::updateEz() {
                 Ez.p[i][j][k] = Ceze.p[i][j][k] * Ez.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k]+
                         (Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
-                if (USE_DENSITY == mUseDensity) {
+                if (USE_DENSITY == mIsUseDensity) {
                     Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
 
                     // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);

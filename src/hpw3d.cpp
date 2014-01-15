@@ -10,6 +10,7 @@ int thread_count = 1;
 #include "fdtd.h"
 #include "inputChecker.h"
 #include "currentSource.h"
+#include "SinePulse.h"
 #include "SineWaveSource.h"
 #include "GaussianWaveSource.h"
 #include "CosineGaussianWave.h"
@@ -78,7 +79,7 @@ int main(int argc, char*argv[]) {
 
     GaussianWaveSource gaussianWave(checker.frequency);
     SineWaveSource sineSource(omega);
-    SinePulse sinePulse(T,0.5*t);
+    SinePulse sinePulse(T,0.5*T);
     CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
     Point lower(xlen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
             ylen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
