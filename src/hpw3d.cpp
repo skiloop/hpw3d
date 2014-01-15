@@ -8,9 +8,10 @@ int thread_count = 1;
 //#define WITH_DENSITY
 
 #include "fdtd.h"
+#include "SinePulse.h"
+#include "SquarePulse.h"
 #include "inputChecker.h"
 #include "currentSource.h"
-#include "SinePulse.h"
 #include "SineWaveSource.h"
 #include "GaussianWaveSource.h"
 #include "CosineGaussianWave.h"
@@ -80,6 +81,7 @@ int main(int argc, char*argv[]) {
     GaussianWaveSource gaussianWave(checker.frequency);
     SineWaveSource sineSource(omega);
     SinePulse sinePulse(T,0.5*T);
+    SquarePulse squarePulse(0.5*T,1.5*T);
     CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
     Point lower(xlen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
             ylen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
@@ -116,6 +118,10 @@ int main(int argc, char*argv[]) {
         case ONE_SINE_PULSE:
             hpw.setSrcType(ONE_SINE_PULSE);
             cSource.setSourceType(&sinePulse);
+            break;
+        case SQUARE_PULSE:
+            hpw.setSrcType(SQUARE_PULSE);
+            cSource.setSourceType(&squarePulse);
             break;
         default:
             cSource.setSourceType(&gaussianWave);

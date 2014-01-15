@@ -22,8 +22,9 @@ typedef pMyDataF* ppMyDataF;
 #define COSINE_GAUSSIAN_WAVE (4)
 #define ZERO_TYPE (5)
 #define ONE_SINE_PULSE (6)
+#define SQUARE_PULSE (7)
 #define DEFAULT_WAVE_TYPE GAUSSIAN_WAVE
-#define MAX_TYPE_VALUE ONE_SINE_PULSE
+#define MAX_TYPE_VALUE SQUARE_PULSE
 
 // nu type definition
 #define MORROW_AND_LOWKE (1)
