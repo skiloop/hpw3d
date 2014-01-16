@@ -1,8 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 #define _USE_MATH_DEFINES
-#include <math.h>
-typedef double MyDataF;
+#include <cmath>
+typedef long double MyDataF;
 typedef MyDataF* pMyDataF;
 typedef pMyDataF* ppMyDataF;
 

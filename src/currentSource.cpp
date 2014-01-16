@@ -152,3 +152,36 @@ void currentSource::updateSource(data3d<MyDataF>& Ex, data3d<MyDataF>& Ey,
             break;
     }
 }
+
+void currentSource::updateHardSource(data3d<MyDataF>& Ex, data3d<MyDataF>& Ey,
+        data3d<MyDataF>& Ez, MyDataF t) {
+    switch (mDirection) {
+        case X:
+            for (unsigned i = mLowerIndex.x, is = 0; i <= mUpperIndex.x; i++, is++) {
+                for (unsigned j = mLowerIndex.y, js = 0; j <= mUpperIndex.y; j++, js++) {
+                    for (unsigned k = mLowerIndex.z, ks = 0; k <= mUpperIndex.z; k++, ks++) {
+                        Ex.p[i][j][k] = Cese.p[is][js][ks] * mAmplitude * mPSource->valueAtTime(t);
+                    }
+                }
+            }
+            break;
+        case Y:
+            for (unsigned i = mLowerIndex.x, is = 0; i <= mUpperIndex.x; i++, is++) {
+                for (unsigned j = mLowerIndex.y, js = 0; j <= mUpperIndex.y; j++, js++) {
+                    for (unsigned k = mLowerIndex.z, ks = 0; k <= mUpperIndex.z; k++, ks++) {
+                        Ey.p[i][j][k] = Cese.p[is][js][ks] * mAmplitude * mPSource->valueAtTime(t);
+                    }
+                }
+            }
+            break;
+        case Z:
+            for (unsigned i = mLowerIndex.x, is = 0; i <= mUpperIndex.x; i++, is++) {
+                for (unsigned j = mLowerIndex.y, js = 0; j <= mUpperIndex.y; j++, js++) {
+                    for (unsigned k = mLowerIndex.z, ks = 0; k <= mUpperIndex.z; k++, ks++) {
+                        Ez.p[i][j][k] = Cese.p[is][js][ks] * mAmplitude * mPSource->valueAtTime(t);
+                    }
+                }
+            }
+            break;
+    }
+}

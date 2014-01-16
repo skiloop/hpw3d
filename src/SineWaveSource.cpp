@@ -5,7 +5,7 @@
  * Created on 2013年12月16日, 下午3:53
  */
 
-#include <math.h>
+#include <cmath>
 
 #include "SineWaveSource.h"
 

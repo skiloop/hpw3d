@@ -84,6 +84,15 @@ public:
      * @param t
      */
     virtual void updateSource(data3d<MyDataF>&Ex, data3d<MyDataF>&Ey, data3d<MyDataF>&Ez, MyDataF t) = 0;
+    
+    /**
+     * 
+     * @param Ex
+     * @param Ey
+     * @param Ez
+     * @param t
+     */
+    virtual void updateHardSource(data3d<MyDataF>&Ex, data3d<MyDataF>&Ey, data3d<MyDataF>&Ez, MyDataF t) = 0;
 
     const static int X = 1;
     const static int Y = 2;

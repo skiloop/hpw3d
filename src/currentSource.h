@@ -21,6 +21,8 @@ public:
             MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt);
 
     void updateSource(data3d<MyDataF>&Ex, data3d<MyDataF>&Ey, data3d<MyDataF>&Ez, MyDataF t);
+    
+    void updateHardSource(data3d<MyDataF>&Ex, data3d<MyDataF>&Ey, data3d<MyDataF>&Ez, MyDataF t);
 
     void initUpdateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
             const data3d<MyDataF>&Beta, const data3d<MyDataF>&Ne, const MyDataF vm,

@@ -5,7 +5,7 @@
  * Created on 2014年1月14日, 下午9:44
  */
 
-#include <math.h>
+#include <cmath>
 
 #include "SinePulse.h"
 

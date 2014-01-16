@@ -5,7 +5,7 @@
  * Created on 2014年1月15日, 上午9:42
  */
 
-#include <math.h>
+#include <cmath>
 
 #include "SquarePulse.h"
 

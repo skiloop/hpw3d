@@ -1,6 +1,6 @@
 
 
-#include <math.h>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -30,7 +30,7 @@ extern MyDataF T;
 
 using namespace std;
 
-void checkmax(unsigned &u_2check, unsigned max, unsigned min) {
+void checkmax(unsigned &u_2check, unsigned min, unsigned max) {
     if (u_2check >= max || u_2check < min)u_2check = (min + max) / 2;
 }
 
@@ -703,7 +703,7 @@ void fdtd::setUp() {
         mDa = mMu_i * 2 * 1.602e-19 / e; //
         MyDataF Dmax = mDe > mDa ? mDe : mDa;
         //Fine Time Step Size
-        mDtFluid = 0.01 * mDsFluid * mDsFluid / 2 / Dmax;
+        mDtFluid = 10*mDt;//0.01 * mDsFluid * mDsFluid / 2 / Dmax;
         mNeSkipStep = mDtFluid / mDt;
 
         cout << "neSkipStep=" << mNeSkipStep << endl;
@@ -715,7 +715,7 @@ void fdtd::setUp() {
 
     // source position    
 #ifdef DEBUG
-    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2, mMaxIndex.z / 2);
+    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2+8, mMaxIndex.z / 2);
 #else
     mSourceIndex.setValue(mDomainStartIndex.x + (unsigned) (((float) (mDomainEndIndex.x - mDomainStartIndex.x)*2.25) / 3.0),
             mMaxIndex.y / 2, mMaxIndex.z / 2);
@@ -737,7 +737,7 @@ void fdtd::setUp() {
 
     if (USE_DENSITY == mIsUseDensity) {
         mNeSrcPos.setValue((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
-                (mSourceIndex.y - mDomainStartIndex.y + 8) * mNeGridSize + mNeBoundWidth,
+                (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
                 (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // initial density
@@ -897,7 +897,7 @@ void fdtd::compute() {
             mPML.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
 
             updateElectricFields();
-            pSource->updateSource(Ex, Ey, Ez, n * mDt);
+            pSource->updateHardSource(Ex, Ey, Ez, n * mDt);
             if (USE_DENSITY == mIsUseDensity)updateVelocity();
             mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         }
@@ -1317,8 +1317,7 @@ void fdtd::updateEx() {
 #if DEBUG>=4
                     //                Ex.whenLargerThan(i, j, k, 1e30, NULL);
                     if (isnan(Ex.p[i][j][k])) {
-
-                        Exp = 0.0;
+                        Ex.p[i][j][k] += 0.0;
                     }
 #endif
 
@@ -1387,7 +1386,7 @@ void fdtd::updateEy() {
                     //                Ey.isValid(i, j, k);
                     if (isnan(Ey.p[i][j][k])) {
 
-                        Eyp = 0.0;
+                        Ey.p[i][j][k] += 0.0;
                     }
 #endif
                 }
@@ -1453,7 +1452,7 @@ void fdtd::updateEz() {
 #if DEBUG>=4
                     //Ez.whenLargerThan(i, j, k, 1e30, NULL);
                     if (isnan(Ez.p[i][j][k])) {
-                        Ezp = 0.0;
+                        Ez.p[i][j][k] += 0.0;
                     }
 #endif
                 }
