@@ -215,9 +215,9 @@ void fdtd::updateEeff() {
         for (js = start.y, jn = js + mNeGridSize; jn < end.y; js = jn, jn += mNeGridSize) {
             for (ks = start.z, kn = ks + mNeGridSize; kn < end.z; ks = kn, kn += mNeGridSize) {
                 // integrate Erms
-                for (i = is, im = 0, iu = mNeGridSize; i < in; i++, im++, iu--) {
-                    for (j = js, jm = 0, ju = mNeGridSize; j < jn; j++, jm++, ju--) {
-                        for (k = ks, km = 0, ku = mNeGridSize; k < kn; k++, km++, ku--) {
+                for (i = is, im = 0, iu = mNeGridSize; i <= in; i++, im++, iu--) {
+                    for (j = js, jm = 0, ju = mNeGridSize; j <= jn; j++, jm++, ju--) {
+                        for (k = ks, km = 0, ku = mNeGridSize; k <= kn; k++, km++, ku--) {
                             Eeff.p[i][j][k] = (iu * ju * ku * Eeff.p[is][js][ks] + im * ju * ku * Eeff.p[in][js][ks] +
                                     im * jm * ku * Eeff.p[in][jn][ks] + im * jm * km * Eeff.p[in][jn][kn] +
                                     iu * jm * ku * Eeff.p[is][jn][ks] + iu * jm * km * Eeff.p[is][jn][kn] +
@@ -373,7 +373,7 @@ void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
     }
 }
 
-void fdtd::createCoeff() {
+void fdtd::createDensityRelatedArrays() {
     // velocity coefficients
     //Cvxex.create3DArray(Vx,0.0);
     //Cvyey.create3DArray(Vy,0.0);
@@ -600,14 +600,14 @@ void fdtd::createDensityArrays() {
     Eyn.create3DArray(Ey, 0.0);
     Ezn.create3DArray(Ez, 0.0);
 
-    unsigned nx = (mDomainEndIndex.x - mDomainStartIndex.x + 1) * mNeGridSize;
-    unsigned ny = (mDomainEndIndex.y - mDomainStartIndex.y + 1) * mNeGridSize;
-    unsigned nz = (mDomainEndIndex.z - mDomainStartIndex.z + 1) * mNeGridSize;
+    unsigned nx = (mDomainEndIndex.x - mDomainStartIndex.x + 1) * mNeGridSize+1;
+    unsigned ny = (mDomainEndIndex.y - mDomainStartIndex.y + 1) * mNeGridSize+1;
+    unsigned nz = (mDomainEndIndex.z - mDomainStartIndex.z + 1) * mNeGridSize+1;
     Ne.create3DArray(nx + mNeBoundWidth, ny + mNeBoundWidth, nz + mNeBoundWidth, 0.0);
     Eeff.create3DArray(nx, ny, nz, 0.0);
     Ne_pre.create3DArray(Ne, 0.0);
 
-    createCoeff();
+    createDensityRelatedArrays();
     Eeff.setName("erms");
     Ne.setName("Ne");
 }

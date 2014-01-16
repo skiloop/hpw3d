@@ -240,7 +240,7 @@ private:
     //initials
     void initCoeffForDensity();
     void initDensity();
-    void createCoeff();
+    void createDensityRelatedArrays();
     void updateCoeffWithDensity();
     void updateBeta();
 
