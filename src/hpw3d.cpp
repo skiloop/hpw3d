@@ -87,10 +87,10 @@ int main(int argc, char*argv[]) {
     CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
     Point lower(xlen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
             ylen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
-            zlen / 2 - 1 + checker.pmlSize + AIR_BUFFER);
+            zlen / 2  - 1 + checker.pmlSize + AIR_BUFFER);
     Point upper(xlen / 2 + 1 + checker.pmlSize + AIR_BUFFER,
-            ylen / 2 + 1 + checker.pmlSize + AIR_BUFFER,
-            zlen / 2 + 1 + checker.pmlSize + AIR_BUFFER);
+            ylen / 2 +1 + checker.pmlSize + AIR_BUFFER,
+            zlen / 2 +1 + checker.pmlSize + AIR_BUFFER);
 
     MyDataF R = 1e-20;
     currentSource cSource(source::Z, R, lower, upper, checker.amptidute * 1e13);

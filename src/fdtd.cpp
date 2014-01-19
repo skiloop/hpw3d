@@ -302,6 +302,9 @@ void fdtd::updateDensity(void) {
                 Ne.p[i][j][k] = (Ne_ijk * (1.0 + mDtFluid * vi) + Deff * dtfDivDsfSquare *
                         (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk))
                         / (1.0 + mDtFluid * (va + mRei * Ne_ijk));
+                if(Ne.p[i][j][k]<0){
+                    Ne.p[i][j][k]=0;
+                }
                 if (vi > maxvi) {
                     maxvi = vi;
                     //                    ci = i;
@@ -600,9 +603,9 @@ void fdtd::createDensityArrays() {
     Eyn.create3DArray(Ey, 0.0);
     Ezn.create3DArray(Ez, 0.0);
 
-    unsigned nx = (mDomainEndIndex.x - mDomainStartIndex.x + 1) * mNeGridSize+1;
-    unsigned ny = (mDomainEndIndex.y - mDomainStartIndex.y + 1) * mNeGridSize+1;
-    unsigned nz = (mDomainEndIndex.z - mDomainStartIndex.z + 1) * mNeGridSize+1;
+    unsigned nx = (mDomainEndIndex.x - mDomainStartIndex.x + 1) * mNeGridSize + 1;
+    unsigned ny = (mDomainEndIndex.y - mDomainStartIndex.y + 1) * mNeGridSize + 1;
+    unsigned nz = (mDomainEndIndex.z - mDomainStartIndex.z + 1) * mNeGridSize + 1;
     Ne.create3DArray(nx + mNeBoundWidth, ny + mNeBoundWidth, nz + mNeBoundWidth, 0.0);
     Eeff.create3DArray(nx, ny, nz, 0.0);
     Ne_pre.create3DArray(Ne, 0.0);
@@ -703,7 +706,7 @@ void fdtd::setUp() {
         mDa = mMu_i * 2 * 1.602e-19 / e; //
         MyDataF Dmax = mDe > mDa ? mDe : mDa;
         //Fine Time Step Size
-        mDtFluid = 10*mDt;//0.01 * mDsFluid * mDsFluid / 2 / Dmax;
+        mDtFluid = 10 * mDt; //0.01 * mDsFluid * mDsFluid / 2 / Dmax;
         mNeSkipStep = mDtFluid / mDt;
 
         cout << "neSkipStep=" << mNeSkipStep << endl;
@@ -715,7 +718,7 @@ void fdtd::setUp() {
 
     // source position    
 #ifdef DEBUG
-    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2+8, mMaxIndex.z / 2);
+    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2, mMaxIndex.z / 2);
 #else
     mSourceIndex.setValue(mDomainStartIndex.x + (unsigned) (((float) (mDomainEndIndex.x - mDomainStartIndex.x)*2.25) / 3.0),
             mMaxIndex.y / 2, mMaxIndex.z / 2);
@@ -916,6 +919,8 @@ void fdtd::compute() {
                 updateCoeffWithDensity();
 #if DEBUG>=4
                 Ne.save(Ne.nz / 2, 1, n, 3);
+                Ne.save(Ne.nz / 2, 1, n, 2);
+                Ne.save(Ne.nz / 2, 1, n, 1);
                 Nu_c.save(Nu_c.nz / 2, 1, n, 3);
 #else
                 Ne.save(Ne.nx / 2, 1, n, 1);
@@ -956,10 +961,10 @@ void fdtd::compute() {
             Cezhy.save(Ez.ny / 2, 1, n, 3);
             Ceze.save(Ez.nz / 2, 1, n, 3);
 #endif
-            if (USE_DENSITY == mIsUseDensity) {
-                Cezvz.save(Ez.nz / 2, 1, n, 3);
-                Cvzez.save(Ez.nz / 2, 1, n, 3);
-            }
+//            if (USE_DENSITY == mIsUseDensity) {
+//                Cezvz.save(Ez.nz / 2, 1, n, 3);
+//                Cvzez.save(Ez.nz / 2, 1, n, 3);
+//            }
 
 #else /* not define DEBUG*/
             Ez.save(mSourceIndex.x, 1, n, 1);

@@ -47,7 +47,7 @@ sourceTest:sourceTest.o SineWaveSource.o sourceType.o Point.o GaussianWaveSource
 3DFormulaTransforming.pdf:3DFormulaTransforming.tex
 	texi2pdf 3DFormulaTransforming.tex
 clean:
-	-rm -f $(DEPS) $(OBJS) $(PROJECTS) *.aux *.log
+	-rm -f $(DEPS) $(OBJS) $(PROJECTS) *.aux *.log *.o
 veryclean:clean
 	sh clean.sh
 

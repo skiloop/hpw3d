@@ -2,7 +2,7 @@
 #define COMMON_H
 #define _USE_MATH_DEFINES
 #include <cmath>
-typedef long double MyDataF;
+typedef double MyDataF;
 typedef MyDataF* pMyDataF;
 typedef pMyDataF* ppMyDataF;
 
