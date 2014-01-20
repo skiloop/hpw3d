@@ -78,7 +78,7 @@ private:
     void yeeCube(unsigned, unsigned, unsigned, unsigned); //Sets material properties to a cell
     void writeField(unsigned); //Writes output
     void buildSphere(); //Builds a spherical object
-    void buildDipole(); //Builds a dipole
+    void buildBrick(); //Builds a dipole
     void printParam();
 
     int mIsUseDensity;
@@ -251,12 +251,12 @@ private:
     void updateEeff();
     void updateDensity(void);
     void updateVelocity(void);
-        void updateVx();
+    void updateVx();
     void updateVy();
     void updateVz();
-    
+
     void wallCircleBound(data3d<MyDataF> &stru);
-    //#endif
+
     void updateHx();
     void updateHy();
     void updateHz();
@@ -282,6 +282,8 @@ private:
      */
     void calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
 
+    void initSourceCoeff();
+    void initSourceCoeff(const Point&nes, const Point&bes);
     void updateSourceCoeff();
     void updateSourceCoeff(const Point&nes, const Point&bes);
 #ifdef DEBUG

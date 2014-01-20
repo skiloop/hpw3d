@@ -302,8 +302,8 @@ void fdtd::updateDensity(void) {
                 Ne.p[i][j][k] = (Ne_ijk * (1.0 + mDtFluid * vi) + Deff * dtfDivDsfSquare *
                         (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk))
                         / (1.0 + mDtFluid * (va + mRei * Ne_ijk));
-                if(Ne.p[i][j][k]<0){
-                    Ne.p[i][j][k]=0;
+                if (Ne.p[i][j][k] < 0) {
+                    Ne.p[i][j][k] = 0;
                 }
                 if (vi > maxvi) {
                     maxvi = vi;
@@ -774,9 +774,9 @@ void fdtd::setUp() {
                 (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize);
         // initial coefficients at source position
         if (USE_DENSITY == mIsUseDensity) {
-            updateSourceCoeff(nes, bes);
+            initSourceCoeff(nes, bes);
         } else {
-            updateSourceCoeff();
+            initSourceCoeff();
         }
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -821,12 +821,11 @@ void fdtd::compute() {
 
     unsigned n;
     Point capturePosition(mSourceIndex.x + 10, mSourceIndex.y + 10, mSourceIndex.z + 10);
-    Point nes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
-            (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
-            (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
-    Point bes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize,
-            (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize,
-            (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize);
+
+    Point bes((mDomainStartIndex.x) * mNeGridSize,
+            (mDomainStartIndex.y) * mNeGridSize,
+            (mDomainStartIndex.z) * mNeGridSize);
+    Point nes(bes.x - mNeBoundWidth, bes.y - mNeBoundWidth, bes.z - mNeBoundWidth);
 
 #if DEBUG>=3
     if (mSourceIndex.y + 30 < mMaxIndex.y) {
@@ -961,10 +960,10 @@ void fdtd::compute() {
             Cezhy.save(Ez.ny / 2, 1, n, 3);
             Ceze.save(Ez.nz / 2, 1, n, 3);
 #endif
-//            if (USE_DENSITY == mIsUseDensity) {
-//                Cezvz.save(Ez.nz / 2, 1, n, 3);
-//                Cvzez.save(Ez.nz / 2, 1, n, 3);
-//            }
+            //            if (USE_DENSITY == mIsUseDensity) {
+            //                Cezvz.save(Ez.nz / 2, 1, n, 3);
+            //                Cvzez.save(Ez.nz / 2, 1, n, 3);
+            //            }
 
 #else /* not define DEBUG*/
             Ez.save(mSourceIndex.x, 1, n, 1);
@@ -1026,8 +1025,8 @@ void fdtd::updateSource(unsigned n) {
 
 void fdtd::buildObject() {
 
-    //buildSphere();
-    //buildDipole();
+    buildSphere();
+    //buildBrick();
 }
 
 //Builds a sphere (Sample code - NOt used in this program)
@@ -1035,26 +1034,23 @@ void fdtd::buildObject() {
 void fdtd::buildSphere() {
 
     MyDataF dist; //distance
-    MyDataF rad = 8; //(MyDataF)mMaxIndex.x / 5.0; // sphere radius
+    MyDataF rad = 3; //(MyDataF)mMaxIndex.x / 5.0; // sphere radius
     MyDataF sc = (MyDataF) mMaxIndex.x / 2.0; //sphere centre
     //MyDataF rad2 = 0.3; //(MyDataF)mMaxIndex.x / 5.0 - 3.0; // sphere radius
 
     unsigned i, j, k;
-
-    for (i = 0; i < mMaxIndex.x; ++i) {
-        for (j = 0; j < mMaxIndex.y; ++j) {
-            for (k = 0; k < mMaxIndex.z; ++k) {
+    Point *p;
+    for (i = mDomainStartIndex.x; i <= mDomainEndIndex.x; ++i) {
+        for (j = mDomainStartIndex.y; j <= mDomainEndIndex.y; ++j) {
+            for (k = mDomainStartIndex.z; k <= mDomainEndIndex.z; ++k) {
                 //compute distance form centre to the point i, j, k
                 dist = sqrt((i + 0.5 - sc) * (i + 0.5 - sc) +
                         (j + 0.5 - sc) * (j + 0.5 - sc) +
                         (k + 0.5 - sc) * (k + 0.5 - sc));
 
-                //if point is within the sphere
                 if (dist <= rad) {
-                    //set the material at that point
-
-                    yeeCube(i, j, k, 6);
-
+                    p = new Point(i, j, k);
+                    pSource->add(*p);
                 }
             }
         }
@@ -1064,20 +1060,22 @@ void fdtd::buildSphere() {
 
 //Builds a dipole
 
-void fdtd::buildDipole() {
+void fdtd::buildBrick() {
     unsigned i, j, k;
-    unsigned centre = (mNonPMLStartIndex.y + mNonPMLEndIndex.y) / 2;
+    Point *p;
+    const unsigned w = 2;
+    Point lower(mMaxIndex.x / 2 - w, mMaxIndex.y / 2 - w, mMaxIndex.z / 2 - w);
+    Point upper(mMaxIndex.x / 2 + w, mMaxIndex.y / 2 + w, mMaxIndex.z / 2 + w);
 
-    for (i = mNonPMLStartIndex.x; i <= mNonPMLEndIndex.x; ++i) {
+    for (i = lower.x; i <= upper.x; ++i) {
 
-        for (j = mNonPMLStartIndex.y; j <= mNonPMLEndIndex.y; ++j) {
+        for (j = lower.y; j <= upper.y; ++j) {
 
-            for (k = mNonPMLStartIndex.z; k <= mNonPMLEndIndex.z; ++k) {
+            for (k = lower.z; k <= upper.z; ++k) {
 
-                if (j != centre) {
+                p = new Point(i, j, k);
+                pSource->add(*p);
 
-                    yeeCube(i, j, k, 1); //PEC material
-                }
             }
         }
     }
@@ -1157,12 +1155,10 @@ void fdtd::startUp() {
 
     cout << "initializing(in Startup)..." << endl;
     createFieldArray();
-    //    cout << "initial pml (in Statup)" << endl;
-    //    pml.Initial(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z, 11);
-    cout << "setUp (in Startup)" << endl;
-    setUp();
     cout << "buildObject (in Startup)" << endl;
     buildObject();
+    cout << "setUp (in Startup)" << endl;
+    setUp();
     cout << "computing (in Startup)" << endl;
     compute();
     cout << "exit Startup" << endl;
@@ -1638,19 +1634,62 @@ void fdtd::desideDomainZone() {
             mNonPMLEndIndex.z - mAirBufferWidth);
 }
 
+void fdtd::initSourceCoeff() {
+    // initial coefficients at source position
+    switch (pSource->getDirection()) {
+        case source::Z:
+            pSource->initCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
+            break;
+        case source::X:
+            pSource->initCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
+            break;
+        case source::Y:
+            pSource->initCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
+            break;
+    }
+}
+
 void fdtd::updateSourceCoeff() {
     // initial coefficients at source position
     switch (pSource->getDirection()) {
         case source::Z:
-            pSource->initUpdateCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
+            pSource->updateCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
             break;
         case source::X:
-            pSource->initUpdateCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
+            pSource->updateCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
             break;
         case source::Y:
-            pSource->initUpdateCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
-
+            pSource->updateCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
             break;
+    }
+}
+
+void fdtd::initSourceCoeff(const Point& nes, const Point & bes) {
+    // initial coefficients at source position
+    if (fdtd::SOURCE_SINE != mSrcType) {
+        switch (pSource->getDirection()) {
+            case source::Z:
+                pSource->initCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::X:
+                pSource->initCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::Y:
+                pSource->initCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+        }
+    } else {
+        switch (pSource->getDirection()) {
+            case source::Z:
+                pSource->initCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::X:
+                pSource->initCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::Y:
+                pSource->initCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+        }
     }
 }
 
@@ -1659,25 +1698,25 @@ void fdtd::updateSourceCoeff(const Point& nes, const Point & bes) {
     if (fdtd::SOURCE_SINE != mSrcType) {
         switch (pSource->getDirection()) {
             case source::Z:
-                pSource->initUpdateCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                pSource->updateCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
                 break;
             case source::X:
-                pSource->initUpdateCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                pSource->updateCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
                 break;
             case source::Y:
-                pSource->initUpdateCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                pSource->updateCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
                 break;
         }
     } else {
         switch (pSource->getDirection()) {
             case source::Z:
-                pSource->initUpdateCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                pSource->updateCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
                 break;
             case source::X:
-                pSource->initUpdateCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                pSource->updateCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
                 break;
             case source::Y:
-                pSource->initUpdateCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                pSource->updateCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
                 break;
         }
     }

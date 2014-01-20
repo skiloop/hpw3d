@@ -7,6 +7,9 @@
 
 #ifndef SOURCE_H
 #define	SOURCE_H
+
+#include <vector>
+
 #include "Point.h"
 #include "data3d.h"
 #include "sourceType.h"
@@ -16,7 +19,7 @@ public:
 
     source() {
     };
-    source(int direction, MyDataF R, Point lower, Point upper, MyDataF amp);
+    source(int direction, MyDataF R, MyDataF amp);
     source(const source& orig);
     virtual ~source();
     /**
@@ -29,9 +32,22 @@ public:
      * @param dz
      * @param dt
      */
-    virtual void initUpdateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv,
+    virtual void initCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv,
             MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
-    
+
+    /**
+     * 
+     * @param Cere
+     * @param Cerhw
+     * @param Cerhv
+     * @param dx
+     * @param dy
+     * @param dz
+     * @param dt
+     */
+    virtual void updateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv,
+            MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
+
     /**
      * 
      * @param Cere
@@ -49,7 +65,29 @@ public:
      * @param dz
      * @param dt
      */
-    virtual void initUpdateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
+    virtual void initCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
+            const data3d<MyDataF>&Beta, const data3d<MyDataF>&Ne, const data3d<MyDataF>&Nu_c,
+            const Point& nes, const Point& bes, unsigned m,
+            MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
+
+    /**
+     * 
+     * @param Cere
+     * @param Cerhw
+     * @param Cerhv
+     * @param Cervr
+     * @param Beta
+     * @param Ne
+     * @param Nu_c
+     * @param nes
+     * @param bes
+     * @param m
+     * @param dx
+     * @param dy
+     * @param dz
+     * @param dt
+     */
+    virtual void updateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
             const data3d<MyDataF>&Beta, const data3d<MyDataF>&Ne, const data3d<MyDataF>&Nu_c,
             const Point& nes, const Point& bes, unsigned m,
             MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
@@ -71,10 +109,33 @@ public:
      * @param dz
      * @param dt
      */
-    virtual void initUpdateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
+    virtual void initCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
             const data3d<MyDataF>&Beta, const data3d<MyDataF>&Ne, const MyDataF vm,
             const Point& nes, const Point& bes, unsigned m,
             MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
+    /**
+     * 
+     * @param Cere
+     * @param Cerhw
+     * @param Cerhv
+     * @param Cervr
+     * @param Beta
+     * @param Ne
+     * @param vm
+     * @param nes
+     * @param bes
+     * @param m
+     * @param dx
+     * @param dy
+     * @param dz
+     * @param dt
+     */
+    virtual void updateCoefficients(data3d<MyDataF>&Cere, data3d<MyDataF>&Cerhw, data3d<MyDataF>&Cerhv, data3d<MyDataF>&Cervr,
+            const data3d<MyDataF>&Beta, const data3d<MyDataF>&Ne, const MyDataF vm,
+            const Point& nes, const Point& bes, unsigned m,
+            MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) = 0;
+
+
 
     /**
      * 
@@ -84,7 +145,7 @@ public:
      * @param t
      */
     virtual void updateSource(data3d<MyDataF>&Ex, data3d<MyDataF>&Ey, data3d<MyDataF>&Ez, MyDataF t) = 0;
-    
+
     /**
      * 
      * @param Ex
@@ -109,13 +170,15 @@ public:
     void setSourceType(sourceType*srcType) {
         mPSource = srcType;
     };
+
+    void add(Point &point);
+
 protected:
     int mDirection;
     MyDataF mResistancePerComponent;
     MyDataF mAmplitude;
-    Point mLowerIndex;
-    Point mUpperIndex;
-    data3d<MyDataF> Cese;
+    vector<Point> mSrcIndexes;
+    vector<MyDataF>Cese;
     sourceType *mPSource;
 };
 
