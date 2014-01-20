@@ -910,6 +910,8 @@ void fdtd::compute() {
             if (n % mNeSkipStep == 0) {
                 updateEeff();
 #if DEBUG>=4
+                Eeff.save(Eeff.nx / 2, 1, n, 1);
+                Eeff.save(Eeff.ny / 2, 1, n, 2);
                 Eeff.save(Eeff.nz / 2, 1, n, 3);
 #endif
                 updateSourceCoeff(nes, bes);
@@ -1034,7 +1036,7 @@ void fdtd::buildObject() {
 void fdtd::buildSphere() {
 
     MyDataF dist; //distance
-    MyDataF rad = 3; //(MyDataF)mMaxIndex.x / 5.0; // sphere radius
+    MyDataF rad = 2; //(MyDataF)mMaxIndex.x / 5.0; // sphere radius
     MyDataF sc = (MyDataF) mMaxIndex.x / 2.0; //sphere centre
     //MyDataF rad2 = 0.3; //(MyDataF)mMaxIndex.x / 5.0 - 3.0; // sphere radius
 
