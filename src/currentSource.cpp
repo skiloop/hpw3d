@@ -75,7 +75,7 @@ void currentSource::initCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& Cer
     MyDataF dr, dw, dv;
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF psi = dr / mResistancePerComponent / 2 / dw / dv; //psi
-    MyDataF alpha, a, bb, b, theta, phi;
+    MyDataF alpha, a, bb, b, theta;
     MyDataF ne;
     alpha = vm * dt / 2;
     alpha = (1.0 - alpha) / (1.0 + alpha);
@@ -106,7 +106,7 @@ void currentSource::initCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& Cer
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF psi = dr / mResistancePerComponent / 2 / dw / dv; //psi
     MyDataF dt2 = dt / 2;
-    MyDataF alpha, a, bb, b, theta, phi;
+    MyDataF alpha, a, bb, b, theta;
     MyDataF ne;
 
     a = eps_0 / dt;
@@ -169,7 +169,7 @@ void currentSource::updateCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& C
     MyDataF dr, dw, dv;
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF psi = dr / mResistancePerComponent / 2 / dw / dv; //psi
-    MyDataF alpha, a, bb, b, theta, phi;
+    MyDataF alpha, a, bb, b, theta;
     MyDataF ne;
     alpha = vm * dt / 2;
     alpha = (1.0 - alpha) / (1.0 + alpha);
@@ -200,7 +200,7 @@ void currentSource::updateCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& C
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF psi = dr / mResistancePerComponent / 2 / dw / dv; //psi
     MyDataF dt2 = dt / 2;
-    MyDataF alpha, a, bb, b, theta, phi;
+    MyDataF alpha, a, bb, b, theta;
     MyDataF ne;
 
     a = eps_0 / dt;

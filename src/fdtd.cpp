@@ -140,7 +140,7 @@ void fdtd::captureEFieldForEeff(void) {
                         szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
                         Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
 #if DEBUG>=4
-                        if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko]) || fabs(Eeff.p[io][jo][ko]) > 1e30) {
+                        if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko]) /*|| fabs(Eeff.p[io][jo][ko]) > 1e30*/) {
                             szIJK = 0.0;
                         }
 #endif
@@ -188,10 +188,13 @@ void fdtd::vec2Eeff() {
     for (unsigned i = 0; i < Eeff.nx; i += mNeGridSize) {
         for (unsigned j = 0; j < Eeff.ny; j += mNeGridSize) {
             for (unsigned k = 0; k < Eeff.nz; k += mNeGridSize) {
+#if DEBUG>=4
+                MyDataF smp=Eeff.p[i][j][k];
+#endif
                 Eeff.p[i][j][k] = sqrt(tmp * Eeff.p[i][j][k]);
 #if DEBUG>=4
                 if (isnan(Eeff.p[i][j][k]) || isinf(Eeff.p[i][j][k])) {
-                    tmp = mDt / mDtFluid;
+                    smp += mDt / mDtFluid;
                 }
 #endif
             }
@@ -238,11 +241,11 @@ void fdtd::updateEeff() {
 void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff) {
     MyDataF EeffVPerCM;
     switch (mSrcType) {
-        case SOURCE_GAUSSIAN:
-            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100; //convert to V/cm
+        case SOURCE_SINE:
+            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100 * pow(1 / (1 + mOmega * mOmega / mNu_m / mNu_m), 0.5);
             break;
         default:
-            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100 * pow(1 / (1 + mOmega * mOmega / mNu_m / mNu_m), 0.5);
+            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100; //convert to V/cm
     }
 
     switch (mNiuType) {
@@ -317,6 +320,9 @@ void fdtd::updateDensity(void) {
                     mOfNeCheck << Eeff.p[i][j][k] << '\t' << Ne_ijk * mDtFluid * vi << '\t' << Deff * dtfDivDsfSquare * \
                             (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk) << \
                             '\t' << mDtFluid * (va + mRei * Ne_ijk) << endl;
+                }
+                if(isnan(Ne.p[i][j][k])){
+                    vi=0;
                 }
 #endif
             }
@@ -740,7 +746,7 @@ void fdtd::setUp() {
 
     if (USE_DENSITY == mIsUseDensity) {
         mNeSrcPos.setValue((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
-                (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
+                (mSourceIndex.y - mDomainStartIndex.y - 3) * mNeGridSize + mNeBoundWidth,
                 (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // initial density
@@ -766,14 +772,14 @@ void fdtd::setUp() {
         mConnectingInterface.initCoefficients(mDx, mDt);
         mConnectingInterface.invalidate();
     } else {
-        Point nes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
-                (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
-                (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
-        Point bes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize,
-                (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize,
-                (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize);
         // initial coefficients at source position
         if (USE_DENSITY == mIsUseDensity) {
+            Point nes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
+                    (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
+                    (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
+            Point bes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize,
+                    (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize,
+                    (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize);
             initSourceCoeff(nes, bes);
         } else {
             initSourceCoeff();
@@ -891,7 +897,7 @@ void fdtd::compute() {
 
             updateElectricFields();
             if (USE_DENSITY == mIsUseDensity)updateVelocity();
-            mConnectingInterface.updateESource(pSourceType->valueAtTime(mDt * n) * mAmplitude);
+            mConnectingInterface.updateESource(pSourceType->valueAtTime(n * mDt) * mAmplitude);
             mConnectingInterface.updateEConnect(Ex, Cexhy, Cexhz, Ey, Ceyhx, Ceyhz, Ez, Cezhy, Cezhx);
             mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         } else {
@@ -914,7 +920,9 @@ void fdtd::compute() {
                 Eeff.save(Eeff.ny / 2, 1, n, 2);
                 Eeff.save(Eeff.nz / 2, 1, n, 3);
 #endif
-                updateSourceCoeff(nes, bes);
+                if (!mUseConnectingInterface) {
+                    updateSourceCoeff(nes, bes);
+                }
                 updateCollisionFrequency();
                 updateDensity();
                 updateCoeffWithDensity();
@@ -922,7 +930,9 @@ void fdtd::compute() {
                 Ne.save(Ne.nz / 2, 1, n, 3);
                 Ne.save(Ne.nz / 2, 1, n, 2);
                 Ne.save(Ne.nz / 2, 1, n, 1);
-                Nu_c.save(Nu_c.nz / 2, 1, n, 3);
+                if (NULL != Nu_c.p) {
+                    Nu_c.save(Nu_c.nz / 2, 1, n, 3);
+                }
 #else
                 Ne.save(Ne.nx / 2, 1, n, 1);
                 Ne.save(Ne.nz / 2, 1, n, 3);
