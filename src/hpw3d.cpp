@@ -84,13 +84,7 @@ int main(int argc, char*argv[]) {
     SinePulse sinePulse(T, 0.5 * T);
     SquarePulse squarePulse(0.5 * T, 1.5 * T);
     TestSourceType testSource(2);
-    CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
-    Point lower(xlen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
-            ylen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
-            zlen / 2 - 1 + checker.pmlSize + AIR_BUFFER);
-    Point upper(xlen / 2 + 1 + checker.pmlSize + AIR_BUFFER,
-            ylen / 2 + 1 + checker.pmlSize + AIR_BUFFER,
-            zlen / 2 + 1 + checker.pmlSize + AIR_BUFFER);
+    CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);    
 
     MyDataF R = 1e-20;
     currentSource cSource(source::Z, R, checker.amptidute * 1e13);

@@ -42,7 +42,7 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
         unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid, MyDataF maxNe)
 : mIsUseDensity(useDensity)
 , mTotalTimeSteps(_totalTimeSteps)
-, tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
+, tw(_tw),mDt(0), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mAirBufferWidth(AIR_BUFFER)
@@ -51,8 +51,13 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
 , mSrcType(SOURCE_SINE)
 , mUseConnectingInterface(!(useConnect == 0))
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
+, t0(0)
+, mOmega(0)
 , pSource(NULL), pSourceType(NULL), CA(NULL), CB(NULL)
-, mNeBoundWidth(NE_BOUND_WIDTH) {
+, mDsFluid(_dx), mDtFluid(0)
+, mNeSkipStep(1)
+, mNeBoundWidth(NE_BOUND_WIDTH)
+, mDe(0), mDa(0), mRei(0), mMu_i(0), mMu_e(0) {
     mMaxIndex.setValue(xzoneSize + 2 * (pmlw + mAirBufferWidth),
             yzoneSize + 2 * (pmlw + mAirBufferWidth),
             zzoneSize + 2 * (pmlw + mAirBufferWidth));
@@ -153,7 +158,7 @@ void fdtd::captureEFieldForEeff(void) {
 void fdtd::updateCollisionFrequency() {
     if (fdtd::SOURCE_GAUSSIAN == mSrcType) {
         int i, j, k;
-        MyDataF EeffDivP;
+        MyDataF EeffDivP = 0;
         MyDataF DivParam = 100 * mAirPressure * 133.3;
         MyDataF C1 = 5.20e8 * mAirPressure;
         MyDataF C2 = 2.93e8 * mAirPressure;
@@ -189,7 +194,7 @@ void fdtd::vec2Eeff() {
         for (unsigned j = 0; j < Eeff.ny; j += mNeGridSize) {
             for (unsigned k = 0; k < Eeff.nz; k += mNeGridSize) {
 #if DEBUG>=4
-                MyDataF smp=Eeff.p[i][j][k];
+                MyDataF smp = Eeff.p[i][j][k];
 #endif
                 Eeff.p[i][j][k] = sqrt(tmp * Eeff.p[i][j][k]);
 #if DEBUG>=4
@@ -321,8 +326,8 @@ void fdtd::updateDensity(void) {
                             (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk) << \
                             '\t' << mDtFluid * (va + mRei * Ne_ijk) << endl;
                 }
-                if(isnan(Ne.p[i][j][k])){
-                    vi=0;
+                if (isnan(Ne.p[i][j][k])) {
+                    vi = 0;
                 }
 #endif
             }
@@ -710,7 +715,7 @@ void fdtd::setUp() {
         mMu_i = mMu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
         mDe = mMu_e * 2 * 1.602e-19 / e; //
         mDa = mMu_i * 2 * 1.602e-19 / e; //
-        MyDataF Dmax = mDe > mDa ? mDe : mDa;
+        //MyDataF Dmax = mDe > mDa ? mDe : mDa;
         //Fine Time Step Size
         mDtFluid = 10 * mDt; //0.01 * mDsFluid * mDsFluid / 2 / Dmax;
         mNeSkipStep = mDtFluid / mDt;
@@ -877,6 +882,7 @@ void fdtd::compute() {
         cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         cout << n * mDt / 1e-9 << " ns" << "\t";
         cout << endl;
+        
         //        cout << "Source Value:";
         //        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         //        cout << endl;
@@ -942,7 +948,7 @@ void fdtd::compute() {
                 Eeff.resetArray();
             }
         }
-        if ((n % mSaveModulus) == 0) {
+        if (0 == (n % mSaveModulus)) {
 
             //writeField(n);
             //Ez.save(mSourceIndex.x + 10, 1, n, 1);
@@ -1051,7 +1057,7 @@ void fdtd::buildSphere() {
     //MyDataF rad2 = 0.3; //(MyDataF)mMaxIndex.x / 5.0 - 3.0; // sphere radius
 
     unsigned i, j, k;
-    Point *p;
+    Point *p = NULL;
     for (i = mDomainStartIndex.x; i <= mDomainEndIndex.x; ++i) {
         for (j = mDomainStartIndex.y; j <= mDomainEndIndex.y; ++j) {
             for (k = mDomainStartIndex.z; k <= mDomainEndIndex.z; ++k) {
@@ -1062,7 +1068,10 @@ void fdtd::buildSphere() {
 
                 if (dist <= rad) {
                     p = new Point(i, j, k);
-                    pSource->add(*p);
+                    if (p) {
+                        pSource->add(*p);
+                        delete p;
+                    }
                 }
             }
         }
@@ -1074,7 +1083,7 @@ void fdtd::buildSphere() {
 
 void fdtd::buildBrick() {
     unsigned i, j, k;
-    Point *p;
+    Point *p = NULL;
     const unsigned w = 2;
     Point lower(mMaxIndex.x / 2 - w, mMaxIndex.y / 2 - w, mMaxIndex.z / 2 - w);
     Point upper(mMaxIndex.x / 2 + w, mMaxIndex.y / 2 + w, mMaxIndex.z / 2 + w);
@@ -1086,8 +1095,10 @@ void fdtd::buildBrick() {
             for (k = lower.z; k <= upper.z; ++k) {
 
                 p = new Point(i, j, k);
-                pSource->add(*p);
-
+                if (p) {
+                    pSource->add(*p);
+                    delete p;
+                }
             }
         }
     }
@@ -1209,6 +1220,7 @@ void fdtd::printParam() {
     cout << "neSkipStep=" << mNeSkipStep << endl;
     cout << "DtFluid=" << mDtFluid << endl;
     cout << "DsFluid=" << mDsFluid << endl;
+    cout << "mRei=" << mRei << endl;
     cout << "mu_i=" << mMu_i << endl;
     cout << "mu_e=" << mMu_e << endl;
     cout << "Da=" << mDa << endl;

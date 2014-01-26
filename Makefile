@@ -11,7 +11,7 @@ DEPS:=$(patsubst $(SRC_DIR)/%.cpp,%.d,$(SOURCES))
 
 #We don't need to clean up when we're making these targets
 NODEPS:=clean tags svn
-TEST:=sourceTest
+TEST:=sourceTest data3d
 PROJECTS=$(TEST) $(EXCUTABLE) #3DFormulaTransforming.pdf
 .PHONY:all clean test objs veryclean rebuild deps
 	
@@ -40,6 +40,8 @@ endif
 $(EXCUTABLE):$(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LIB)
 sourceTest:sourceTest.o SineWaveSource.o sourceType.o Point.o GaussianWaveSource.o CosineGaussianWave.o
+	$(CXX) -o $@ $^ $(LIB)
+data3d:data3d.o Point.o
 	$(CXX) -o $@ $^ $(LIB)
 # ==========================================
 # 3DFormulaTransforming.pdf

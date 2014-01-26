@@ -25,8 +25,9 @@ source::source(const source& orig) {
 }
 
 source::~source() {
+        
 }
 
-void source::add(Point &point) {
+void source::add(Point point) {
     mSrcIndexes.push_back(point);
 }

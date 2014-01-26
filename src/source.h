@@ -171,7 +171,7 @@ public:
         mPSource = srcType;
     };
 
-    void add(Point &point);
+    void add(Point point);
 
 protected:
     int mDirection;

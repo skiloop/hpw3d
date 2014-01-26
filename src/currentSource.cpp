@@ -42,7 +42,7 @@ void currentSource::desideXYZ(MyDataF& dr, MyDataF& dw, MyDataF& dv,
 
 void currentSource::initCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& Cerhw,
         data3d<MyDataF>& Cerhv, MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) {
-    MyDataF dr, dw, dv;
+    MyDataF dr=0, dw=0, dv=0;
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF C = dt * dr / mResistancePerComponent / dw / dv;
     MyDataF eps2 = eps_0 * 2;
@@ -72,7 +72,7 @@ void currentSource::initCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& Cer
         data3d<MyDataF>& Cerhv, data3d<MyDataF>& Cervr, const data3d<MyDataF>& Beta,
         const data3d<MyDataF>& Ne, const MyDataF vm, const Point& nes, const Point& bes,
         unsigned m, MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) {
-    MyDataF dr, dw, dv;
+    MyDataF dr=0, dw=0, dv=0;
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF psi = dr / mResistancePerComponent / 2 / dw / dv; //psi
     MyDataF alpha, a, bb, b, theta;
@@ -102,7 +102,7 @@ void currentSource::initCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& Cer
         data3d<MyDataF>& Cerhv, data3d<MyDataF>& Cervr, const data3d<MyDataF>& Beta,
         const data3d<MyDataF>& Ne, const data3d<MyDataF>& Nu_c, const Point& nes, const Point& bes,
         unsigned m, MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) {
-    MyDataF dr, dw, dv;
+    MyDataF dr=0, dw=0, dv=0;
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF psi = dr / mResistancePerComponent / 2 / dw / dv; //psi
     MyDataF dt2 = dt / 2;
@@ -136,7 +136,7 @@ void currentSource::initCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& Cer
 
 void currentSource::updateCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& Cerhw,
         data3d<MyDataF>& Cerhv, MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) {
-    MyDataF dr, dw, dv;
+    MyDataF dr=0, dw=0, dv=0;
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF C = dt * dr / mResistancePerComponent / dw / dv;
     MyDataF eps2 = eps_0 * 2;
@@ -166,7 +166,7 @@ void currentSource::updateCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& C
         data3d<MyDataF>& Cerhv, data3d<MyDataF>& Cervr, const data3d<MyDataF>& Beta,
         const data3d<MyDataF>& Ne, const MyDataF vm, const Point& nes, const Point& bes,
         unsigned m, MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) {
-    MyDataF dr, dw, dv;
+    MyDataF dr=0, dw=0, dv=0;
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF psi = dr / mResistancePerComponent / 2 / dw / dv; //psi
     MyDataF alpha, a, bb, b, theta;
@@ -196,7 +196,7 @@ void currentSource::updateCoefficients(data3d<MyDataF>& Cere, data3d<MyDataF>& C
         data3d<MyDataF>& Cerhv, data3d<MyDataF>& Cervr, const data3d<MyDataF>& Beta,
         const data3d<MyDataF>& Ne, const data3d<MyDataF>& Nu_c, const Point& nes, const Point& bes,
         unsigned m, MyDataF dx, MyDataF dy, MyDataF dz, MyDataF dt) {
-    MyDataF dr, dw, dv;
+    MyDataF dr=0, dw=0, dv=0;
     desideXYZ(dr, dw, dv, dx, dy, dz);
     MyDataF psi = dr / mResistancePerComponent / 2 / dw / dv; //psi
     MyDataF dt2 = dt / 2;
