@@ -47,7 +47,7 @@ data3d:data3d.o Point.o
 # 3DFormulaTransforming.pdf
 # ==========================================
 3DFormulaTransforming.pdf:3DFormulaTransforming.tex
-	texi2pdf 3DFormulaTransforming.tex
+	pdflatex 3DFormulaTransforming.tex
 clean:
 	-rm -f $(DEPS) $(OBJS) $(PROJECTS) *.aux *.log *.o
 veryclean:clean

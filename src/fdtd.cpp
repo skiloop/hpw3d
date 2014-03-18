@@ -956,6 +956,7 @@ void fdtd::compute() {
             Ez.save(Ez.nz / 2, 1, n, 3);
             Ex.save(Ex.nz / 2, 1, n, 3);
             Ey.save(Ey.nz / 2, 1, n, 3);
+            Vy.save(Vy.nz / 2, 1, n, 3);
 #ifdef DEBUG 
             if (mUseConnectingInterface) {
                 mConnectingInterface.saveEMInc(n);
@@ -1104,7 +1105,7 @@ void fdtd::buildBrick() {
     }
 }
 
-//creates a dielectric cube (yee cell) made up of the selected material
+//creates a dielectric cube (Yee cell) made up of the selected material
 
 void fdtd::yeeCube(unsigned I, unsigned J, unsigned K, unsigned mType) {
 
