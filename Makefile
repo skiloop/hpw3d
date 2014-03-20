@@ -2,6 +2,7 @@
 include makefile.in
 
 EXCUTABLE:=hpw3d
+PDFS=3DFormulaTransforming.pdf 1DFormulaTransforming.pdf
 SRC_DIR:=src
 TEST_SRC_DIR:=test
 VPATH = $(SRC_DIR):$(TEST_SRC_DIR)
@@ -15,7 +16,7 @@ TEST:=sourceTest data3d
 PROJECTS=$(TEST) $(EXCUTABLE) #3DFormulaTransforming.pdf
 .PHONY:all clean test objs veryclean rebuild deps
 	
-all:$(PROJECTS) 3DFormulaTransforming.pdf
+all:$(PROJECTS) $(PDFS)
 
 deps:$(DEPS)
 
@@ -46,8 +47,11 @@ data3d:data3d.o Point.o
 # ==========================================
 # 3DFormulaTransforming.pdf
 # ==========================================
-3DFormulaTransforming.pdf:3DFormulaTransforming.tex
-	pdflatex 3DFormulaTransforming.tex
+%.pdf:%.tex
+	for f in $<; \
+	   do \
+	   $(PDFLATEX) $$f; \
+	   done
 clean:
 	-rm -f $(DEPS) $(OBJS) $(PROJECTS) *.aux *.log *.o
 veryclean:clean

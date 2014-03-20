@@ -43,3 +43,5 @@ MATINC=-I$(MATPATH)/extern/include
 #CXXFLAGS+=-fopenmp
 #LIB+=-fopenmp
 
+# PDF TOOLS
+PDFLATEX=pdflatex
