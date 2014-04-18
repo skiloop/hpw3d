@@ -466,7 +466,7 @@ void fdtd::updateCoeffWithDensity() {
                     MyDataF gamma = 1 + a;
                     Cvxex.p[i][j][k] = mCoeffVelocity / gamma;
                     Cvxvx.p[i][j][k] = (1 - a) / gamma;
-                    Cexvx.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                    Cexvx.p[i][j][k] = eMDtDiv2DivEps0 * (1 + Cvxvx.p[i][j][k])
                             * Ne.p[im][jm][km] / kappa;
 #if DEBUG>=4
                     if (isnan(Cvxvx.p[i][j][k]) || isnan(Cvxex.p[i][j][k]) || isnan(Cexvx.p[i][j][k])) {
@@ -495,7 +495,7 @@ void fdtd::updateCoeffWithDensity() {
                     MyDataF gamma = 1 + a;
                     Cvyvy.p[i][j][k] = (1 - a) / gamma;
                     Cvyey.p[i][j][k] = mCoeffVelocity / gamma;
-                    Ceyvy.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                    Ceyvy.p[i][j][k] = eMDtDiv2DivEps0 * (1 + Cvyvy.p[i][j][k])
                             * Ne.p[im][jm][km] / kappa;
 #if DEBUG>=4
                     if (isnan(Cvyvy.p[i][j][k]) || isnan(Cvyey.p[i][j][k]) || isnan(Ceyvy.p[i][j][k])) {
@@ -524,7 +524,7 @@ void fdtd::updateCoeffWithDensity() {
                     MyDataF gamma = 1 + a;
                     Cvzvz.p[i][j][k] = (1 - a) / gamma;
                     Cvzez.p[i][j][k] = mCoeffVelocity / gamma;
-                    Cezvz.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                    Cezvz.p[i][j][k] = eMDtDiv2DivEps0 * (1 + Cvzvz.p[i][j][k])
                             * Ne.p[im][jm][km] / kappa;
 #if DEBUG>=4
                     if (isnan(Cvzvz.p[i][j][k]) || isnan(Cvzez.p[i][j][k]) || isnan(Cezvz.p[i][j][k])) {

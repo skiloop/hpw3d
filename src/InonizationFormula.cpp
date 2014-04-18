@@ -21,7 +21,7 @@ MyDataF Alpha_Nikonov(MyDataF E, MyDataF P) {
     if (EDivP < 108.0) {
         return 3.9 * P * exp(-213.0 / EDivP);
     } else {
-        return 14.5 * P * exp(-316.0 / EDivP);
+        return 14.5 * P * exp(-356.0 / EDivP);
     }
 }
 // Calculate Eta by Nikonov formula
