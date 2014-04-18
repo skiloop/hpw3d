@@ -26,9 +26,9 @@ int main(int argc, char** argv) {
     n = atoi(argv[1]);
 
     if (n < 0)n = 100;
-    double f = 1e9;
-    double T = 1.0 / f;
-    double omega = 2.0 * M_PI / T;
+    MyDataF f = 1e9;
+    MyDataF T = 1.0 / f;
+    MyDataF omega = 2.0 * M_PI / T;
     SineWaveSource sineSource(omega);
     GaussianWaveSource gsource(f);
     CosineGaussianWave cosGaussian(f, 0.5*f);
