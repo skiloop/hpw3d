@@ -4,7 +4,7 @@
  * 
  * Created on 2013年5月10日, 下午9:58
  */
-#include <math.h>
+#include <cmath>
 
 #include "common.h"
 #include "sourceType.h"

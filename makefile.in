@@ -6,14 +6,14 @@ CC=gcc
 # MATH lib
 LIB= -lm
 # CFlags and CXXFlags
-CXXFLAGS=#-Wl,--hash-style=sysv -Wall -Wno-sign-compare
-CFLAGS=#-Wl,--hash-style=sysv -Wall -Wno-sign-compare
-# CXXFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
-# CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+#CXXFLAGS=#-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+#CFLAGS=#-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+CXXFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
+CFLAGS=-Wl,--hash-style=sysv -Wall -Wno-sign-compare
 
 # debug mode
-CXXFLAGS+=-DDEBUG=4
-CFLAGS+=-DDEBUG=4
+#CXXFLAGS+=-DDEBUG=4
+#CFLAGS+=-DDEBUG=4
 CXXFLAGS+=-g
 CFLAGS+=-g
 #CXXFLAGS+=-O3
@@ -40,6 +40,8 @@ MATINC=-I$(MATPATH)/extern/include
 #LIB+=$(MATLIB)
 
 # enable OpenMP
-CXXFLAGS+=-fopenmp
-LIB+=-fopenmp
+#CXXFLAGS+=-fopenmp
+#LIB+=-fopenmp
 
+# PDF TOOLS
+PDFLATEX=pdflatex

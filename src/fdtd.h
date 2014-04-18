@@ -5,26 +5,22 @@
 #include "source.h"
 #include "ConnectingInterface.h"
 
-#ifndef WITH_DENSITY
-//#define WITH_DENSITY
-#endif
-
 class fdtd {
 public:
-#ifdef WITH_DENSITY
-    fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
+    //#ifdef WITH_DENSITY
+    fdtd(int useDensity, unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
             MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
             MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
             unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0,
-            unsigned _neGrid = 16,MyDataF maxNe=DEFAULT_DENSITY_MAX);
+            unsigned _neGrid = 16, MyDataF maxNe = DEFAULT_DENSITY_MAX);
 
     void setPlasmaParam(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
-#else
-    fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
-            MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
-            MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
-            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0);
-#endif
+    //#else
+    //    fdtd(unsigned _totalTimeSteps = 500, unsigned _imax = 40, unsigned _jmax = 40, unsigned _kmax = 26,
+    //            MyDataF _tw = 53.0e-12, MyDataF _dx = 1e-3, MyDataF _dy = 1e-3, MyDataF _dz = 1e-3,
+    //            MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
+    //            unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0);
+    //#endif
     ~fdtd(void);
 
     static const int SOURCE_GAUSSIAN = GAUSSIAN_WAVE;
@@ -66,9 +62,9 @@ public:
     void setSource(source*p) {
         pSource = p;
     };
-    
+
     void setSrcType(int srcType);
-    
+
     void desideDomainZone();
 
 #ifdef MATLAB_SIMULATION
@@ -82,9 +78,12 @@ private:
     void yeeCube(unsigned, unsigned, unsigned, unsigned); //Sets material properties to a cell
     void writeField(unsigned); //Writes output
     void buildSphere(); //Builds a spherical object
-    void buildDipole(); //Builds a dipole
+    void buildBrick(); //Builds a dipole
     void printParam();
+
+    int mIsUseDensity;
 private:
+
     //  Specify Number of Time Steps and Grid Size Parameters
     unsigned mTotalTimeSteps; // total number of time steps
 
@@ -113,12 +112,12 @@ private:
     MyDataF t_up; // up bound of Pulse for Sine Pulse
     MyDataF t_down; // down bound of Pulse for Sine Pulse
 
-#ifdef WITH_DENSITY
+    //#ifdef WITH_DENSITY
     //how many fine grids per coarse grid 
     unsigned mNeGridSize;
     //initial plasma value
     MyDataF Ne0;
-#endif
+    //#endif
     // source type
     int mSrcType;
     // if use connecting interface
@@ -136,9 +135,10 @@ private:
     Point mNonPMLStartIndex;
     Point mNonPMLEndIndex;
     Point mDomainStartIndex;
-    Point mDomainEndIndex;    
+    Point mDomainEndIndex;
     // source position
     Point mSourceIndex;
+    Point mNeSrcPos;
 
     // Source 
     source *pSource;
@@ -156,6 +156,10 @@ private:
     data3d<MyDataF> Ex;
     data3d<MyDataF> Ey;
     data3d<MyDataF> Ez;
+
+    data3d<MyDataF> Exn;
+    data3d<MyDataF> Eyn;
+    data3d<MyDataF> Ezn;
 
     data3d<unsigned> ID1; //medium definition array for Ex
     data3d<unsigned> ID2; //medium definition array for Ey
@@ -176,7 +180,7 @@ private:
 
     void initCoeficients();
 
-#ifdef WITH_DENSITY
+    //#ifdef WITH_DENSITY
     // neutral gas density in cm^-3
     static const MyDataF mNeutralGasDensity;
 
@@ -200,7 +204,7 @@ private:
     unsigned mHalfNeGridSize;
 
     //plasma variables
-    MyDataF mNiu_m; //collision frequency
+    MyDataF mNu_m; //collision frequency
     MyDataF mAirPressure; // air pressure
     MyDataF mDe;
     MyDataF mDa;
@@ -223,7 +227,7 @@ private:
     //
     data3d<MyDataF> Eeff;
     // Beta
-    data3d<long double> Beta;
+    data3d<MyDataF> Beta;
 
     // collision frequency for reused mode
     data3d<MyDataF> Nu_c;
@@ -236,7 +240,7 @@ private:
     //initials
     void initCoeffForDensity();
     void initDensity();
-    void createCoeff();
+    void createDensityRelatedArrays();
     void updateCoeffWithDensity();
     void updateBeta();
 
@@ -247,8 +251,12 @@ private:
     void updateEeff();
     void updateDensity(void);
     void updateVelocity(void);
+    void updateVx();
+    void updateVy();
+    void updateVz();
+
     void wallCircleBound(data3d<MyDataF> &stru);
-#endif
+
     void updateHx();
     void updateHy();
     void updateHz();
@@ -256,6 +264,7 @@ private:
     void updateEx();
     void updateEy();
     void updateEz();
+    void updateElectricFields();
     void updateElectricAndVeloityFields();
     void updateSource(unsigned n);
     cpml<MyDataF> mPML;
@@ -272,6 +281,14 @@ private:
      * @param Deff
      */
     void calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff);
+
+    void initSourceCoeff();
+    void initSourceCoeff(const Point&nes, const Point&bes);
+    void updateSourceCoeff();
+    void updateSourceCoeff(const Point&nes, const Point&bes);
+#ifdef DEBUG
+    ofstream mOfNeCheck;
+#endif
 };
 
 

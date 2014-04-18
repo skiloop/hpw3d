@@ -8,9 +8,12 @@ int thread_count = 1;
 //#define WITH_DENSITY
 
 #include "fdtd.h"
+#include "SinePulse.h"
+#include "SquarePulse.h"
 #include "inputChecker.h"
 #include "currentSource.h"
 #include "SineWaveSource.h"
+#include "TestSourceType.h"
 #include "GaussianWaveSource.h"
 #include "CosineGaussianWave.h"
 
@@ -67,27 +70,24 @@ int main(int argc, char*argv[]) {
     cout << "dx=" << dx << endl;
     cout << "dt=" << dt << endl;
 
-#ifdef WITH_DENSITY
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
+    //#ifdef WITH_DENSITY
+    fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
             checker.useConnectingInterface, checker.fluidGridSize);
     hpw.setPlasmaParam(checker.rei, 760 * 5.3E9, 760, checker.nu_type);
-#else
-    fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
-            checker.useConnectingInterface);
-#endif    
+    //#else
+    //fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
+    //        checker.useConnectingInterface);
+    //#endif    
 
     GaussianWaveSource gaussianWave(checker.frequency);
     SineWaveSource sineSource(omega);
-    CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
-    Point lower(xlen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
-            ylen / 2 - 1 + checker.pmlSize + AIR_BUFFER,
-            zlen / 2 - 1 + checker.pmlSize + AIR_BUFFER);
-    Point upper(xlen / 2 + 1 + checker.pmlSize + AIR_BUFFER,
-            ylen / 2 + 1 + checker.pmlSize + AIR_BUFFER,
-            zlen / 2 + 1 + checker.pmlSize + AIR_BUFFER);
+    SinePulse sinePulse(T, 0.5 * T);
+    SquarePulse squarePulse(0.5 * T, 1.5 * T);
+    TestSourceType testSource(2);
+    CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);    
 
     MyDataF R = 1e-20;
-    currentSource cSource(source::Z, R, lower, upper, checker.amptidute * 1e13);
+    currentSource cSource(source::Z, R, checker.amptidute * 1e13);
 
     switch (checker.waveType) {
         case GAUSSIAN_WAVE:
@@ -113,6 +113,15 @@ int main(int argc, char*argv[]) {
             break;
         case ONE_SINE_PULSE:
             hpw.setSrcType(ONE_SINE_PULSE);
+            cSource.setSourceType(&sinePulse);
+            break;
+        case SQUARE_PULSE:
+            hpw.setSrcType(SQUARE_PULSE);
+            cSource.setSourceType(&squarePulse);
+            break;
+        case TEST_SOURCE:
+            hpw.setSrcType(TEST_SOURCE);
+            cSource.setSourceType(&testSource);
             break;
         default:
             cSource.setSourceType(&gaussianWave);

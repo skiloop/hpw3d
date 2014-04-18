@@ -1,6 +1,6 @@
 
 
-#include <math.h>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -30,18 +30,19 @@ extern MyDataF T;
 
 using namespace std;
 
-void checkmax(unsigned &u_2check, unsigned max, unsigned min) {
+void checkmax(unsigned &u_2check, unsigned min, unsigned max) {
     if (u_2check >= max || u_2check < min)u_2check = (min + max) / 2;
 }
 
-#ifdef WITH_DENSITY
+//#ifdef WITH_DENSITY
 
-fdtd::fdtd(unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, unsigned zzoneSize,
+fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, unsigned zzoneSize,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid, MyDataF maxNe)
-: mTotalTimeSteps(_totalTimeSteps)
-, tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
+: mIsUseDensity(useDensity)
+, mTotalTimeSteps(_totalTimeSteps)
+, tw(_tw),mDt(0), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mAirBufferWidth(AIR_BUFFER)
@@ -50,35 +51,40 @@ fdtd::fdtd(unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, uns
 , mSrcType(SOURCE_SINE)
 , mUseConnectingInterface(!(useConnect == 0))
 , mEpsilon(NULL), mSigma(NULL), mMu(NULL)
+, t0(0)
+, mOmega(0)
 , pSource(NULL), pSourceType(NULL), CA(NULL), CB(NULL)
-, mNeBoundWidth(NE_BOUND_WIDTH) {
+, mDsFluid(_dx), mDtFluid(0)
+, mNeSkipStep(1)
+, mNeBoundWidth(NE_BOUND_WIDTH)
+, mDe(0), mDa(0), mRei(0), mMu_i(0), mMu_e(0) {
     mMaxIndex.setValue(xzoneSize + 2 * (pmlw + mAirBufferWidth),
             yzoneSize + 2 * (pmlw + mAirBufferWidth),
             zzoneSize + 2 * (pmlw + mAirBufferWidth));
     desideDomainZone();
 }
-#else
-
-fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _kmax,
-        MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
-        MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect)
-: mTotalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
-, tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
-, mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
-, mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
-, mAirBufferWidth(AIR_BUFFER)
-, mSrcType(SOURCE_SINE)
-, mUseConnectingInterface(~(useConnect == 0))
-, mEpsilon(NULL), mSigma(NULL), mMu(NULL)
-, pSource(NULL), pSourceType(NULL)
-, CA(NULL), CB(NULL) {
-    mMaxIndex.setValue(_imax + 2 * (pmlw + mAirBufferWidth),
-            _jmax + 2 * (pmlw + mAirBufferWidth),
-            _kmax + 2 * (pmlw + mAirBufferWidth));
-    desideDomainZone();
-}
-#endif
+//#else
+//
+//fdtd::fdtd(unsigned _totalTimeSteps, unsigned _imax, unsigned _jmax, unsigned _kmax,
+//        MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
+//        MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
+//        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect)
+//: mTotalTimeSteps(_totalTimeSteps), mMaxIndex(_imax, _jmax, _kmax)
+//, tw(_tw), mDx(_dx), mDy(_dy), mDz(_dz)
+//, mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
+//, mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
+//, mAirBufferWidth(AIR_BUFFER)
+//, mSrcType(SOURCE_SINE)
+//, mUseConnectingInterface(~(useConnect == 0))
+//, mEpsilon(NULL), mSigma(NULL), mMu(NULL)
+//, pSource(NULL), pSourceType(NULL)
+//, CA(NULL), CB(NULL) {
+//    mMaxIndex.setValue(_imax + 2 * (pmlw + mAirBufferWidth),
+//            _jmax + 2 * (pmlw + mAirBufferWidth),
+//            _kmax + 2 * (pmlw + mAirBufferWidth));
+//    desideDomainZone();
+//}
+//#endif
 
 fdtd::~fdtd(void) {
     if (mEpsilon != NULL)delete []mEpsilon;
@@ -92,12 +98,12 @@ fdtd::~fdtd(void) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#ifdef WITH_DENSITY
+//#ifdef WITH_DENSITY
 const MyDataF fdtd::mNeutralGasDensity = 2.44e19;
 
 void fdtd::setPlasmaParam(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype) {
     mRei = _rei;
-    mNiu_m = _vm;
+    mNu_m = _vm;
     mAirPressure = _p;
     mNiuType = _ftype;
 }
@@ -139,7 +145,7 @@ void fdtd::captureEFieldForEeff(void) {
                         szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
                         Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
 #if DEBUG>=4
-                        if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko]) || fabs(Eeff.p[io][jo][ko])>1e30) {
+                        if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko]) /*|| fabs(Eeff.p[io][jo][ko]) > 1e30*/) {
                             szIJK = 0.0;
                         }
 #endif
@@ -152,7 +158,7 @@ void fdtd::captureEFieldForEeff(void) {
 void fdtd::updateCollisionFrequency() {
     if (fdtd::SOURCE_GAUSSIAN == mSrcType) {
         int i, j, k;
-        MyDataF EeffDivP;
+        MyDataF EeffDivP = 0;
         MyDataF DivParam = 100 * mAirPressure * 133.3;
         MyDataF C1 = 5.20e8 * mAirPressure;
         MyDataF C2 = 2.93e8 * mAirPressure;
@@ -183,14 +189,17 @@ void fdtd::updateCollisionFrequency() {
 }
 
 void fdtd::vec2Eeff() {
-    MyDataF tmp = mDtFluid / mDt;
+    MyDataF tmp = mDt / mDtFluid;
     for (unsigned i = 0; i < Eeff.nx; i += mNeGridSize) {
         for (unsigned j = 0; j < Eeff.ny; j += mNeGridSize) {
             for (unsigned k = 0; k < Eeff.nz; k += mNeGridSize) {
+#if DEBUG>=4
+                MyDataF smp = Eeff.p[i][j][k];
+#endif
                 Eeff.p[i][j][k] = sqrt(tmp * Eeff.p[i][j][k]);
 #if DEBUG>=4
                 if (isnan(Eeff.p[i][j][k]) || isinf(Eeff.p[i][j][k])) {
-                    tmp = mDtFluid / mDt;
+                    smp += mDt / mDtFluid;
                 }
 #endif
             }
@@ -214,9 +223,9 @@ void fdtd::updateEeff() {
         for (js = start.y, jn = js + mNeGridSize; jn < end.y; js = jn, jn += mNeGridSize) {
             for (ks = start.z, kn = ks + mNeGridSize; kn < end.z; ks = kn, kn += mNeGridSize) {
                 // integrate Erms
-                for (i = is, im = 0, iu = mNeGridSize; i < in; i++, im++, iu--) {
-                    for (j = js, jm = 0, ju = mNeGridSize; j < jn; j++, jm++, ju--) {
-                        for (k = ks, km = 0, ku = mNeGridSize; k < kn; k++, km++, ku--) {
+                for (i = is, im = 0, iu = mNeGridSize; i <= in; i++, im++, iu--) {
+                    for (j = js, jm = 0, ju = mNeGridSize; j <= jn; j++, jm++, ju--) {
+                        for (k = ks, km = 0, ku = mNeGridSize; k <= kn; k++, km++, ku--) {
                             Eeff.p[i][j][k] = (iu * ju * ku * Eeff.p[is][js][ks] + im * ju * ku * Eeff.p[in][js][ks] +
                                     im * jm * ku * Eeff.p[in][jn][ks] + im * jm * km * Eeff.p[in][jn][kn] +
                                     iu * jm * ku * Eeff.p[is][jn][ks] + iu * jm * km * Eeff.p[is][jn][kn] +
@@ -237,11 +246,11 @@ void fdtd::updateEeff() {
 void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyDataF &Deff) {
     MyDataF EeffVPerCM;
     switch (mSrcType) {
-        case SOURCE_GAUSSIAN:
-            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100; //convert to V/cm
+        case SOURCE_SINE:
+            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100 * pow(1 / (1 + mOmega * mOmega / mNu_m / mNu_m), 0.5);
             break;
         default:
-            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100 * pow(1 / (1 + mOmega * mOmega / mNiu_m / mNiu_m), 0.5);
+            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100; //convert to V/cm
     }
 
     switch (mNiuType) {
@@ -301,6 +310,9 @@ void fdtd::updateDensity(void) {
                 Ne.p[i][j][k] = (Ne_ijk * (1.0 + mDtFluid * vi) + Deff * dtfDivDsfSquare *
                         (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk))
                         / (1.0 + mDtFluid * (va + mRei * Ne_ijk));
+                if (Ne.p[i][j][k] < 0) {
+                    Ne.p[i][j][k] = 0;
+                }
                 if (vi > maxvi) {
                     maxvi = vi;
                     //                    ci = i;
@@ -308,6 +320,16 @@ void fdtd::updateDensity(void) {
                     //                    ck = k;
                 }
                 if (vi < minvi) minvi = vi;
+#ifdef DEBUG
+                if (mOfNeCheck.is_open() && i == mNeSrcPos.x && j == mNeSrcPos.y && k == mNeSrcPos.z) {
+                    mOfNeCheck << Eeff.p[i][j][k] << '\t' << Ne_ijk * mDtFluid * vi << '\t' << Deff * dtfDivDsfSquare * \
+                            (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk) << \
+                            '\t' << mDtFluid * (va + mRei * Ne_ijk) << endl;
+                }
+                if (isnan(Ne.p[i][j][k])) {
+                    vi = 0;
+                }
+#endif
             }
         }
     }
@@ -317,7 +339,15 @@ void fdtd::updateDensity(void) {
 }
 
 void fdtd::updateVelocity(void) {
-    //return 0;
+    updateVx();
+    updateVy();
+    updateVz();
+}
+
+void fdtd::updateElectricFields() {
+    updateEx();
+    updateEy();
+    updateEz();
 }
 
 void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
@@ -357,7 +387,7 @@ void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
     }
 }
 
-void fdtd::createCoeff() {
+void fdtd::createDensityRelatedArrays() {
     // velocity coefficients
     //Cvxex.create3DArray(Vx,0.0);
     //Cvyey.create3DArray(Vy,0.0);
@@ -392,7 +422,7 @@ void fdtd::initCoeffForDensity() {
     // Velocity Coefficients
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    mA = mNiu_m * mDt / 2;
+    mA = mNu_m * mDt / 2;
     mGamma = 1 + mA;
     mAlpha = (1 - mA) / mGamma;
     mCvxex = mCvyey = mCvzez = e * mDt / 2 / me / mGamma;
@@ -436,7 +466,7 @@ void fdtd::updateCoeffWithDensity() {
                     MyDataF gamma = 1 + a;
                     Cvxex.p[i][j][k] = mCoeffVelocity / gamma;
                     Cvxvx.p[i][j][k] = (1 - a) / gamma;
-                    Cexvx.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                    Cexvx.p[i][j][k] = eMDtDiv2DivEps0 * (1 + Cvxvx.p[i][j][k])
                             * Ne.p[im][jm][km] / kappa;
 #if DEBUG>=4
                     if (isnan(Cvxvx.p[i][j][k]) || isnan(Cvxex.p[i][j][k]) || isnan(Cexvx.p[i][j][k])) {
@@ -465,7 +495,7 @@ void fdtd::updateCoeffWithDensity() {
                     MyDataF gamma = 1 + a;
                     Cvyvy.p[i][j][k] = (1 - a) / gamma;
                     Cvyey.p[i][j][k] = mCoeffVelocity / gamma;
-                    Ceyvy.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                    Ceyvy.p[i][j][k] = eMDtDiv2DivEps0 * (1 + Cvyvy.p[i][j][k])
                             * Ne.p[im][jm][km] / kappa;
 #if DEBUG>=4
                     if (isnan(Cvyvy.p[i][j][k]) || isnan(Cvyey.p[i][j][k]) || isnan(Ceyvy.p[i][j][k])) {
@@ -494,7 +524,7 @@ void fdtd::updateCoeffWithDensity() {
                     MyDataF gamma = 1 + a;
                     Cvzvz.p[i][j][k] = (1 - a) / gamma;
                     Cvzez.p[i][j][k] = mCoeffVelocity / gamma;
-                    Cezvz.p[i][j][k] = eMDtDiv2DivEps0 * (1 + (1 - a) / gamma)
+                    Cezvz.p[i][j][k] = eMDtDiv2DivEps0 * (1 + Cvzvz.p[i][j][k])
                             * Ne.p[im][jm][km] / kappa;
 #if DEBUG>=4
                     if (isnan(Cvzvz.p[i][j][k]) || isnan(Cvzez.p[i][j][k]) || isnan(Cezvz.p[i][j][k])) {
@@ -542,10 +572,7 @@ void fdtd::updateBeta() {
 }
 
 void fdtd::initDensity() {
-    MyDataF tmp = 2 * pow(4 * mDsFluid, 2); // 4 Maxwell grid size width
-    Point srcPos((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
-            (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
-            (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
+    MyDataF tmp = 2 * pow(4 * mDsFluid, 2); // 4 Maxwell grid size width    
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)
 #endif   
@@ -556,18 +583,18 @@ void fdtd::initDensity() {
                 MyDataF sx, sy, sz;
                 MyDataF px, py, pz;
                 MyDataF ea;
-                sx = (i - (int) srcPos.x) * mDsFluid;
-                sy = (j - (int) srcPos.y) * mDsFluid;
-                sz = (k - (int) srcPos.z) * mDsFluid;
+                sx = (i - (int) mNeSrcPos.x) * mDsFluid;
+                sy = (j - (int) mNeSrcPos.y) * mDsFluid;
+                sz = (k - (int) mNeSrcPos.z) * mDsFluid;
                 px = sx*sx;
                 py = sy*sy;
                 pz = sz*sz;
                 ea = exp(-(px + py + pz) / tmp);
                 Ne.p[i][j][k] = Ne0*ea;
 #else
-                Ne.p[i][j][k] = Ne0 * exp(-(pow((i - (int) srcPos.x) * mDsFluid, 2)
-                        + pow((j - (int) srcPos.y) * mDsFluid, 2)
-                        + pow((k - (int) srcPos.z) * mDsFluid, 2)) / tmp);
+                Ne.p[i][j][k] = Ne0 * exp(-(pow((i - (int) mNeSrcPos.x) * mDsFluid, 2)
+                        + pow((j - (int) mNeSrcPos.y) * mDsFluid, 2)
+                        + pow((k - (int) mNeSrcPos.z) * mDsFluid, 2)) / tmp);
 #endif
             }
         }
@@ -583,18 +610,22 @@ void fdtd::createDensityArrays() {
     Vy.create3DArray(Ey, 0.0);
     Vz.create3DArray(Ez, 0.0);
 
-    unsigned nx = (mDomainEndIndex.x - mDomainStartIndex.x + 1) * mNeGridSize;
-    unsigned ny = (mDomainEndIndex.y - mDomainStartIndex.y + 1) * mNeGridSize;
-    unsigned nz = (mDomainEndIndex.z - mDomainStartIndex.z + 1) * mNeGridSize;
+    Exn.create3DArray(Ex, 0.0);
+    Eyn.create3DArray(Ey, 0.0);
+    Ezn.create3DArray(Ez, 0.0);
+
+    unsigned nx = (mDomainEndIndex.x - mDomainStartIndex.x + 1) * mNeGridSize + 1;
+    unsigned ny = (mDomainEndIndex.y - mDomainStartIndex.y + 1) * mNeGridSize + 1;
+    unsigned nz = (mDomainEndIndex.z - mDomainStartIndex.z + 1) * mNeGridSize + 1;
     Ne.create3DArray(nx + mNeBoundWidth, ny + mNeBoundWidth, nz + mNeBoundWidth, 0.0);
     Eeff.create3DArray(nx, ny, nz, 0.0);
     Ne_pre.create3DArray(Ne, 0.0);
 
-    createCoeff();
+    createDensityRelatedArrays();
     Eeff.setName("erms");
     Ne.setName("Ne");
 }
-#endif
+//#endif
 
 void fdtd::createFieldArray() {
     // initial PML
@@ -640,9 +671,12 @@ void fdtd::createFieldArray() {
     Hz.setName("Hz");
     Hx.setName("Hx");
     Hy.setName("Hy");
+#ifdef DEBUG
+    Cezhx.setName("cezhx");
+    Cezhy.setName("cezhy");
+    Ceze.setName("ceze");
+#endif
 }
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void fdtd::setUp() {
     //Time step
@@ -661,36 +695,37 @@ void fdtd::setUp() {
     //temporary variables that often used
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     dtDivEps0DivDxyz = mDt / eps_0 / mDx / mDy / mDz;
-#ifdef WITH_DENSITY
-    mDsFluid = mDx / mNeGridSize;
-    mHalfDelta_t = mDt / 2;
-    mHalf_e = e / 2;
-    dtDivEps0DivDx = mDt / eps_0 / mDx;
-    dtDivEps0DivDy = mDt / eps_0 / mDy;
-    dtDivEps0DivDz = mDt / eps_0 / mDz;
-    e2Dt2Div4DivEps0DivMe = 0.25 * e * e * mDt * mDt / me / eps_0;
-    eMDtDiv2DivEps0 = mHalf_e * mDt / eps_0;
-    mHalfNeGridSize = mNeGridSize / 2;
-#endif
+    if (USE_DENSITY == mIsUseDensity) {
+        mDsFluid = mDx / mNeGridSize;
+        mHalfDelta_t = mDt / 2;
+        mHalf_e = e / 2;
+        dtDivEps0DivDx = mDt / eps_0 / mDx;
+        dtDivEps0DivDy = mDt / eps_0 / mDy;
+        dtDivEps0DivDz = mDt / eps_0 / mDz;
+        e2Dt2Div4DivEps0DivMe = 0.25 * e * e * mDt * mDt / me / eps_0;
+        eMDtDiv2DivEps0 = mHalf_e * mDt / eps_0;
+        mHalfNeGridSize = mNeGridSize / 2;
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // fluid variables
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#ifdef WITH_DENSITY	
-    mMu_e = e / me / mNiu_m; //3.7e-2;
-    mMu_i = mMu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
-    mDe = mMu_e * 2 * 1.602e-19 / e; //
-    mDa = mMu_i * 2 * 1.602e-19 / e; //
-    MyDataF Dmax = mDe > mDa ? mDe : mDa;
-    //Fine Time Step Size
-    mDtFluid = 0.01 * mDsFluid * mDsFluid / 2 / Dmax;
-    mNeSkipStep = mDtFluid / mDt;
 
-    cout << "neSkipStep=" << mNeSkipStep << endl;
-    cout << tw / mDt / mNeSkipStep << endl;
-    createDensityArrays();
-    //exit(0);
-#endif
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // fluid variables
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        mMu_e = e / me / mNu_m; //3.7e-2;
+        mMu_i = mMu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
+        mDe = mMu_e * 2 * 1.602e-19 / e; //
+        mDa = mMu_i * 2 * 1.602e-19 / e; //
+        //MyDataF Dmax = mDe > mDa ? mDe : mDa;
+        //Fine Time Step Size
+        mDtFluid = 10 * mDt; //0.01 * mDsFluid * mDsFluid / 2 / Dmax;
+        mNeSkipStep = mDtFluid / mDt;
+
+        cout << "neSkipStep=" << mNeSkipStep << endl;
+        cout << tw / mDt / mNeSkipStep << endl;
+        createDensityArrays();
+        //exit(0);
+    }
+
 
     // source position    
 #ifdef DEBUG
@@ -714,26 +749,27 @@ void fdtd::setUp() {
 
     initCoeficients();
 
-#ifdef WITH_DENSITY
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // initial density
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    initDensity();
+    if (USE_DENSITY == mIsUseDensity) {
+        mNeSrcPos.setValue((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
+                (mSourceIndex.y - mDomainStartIndex.y - 3) * mNeGridSize + mNeBoundWidth,
+                (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // initial density
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        initDensity();
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Initial Coefficients for Density
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    initCoeffForDensity();
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // Initial Coefficients for Density
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        initCoeffForDensity();
 #ifdef DEBUG
-    //Ne.save();
-    Cvxex.setName("cv");
-    Cezhx.setName("cezhx");
-    Ceze.setName("ceze");
-    Cezvz.setName("cezvz");
-    Cvzez.setName("cvzzg");
+        //Ne.save();
+        Cvxex.setName("cv");
+        Cezvz.setName("cezvz");
+        Cvzez.setName("cvzzg");
 #endif
 
-#endif
+    }
 
     if (mUseConnectingInterface) {
         mConnectingInterface.setLowerAndUpper(mDomainStartIndex, mDomainEndIndex);
@@ -741,17 +777,17 @@ void fdtd::setUp() {
         mConnectingInterface.initCoefficients(mDx, mDt);
         mConnectingInterface.invalidate();
     } else {
-        // initial coeffcients at source position
-        switch (pSource->getDirection()) {
-            case source::Z:
-                pSource->initUpdateCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
-                break;
-            case source::X:
-                pSource->initUpdateCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
-                break;
-            case source::Y:
-                pSource->initUpdateCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
-                break;
+        // initial coefficients at source position
+        if (USE_DENSITY == mIsUseDensity) {
+            Point nes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
+                    (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
+                    (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
+            Point bes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize,
+                    (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize,
+                    (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize);
+            initSourceCoeff(nes, bes);
+        } else {
+            initSourceCoeff();
         }
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -783,6 +819,9 @@ void fdtd::setUp() {
     // print parameters
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     printParam();
+#ifdef DEBUG
+    mOfNeCheck.open("nec.dat");
+#endif
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -792,7 +831,12 @@ void fdtd::setUp() {
 void fdtd::compute() {
 
     unsigned n;
-    Point capturePosition(mSourceIndex.x, mSourceIndex.y + 30, mSourceIndex.z);
+    Point capturePosition(mSourceIndex.x + 10, mSourceIndex.y + 10, mSourceIndex.z + 10);
+
+    Point bes((mDomainStartIndex.x) * mNeGridSize,
+            (mDomainStartIndex.y) * mNeGridSize,
+            (mDomainStartIndex.z) * mNeGridSize);
+    Point nes(bes.x - mNeBoundWidth, bes.y - mNeBoundWidth, bes.z - mNeBoundWidth);
 
 #if DEBUG>=3
     if (mSourceIndex.y + 30 < mMaxIndex.y) {
@@ -835,8 +879,10 @@ void fdtd::compute() {
         cout << Ez.p[mSourceIndex.x][capturePosition.y][mSourceIndex.z] << '\t';
         cout << Ez.p[capturePosition.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         cout << Ez.p[mSourceIndex.x][mSourceIndex.y][capturePosition.z] << '\t';
+        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         cout << n * mDt / 1e-9 << " ns" << "\t";
         cout << endl;
+        
         //        cout << "Source Value:";
         //        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         //        cout << endl;
@@ -855,48 +901,54 @@ void fdtd::compute() {
             mConnectingInterface.updateMConnect(Hx, Chxey, Chxez, Hy, Chyex, Chyez, Hz, Chzey, Chzex);
             mPML.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
 
-            updateElectricAndVeloityFields();
-            mConnectingInterface.updateESource(pSourceType->valueAtTime(mDt * n) * mAmplitude);
+            updateElectricFields();
+            if (USE_DENSITY == mIsUseDensity)updateVelocity();
+            mConnectingInterface.updateESource(pSourceType->valueAtTime(n * mDt) * mAmplitude);
             mConnectingInterface.updateEConnect(Ex, Cexhy, Cexhz, Ey, Ceyhx, Ceyhz, Ez, Cezhy, Cezhx);
             mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
         } else {
             updateMagneitcFields();
             mPML.updateCPML_M_Fields(Hx, Hy, Hz, Ex, Ey, Ez);
-            updateElectricAndVeloityFields();
+
+            updateElectricFields();
+            pSource->updateHardSource(Ex, Ey, Ez, n * mDt);
+            if (USE_DENSITY == mIsUseDensity)updateVelocity();
             mPML.updateCPML_E_Fields(Ex, Ey, Ez, Hx, Hy, Hz);
-            //====================================
-            // update Source
-            //====================================
-            // updateSource(n);        
-            pSource->updateSource(Ex, Ey, Ez, n * mDt);
         }
 
-#ifdef WITH_DENSITY
-        captureEFieldForEeff();
+        if (USE_DENSITY == mIsUseDensity) {
+            captureEFieldForEeff();
 
-        if (n % mNeSkipStep == 0) {
-            updateEeff();
+            if (n % mNeSkipStep == 0) {
+                updateEeff();
 #if DEBUG>=4
-            Eeff.save(Eeff.nz / 2, 1, n, 3);
+                Eeff.save(Eeff.nx / 2, 1, n, 1);
+                Eeff.save(Eeff.ny / 2, 1, n, 2);
+                Eeff.save(Eeff.nz / 2, 1, n, 3);
 #endif
-            updateCollisionFrequency();
-            updateDensity();
-            updateCoeffWithDensity();
+                if (!mUseConnectingInterface) {
+                    updateSourceCoeff(nes, bes);
+                }
+                updateCollisionFrequency();
+                updateDensity();
+                updateCoeffWithDensity();
 #if DEBUG>=4
-            Ne.save(Ne.nz / 2, 1, n, 3);
-            Nu_c.save(Nu_c.nz / 2, 1, n, 3);
+                Ne.save(Ne.nz / 2, 1, n, 3);
+                Ne.save(Ne.nz / 2, 1, n, 2);
+                Ne.save(Ne.nz / 2, 1, n, 1);
+                if (NULL != Nu_c.p) {
+                    Nu_c.save(Nu_c.nz / 2, 1, n, 3);
+                }
 #else
-            Ne.save(Ne.nx / 2, 1, n, 1);
-            Ne.save(Ne.nz / 2, 1, n, 3);
-            Eeff.save(Eeff.nx / 2, 1, n, 1);
-            Ne.save(mSourceIndex.y*mNeGridSize, 1, n, 2);
-#endif
-            if (fdtd::SOURCE_GAUSSIAN == mSrcType) {
+                Ne.save(Ne.nx / 2, 1, n, 1);
+                Ne.save(Ne.nz / 2, 1, n, 3);
+                Eeff.save(Eeff.nx / 2, 1, n, 1);
+                Ne.save(mSourceIndex.y*mNeGridSize, 1, n, 2);
+#endif                
                 Eeff.resetArray();
             }
         }
-#endif
-        if ((n % mSaveModulus) == 0) {
+        if (0 == (n % mSaveModulus)) {
 
             //writeField(n);
             //Ez.save(mSourceIndex.x + 10, 1, n, 1);
@@ -904,6 +956,7 @@ void fdtd::compute() {
             Ez.save(Ez.nz / 2, 1, n, 3);
             Ex.save(Ex.nz / 2, 1, n, 3);
             Ey.save(Ey.nz / 2, 1, n, 3);
+            Vy.save(Vy.nz / 2, 1, n, 3);
 #ifdef DEBUG 
             if (mUseConnectingInterface) {
                 mConnectingInterface.saveEMInc(n);
@@ -921,15 +974,15 @@ void fdtd::compute() {
             //            pml.Psi_exz_zp.setName("psi");
             //            pml.Psi_exz_zp.save(0, 1, n, 3);
             //            pml.Psi_exz_zp.save(4, 1, n, 3);
-
-#ifdef WITH_DENSITY
+#ifdef DEBUG
             Cezhx.save(Ez.nz / 2, 1, n, 3);
-            Cezhx.save(Ez.ny / 2, 1, n, 2);
-            Cezhx.save(Ez.nx / 2, 1, n, 1);
+            Cezhy.save(Ez.ny / 2, 1, n, 3);
             Ceze.save(Ez.nz / 2, 1, n, 3);
-            Cezvz.save(Ez.nz / 2, 1, n, 3);
-            Cvzez.save(Ez.nz / 2, 1, n, 3);
-#endif  /*WITH_DENSITY*/
+#endif
+            //            if (USE_DENSITY == mIsUseDensity) {
+            //                Cezvz.save(Ez.nz / 2, 1, n, 3);
+            //                Cvzez.save(Ez.nz / 2, 1, n, 3);
+            //            }
 
 #else /* not define DEBUG*/
             Ez.save(mSourceIndex.x, 1, n, 1);
@@ -947,10 +1000,16 @@ void fdtd::compute() {
     finishMatlabSimulation();
 #endif
 
-#if WITH_DENSITY
+    if (USE_DENSITY == mIsUseDensity) {
 #ifdef DEBUG
-    Ne.save();
+        Ne.save();
 #endif
+    }
+#ifdef DEBUG
+    if (mOfNeCheck.is_open()) {
+
+        mOfNeCheck.close();
+    }
 #endif
     //  END TIME STEP
     cout << "Done time-stepping..." << endl;
@@ -985,8 +1044,8 @@ void fdtd::updateSource(unsigned n) {
 
 void fdtd::buildObject() {
 
-    //buildSphere();
-    //buildDipole();
+    buildSphere();
+    //buildBrick();
 }
 
 //Builds a sphere (Sample code - NOt used in this program)
@@ -994,26 +1053,26 @@ void fdtd::buildObject() {
 void fdtd::buildSphere() {
 
     MyDataF dist; //distance
-    MyDataF rad = 8; //(MyDataF)mMaxIndex.x / 5.0; // sphere radius
+    MyDataF rad = 2; //(MyDataF)mMaxIndex.x / 5.0; // sphere radius
     MyDataF sc = (MyDataF) mMaxIndex.x / 2.0; //sphere centre
     //MyDataF rad2 = 0.3; //(MyDataF)mMaxIndex.x / 5.0 - 3.0; // sphere radius
 
     unsigned i, j, k;
-
-    for (i = 0; i < mMaxIndex.x; ++i) {
-        for (j = 0; j < mMaxIndex.y; ++j) {
-            for (k = 0; k < mMaxIndex.z; ++k) {
+    Point *p = NULL;
+    for (i = mDomainStartIndex.x; i <= mDomainEndIndex.x; ++i) {
+        for (j = mDomainStartIndex.y; j <= mDomainEndIndex.y; ++j) {
+            for (k = mDomainStartIndex.z; k <= mDomainEndIndex.z; ++k) {
                 //compute distance form centre to the point i, j, k
                 dist = sqrt((i + 0.5 - sc) * (i + 0.5 - sc) +
                         (j + 0.5 - sc) * (j + 0.5 - sc) +
                         (k + 0.5 - sc) * (k + 0.5 - sc));
 
-                //if point is within the sphere
                 if (dist <= rad) {
-                    //set the material at that point
-
-                    yeeCube(i, j, k, 6);
-
+                    p = new Point(i, j, k);
+                    if (p) {
+                        pSource->add(*p);
+                        delete p;
+                    }
                 }
             }
         }
@@ -1023,26 +1082,30 @@ void fdtd::buildSphere() {
 
 //Builds a dipole
 
-void fdtd::buildDipole() {
+void fdtd::buildBrick() {
     unsigned i, j, k;
-    unsigned centre = (mNonPMLStartIndex.y + mNonPMLEndIndex.y) / 2;
+    Point *p = NULL;
+    const unsigned w = 2;
+    Point lower(mMaxIndex.x / 2 - w, mMaxIndex.y / 2 - w, mMaxIndex.z / 2 - w);
+    Point upper(mMaxIndex.x / 2 + w, mMaxIndex.y / 2 + w, mMaxIndex.z / 2 + w);
 
-    for (i = mNonPMLStartIndex.x; i <= mNonPMLEndIndex.x; ++i) {
+    for (i = lower.x; i <= upper.x; ++i) {
 
-        for (j = mNonPMLStartIndex.y; j <= mNonPMLEndIndex.y; ++j) {
+        for (j = lower.y; j <= upper.y; ++j) {
 
-            for (k = mNonPMLStartIndex.z; k <= mNonPMLEndIndex.z; ++k) {
+            for (k = lower.z; k <= upper.z; ++k) {
 
-                if (j != centre) {
-
-                    yeeCube(i, j, k, 1); //PEC material
+                p = new Point(i, j, k);
+                if (p) {
+                    pSource->add(*p);
+                    delete p;
                 }
             }
         }
     }
 }
 
-//creates a dielectric cube (yee cell) made up of the selected material
+//creates a dielectric cube (Yee cell) made up of the selected material
 
 void fdtd::yeeCube(unsigned I, unsigned J, unsigned K, unsigned mType) {
 
@@ -1116,12 +1179,10 @@ void fdtd::startUp() {
 
     cout << "initializing(in Startup)..." << endl;
     createFieldArray();
-    //    cout << "initial pml (in Statup)" << endl;
-    //    pml.Initial(mMaxIndex.x, mMaxIndex.y, mMaxIndex.z, 11);
-    cout << "setUp (in Startup)" << endl;
-    setUp();
     cout << "buildObject (in Startup)" << endl;
     buildObject();
+    cout << "setUp (in Startup)" << endl;
+    setUp();
     cout << "computing (in Startup)" << endl;
     compute();
     cout << "exit Startup" << endl;
@@ -1155,22 +1216,24 @@ void fdtd::printParam() {
     //  Specify the CPML Order and Other Parameters:
     cout << " PML Order = " << mPMLOrder << endl;
     cout << " Alpha Order = " << mAlphaOrder << endl;
-#ifdef WITH_DENSITY 
+    //#ifdef WITH_DENSITY 
     cout << "neGridSize=" << mNeGridSize << endl;
     cout << "neSkipStep=" << mNeSkipStep << endl;
     cout << "DtFluid=" << mDtFluid << endl;
     cout << "DsFluid=" << mDsFluid << endl;
+    cout << "mRei=" << mRei << endl;
     cout << "mu_i=" << mMu_i << endl;
     cout << "mu_e=" << mMu_e << endl;
     cout << "Da=" << mDa << endl;
     cout << "De=" << mDe << endl;
-#endif
+    //#endif
     cout << endl << "Time step = " << mDt << endl;
     cout << endl << "Number of steps = " << mTotalTimeSteps << endl;
     cout << endl << "Total Simulation time = " << mTotalTimeSteps * mDt << " Seconds" << endl;
 }
 
 void fdtd::setSourceType(sourceType* pSrcType) {
+
     pSourceType = pSrcType;
 }
 
@@ -1253,34 +1316,65 @@ void fdtd::updateHz() {
 
 void fdtd::updateEx() {
     int i, j, k;
-
+    if (USE_DENSITY == mIsUseDensity)Exn = Ex;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)  private(i,j,k)
 #endif // _OPENMP
     for (k = 1; k < mMaxIndex.z; ++k) {
         for (j = 1; j < mMaxIndex.y; ++j) {
             for (i = 0; i < mMaxIndex.x; ++i) {
-#ifdef WITH_DENSITY
-                MyDataF Exp = Ex.p[i][j][k];
-#endif // WITH_DENSITY
                 Ex.p[i][j][k] = Cexe.p[i][j][k] * Ex.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i][j - 1][k]) * Cexhz.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i][j][k - 1]) * Cexhy.p[i][j][k];
-#ifdef WITH_DENSITY        
-                Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
-
-                if (fdtd::SOURCE_SINE != mSrcType) {
-                    Vx.p[i][j][k] = Cvxvx.p[i][j][k] * Vx.p[i][j][k] - Cvxex.p[i][j][k] * (Exp + Ex.p[i][j][k]);
-                } else {
-                    Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - mCvxex * (Exp + Ex.p[i][j][k]);
-                }
+            }
+        }
+    }
+    ///////////////////////////////////////////
+    // add velocity
+    ///////////////////////////////////////////
+    if (USE_DENSITY == mIsUseDensity) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic)  private(i,j,k)
+#endif // _OPENMP
+        for (k = 1; k < mMaxIndex.z; ++k) {
+            for (j = 1; j < mMaxIndex.y; ++j) {
+                for (i = 0; i < mMaxIndex.x; ++i) {
+                    Ex.p[i][j][k] += Cexvx.p[i][j][k] * Vx.p[i][j][k];
 #if DEBUG>=4
-                //                Ex.whenLargerThan(i, j, k, 1e30, NULL);
-                if (isnan(Ex.p[i][j][k])) {
-                    Exp = 0.0;
+                    //                Ex.whenLargerThan(i, j, k, 1e30, NULL);
+                    if (isnan(Ex.p[i][j][k])) {
+                        Ex.p[i][j][k] += 0.0;
+                    }
+#endif
+
                 }
+            }
+        }
+    }
+}
+
+void fdtd::updateVx() {
+    int i, j, k;
+    if (fdtd::SOURCE_SINE != mSrcType) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
+        for (i = 0; i < Vx.nx; i++) {
+            for (j = 0; j < Vx.ny; j++) {
+                for (k = 0; k < Vx.nz; k++) {
+                    Vx.p[i][j][k] = Cvxvx.p[i][j][k] * Vx.p[i][j][k] - Cvxex.p[i][j][k] * (Exn.p[i][j][k] + Ex.p[i][j][k]);
+                }
+            }
+        }
+    } else {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
+        for (i = 0; i < Vx.nx; i++) {
+            for (j = 0; j < Vx.ny; j++) {
+                for (k = 0; k < Vx.nz; k++) {
+                    Vx.p[i][j][k] = mAlpha * Vx.p[i][j][k] - mCvxex * (Exn.p[i][j][k] + Ex.p[i][j][k]);
+                }
             }
         }
     }
@@ -1288,40 +1382,67 @@ void fdtd::updateEx() {
 
 void fdtd::updateEy() {
     int i, j, k;
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  UPDATE Ey
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if (USE_DENSITY == mIsUseDensity)Eyn = Ey;
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
     for (k = 1; k < mMaxIndex.z; ++k) {
         for (i = 1; i < mMaxIndex.x; ++i) {
             for (j = 0; j < mMaxIndex.y; ++j) {
-#ifdef WITH_DENSITY
-                MyDataF Eyp = Ey.p[i][j][k];
-#endif  /* WITH_DENSITY */
-
                 Ey.p[i][j][k] = Ceye.p[i][j][k] * Ey.p[i][j][k] +
                         (Hz.p[i][j][k] - Hz.p[i - 1][j][k]) * Ceyhz.p[i][j][k] +
                         (Hx.p[i][j][k] - Hx.p[i][j][k - 1]) * Ceyhx.p[i][j][k];
-#ifdef WITH_DENSITY
+            }
+        }
+    }
 
-                Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
-                // Vy.p[i][j][k] = alpha * Vy.p[i][j][k] - Cvyey * (Eyp + Ey.p[i][j][k]);
-                if (fdtd::SOURCE_SINE != mSrcType) {
-                    Vy.p[i][j][k] = Cvyvy.p[i][j][k] * Vy.p[i][j][k] - Cvyey.p[i][j][k] * (Eyp + Ey.p[i][j][k]);
-                } else {
-                    Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - mCvyey * (Eyp + Ey.p[i][j][k]);
-                }
-#if (DEBUG>=4&&!_OPENMP)
-                //                Ey.whenLargerThan(i, j, k, 1e30, NULL);
-                //                Ey.isValid(i, j, k);
-                if (isnan(Ey.p[i][j][k])) {
-                    Eyp = 0.0;
-                }
+    ////////////////////////////////////////
+    // add velocity
+    ///////////////////////////////////////
+    if (USE_DENSITY == mIsUseDensity) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
+        for (k = 1; k < mMaxIndex.z; ++k) {
+            for (i = 1; i < mMaxIndex.x; ++i) {
+                for (j = 0; j < mMaxIndex.y; ++j) {
+                    Ey.p[i][j][k] += Ceyvy.p[i][j][k] * Vy.p[i][j][k];
+#if (DEBUG>=4&&!_OPENMP)
+                    //                Ey.whenLargerThan(i, j, k, 1e30, NULL);
+                    //                Ey.isValid(i, j, k);
+                    if (isnan(Ey.p[i][j][k])) {
 
-#endif /* WITH_DENSITY */
+                        Ey.p[i][j][k] += 0.0;
+                    }
+#endif
+                }
+            }
+        }
+    }
+}
+
+void fdtd::updateVy() {
+    int i, j, k;
+    if (fdtd::SOURCE_SINE != mSrcType) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vy.nx; i++) {
+            for (j = 0; j < Vy.ny; j++) {
+                for (k = 0; k < Vy.nz; k++) {
+                    Vy.p[i][j][k] = Cvyvy.p[i][j][k] * Vy.p[i][j][k] - Cvyey.p[i][j][k] * (Eyn.p[i][j][k] + Ey.p[i][j][k]);
+                }
+            }
+        }
+    } else {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vy.nx; i++) {
+            for (j = 0; j < Vy.ny; j++) {
+                for (k = 0; k < Vy.nz; k++) {
+                    Vy.p[i][j][k] = mAlpha * Vy.p[i][j][k] - mCvyey * (Eyn.p[i][j][k] + Ey.p[i][j][k]);
+                }
             }
         }
     }
@@ -1329,38 +1450,65 @@ void fdtd::updateEy() {
 
 void fdtd::updateEz() {
     int i, j, k;
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  UPDATE Ez
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if (USE_DENSITY == mIsUseDensity)Ezn = Ez;
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) //shared(Ex,Hz,Hy,pml,CA,CB,ID1,dy,dz)
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
 
     for (i = 1; i < mMaxIndex.x; ++i) {
         for (k = 0; k < mMaxIndex.z; ++k) {
             for (j = 1; j < mMaxIndex.y; ++j) {
-#ifdef WITH_DENSITY
-                MyDataF Ezp = Ez.p[i][j][k];
-#endif
                 Ez.p[i][j][k] = Ceze.p[i][j][k] * Ez.p[i][j][k] +
                         (Hy.p[i][j][k] - Hy.p[i - 1][j][k]) * Cezhy.p[i][j][k]+
                         (Hx.p[i][j][k] - Hx.p[i][j - 1][k]) * Cezhx.p[i][j][k];
-#ifdef WITH_DENSITY                
-                Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
-
-                // Vz.p[i][j][k] = alpha * Vz.p[i][j][k] - Cvzez * (Ezp + Ez.p[i][j][k]);
-                if (fdtd::SOURCE_SINE != mSrcType) {
-                    Vz.p[i][j][k] = Cvzvz.p[i][j][k] * Vz.p[i][j][k] - Cvzez.p[i][j][k] * (Ezp + Ez.p[i][j][k]);
-                } else {
-                    Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - mCvzez * (Ezp + Ez.p[i][j][k]);
-                }
+            }
+        }
+    }
+    //===========================
+    // ADD VELOCITY
+    //===========================
+    if (USE_DENSITY == mIsUseDensity) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
 #endif
+        for (i = 1; i < mMaxIndex.x; ++i) {
+            for (k = 0; k < mMaxIndex.z; ++k) {
+                for (j = 1; j < mMaxIndex.y; ++j) {
+                    Ez.p[i][j][k] += Cezvz.p[i][j][k] * Vz.p[i][j][k];
 #if DEBUG>=4
-                //                Ez.whenLargerThan(i, j, k, 1e30, NULL);
-                if (isnan(Ez.p[i][j][k])) {
-                    Ezp = 0.0;
-                }
+                    //Ez.whenLargerThan(i, j, k, 1e30, NULL);
+                    if (isnan(Ez.p[i][j][k])) {
+                        Ez.p[i][j][k] += 0.0;
+                    }
 #endif
+                }
+            }
+        }
+    }
+}
+
+void fdtd::updateVz() {
+    int i, j, k;
+    if (fdtd::SOURCE_SINE != mSrcType) {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vz.nx; i++) {
+            for (j = 0; j < Vz.ny; j++) {
+                for (k = 0; k < Vz.nz; k++) {
+                    Vz.p[i][j][k] = Cvzvz.p[i][j][k] * Vz.p[i][j][k] - Cvzez.p[i][j][k] * (Ezn.p[i][j][k] + Ez.p[i][j][k]);
+                }
+            }
+        }
+    } else {
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k) 
+#endif
+        for (i = 0; i < Vz.nx; i++) {
+            for (j = 0; j < Vz.ny; j++) {
+                for (k = 0; k < Vz.nz; k++) {
+                    Vz.p[i][j][k] = mAlpha * Vz.p[i][j][k] - mCvzez * (Ezn.p[i][j][k] + Ez.p[i][j][k]);
+                }
             }
         }
     }
@@ -1447,13 +1595,6 @@ void fdtd::updateMagneitcFields() {
     updateHz();
 }
 
-void fdtd::updateElectricAndVeloityFields() {
-
-    updateEx();
-    updateEy();
-    updateEz();
-}
-
 void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF tDown, MyDataF amplitude) {
 
     t0 = t_0;
@@ -1462,6 +1603,7 @@ void fdtd::intSourceSinePulse(MyDataF t_0, MyDataF omega_, MyDataF tUp, MyDataF 
     t_down = tDown;
     mAmplitude = amplitude;
 }
+
 // =================================================================
 // MATLAB SIMULATION
 // =================================================================
@@ -1489,6 +1631,7 @@ void fdtd::doMatlabSimulation() {
 
 void fdtd::finishMatlabSimulation() {
     if (Ez.isMatlabEngineStarted()) {
+
         Ez.clearMatlabEngineArray();
         Ez.closeMatlabEngine();
     }
@@ -1499,11 +1642,13 @@ void fdtd::finishMatlabSimulation() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void fdtd::setSrcType(int srcType) {
+
     mSrcType = srcType;
 }
 
 void fdtd::desideDomainZone() {
     //  Specify the dipole size 
+
     mNonPMLStartIndex.setValue(mPMLWidth, mPMLWidth, mPMLWidth);
     mNonPMLEndIndex.setValue(mMaxIndex.x - mPMLWidth, mMaxIndex.y - mPMLWidth, mMaxIndex.z - mPMLWidth);
     mDomainStartIndex.setValue(mNonPMLStartIndex.x + mAirBufferWidth,
@@ -1514,3 +1659,90 @@ void fdtd::desideDomainZone() {
             mNonPMLEndIndex.z - mAirBufferWidth);
 }
 
+void fdtd::initSourceCoeff() {
+    // initial coefficients at source position
+    switch (pSource->getDirection()) {
+        case source::Z:
+            pSource->initCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
+            break;
+        case source::X:
+            pSource->initCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
+            break;
+        case source::Y:
+            pSource->initCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
+            break;
+    }
+}
+
+void fdtd::updateSourceCoeff() {
+    // initial coefficients at source position
+    switch (pSource->getDirection()) {
+        case source::Z:
+            pSource->updateCoefficients(Ceze, Cezhy, Cezhx, mDz, mDy, mDx, mDt);
+            break;
+        case source::X:
+            pSource->updateCoefficients(Cexe, Cexhz, Cexhy, mDx, mDz, mDy, mDt);
+            break;
+        case source::Y:
+            pSource->updateCoefficients(Ceye, Ceyhx, Ceyhz, mDy, mDx, mDz, mDt);
+            break;
+    }
+}
+
+void fdtd::initSourceCoeff(const Point& nes, const Point & bes) {
+    // initial coefficients at source position
+    if (fdtd::SOURCE_SINE != mSrcType) {
+        switch (pSource->getDirection()) {
+            case source::Z:
+                pSource->initCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::X:
+                pSource->initCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::Y:
+                pSource->initCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+        }
+    } else {
+        switch (pSource->getDirection()) {
+            case source::Z:
+                pSource->initCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::X:
+                pSource->initCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::Y:
+                pSource->initCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+        }
+    }
+}
+
+void fdtd::updateSourceCoeff(const Point& nes, const Point & bes) {
+    // initial coefficients at source position
+    if (fdtd::SOURCE_SINE != mSrcType) {
+        switch (pSource->getDirection()) {
+            case source::Z:
+                pSource->updateCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::X:
+                pSource->updateCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::Y:
+                pSource->updateCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, Nu_c, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+        }
+    } else {
+        switch (pSource->getDirection()) {
+            case source::Z:
+                pSource->updateCoefficients(Ceze, Cezhy, Cezhx, Cexvx, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::X:
+                pSource->updateCoefficients(Cexe, Cexhz, Cexhy, Ceyvy, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+            case source::Y:
+                pSource->updateCoefficients(Ceye, Ceyhx, Ceyhz, Cezvz, Beta, Ne, mNu_m, nes, bes, mNeGridSize, mDx, mDy, mDz, mDt);
+                break;
+        }
+    }
+}

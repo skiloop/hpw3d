@@ -60,16 +60,15 @@ int data3d<DataType>::create3DArray(unsigned nnx, unsigned nny, unsigned nnz) {
     try {
 
         p = new DataType**[nnx];
-        if (p == NULL) {
-            cout << "Failed to create space for data3d!" << endl;
-            return -1;
-        }
+        memset(p, 0, nnx * sizeof (DataType));
         for (i = 0; i < nnx; i++) {
             p[i] = new DataType*[nny];
+            memset(p[i], 0, nny * sizeof (DataType));
         }
         for (i = 0; i < nnx; i++) {
             for (j = 0; j < nny; j++) {
                 p[i][j] = new DataType[nnz];
+                memset(p[i][j], 0, nnz * sizeof (DataType));
             }
         }
         nx = nnx;

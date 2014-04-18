@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 #define _USE_MATH_DEFINES
-#include <math.h>
+#include <cmath>
 typedef double MyDataF;
 typedef MyDataF* pMyDataF;
 typedef pMyDataF* ppMyDataF;
@@ -22,8 +22,10 @@ typedef pMyDataF* ppMyDataF;
 #define COSINE_GAUSSIAN_WAVE (4)
 #define ZERO_TYPE (5)
 #define ONE_SINE_PULSE (6)
+#define SQUARE_PULSE (7)
+#define TEST_SOURCE (8)
 #define DEFAULT_WAVE_TYPE GAUSSIAN_WAVE
-#define MAX_TYPE_VALUE ONE_SINE_PULSE
+#define MAX_TYPE_VALUE TEST_SOURCE
 
 // nu type definition
 #define MORROW_AND_LOWKE (1)
@@ -46,6 +48,11 @@ const MyDataF M_PI_TWO = M_PI * 2;
 // default zone parameters
 #define AIR_BUFFER 6
 #define NE_BOUND_WIDTH 6
+
+// use density or not
+#define USE_DENSITY     1
+#define NOT_USE_DENSITY 0
+#define IF_USE_DENSITY (NOT_USE_DENSITY)
 
 //#define WITH_DENSITY
 

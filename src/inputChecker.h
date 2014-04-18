@@ -82,6 +82,8 @@ public:
     double rei;
     
     int nu_type;
+    
+    int useDensity;
 
     const static int GAUSSIAN = GAUSSIAN_WAVE;
     const static int SINE = SINE_WAVE;

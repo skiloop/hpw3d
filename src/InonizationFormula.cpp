@@ -1,5 +1,5 @@
 
-#include <math.h>
+#include <cmath>
 #include "InonizationFormula.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ MyDataF Alpha_Nikonov(MyDataF E, MyDataF P) {
     if (EDivP < 108.0) {
         return 3.9 * P * exp(-213.0 / EDivP);
     } else {
-        return 14.5 * P * exp(-316.0 / EDivP);
+        return 14.5 * P * exp(-356.0 / EDivP);
     }
 }
 // Calculate Eta by Nikonov formula
@@ -31,7 +31,7 @@ MyDataF Eta_Nikonov(MyDataF E, MyDataF P) {
     EDivP = fabs(E) / P;
     if (EDivP < 50.0) {
         MyDataF val1 = 4.47e-3 * (EDivP)*(EDivP);
-        if (EDivP >= 10.0) {
+        if (EDivP >= 10.0 || 0==EDivP) {
             return val1;
         } else {
             MyDataF val2 = 4.47 / EDivP;

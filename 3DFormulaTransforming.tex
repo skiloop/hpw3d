@@ -3,7 +3,7 @@
 \usepackage{amsmath}
 \usepackage[utf8]{inputenc}
 \title{3D Format}
-\author{Baofeng Shi}
+\author{skiloop@gmail.com}
 
 \begin{document}
 \maketitle
@@ -179,5 +179,50 @@ where $A=E_{eff}/p/133.3$ ,$E_{eff}$in $V/cm$
 When deal with Gaussian Pulse,value of  $\nu_{c}$ at  previous step when calculating $E_{eff}$.
 So some coefficients may not be used as a single at all grids.These variables are $Cese$,$Cesvs$,$Ceshr$ and $Cvses$ 
 where \newline $ s,r=x,y,z $ and $ r \neq s $ .
-\end{document}
 
+
+\section{E field with current source updating}
+take $E_{z}$ as an example,where there is forcing source,(let $M=\frac{\partial H_{y}}{\partial x}-\frac{\partial H_{x}}{\partial y}$)
+
+\begin{equation}\label{eqEz}
+\frac{\partial E_{z}}{\partial t}=\frac{1}{\epsilon_{0}}\left[M+e n_{e}v_{ez}-J_i\right]
+\end{equation}
+
+\begin{equation}
+\frac{E_{z}^{n+1}(i,j,k)-E_{z}^{n}(i,j,k)}{\Delta t}=\frac{1}{\epsilon_{0}}\left[M^{n+1/2}(i,j,k)+e n_{e}(v^{n+1}_{ez}(i,j,k)+v^{n}_{ez}(i,j,k))/2-J_{i}^{n+1/2}(i,j,k)\right]
+\end{equation}
+
+\begin{equation}
+E_{z}^{n+1}=E_{z}^{n}\frac{1-\beta}{1+\beta}+\frac{e n_{e}\Delta t}{2\epsilon_{0}}\frac{1+\alpha}{1+\beta}v_{ez}^{n}+\frac{\Delta t}{(1+\beta)\epsilon_{0}}(M^{n+1/2}-J_{i}^{n+1/2})
+\end{equation}
+
+From Taflove's$^{[1]}$
+\begin{equation}
+J_{i}^{n+1/2}=\frac{\Delta z}{2\Delta x \Delta y R_{s}}(E_{z}^{n+1}+E_{z}^{n})+\frac{1}{\Delta x \Delta y}I_{s}^{n+1/2}
+\end{equation}
+
+then
+\begin{equation}
+\frac{\epsilon_{0}}{\Delta t}(E^{n+1}-E^n)=M^{n+1/2}+\frac{e n_e}{2}\left[(1+\alpha)v^{n}-\beta\left(E^{n+1}+E^n\right)\right]-\psi\left(E^{n+1}+E^n\right)-\theta I_{s}^{n+1/2}
+\end{equation}
+where
+\begin{eqnarray}
+&\psi=\frac{\Delta z}{2\Delta x \Delta y R_{s}} \\ 
+&\theta=\frac{1}{\Delta x \Delta y}
+\end{eqnarray}
+\begin{equation}
+(\frac{\epsilon_0}{\Delta t}+\frac{e n_e}{2}\beta+\psi)E^{n+1}=
+(\frac{\epsilon_0}{\Delta t}-\frac{e n_e}{2}\beta-\psi)E^{n}
++\frac{e n_e (1+\alpha)}{2}v^n+M^{n+1/2}-\theta I_{s}^{n+1/2}
+\end{equation}
+let $a=\frac{\epsilon_0}{\Delta t}$,$b=\frac{e n_e}{2}\beta+\psi$ then
+\begin{equation}
+E^{n+1}=\frac{a-b}{a+b}E^n+\frac{e n_e (1+\alpha)}{2(a+b)}v^n+\frac{1}{a+b}(M^{n+1/2}-\theta I_{s}^{n+1/2})
+\end{equation}
+
+
+
+
+
+
+\end{document}

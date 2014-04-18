@@ -13,25 +13,27 @@
 
 using namespace std;
 
-inputChecker::inputChecker() :
-waveType(GAUSSIAN),
-threadCount(DEFAULT_THREAD_COUNT),
-pmlSize(DEFAULT_PML_SIZE),
-useConnectingInterface(0),
-yeeCellSizeX(0),
-yeeCellSizeY(0),
-yeeCellSizeZ(0),
-yeeCellSize(DEFAULT_GRID_SIZE),
-fluidGridSize(DEFAULT_FLUID_GRID_SIZE),
-xZoneLen(0),
-yZoneLen(0),
-zZoneLen(0),
-tZoneLen(DEFAULT_TIME_ZONE_LENGTH),
-zoneLen(0),
-frequency(DEFAULT_FREQUENCY),
-amptidute(DEFAULT_AMPTIDUTE),
-maxNe(DEFAULT_DENSITY_MAX),
-rei(0), nu_type(DEFAULT_NU_FORMAT) {
+inputChecker::inputChecker()
+: waveType(GAUSSIAN)
+, threadCount(DEFAULT_THREAD_COUNT)
+, pmlSize(DEFAULT_PML_SIZE)
+, useConnectingInterface(0)
+, yeeCellSizeX(0)
+, yeeCellSizeY(0)
+, yeeCellSizeZ(0)
+, yeeCellSize(DEFAULT_GRID_SIZE)
+, fluidGridSize(DEFAULT_FLUID_GRID_SIZE)
+, xZoneLen(0)
+, yZoneLen(0)
+, zZoneLen(0)
+, tZoneLen(DEFAULT_TIME_ZONE_LENGTH)
+, zoneLen(0)
+, frequency(DEFAULT_FREQUENCY)
+, amptidute(DEFAULT_AMPTIDUTE)
+, maxNe(DEFAULT_DENSITY_MAX)
+, rei(0)
+, nu_type(DEFAULT_NU_FORMAT)
+, useDensity(IF_USE_DENSITY) {
 }
 
 inputChecker::inputChecker(const inputChecker& orig) {
@@ -95,6 +97,9 @@ void inputChecker::check() {
     if (maxNe < 0) {
         maxNe = DEFAULT_DENSITY_MAX;
     }
+    if (USE_DENSITY != useDensity) {
+        useDensity = NOT_USE_DENSITY;
+    }
 }
 
 void inputChecker::help(char *prog) {
@@ -144,6 +149,11 @@ void inputChecker::help(char *prog) {
     cout << tab << "--max-ne=" << tab << "set Ne max" << endl;
     cout << tab << "--rei=" << tab << "set R_ei" << endl;
     cout << tab << "--nu-type=" << tab << "set nu type" << endl;
+    cout << tab << "--use-density=" << tab << "whether use density or not" << endl;
+    cout << tab << tab << USE_DENSITY << tab << "use density";
+    cout << (IF_USE_DENSITY == USE_DENSITY ? "(default)" : "") << endl;
+    cout << tab << tab << NOT_USE_DENSITY << tab << "DO NOT use density";
+    cout << (IF_USE_DENSITY == NOT_USE_DENSITY ? "(default)" : "") << endl;
     exit(0);
 }
 
@@ -152,48 +162,49 @@ void inputChecker::parseInput(int argc, char *argv[]) {
         help(argv[0]);
     }
     for (int i = 1; i < argc; i++) {
-        if (strncmp("-h", argv[i], 2) == 0 || strncmp(argv[i], "--help", 6) == 0) {
+        if (0 == strcmp("-h", argv[i]) || 0 == strcmp(argv[i], "--help")) {
             help(argv[0]);
         } else
-            if (strncmp(argv[i], "--openmp-thread=", 16) == 0) {
+            if (0 == strncmp(argv[i], "--openmp-thread=", 16)) {
             threadCount = strtol(argv[i] + 16, NULL, 10);
-        } else if (strncmp(argv[i], "--wave-type=", 12) == 0) {
+        } else if (0 == strncmp(argv[i], "--wave-type=", 12)) {
             waveType = strtol(argv[i] + 12, NULL, 10);
-        } else if (strncmp(argv[i], "--pml-width=", 12) == 0) {
+        } else if (0 == strncmp(argv[i], "--pml-width=", 12)) {
             pmlSize = strtol(argv[i] + 12, NULL, 10);
-        } else if (strncmp(argv[i], "--x-zone-length=", 16) == 0) {
+        } else if (0 == strncmp(argv[i], "--x-zone-length=", 16)) {
             xZoneLen = atof(argv[i] + 16);
-        } else if (strncmp(argv[i], "--y-zone-length=", 16) == 0) {
+        } else if (0 == strncmp(argv[i], "--y-zone-length=", 16)) {
             yZoneLen = atof(argv[i] + 16);
-
-        } else if (strncmp(argv[i], "--z-zone-length=", 16) == 0) {
+        } else if (0 == strncmp(argv[i], "--z-zone-length=", 16)) {
             zZoneLen = atof(argv[i] + 16);
-        } else if (strncmp(argv[i], "--zone-size=", 12) == 0) {
+        } else if (0 == strncmp(argv[i], "--zone-size=", 12)) {
             zoneLen = atof(argv[i] + 12);
-        } else if (strncmp(argv[i], "--simulation-time=", 18) == 0) {
+        } else if (0 == strncmp(argv[i], "--simulation-time=", 18)) {
             tZoneLen = atof(argv[i] + 18);
-        } else if (strncmp(argv[i], "--amptidute=", 12) == 0) {
+        } else if (0 == strncmp(argv[i], "--amptidute=", 12)) {
             amptidute = atof(argv[i] + 12);
-        } else if (strncmp(argv[i], "--frequency=", 12) == 0) {
+        } else if (0 == strncmp(argv[i], "--frequency=", 12)) {
             frequency = atof(argv[i] + 12);
-        } else if (strncmp(argv[i], "--yc-size-x=", 12) == 0) {
+        } else if (0 == strncmp(argv[i], "--yc-size-x=", 12)) {
             yeeCellSizeX = strtol(argv[i] + 12, NULL, 10);
-        } else if (strncmp(argv[i], "--yc-size-y=", 12) == 0) {
+        } else if (0 == strncmp(argv[i], "--yc-size-y=", 12)) {
             yeeCellSizeY = strtol(argv[i] + 12, NULL, 10);
-        } else if (strncmp(argv[i], "--yc-size-z=", 12) == 0) {
+        } else if (0 == strncmp(argv[i], "--yc-size-z=", 12)) {
             yeeCellSizeZ = strtol(argv[i] + 12, NULL, 10);
-        } else if (strncmp(argv[i], "--yee-cell-size=", 16) == 0) {
+        } else if (0 == strncmp(argv[i], "--yee-cell-size=", 16)) {
             yeeCellSize = strtol(argv[i] + 16, NULL, 10);
-        } else if (strncmp(argv[i], "--fluid-grid-size=", 18) == 0) {
+        } else if (0 == strncmp(argv[i], "--fluid-grid-size=", 18)) {
             fluidGridSize = strtol(argv[i] + 18, NULL, 10);
-        } else if (strncmp(argv[i], "--is-connecting=", 16) == 0) {
+        } else if (0 == strncmp(argv[i], "--is-connecting=", 16)) {
             useConnectingInterface = strtol(argv[i] + 16, NULL, 10);
-        } else if (strncmp(argv[i], "--max-ne=", 9) == 0) {
+        } else if (0 == strncmp(argv[i], "--max-ne=", 9)) {
             maxNe = atof(argv[i] + 9);
-        } else if (strncmp(argv[i], "--rei=", 6) == 0) {
+        } else if (0 == strncmp(argv[i], "--rei=", 6)) {
             rei = atof(argv[i] + 6);
-        } else if (strncmp(argv[i], "--nu-type=", 10) == 0) {
+        } else if (0 == strncmp(argv[i], "--nu-type=", 10)) {
             nu_type = strtol(argv[i] + 10, NULL, 10);
+        } else if (0 == strncmp(argv[i], "--use-density=", 14)) {
+            useDensity = strtol(argv[i] + 14, NULL, 10);
         }
     }
     check();
@@ -220,5 +231,6 @@ void inputChecker::print() {
     cout << "max-ne=" << maxNe << endl;
     cout << "rei=" << rei << endl;
     cout << "nu-type=" << nu_type << endl;
+    cout << "if-use-density=" << useDensity << endl;
     cout << "============================================" << endl;
 }
