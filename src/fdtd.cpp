@@ -42,7 +42,7 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
         unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid, MyDataF maxNe)
 : mIsUseDensity(useDensity)
 , mTotalTimeSteps(_totalTimeSteps)
-, tw(_tw),mDt(0), mDx(_dx), mDy(_dy), mDz(_dz)
+, tw(_tw), mDt(0), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mAirBufferWidth(AIR_BUFFER)
@@ -751,7 +751,7 @@ void fdtd::setUp() {
 
     if (USE_DENSITY == mIsUseDensity) {
         mNeSrcPos.setValue((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
-                (mSourceIndex.y - mDomainStartIndex.y - 3) * mNeGridSize + mNeBoundWidth,
+                (mSourceIndex.y - mDomainStartIndex.y + 8) * mNeGridSize + mNeBoundWidth,
                 (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // initial density
@@ -779,12 +779,11 @@ void fdtd::setUp() {
     } else {
         // initial coefficients at source position
         if (USE_DENSITY == mIsUseDensity) {
-            Point nes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
-                    (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
-                    (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
-            Point bes((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize,
-                    (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize,
-                    (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize);
+            Point bes((mDomainStartIndex.x) * mNeGridSize,
+                    (mDomainStartIndex.y) * mNeGridSize,
+                    (mDomainStartIndex.z) * mNeGridSize);
+            Point nes(bes.x - mNeBoundWidth, bes.y - mNeBoundWidth, bes.z - mNeBoundWidth);
+
             initSourceCoeff(nes, bes);
         } else {
             initSourceCoeff();
@@ -882,7 +881,7 @@ void fdtd::compute() {
         cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         cout << n * mDt / 1e-9 << " ns" << "\t";
         cout << endl;
-        
+
         //        cout << "Source Value:";
         //        cout << Ez.p[mSourceIndex.x][mSourceIndex.y][mSourceIndex.z] << '\t';
         //        cout << endl;
@@ -942,7 +941,7 @@ void fdtd::compute() {
 #else
                 Ne.save(Ne.nx / 2, 1, n, 1);
                 Ne.save(Ne.nz / 2, 1, n, 3);
-                Eeff.save(Eeff.nx / 2, 1, n, 1);
+                Eeff.save(Eeff.nx / 2, 3, n, 1);
                 Ne.save(mSourceIndex.y*mNeGridSize, 1, n, 2);
 #endif                
                 Eeff.resetArray();
@@ -953,10 +952,13 @@ void fdtd::compute() {
             //writeField(n);
             //Ez.save(mSourceIndex.x + 10, 1, n, 1);
             //Ez.save(mSourceIndex.y + 10, 1, n, 2);
-            Ez.save(Ez.nz / 2, 1, n, 3);
+            //Ez.save(Ez.nz / 2, 1, n, 3);
             Ex.save(Ex.nz / 2, 1, n, 3);
             Ey.save(Ey.nz / 2, 1, n, 3);
-            Vy.save(Vy.nz / 2, 1, n, 3);
+            if (mIsUseDensity) {
+                Vz.save(Vz.nz / 2, 3, n, 3);
+                Vy.save(Vy.nz / 2, 3, n, 3);
+            }
 #ifdef DEBUG 
             if (mUseConnectingInterface) {
                 mConnectingInterface.saveEMInc(n);

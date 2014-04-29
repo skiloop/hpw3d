@@ -281,8 +281,9 @@ template<class DataType>
 void data3d<DataType>::saveZPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
     ss << mName << "_z_" << step << OUTPUT_FILE_NAME_TAIL;
-    if (leap >= nx || leap >= ny || leap >= nz) {
-        cerr << "Invalid leap for saving p!" << endl;
+    if (leap >= nx || leap >= ny) {
+        cerr << "(nx,ny,nz)=(" << nx << "," << ny << "," << nz << ")" << endl;
+        cerr << "Invalid leap for saving p!(" << leap << ")" << endl;
         return;
     }
     string fname = ss.str();
@@ -313,8 +314,9 @@ template<class DataType>
 void data3d<DataType>::saveYPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
     ss << mName << "_y_" << step << OUTPUT_FILE_NAME_TAIL;
-    if (leap >= nx || leap >= ny || leap >= nz) {
-        cerr << "Invalid leap for saving p!" << endl;
+    if (leap >= nx || leap >= nz) {
+        cerr << "(nx,ny,nz)=(" << nx << "," << ny << "," << nz << ")" << endl;
+        cerr << "Invalid leap for saving p!(" << leap << ")" << endl;
         return;
     }
     string fname = ss.str();
@@ -345,8 +347,9 @@ template<class DataType>
 void data3d<DataType>::saveXPlain(unsigned k, unsigned leap, unsigned step) {
     stringstream ss;
     ss << mName << "_x_" << step << OUTPUT_FILE_NAME_TAIL;
-    if (leap >= nx || leap >= ny || leap >= nz) {
-        cerr << "Invalid leap for saving p!" << endl;
+    if (leap >= ny || leap >= nz) {
+        cerr << "(nx,ny,nz)=(" << nx << "," << ny << "," << nz << ")" << endl;
+        cerr << "Invalid leap for saving p!(" << leap << ")" << endl;
         return;
     }
     string fname = ss.str();
