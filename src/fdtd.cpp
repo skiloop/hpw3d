@@ -114,44 +114,59 @@ void fdtd::captureEFieldForEeff(void) {
     MyDataF sxIJK, syIJK, szIJK;
 
     Point start(0, 0, 0);
-    switch (mSrcType) {
-        case SOURCE_SINE:
-            for (i = mDomainStartIndex.x, io = start.x; i <= mDomainEndIndex.x; i++, io += mNeGridSize) {
-                for (j = mDomainStartIndex.y, jo = start.y; j <= mDomainEndIndex.y; j++, jo += mNeGridSize) {
-                    for (k = mDomainStartIndex.z, ko = start.z; k <= mDomainEndIndex.z; k++, ko += mNeGridSize) {
-                        sxIJK = (Ex.p[i][j][k] + Ex.p[i + 1][j][k]) / 2;
-                        syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
-                        szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
-                        MyDataF tmp = sqrt(szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
-                        if (tmp > Eeff.p[io][jo][ko]) {
-                            Eeff.p[io][jo][ko] = tmp;
+    //    switch (mSrcType) {
+    //        case SOURCE_SINE:
+    //            for (i = mDomainStartIndex.x, io = start.x; i <= mDomainEndIndex.x; i++, io += mNeGridSize) {
+    //                for (j = mDomainStartIndex.y, jo = start.y; j <= mDomainEndIndex.y; j++, jo += mNeGridSize) {
+    //                    for (k = mDomainStartIndex.z, ko = start.z; k <= mDomainEndIndex.z; k++, ko += mNeGridSize) {
+    //                        sxIJK = (Ex.p[i][j][k] + Ex.p[i + 1][j][k]) / 2;
+    //                        syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
+    //                        szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
+    //                        MyDataF tmp = sqrt(szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
+    //                        if (tmp > Eeff.p[io][jo][ko]) {
+    //                            Eeff.p[io][jo][ko] = tmp;
+    //#if DEBUG>=4
+    //                            if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko])) {
+    //                                tmp = 0.0;
+    //                            }
+    //#endif
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //            break;
+    //        case SOURCE_GAUSSIAN:
+    //        default:
+    //            for (i = mDomainStartIndex.x, io = start.x; i <= mDomainEndIndex.x; i++, io += mNeGridSize) {
+    //                for (j = mDomainStartIndex.y, jo = start.y; j <= mDomainEndIndex.y; j++, jo += mNeGridSize) {
+    //                    for (k = mDomainStartIndex.z, ko = start.z; k <= mDomainEndIndex.z; k++, ko += mNeGridSize) {
+    //                        sxIJK = (Ex.p[i][j][k] + Ex.p[i + 1][j][k]) / 2;
+    //                        syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
+    //                        szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
+    //                        Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
+    //#if DEBUG>=4
+    //                        if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko]) /*|| fabs(Eeff.p[io][jo][ko]) > 1e30*/) {
+    //                            szIJK = 0.0;
+    //                        }
+    //#endif
+    //                    }
+    //                }
+    //            }
+    //    }
+    for (i = mDomainStartIndex.x, io = start.x; i <= mDomainEndIndex.x; i++, io += mNeGridSize) {
+        for (j = mDomainStartIndex.y, jo = start.y; j <= mDomainEndIndex.y; j++, jo += mNeGridSize) {
+            for (k = mDomainStartIndex.z, ko = start.z; k <= mDomainEndIndex.z; k++, ko += mNeGridSize) {
+                sxIJK = (Ex.p[i][j][k] + Ex.p[i + 1][j][k]) / 2;
+                syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
+                szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
+                Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
 #if DEBUG>=4
-                            if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko])) {
-                                tmp = 0.0;
-                            }
-#endif
-                        }
-                    }
+                if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko]) /*|| fabs(Eeff.p[io][jo][ko]) > 1e30*/) {
+                    szIJK = 0.0;
                 }
-            }
-            break;
-        case SOURCE_GAUSSIAN:
-        default:
-            for (i = mDomainStartIndex.x, io = start.x; i <= mDomainEndIndex.x; i++, io += mNeGridSize) {
-                for (j = mDomainStartIndex.y, jo = start.y; j <= mDomainEndIndex.y; j++, jo += mNeGridSize) {
-                    for (k = mDomainStartIndex.z, ko = start.z; k <= mDomainEndIndex.z; k++, ko += mNeGridSize) {
-                        sxIJK = (Ex.p[i][j][k] + Ex.p[i + 1][j][k]) / 2;
-                        syIJK = (Ey.p[i][j][k] + Ey.p[i][j + 1][k]) / 2;
-                        szIJK = (Ez.p[i][j][k] + Ez.p[i][j][k + 1]) / 2;
-                        Eeff.p[io][jo][ko] += (szIJK * szIJK + sxIJK * sxIJK + syIJK * syIJK);
-#if DEBUG>=4
-                        if (isnan(Eeff.p[io][jo][ko]) || isinf(Eeff.p[io][jo][ko]) /*|| fabs(Eeff.p[io][jo][ko]) > 1e30*/) {
-                            szIJK = 0.0;
-                        }
 #endif
-                    }
-                }
             }
+        }
     }
 }
 
@@ -159,10 +174,12 @@ void fdtd::updateCollisionFrequency() {
     if (fdtd::SOURCE_GAUSSIAN == mSrcType) {
         int i, j, k;
         MyDataF EeffDivP = 0;
-        MyDataF DivParam = 100 * mAirPressure * 133.3;
+        MyDataF P = mAirPressure * 133.3;
+        MyDataF DivParam = 100 * P;
         MyDataF C1 = 5.20e8 * mAirPressure;
         MyDataF C2 = 2.93e8 * mAirPressure;
         MyDataF C3 = 3.24e8 * mAirPressure;
+        MyDataF C4 = 2.35e9 * mAirPressure;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic) private(i,j,k,EeffDivP) //shared(Hx,Ez,Ey,pml,DA,DB,dy)
 #endif
@@ -171,11 +188,13 @@ void fdtd::updateCollisionFrequency() {
                 for (k = 0; k < Nu_c.nz; k++) {
                     EeffDivP = Eeff.p[i][j][k] / DivParam;
                     if (EeffDivP >= 120) {
-                        Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP);
+                        Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP)*P;
                     } else if (EeffDivP >= 54) {
-                        Nu_c.p[i][j][k] = C2 * EeffDivP / (1 + 0.041 * EeffDivP);
+                        Nu_c.p[i][j][k] = C2 * EeffDivP / (1 + 0.041 * EeffDivP)*P;
+                    } else if (EeffDivP >= 30) {
+                        Nu_c.p[i][j][k] = C3 * EeffDivP / (1 + 0.04 * EeffDivP)*P;
                     } else {
-                        Nu_c.p[i][j][k] = C3 * EeffDivP / (1 + 0.04 * EeffDivP);
+                        Nu_c.p[i][j][k] = C4 * EeffDivP / (1 + 0.58 * EeffDivP)*P;
                     }
 #if DEBUG>=4
                     if (isnan(Nu_c.p[i][j][k])) {
@@ -216,9 +235,10 @@ void fdtd::updateEeff() {
     unsigned ngred = mNeGridSize * mNeGridSize*mNeGridSize;
     Point start(0, 0, 0);
     Point end(Eeff.nx, Eeff.ny, Eeff.nz);
-    if (fdtd::SOURCE_SINE != mSrcType) {
-        vec2Eeff();
-    }
+    //    if (fdtd::SOURCE_SINE != mSrcType) {
+    //        vec2Eeff();
+    //    }
+    vec2Eeff();
     for (is = start.x, in = is + mNeGridSize; in < end.x; is = in, in += mNeGridSize) {
         for (js = start.y, jn = js + mNeGridSize; jn < end.y; js = jn, jn += mNeGridSize) {
             for (ks = start.z, kn = ks + mNeGridSize; kn < end.z; ks = kn, kn += mNeGridSize) {
@@ -276,7 +296,7 @@ void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyD
     }
 }
 
-void fdtd::updateDensity(void) {
+int fdtd::updateDensity(void) {
 
     int i, j, k;
     Point ms(mNeBoundWidth, mNeBoundWidth, mNeBoundWidth);
@@ -286,6 +306,7 @@ void fdtd::updateDensity(void) {
     MyDataF maxvi = 0, minvi = 0;
     MyDataF vi, va;
     MyDataF dtfDivDsfSquare = mDtFluid / mDsFluid / mDsFluid;
+    int hasNan = 0;
 
     Ne_pre = Ne;
 
@@ -313,6 +334,11 @@ void fdtd::updateDensity(void) {
                 if (Ne.p[i][j][k] < 0) {
                     Ne.p[i][j][k] = 0;
                 }
+#ifdef DEBUG
+                if (isnan(Ne.p[i][j][k])) {
+                    Deff = 0;
+                }
+#endif
                 if (vi > maxvi) {
                     maxvi = vi;
                     //                    ci = i;
@@ -326,16 +352,17 @@ void fdtd::updateDensity(void) {
                             (Neip1 + Neim1 + Nejp1 + Nejm1 + Nekp1 + Nekm1 - 6 * Ne_ijk) << \
                             '\t' << mDtFluid * (va + mRei * Ne_ijk) << endl;
                 }
-                if (isnan(Ne.p[i][j][k])) {
-                    vi = 0;
-                }
 #endif
+                if (!hasNan && isnan(Ne.p[i][j][k])) {
+                    hasNan = 1;
+                }
             }
         }
     }
     wallCircleBound(Ne);
     //    cout << Ne.p[Ne.nx / 2][Ne.ny / 2][Ne.nz / 2] << '\t';
     //    cout << maxvi << '\t' << minvi << '\t' << Ne.p[ci][cj][ck] << '\t' << Erms.p[ci][cj][ck] << '\t';
+    return hasNan;
 }
 
 void fdtd::updateVelocity(void) {
@@ -366,6 +393,12 @@ void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
             for (j = start; j <= end; j++) {
                 stru.p[i][j][start] = 2 * stru.p[i][j][start1] - stru.p[i][j][start2];
                 stru.p[i][j][end] = 2 * stru.p[i][j][end1] - stru.p[i][j][end2];
+                if (stru.p[i][j][start] < 0) {
+                    stru.p[i][j][start] = 0;
+                }
+                if (stru.p[i][j][end] < 0) {
+                    stru.p[i][j][end] = 0;
+                }
             }
         }
 
@@ -374,6 +407,12 @@ void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
             for (k = start; k <= end; k++) {
                 stru.p[start][j][k] = 2 * stru.p[start1][j][k] - stru.p[start2][j][k];
                 stru.p[end][j][k] = 2 * stru.p[end1][j][k] - stru.p[end2][j][k];
+                if (stru.p[start][j][k] < 0) {
+                    stru.p[start][j][k] = 0;
+                }
+                if (stru.p[end][j][k] < 0) {
+                    stru.p[end][j][k] = 0;
+                }
             }
         }
 
@@ -382,6 +421,12 @@ void fdtd::wallCircleBound(data3d<MyDataF> &stru) {
             for (k = start; k <= end; k++) {
                 stru.p[i][start][k] = 2 * stru.p[i][start1][k] - stru.p[i][start2][k];
                 stru.p[i][end][k] = 2 * stru.p[i][end1][k] - stru.p[i][end2][k];
+                if (stru.p[i][start][k] < 0) {
+                    stru.p[i][start][k] = 0;
+                }
+                if (stru.p[i][end][k] < 0) {
+                    stru.p[i][end][k] = 0;
+                }
             }
         }
     }
@@ -751,7 +796,7 @@ void fdtd::setUp() {
 
     if (USE_DENSITY == mIsUseDensity) {
         mNeSrcPos.setValue((mSourceIndex.x - mDomainStartIndex.x) * mNeGridSize + mNeBoundWidth,
-                (mSourceIndex.y - mDomainStartIndex.y + 8) * mNeGridSize + mNeBoundWidth,
+                (mSourceIndex.y - mDomainStartIndex.y) * mNeGridSize + mNeBoundWidth,
                 (mSourceIndex.z - mDomainStartIndex.z) * mNeGridSize + mNeBoundWidth);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // initial density

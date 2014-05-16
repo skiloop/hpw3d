@@ -249,7 +249,7 @@ private:
     void updateCollisionFrequency();
     void vec2Eeff();
     void updateEeff();
-    void updateDensity(void);
+    int updateDensity(void);
     void updateVelocity(void);
     void updateVx();
     void updateVy();
