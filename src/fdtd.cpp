@@ -267,7 +267,7 @@ void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyD
     MyDataF EeffVPerCM;
     switch (mSrcType) {
         case SOURCE_SINE:
-            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100 * pow(1 / (1 + mOmega * mOmega / mNu_m / mNu_m), 0.5);
+            EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100 / pow((1 + mOmega * mOmega / mNu_m / mNu_m), 0.5);
             break;
         default:
             EeffVPerCM = Eeff.p[i - mNeBoundWidth][j - mNeBoundWidth][k - mNeBoundWidth] / 100; //convert to V/cm
@@ -291,6 +291,8 @@ void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyD
         Deff = mDe;
     } else {
         // tau_m = eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
+        MyDataF mDe=mMu_e*temperature(EeffVPerCM, mAirPressure);
+        MyDataF mDa=mMu_i*mDe/mMu_e;
         MyDataF kasi = vi * eps_0 / (e * Ne.p[i][j][k] * (mMu_e + mMu_i));
         Deff = (kasi * mDe + mDa) / (kasi + 1);
     }

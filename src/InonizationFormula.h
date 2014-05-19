@@ -54,4 +54,5 @@ void Niu_MorrowAndLowke(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF E, MyDataF N);
 
 void Niu_Ali(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF Eeff, MyDataF p);
 
+MyDataF temperature(MyDataF eeff,MyDataF pressure);
 #endif

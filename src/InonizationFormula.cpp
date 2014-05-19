@@ -197,3 +197,8 @@ void Niu_Ali(MyDataF *pNiu_i, MyDataF *pNiu_a, MyDataF Eeff, MyDataF p) {
     }
     *pNiu_a = 7.6e-4 * pow(alpha / (alpha + 218), 2) / p;
 }
+
+MyDataF temperature(MyDataF eeff,MyDataF pressure){
+    return pow(2.1e-3*eeff*(91.0+eeff),1/3);
+}
+
