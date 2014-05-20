@@ -174,7 +174,7 @@ void fdtd::updateCollisionFrequency() {
     if (fdtd::SOURCE_GAUSSIAN == mSrcType) {
         int i, j, k;
         MyDataF EeffDivP = 0;
-        MyDataF P = mAirPressure * 133.3;
+        MyDataF P = mAirPressure;
         MyDataF DivParam = 100 * P;
         MyDataF C1 = 5.20e8 * mAirPressure;
         MyDataF C2 = 2.93e8 * mAirPressure;
@@ -288,7 +288,7 @@ void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyD
             Niu_Ali(&vi, &va, EeffVPerCM, mAirPressure);
     }
     if (Ne.p[i][j][k] < 1) {
-        Deff = mDe;
+        Deff = mDa;
     } else {
         // tau_m = eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
         MyDataF mDe=mMu_e*temperature(EeffVPerCM, mAirPressure);
