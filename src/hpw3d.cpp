@@ -88,11 +88,12 @@ int main(int argc, char*argv[]) {
 
     MyDataF R = 1e-20;
     currentSource cSource(source::Z, R, checker.amptidute * 1e13);
+    currentSource gSource(source::Z, R, checker.amptidute);
 
     switch (checker.waveType) {
         case GAUSSIAN_WAVE:
             hpw.setSrcType(GAUSSIAN_WAVE);
-            cSource.setSourceType(&gaussianWave);
+            gSource.setSourceType(&gaussianWave);
             hpw.setSourceType(&gaussianWave);
             break;
         case SINE_WAVE:
@@ -126,7 +127,12 @@ int main(int argc, char*argv[]) {
         default:
             cSource.setSourceType(&gaussianWave);
     }
-    hpw.setSource(&cSource);
+    if(checker.waveType==GAUSSIAN_WAVE){
+        hpw.setSource(&gSource);
+    }else{
+        hpw.setSource(&cSource);
+    }
+    
     //hpw.initialize();
     hpw.startUp();
     return 0;

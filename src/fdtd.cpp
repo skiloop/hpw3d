@@ -43,7 +43,7 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
 : mIsUseDensity(useDensity)
 , mTotalTimeSteps(_totalTimeSteps)
 , tw(_tw), mDt(0), mDx(_dx), mDy(_dy), mDz(_dz)
-, mAmplitude(_amp), mSaveModulus(_savemodulus), mKSource(_ksource)
+, mAmplitude(_amp), mDensityWidth(50e-6), mSaveModulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mAirBufferWidth(AIR_BUFFER)
 , mNeGridSize(_neGrid)
@@ -188,13 +188,13 @@ void fdtd::updateCollisionFrequency() {
                 for (k = 0; k < Nu_c.nz; k++) {
                     EeffDivP = Eeff.p[i][j][k] / DivParam;
                     if (EeffDivP >= 120) {
-                        Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP)*P;
+                        Nu_c.p[i][j][k] = C1 * sqrt(EeffDivP) * P;
                     } else if (EeffDivP >= 54) {
-                        Nu_c.p[i][j][k] = C2 * EeffDivP / (1 + 0.041 * EeffDivP)*P;
+                        Nu_c.p[i][j][k] = C2 * EeffDivP / (1 + 0.041 * EeffDivP) * P;
                     } else if (EeffDivP >= 30) {
-                        Nu_c.p[i][j][k] = C3 * EeffDivP / (1 + 0.04 * EeffDivP)*P;
+                        Nu_c.p[i][j][k] = C3 * EeffDivP / (1 + 0.04 * EeffDivP) * P;
                     } else {
-                        Nu_c.p[i][j][k] = C4 * EeffDivP / (1 + 0.58 * EeffDivP)*P;
+                        Nu_c.p[i][j][k] = C4 * EeffDivP / (1 + 0.58 * EeffDivP) * P;
                     }
 #if DEBUG>=4
                     if (isnan(Nu_c.p[i][j][k])) {
@@ -291,8 +291,8 @@ void fdtd::calIonizationParam(int i, int j, int k, MyDataF &va, MyDataF &vi, MyD
         Deff = mDa;
     } else {
         // tau_m = eps_0 / (e * Ne.p[i][j][k] * (mu_e + mu_i));
-        MyDataF mDe=mMu_e*temperature(EeffVPerCM, mAirPressure);
-        MyDataF mDa=mMu_i*mDe/mMu_e;
+        MyDataF mDe = mMu_e * temperature(EeffVPerCM, mAirPressure);
+        MyDataF mDa = mMu_i * mDe / mMu_e;
         MyDataF kasi = vi * eps_0 / (e * Ne.p[i][j][k] * (mMu_e + mMu_i));
         Deff = (kasi * mDe + mDa) / (kasi + 1);
     }
@@ -619,7 +619,8 @@ void fdtd::updateBeta() {
 }
 
 void fdtd::initDensity() {
-    MyDataF tmp = 2 * pow(4 * mDsFluid, 2); // 4 Maxwell grid size width    
+    //    MyDataF tmp = 2 * pow(4 * mDsFluid, 2); // 4 Maxwell grid size width    
+    MyDataF tmp = 2 * mDensityWidth* mDensityWidth; // 4 Maxwell grid size width    
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(thread_count) schedule(dynamic)
 #endif   
@@ -778,8 +779,9 @@ void fdtd::setUp() {
 #ifdef DEBUG
     mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2, mMaxIndex.z / 2);
 #else
-    mSourceIndex.setValue(mDomainStartIndex.x + (unsigned) (((float) (mDomainEndIndex.x - mDomainStartIndex.x)*2.25) / 3.0),
-            mMaxIndex.y / 2, mMaxIndex.z / 2);
+    mSourceIndex.setValue(mMaxIndex.x / 2, mMaxIndex.y / 2, mMaxIndex.z / 2);
+    //    mSourceIndex.setValue(mDomainStartIndex.x + (unsigned) (((float) (mDomainEndIndex.x - mDomainStartIndex.x)*2.25) / 3.0),
+    //            mMaxIndex.y / 2, mMaxIndex.z / 2);
 #endif    
 
     checkmax(mSourceIndex.x, 1, mMaxIndex.x);
@@ -830,7 +832,6 @@ void fdtd::setUp() {
                     (mDomainStartIndex.y) * mNeGridSize,
                     (mDomainStartIndex.z) * mNeGridSize);
             Point nes(bes.x - mNeBoundWidth, bes.y - mNeBoundWidth, bes.z - mNeBoundWidth);
-
             initSourceCoeff(nes, bes);
         } else {
             initSourceCoeff();
@@ -989,6 +990,7 @@ void fdtd::compute() {
                 Ne.save(Ne.nx / 2, 1, n, 1);
                 Ne.save(Ne.nz / 2, 1, n, 3);
                 Eeff.save(Eeff.nx / 2, 3, n, 1);
+                Eeff.save(Eeff.nz / 2, 3, n, 3);
                 Ne.save(mSourceIndex.y*mNeGridSize, 1, n, 2);
 #endif                
                 Eeff.resetArray();

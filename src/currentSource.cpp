@@ -242,19 +242,19 @@ void currentSource::updateSource(data3d<MyDataF>& Ex, data3d<MyDataF>& Ey,
     switch (mDirection) {
         case X:
             while (i < mSrcIndexes.size()) {
-                Ex.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] += Cese[i] * mAmplitude * mPSource->valueAtTime(t);
+                Ex.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] +=  mAmplitude * mPSource->valueAtTime(t);
                 i++;
             }
             break;
         case Y:
             while (i < mSrcIndexes.size()) {
-                Ey.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] += Cese[i] * mAmplitude * mPSource->valueAtTime(t);
+                Ey.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] +=  mAmplitude * mPSource->valueAtTime(t);
                 i++;
             }
             break;
         case Z:
             while (i < mSrcIndexes.size()) {
-                Ez.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] += Cese[i] * mAmplitude * mPSource->valueAtTime(t);
+                Ez.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] +=  mAmplitude * mPSource->valueAtTime(t);
                 i++;
             }
             break;
@@ -267,19 +267,19 @@ void currentSource::updateHardSource(data3d<MyDataF>& Ex, data3d<MyDataF>& Ey,
     switch (mDirection) {
         case X:
             while (i < mSrcIndexes.size()) {
-                Ex.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] = Cese[i] * mAmplitude * mPSource->valueAtTime(t);
+                Ex.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] =  mAmplitude * mPSource->valueAtTime(t);
                 i++;
             }
             break;
         case Y:
             while (i < mSrcIndexes.size()) {
-                Ey.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] = Cese[i] * mAmplitude * mPSource->valueAtTime(t);
+                Ey.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] =  mAmplitude * mPSource->valueAtTime(t);
                 i++;
             }
             break;
         case Z:
             while (i < mSrcIndexes.size()) {
-                Ez.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] = Cese[i] * mAmplitude * mPSource->valueAtTime(t);
+                Ez.p[mSrcIndexes[i].x][mSrcIndexes[i].y][mSrcIndexes[i].z] =  mAmplitude * mPSource->valueAtTime(t);
                 i++;
             }
             break;

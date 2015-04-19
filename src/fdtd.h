@@ -95,6 +95,10 @@ private:
     MyDataF mDt, mDx, mDy, mDz;
 
     MyDataF mAmplitude; // Amplitude
+    
+    // with of density profile
+    MyDataF mDensityWidth;
+    
     // Specify the Time Step at which the data has to be saved for Visualization
     unsigned mSaveModulus;
 
