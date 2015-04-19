@@ -1,2 +1,2 @@
 #! /bin/sh
-rm -fr *.txt *.o *~ *.dat
+rm -fr *.txt *.o *~ *.dat *.pdf
