@@ -32,6 +32,7 @@ inputChecker::inputChecker()
 , amptidute(DEFAULT_AMPTIDUTE)
 , maxNe(DEFAULT_DENSITY_MAX)
 , rei(0)
+,pressure(760)
 , nu_type(DEFAULT_NU_FORMAT)
 , useDensity(IF_USE_DENSITY) {
 }
@@ -148,6 +149,7 @@ void inputChecker::help(char *prog) {
     cout << tab << "--is-connecting=" << tab << "1 if use connecting interface " << endl;
     cout << tab << "--max-ne=" << tab << "set Ne max" << endl;
     cout << tab << "--rei=" << tab << "set R_ei" << endl;
+    cout << tab << "--pressure=" << tab << "set air pressure" << endl;
     cout << tab << "--nu-type=" << tab << "set nu type" << endl;
     cout << tab << "--use-density=" << tab << "whether use density or not" << endl;
     cout << tab << tab << USE_DENSITY << tab << "use density";
@@ -201,6 +203,8 @@ void inputChecker::parseInput(int argc, char *argv[]) {
             maxNe = atof(argv[i] + 9);
         } else if (0 == strncmp(argv[i], "--rei=", 6)) {
             rei = atof(argv[i] + 6);
+        } else if (0 == strncmp(argv[i], "--pressure=", 11)) {
+            pressure = atof(argv[i] + 11);
         } else if (0 == strncmp(argv[i], "--nu-type=", 10)) {
             nu_type = strtol(argv[i] + 10, NULL, 10);
         } else if (0 == strncmp(argv[i], "--use-density=", 14)) {
@@ -230,6 +234,7 @@ void inputChecker::print() {
     cout << "useConnecting=" << useConnectingInterface << endl;
     cout << "max-ne=" << maxNe << endl;
     cout << "rei=" << rei << endl;
+    cout << "pressure=" << pressure << endl;
     cout << "nu-type=" << nu_type << endl;
     cout << "if-use-density=" << useDensity << endl;
     cout << "============================================" << endl;

@@ -80,6 +80,7 @@ public:
     double tUp;
     double tDown;
     double rei;
+    double pressure;
     
     int nu_type;
     

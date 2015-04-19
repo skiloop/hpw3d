@@ -769,6 +769,7 @@ void fdtd::setUp() {
         mNeSkipStep = mDtFluid / mDt;
 
         cout << "neSkipStep=" << mNeSkipStep << endl;
+        cout << "Ne0=" << Ne0 <<endl;
         cout << tw / mDt / mNeSkipStep << endl;
         createDensityArrays();
         //exit(0);
@@ -1277,6 +1278,7 @@ void fdtd::printParam() {
     cout << "mu_e=" << mMu_e << endl;
     cout << "Da=" << mDa << endl;
     cout << "De=" << mDe << endl;
+    cout << "pressure=" << mAirPressure << endl;
     //#endif
     cout << endl << "Time step = " << mDt << endl;
     cout << endl << "Number of steps = " << mTotalTimeSteps << endl;
