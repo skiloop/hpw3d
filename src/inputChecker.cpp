@@ -222,9 +222,9 @@ void inputChecker::parseInput(int argc, char *argv[]) {
         } else if (0 == strncmp(argv[i], "--use-density=", 14)) {
             useDensity = strtol(argv[i] + 14, NULL, 10);
         } else if (0 == strncmp(argv[i], "--maxwell-t=", 12)) {
-            MaxwellTimeNumber = strtol(argv[i] + 12);
+            MaxwellTimeNumber = strtol(argv[i] + 12, NULL, 10);
         } else if (0 == strncmp(argv[i], "--fluid-t=", 10)) {
-            FluidTimeNumber = strtol(argv[i] + 10);
+            FluidTimeNumber = strtol(argv[i] + 10, NULL, 10);
         }
     }
     check();
