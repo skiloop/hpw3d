@@ -53,7 +53,7 @@ int main(int argc, char*argv[]) {
     unsigned xlen, ylen, zlen, tlen;
 
     //    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
-    MyDataF dt = dx / 2 / C;
+    MyDataF dt = T/checker.MaxwellTimeNumber;
     xlen = (unsigned) (T * checker.xZoneLen * C / dx);
     ylen = (unsigned) (T * checker.yZoneLen * C / dy);
     zlen = (unsigned) (T * checker.zZoneLen * C / dz);
@@ -62,18 +62,25 @@ int main(int argc, char*argv[]) {
     } else {
         tlen = (unsigned) (tw * checker.tZoneLen / dt);
     }
+    MyDataF dsf,dtf;
+    dsf=dz/checker.fluidGridSize;
+    dtf=T/checker.FluidTimeNumber;
 
     cout << "xlen=" << xlen << endl;
     cout << "ylen=" << ylen << endl;
     cout << "zlen=" << zlen << endl;
     cout << "tlen=" << tlen << endl;
     cout << "dx=" << dx << endl;
+    cout << "dsf="<<dsf<<endl;
     cout << "dt=" << dt << endl;
+    cout << "dtf="<<dtf<<endl;
     cout << "amp=" << checker.amptidute<< endl;
     cout << "pre=" << checker.pressure << endl;
+    
 
     //#ifdef WITH_DENSITY
-    fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
+    fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen,
+            tw, dx, dy, dz,dt,dsf,dtf, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
             checker.useConnectingInterface, checker.fluidGridSize,checker.maxNe);
     hpw.setPlasmaParam(checker.rei, checker.pressure * 5.3E9, checker.pressure, checker.nu_type);
     //#else

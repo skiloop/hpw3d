@@ -85,6 +85,9 @@ public:
     int nu_type;
     
     int useDensity;
+    
+    int MaxwellTimeNumber;
+    int FluidTimeNumber;
 
     const static int GAUSSIAN = GAUSSIAN_WAVE;
     const static int SINE = SINE_WAVE;

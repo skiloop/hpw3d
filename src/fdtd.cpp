@@ -38,11 +38,12 @@ void checkmax(unsigned &u_2check, unsigned min, unsigned max) {
 
 fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigned yzoneSize, unsigned zzoneSize,
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
+        MyDataF _dt, MyDataF _dsF, MyDataF _dtF,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
         unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid, MyDataF maxNe)
 : mIsUseDensity(useDensity)
 , mTotalTimeSteps(_totalTimeSteps)
-, tw(_tw), mDt(0), mDx(_dx), mDy(_dy), mDz(_dz)
+, tw(_tw), mDt(_dt), mDx(_dx), mDy(_dy), mDz(_dz)
 , mAmplitude(_amp), mDensityWidth(50e-6), mSaveModulus(_savemodulus), mKSource(_ksource)
 , mPMLOrder(_m), mAlphaOrder(_ma), mPMLWidth(pmlw)
 , mAirBufferWidth(AIR_BUFFER)
@@ -54,7 +55,7 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
 , t0(0)
 , mOmega(0)
 , pSource(NULL), pSourceType(NULL), CA(NULL), CB(NULL)
-, mDsFluid(_dx), mDtFluid(0)
+, mDsFluid(_dsF), mDtFluid(_dtF)
 , mNeSkipStep(1)
 , mNeBoundWidth(NE_BOUND_WIDTH)
 , mDe(0), mDa(0), mRei(0), mMu_i(0), mMu_e(0) {
@@ -726,11 +727,14 @@ void fdtd::createFieldArray() {
 #endif
 }
 
-void fdtd::setUp() {
+/**
+ * initial parameters,
+ * use this before create arrays
+ */
+void fdtd::initialParameters() {
     //Time step
     //    dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) +
-    //            1.0 / (dz * dz)));
-    mDt = mDx / 2 / C;
+    //            1.0 / (dz * dz)));   
 
     //delay
     if (fdtd::SOURCE_SINE != mSrcType) {
@@ -744,7 +748,6 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     dtDivEps0DivDxyz = mDt / eps_0 / mDx / mDy / mDz;
     if (USE_DENSITY == mIsUseDensity) {
-        mDsFluid = mDx / mNeGridSize;
         mHalfDelta_t = mDt / 2;
         mHalf_e = e / 2;
         dtDivEps0DivDx = mDt / eps_0 / mDx;
@@ -763,18 +766,16 @@ void fdtd::setUp() {
         mMu_i = mMu_e / 100.0; //mu_e/mu_i ranges from 100 to 200
         mDe = mMu_e * 2 * 1.602e-19 / e; //
         mDa = mMu_i * 2 * 1.602e-19 / e; //
-        //MyDataF Dmax = mDe > mDa ? mDe : mDa;
         //Fine Time Step Size
-        mDtFluid = 10 * mDt; //0.01 * mDsFluid * mDsFluid / 2 / Dmax;
         mNeSkipStep = mDtFluid / mDt;
 
         cout << "neSkipStep=" << mNeSkipStep << endl;
-        cout << "Ne0=" << Ne0 <<endl;
+        cout << "Ne0=" << Ne0 << endl;
         cout << tw / mDt / mNeSkipStep << endl;
-        createDensityArrays();
-        //exit(0);
     }
+}
 
+void fdtd::setUp() {
 
     // source position    
 #ifdef DEBUG
@@ -796,6 +797,9 @@ void fdtd::setUp() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  COMPUTING FIELD UPDATE EQUATION COEFFICIENTS
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if (USE_DENSITY == mIsUseDensity) {
+        createDensityArrays();
+    }
 
     initCoeficients();
 
@@ -1228,61 +1232,73 @@ void fdtd::writeField(unsigned iteration) {
 //start up
 
 void fdtd::startUp() {
-
-    cout << "initializing(in Startup)..." << endl;
+    cout << "1 Initializing parameters..." << endl;
+    initialParameters();
+    cout << "2 checking conditions..." << endl;
+    /**
+     * check if satisfy conditions
+     */
+    if (!checkConditions()) {
+        cout << "Error conditions no satisfy, program exit." << endl;
+        return;
+    }
+    cout << "3 creating  parametes ..." << endl;
     createFieldArray();
-    cout << "buildObject (in Startup)" << endl;
+    cout << "4 BuildObject (in Startup)" << endl;
     buildObject();
-    cout << "setUp (in Startup)" << endl;
+    cout << "5 SetUp (in Startup)" << endl;
     setUp();
-    cout << "computing (in Startup)" << endl;
+    cout << "6 Computing (in Startup)" << endl;
     compute();
-    cout << "exit Startup" << endl;
+    cout << "7 exit Startup" << endl;
 }
 
 void fdtd::printParam() {
+    // background parameters
+    cout << "pressure=" << mAirPressure << endl;
 
-    cout << "dx = " << mDx << endl;
-    cout << "dy = " << mDy << endl;
-    cout << "dz = " << mDz << endl;
-    cout << "(mMaxIndex.x,mMaxIndex.y,mMaxIndex.z) = (" << mMaxIndex.x << "," << mMaxIndex.y << "," << mMaxIndex.z << ")" << endl;
-    // time step increment
-    cout << "dt = " << mDt << endl;
-
-    //  Specify the Impulsive Source (Differentiated Gaussian) parameters
+    //  wave parameters
     cout << "tw = " << tw << endl; //pulse width
     cout << "t0 = " << t0 << endl; //delay    
     cout << "Amplitude = " << mAmplitude << endl; // Amplitude
     cout << "omega = " << mOmega << endl; // angle speed for sine wave
 
-    //Specify the Time Step at which the data has to be saved for Visualization
-    cout << "save_modulus = " << mSaveModulus << endl;
-
-    //  Specify the dipole Boundaries(A cuboidal rode- NOT as a cylinder)
-    cout << "(mStartIndex.x,mStartIndex.y, mStartIndex.z) = (" << mNonPMLStartIndex.x << ',' << mNonPMLStartIndex.y << ',' << mNonPMLStartIndex.z << ')' << endl;
-    cout << "(mEndIndex.x,  mEndIndex.y, mEndIndex.z) = (" << mNonPMLEndIndex.x << ',' << mNonPMLEndIndex.y << ',' << mNonPMLEndIndex.z << ')' << endl;
-
     //Output recording point
     cout << "ksource = " << mKSource << endl;
+
+    // grid parameters
+    cout << "dx = " << mDx << endl;
+    cout << "dy = " << mDy << endl;
+    cout << "dz = " << mDz << endl;
+    cout << "dt = " << mDt << endl;
+    cout << "DtFluid=" << mDtFluid << endl;
+    cout << "DsFluid=" << mDsFluid << endl;
+    cout << endl << "Time step = " << mDt << endl;
+    cout << endl << "Number of steps = " << mTotalTimeSteps << endl;
+    cout << endl << "Total Simulation time = " << mTotalTimeSteps * mDt << " Seconds" << endl;
+
+    //Specify the Time Step at which the data has to be saved for Visualization
+    cout << "save_modulus = " << mSaveModulus << endl;
+    cout << "(mMaxIndex.x,mMaxIndex.y,mMaxIndex.z) = (" << mMaxIndex.x << "," << mMaxIndex.y << "," << mMaxIndex.z << ")" << endl;
+    cout << "(mStartIndex.x,mStartIndex.y, mStartIndex.z) = (" << mNonPMLStartIndex.x << ',' << mNonPMLStartIndex.y << ',' << mNonPMLStartIndex.z << ')' << endl;
+    cout << "(mEndIndex.x,  mEndIndex.y, mEndIndex.z) = (" << mNonPMLEndIndex.x << ',' << mNonPMLEndIndex.y << ',' << mNonPMLEndIndex.z << ')' << endl;
 
     //  Specify the CPML Order and Other Parameters:
     cout << " PML Order = " << mPMLOrder << endl;
     cout << " Alpha Order = " << mAlphaOrder << endl;
+
     //#ifdef WITH_DENSITY 
     cout << "neGridSize=" << mNeGridSize << endl;
     cout << "neSkipStep=" << mNeSkipStep << endl;
-    cout << "DtFluid=" << mDtFluid << endl;
-    cout << "DsFluid=" << mDsFluid << endl;
+
+    // ionilization parameters
     cout << "mRei=" << mRei << endl;
     cout << "mu_i=" << mMu_i << endl;
     cout << "mu_e=" << mMu_e << endl;
     cout << "Da=" << mDa << endl;
     cout << "De=" << mDe << endl;
-    cout << "pressure=" << mAirPressure << endl;
     //#endif
-    cout << endl << "Time step = " << mDt << endl;
-    cout << endl << "Number of steps = " << mTotalTimeSteps << endl;
-    cout << endl << "Total Simulation time = " << mTotalTimeSteps * mDt << " Seconds" << endl;
+
 }
 
 void fdtd::setSourceType(sourceType* pSrcType) {
@@ -1798,4 +1814,39 @@ void fdtd::updateSourceCoeff(const Point& nes, const Point & bes) {
                 break;
         }
     }
+}
+
+bool fdtd::checkConditions() {
+    MyDataF temp;
+    temp = sqrt(1 / mDx / mDx + 1 / mDy / mDy + 1 / mDz / mDz);
+    if (temp < C * mDt) {
+        cout << "Error: Courant condition no satisfy!" << endl;
+        cout << "dx:" << mDx << endl;
+        cout << "dy:" << mDy << endl;
+        cout << "dz:" << mDz << endl;
+        cout << "dt:" << mDt << endl;
+        cout << "courant data:" << temp << endl;
+        return false;
+    }
+
+    temp = tw * C / 12;
+    if (mDx > temp || mDy > temp || mDz > temp) {
+        cout << "Error : condition 2 not satisfy!" << endl;
+        cout << "dx:" << mDx << endl;
+        cout << "dy:" << mDy << endl;
+        cout << "dz:" << mDz << endl;
+        cout << "condition 2  data:" << temp << endl;
+        return false;
+    }
+    temp = mDsFluid * mDsFluid / 2 / (mDe > mDa ? mDe : mDa);
+    if (temp <= mDtFluid) {
+        cout << "Error : condition 3 not satisfy!" << endl;
+        cout << "De:" << mDe << endl;
+        cout << "Da:" << mDa << endl;
+        cout << "dsF:" << mDsFluid << endl;
+        cout << "dtF:" << mDtFluid << endl;
+        cout << "condition 2  data:" << temp << endl;
+        return false;
+    }
+    return true;
 }

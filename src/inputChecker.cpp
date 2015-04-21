@@ -32,9 +32,11 @@ inputChecker::inputChecker()
 , amptidute(DEFAULT_AMPTIDUTE)
 , maxNe(DEFAULT_DENSITY_MAX)
 , rei(0)
-,pressure(760)
+, pressure(760)
 , nu_type(DEFAULT_NU_FORMAT)
-, useDensity(IF_USE_DENSITY) {
+, useDensity(IF_USE_DENSITY)
+, MaxwellTimeNumber(MAXWELL_TIME_NUMBER)
+, FluidTimeNumber(FLUID_TIME_NUMBER) {
 }
 
 inputChecker::inputChecker(const inputChecker& orig) {
@@ -98,6 +100,14 @@ void inputChecker::check() {
     if (maxNe < 0) {
         maxNe = DEFAULT_DENSITY_MAX;
     }
+    if (MaxwellTimeNumber < MIN_MAXWELL_TIME_NUMBER) {
+        MaxwellTimeNumber = MAXWELL_TIME_NUMBER;
+    }
+
+    if (FluidTimeNumber < MIN_FLUID_TIME_NUMBER) {
+        FluidTimeNumber = FLUID_TIME_NUMBER;
+    }
+
     if (USE_DENSITY != useDensity) {
         useDensity = NOT_USE_DENSITY;
     }
@@ -156,6 +166,8 @@ void inputChecker::help(char *prog) {
     cout << (IF_USE_DENSITY == USE_DENSITY ? "(default)" : "") << endl;
     cout << tab << tab << NOT_USE_DENSITY << tab << "DO NOT use density";
     cout << (IF_USE_DENSITY == NOT_USE_DENSITY ? "(default)" : "") << endl;
+    cout << tab << "--maxwell-t=" << tab << "set Maxwell time number " << endl;
+    cout << tab << "--fluid-t=" << tab << "set fluid time number " << endl;
     exit(0);
 }
 
@@ -209,6 +221,10 @@ void inputChecker::parseInput(int argc, char *argv[]) {
             nu_type = strtol(argv[i] + 10, NULL, 10);
         } else if (0 == strncmp(argv[i], "--use-density=", 14)) {
             useDensity = strtol(argv[i] + 14, NULL, 10);
+        } else if (0 == strncmp(argv[i], "--maxwell-t=", 12)) {
+            MaxwellTimeNumber = strtol(argv[i] + 12);
+        } else if (0 == strncmp(argv[i], "--fluid-t=", 10)) {
+            FluidTimeNumber = strtol(argv[i] + 10);
         }
     }
     check();
@@ -237,5 +253,7 @@ void inputChecker::print() {
     cout << "pressure=" << pressure << endl;
     cout << "nu-type=" << nu_type << endl;
     cout << "if-use-density=" << useDensity << endl;
+    cout << "maxwell-t=" << MaxwellTimeNumber << endl;
+    cout << "fluid-t=" << FluidTimeNumber << endl;
     cout << "============================================" << endl;
 }

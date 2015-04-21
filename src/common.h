@@ -37,6 +37,10 @@ typedef pMyDataF* ppMyDataF;
 // default value for max density
 #define DEFAULT_DENSITY_MAX (1e13)
 
+#define MAXWELL_TIME_NUMBER (40)
+#define FLUID_TIME_NUMBER (6)
+#define MIN_MAXWELL_TIME_NUMBER (10)
+#define MIN_FLUID_TIME_NUMBER (2)
 // some common constants
 const MyDataF C = 2.99792458E8; // speed of light in free space
 const MyDataF me = 9.110e-31; // electricity mass
