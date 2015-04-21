@@ -69,10 +69,12 @@ int main(int argc, char*argv[]) {
     cout << "tlen=" << tlen << endl;
     cout << "dx=" << dx << endl;
     cout << "dt=" << dt << endl;
+    cout << "amp=" << checker.amptidute<< endl;
+    cout << "pre=" << checker.pressure << endl;
 
     //#ifdef WITH_DENSITY
     fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
-            checker.useConnectingInterface, checker.fluidGridSize);
+            checker.useConnectingInterface, checker.fluidGridSize,checker.maxNe);
     hpw.setPlasmaParam(checker.rei, checker.pressure * 5.3E9, checker.pressure, checker.nu_type);
     //#else
     //fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
