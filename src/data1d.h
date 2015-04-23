@@ -68,6 +68,13 @@ public:
      * @return true if contain, false if not
      */
     bool contain(const T obj) const;
+
+    /**
+     *  check if contains T obj
+     * @param obj object to checked
+     * @return true if contain, false if not
+     */
+    bool near(const T obj, const T skip) const;
 public:
     T* p;
     unsigned n;

@@ -316,6 +316,12 @@ private:
      */
     void saveCube(unsigned time);
 
+    /**
+     * save data if time in mSaveTime
+     * at update density time
+     * @param time what's time now
+     */
+    void saveAtTime(unsigned time);
 
 
 

@@ -89,3 +89,16 @@ bool data1d<T>::contain(const T obj)const {
     return false;
 }
 
+template<class T>
+bool data1d<T>::near(const T obj,const T n)const {
+    if (NULL == p) return false;
+    for (int i = 0; i < n; i++) {
+        if (abs(obj - p[i])<n) {
+            return true;
+        }else if((obj - p[i]) == n){
+           return true;
+        }
+    }
+    return false;
+}
+

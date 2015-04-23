@@ -999,6 +999,7 @@ void fdtd::compute() {
                 Eeff.save(Eeff.nz / 2, 3, n, 3);
                 Ne.save(mSourceIndex.y*mNeGridSize, 1, n, 2);
 #endif                
+                saveAtTime(n);
                 Eeff.resetArray();
             }
         }
@@ -1013,7 +1014,6 @@ void fdtd::compute() {
             if (mIsUseDensity) {
                 Vz.save(Vz.nz / 2, 3, n, 3);
                 Vy.save(Vy.nz / 2, 3, n, 3);
-                saveCube(n);
             }
 #ifdef DEBUG 
             if (mUseConnectingInterface) {
@@ -1859,3 +1859,16 @@ void fdtd::saveCube(unsigned timestep) {
         Eeff.saveData(1, timestep);
     }
 }
+
+    /**
+     * save data if time in mSaveTime
+     * at update density time
+     * @param time what's time now
+     */
+void fdtd::saveAtTime(unsigned timestep){
+    if (NULL != mSaveTime && mSaveTime->near(timestep,mNeSkipStep/2)) {
+        Ne.saveData(1, timestep);
+        Eeff.saveData(1, timestep);
+    }
+}
+

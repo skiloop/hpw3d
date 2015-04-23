@@ -95,13 +95,16 @@ int main(int argc, char*argv[]) {
     MyDataF st = tw / ns;
     MyDataF et = t + tw;
     unsigned *np = saveTime.p;
+    cout<<"save time:";
     while (t <= et) {
         *np = (unsigned) (t / dt);
+        cout<<"\t"<<*np;
         t += st;
         np++;
         if (np - saveTime.p >= saveTime.n)break;
     }
-    saveTime.save("save_time");
+    cout<<endl;
+    saveTime.save("saveTime.dat");
 
     //#ifdef WITH_DENSITY
     fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen,
