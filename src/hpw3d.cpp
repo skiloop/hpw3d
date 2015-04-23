@@ -90,7 +90,7 @@ int main(int argc, char*argv[]) {
 
     // decide save time
     int ns = 5;
-    data1d<unsigned> saveTime = new data1d<unsigned>(ns);
+    data1d<unsigned> saveTime(ns);
     MyDataF t = 4.5 * tw;
     MyDataF st = tw / ns;
     MyDataF et = t + tw;
@@ -101,11 +101,12 @@ int main(int argc, char*argv[]) {
         np++;
         if (np - saveTime.p >= saveTime.n)break;
     }
+    saveTime.save("save_time");
 
     //#ifdef WITH_DENSITY
     fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen,
             tw, dx, dy, dz, dt, dsf, dtf, checker.amplidute, 10, 12, 4, 1, checker.pmlSize,
-            checker.useConnectingInterface, checker.fluidGridSize, checker.maxNe, saveTime);
+            checker.useConnectingInterface, checker.fluidGridSize, checker.maxNe, &saveTime);
     hpw.setPlasmaParam(checker.rei, checker.pressure * 5.3E9, checker.pressure, checker.nu_type);
     //#else
     //fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,

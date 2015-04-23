@@ -1853,8 +1853,8 @@ bool fdtd::checkConditions() {
     return true;
 }
 
-void fdtd::saveCube(unsigned timestemp) {
-    if (NULL != mSaveTime && mSaveTime->contain(timestemp)) {
+void fdtd::saveCube(unsigned timestep) {
+    if (NULL != mSaveTime && mSaveTime->contain(timestep)) {
         Ne.saveData(1, timestep);
         Eeff.saveData(1, timestep);
     }
