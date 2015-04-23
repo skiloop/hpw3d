@@ -82,7 +82,7 @@ template<class T>
 bool data1d<T>::contain(const T obj)const {
     if (NULL == p) return false;
     for (int i = 0; i < n; i++) {
-        if (obj == T[i]) {
+        if (obj == p[i]) {
             return true;
         }
     }
