@@ -29,7 +29,7 @@ inputChecker::inputChecker()
 , tZoneLen(DEFAULT_TIME_ZONE_LENGTH)
 , zoneLen(0)
 , frequency(DEFAULT_FREQUENCY)
-, amptidute(DEFAULT_AMPTIDUTE)
+, amplidute(DEFAULT_AMPTIDUTE)
 , maxNe(DEFAULT_DENSITY_MAX)
 , rei(0)
 , pressure(760)
@@ -196,7 +196,7 @@ void inputChecker::parseInput(int argc, char *argv[]) {
         } else if (0 == strncmp(argv[i], "--simulation-time=", 18)) {
             tZoneLen = atof(argv[i] + 18);
         } else if (0 == strncmp(argv[i], "--amptidute=", 12)) {
-            amptidute = atof(argv[i] + 12);
+            amplidute = atof(argv[i] + 12);
         } else if (0 == strncmp(argv[i], "--frequency=", 12)) {
             frequency = atof(argv[i] + 12);
         } else if (0 == strncmp(argv[i], "--yc-size-x=", 12)) {
@@ -246,7 +246,7 @@ void inputChecker::print() {
     cout << "tZoneLen=" << tZoneLen << " T" << endl;
     cout << "zoneLen=" << zoneLen << " lambda" << endl;
     cout << "frequency=" << frequency << " Hz" << endl;
-    cout << "amptidute=" << amptidute << " V/m" << endl;
+    cout << "amptidute=" << amplidute << " V/m" << endl;
     cout << "useConnecting=" << useConnectingInterface << endl;
     cout << "max-ne=" << maxNe << endl;
     cout << "rei=" << rei << endl;

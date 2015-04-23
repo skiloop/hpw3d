@@ -72,7 +72,7 @@ public:
     double tZoneLen;
     double zoneLen;
     double frequency;
-    double amptidute;
+    double amplidute;
     double maxNe;
     //parameter for sine pulse
     double t0;

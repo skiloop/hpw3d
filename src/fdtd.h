@@ -13,7 +13,7 @@ public:
             MyDataF _dt = 1.6667e-12, MyDataF _dsF = 1.25e-4, MyDataF _dtF = 1.6667e-11,
             MyDataF _amp = 1000, unsigned _savemodulus = 100, unsigned _ksource = 12,
             unsigned _m = 3, unsigned _ma = 1, unsigned pmlw = 6, int useConnect = 0,
-            unsigned _neGrid = 16, MyDataF maxNe = DEFAULT_DENSITY_MAX);
+            unsigned _neGrid = 16, MyDataF maxNe = DEFAULT_DENSITY_MAX, data1d<unsigned> *_saveTime = NULL);
 
     void setPlasmaParam(MyDataF _rei, MyDataF _vm, MyDataF _p, int _ftype);
     //#else
@@ -243,6 +243,9 @@ private:
     data3d<MyDataF> Vy;
     data3d<MyDataF> Vz;
 
+    // time to save full density and erms
+    data2d<unsigned> *mSaveTime;
+
     void createDensityArrays();
     //initials
     void initCoeffForDensity();
@@ -306,6 +309,14 @@ private:
      * use this before create arrays
      */
     void initialParameters();
+
+    /**
+     * save data if time in mSaveTime
+     * @param time what's time now
+     */
+    void saveCube(MyDataF time);
+
+
 
 
 #ifdef DEBUG

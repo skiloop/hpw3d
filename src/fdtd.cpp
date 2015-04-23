@@ -40,7 +40,7 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
         MyDataF _tw, MyDataF _dx, MyDataF _dy, MyDataF _dz,
         MyDataF _dt, MyDataF _dsF, MyDataF _dtF,
         MyDataF _amp, unsigned _savemodulus, unsigned _ksource,
-        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid, MyDataF maxNe)
+        unsigned _m, unsigned _ma, unsigned pmlw, int useConnect, unsigned _neGrid, MyDataF maxNe, data1d<unsigned> *_saveTime)
 : mIsUseDensity(useDensity)
 , mTotalTimeSteps(_totalTimeSteps)
 , tw(_tw), mDt(_dt), mDx(_dx), mDy(_dy), mDz(_dz)
@@ -58,7 +58,8 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
 , mDsFluid(_dsF), mDtFluid(_dtF)
 , mNeSkipStep(1)
 , mNeBoundWidth(NE_BOUND_WIDTH)
-, mDe(0), mDa(0), mRei(0), mMu_i(0), mMu_e(0) {
+, mDe(0), mDa(0), mRei(0), mMu_i(0), mMu_e(0),
+, mSaveTime(_saveTime) {
     mMaxIndex.setValue(xzoneSize + 2 * (pmlw + mAirBufferWidth),
             yzoneSize + 2 * (pmlw + mAirBufferWidth),
             zzoneSize + 2 * (pmlw + mAirBufferWidth));
@@ -1849,4 +1850,11 @@ bool fdtd::checkConditions() {
         return false;
     }
     return true;
+}
+
+void fdtd::saveCube(unsigned timestemp) {
+    if (NULL != mSaveTime && mSaveTime->contain(timestemp)) {
+        Ne.saveData(1, timestep);
+        Eeff.saveData(1, timestep);
+    }
 }

@@ -10,11 +10,12 @@
 #include <string>
 
 #include "common.h"
+#include "data1d.h"
 
 using namespace std;
 
 template<class T>
-data1d<T>::data1d(unsigned num, T val): p(NULL), n(num) {
+data1d<T>::data1d(unsigned num, T val) : p(NULL), n(num) {
     createArray(num);
     initArray(val);
 }
@@ -32,7 +33,7 @@ data1d<T>::data1d(const data1d<T>& orig) {
 }
 
 template<class T>
-data1d<T>::~data1d(){
+data1d<T>::~data1d() {
     if (p != NULL)delete []p;
 }
 
@@ -65,7 +66,7 @@ void data1d<T>::resetArray() {
 }
 
 template<class T>
-void data1d<T>::save(const string name) {
+void data1d<T>::save(const string name) const {
     ofstream out;
     out.open(name.c_str());
     if (out.is_open()) {
@@ -75,5 +76,16 @@ void data1d<T>::save(const string name) {
         }
         out.close();
     }
+}
+
+template<class T>
+bool data1d<T>::contain(const T obj)const {
+    if (NULL == p) return false;
+    for (int i = 0; i < n; i++) {
+        if (obj == T[i]) {
+            return true;
+        }
+    }
+    return false;
 }
 

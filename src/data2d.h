@@ -52,10 +52,9 @@ public:
      * when cannot create space for p and p[i],exit program;
      */
     data2d(unsigned int cx, unsigned int cy)
-    : nx(cx), ny(cy),  p(NULL)
-    {
+    : nx(cx), ny(cy), p(NULL) {
         unsigned i, j;
-        if (cx == 0 || cy == 0 ) {
+        if (cx == 0 || cy == 0) {
             return;
         }
         try {
@@ -63,7 +62,7 @@ public:
             p = new DataType*[cx];
             for (i = 0; i < cx; i++) {
                 p[i] = new DataType[cy];
-            }            
+            }
         } catch (exception & e) {
             cerr << e.what() << endl;
             return;
@@ -77,9 +76,8 @@ public:
      *  @c ny = 0
      *  @c p=NULL
      */
-    data2d() : nx(0), ny(0),  p(NULL)
-
-    {
+    data2d() : nx(0), ny(0), p(NULL)
+ {
     };
 
     /**
@@ -247,6 +245,7 @@ public:
     void clearMatlabEngineArray();
     void plotArrays();
     void preparePlotting();
+
 public:
     static int initMatlabEngine();
     static int closeMatlabEngine();

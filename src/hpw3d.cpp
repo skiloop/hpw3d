@@ -53,7 +53,7 @@ int main(int argc, char*argv[]) {
     unsigned xlen, ylen, zlen, tlen;
 
     //    MyDataF dt = 0.99 / (C * sqrt(1.0 / (dx * dx) + 1.0 / (dy * dy) + 1 / (dz * dz)));
-    MyDataF dt = T/checker.MaxwellTimeNumber;
+    MyDataF dt = T / checker.MaxwellTimeNumber;
     xlen = (unsigned) (T * checker.xZoneLen * C / dx);
     ylen = (unsigned) (T * checker.yZoneLen * C / dy);
     zlen = (unsigned) (T * checker.zZoneLen * C / dz);
@@ -62,42 +62,55 @@ int main(int argc, char*argv[]) {
     } else {
         tlen = (unsigned) (tw * checker.tZoneLen / dt);
     }
-    MyDataF dsf,dtf;
-    dsf=dz/checker.fluidGridSize;
-    dtf=T/checker.FluidTimeNumber;
+    MyDataF dsf, dtf;
+    dsf = dz / checker.fluidGridSize;
+    dtf = T / checker.FluidTimeNumber;
 
     cout << "xlen=" << xlen << endl;
     cout << "ylen=" << ylen << endl;
     cout << "zlen=" << zlen << endl;
     cout << "tlen=" << tlen << endl;
     cout << "dx=" << dx << endl;
-    cout << "dsf="<<dsf<<endl;
+    cout << "dsf=" << dsf << endl;
     cout << "dt=" << dt << endl;
-    cout << "dtf="<<dtf<<endl;
-    cout << "amp=" << checker.amptidute<< endl;
+    cout << "dtf=" << dtf << endl;
+    cout << "amp=" << checker.amplidute << endl;
     cout << "pre=" << checker.pressure << endl;
-    
-
-    //#ifdef WITH_DENSITY
-    fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen,
-            tw, dx, dy, dz,dt,dsf,dtf, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
-            checker.useConnectingInterface, checker.fluidGridSize,checker.maxNe);
-    hpw.setPlasmaParam(checker.rei, checker.pressure * 5.3E9, checker.pressure, checker.nu_type);
-    //#else
-    //fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
-    //        checker.useConnectingInterface);
-    //#endif    
 
     GaussianWaveSource gaussianWave(checker.frequency);
     SineWaveSource sineSource(omega);
     SinePulse sinePulse(T, 0.5 * T);
     SquarePulse squarePulse(0.5 * T, 1.5 * T);
     TestSourceType testSource(2);
-    CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);    
+    CosineGaussianWave cosGaussian(checker.frequency, 0.5 * checker.frequency);
 
     MyDataF R = 1e-20;
-    currentSource cSource(source::Z, R, checker.amptidute * 1e13);
-    currentSource gSource(source::Z, R, checker.amptidute);
+    currentSource cSource(source::Z, R, checker.amplidute * checker.amplidute);
+    currentSource gSource(source::Z, R, checker.amplidute);
+
+    // decide save time
+    int ns = 5;
+    data1d<unsigned> saveTime = new data1d<unsigned>(ns);
+    MyDataF t = 4.5 * tw;
+    MyDataF st = tw / ns;
+    MyDataF et = t + tw;
+    unsigned *np = saveTime.p;
+    while (t <= et) {
+        *np = (unsigned) (t / dt);
+        t += st;
+        np++;
+        if (np - saveTime.p >= saveTime.n)break;
+    }
+
+    //#ifdef WITH_DENSITY
+    fdtd hpw(checker.useDensity, tlen, xlen, ylen, zlen,
+            tw, dx, dy, dz, dt, dsf, dtf, checker.amplidute, 10, 12, 4, 1, checker.pmlSize,
+            checker.useConnectingInterface, checker.fluidGridSize, checker.maxNe, saveTime);
+    hpw.setPlasmaParam(checker.rei, checker.pressure * 5.3E9, checker.pressure, checker.nu_type);
+    //#else
+    //fdtd hpw(tlen, xlen, ylen, zlen, tw, dx, dy, dz, checker.amptidute, 10, 12, 4, 1, checker.pmlSize,
+    //        checker.useConnectingInterface);
+    //#endif    
 
     switch (checker.waveType) {
         case GAUSSIAN_WAVE:
@@ -136,13 +149,14 @@ int main(int argc, char*argv[]) {
         default:
             cSource.setSourceType(&gaussianWave);
     }
-    if(checker.waveType==GAUSSIAN_WAVE){
+    if (checker.waveType == GAUSSIAN_WAVE) {
         hpw.setSource(&gSource);
-    }else{
+    } else {
         hpw.setSource(&cSource);
     }
-    
+
     //hpw.initialize();
     hpw.startUp();
+
     return 0;
 }
