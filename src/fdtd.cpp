@@ -58,7 +58,7 @@ fdtd::fdtd(int useDensity, unsigned _totalTimeSteps, unsigned xzoneSize, unsigne
 , mDsFluid(_dsF), mDtFluid(_dtF)
 , mNeSkipStep(1)
 , mNeBoundWidth(NE_BOUND_WIDTH)
-, mDe(0), mDa(0), mRei(0), mMu_i(0), mMu_e(0),
+, mDe(0), mDa(0), mRei(0), mMu_i(0), mMu_e(0)
 , mSaveTime(_saveTime) {
     mMaxIndex.setValue(xzoneSize + 2 * (pmlw + mAirBufferWidth),
             yzoneSize + 2 * (pmlw + mAirBufferWidth),
