@@ -244,7 +244,7 @@ private:
     data3d<MyDataF> Vz;
 
     // time to save full density and erms
-    data2d<unsigned> *mSaveTime;
+    data1d<unsigned> *mSaveTime;
 
     void createDensityArrays();
     //initials
