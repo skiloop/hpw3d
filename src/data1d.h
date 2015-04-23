@@ -25,7 +25,7 @@ public:
      * copy constructor
      * @param orig
      */
-    data1d(const data1d& orig) ;
+    data1d(const data1d& orig);
 
     /**
      * deconstructor
@@ -36,31 +36,38 @@ public:
      * create array with length @c num
      * @param num
      */
-    void createArray(unsigned num) ;
-    
+    void createArray(unsigned num);
+
     /**
      * create array with length @c num and initial array with @c val
      * @param num
      * @param val
      */
-    void createArray(unsigned num, T val) ;
+    void createArray(unsigned num, T val);
 
     /**
      * initial array to @c initval
      * @param initval
      */
-    void initArray(T initval = 0) ;
+    void initArray(T initval = 0);
 
     /**
      * reset array to zero
      */
-    void resetArray() ;
-    
+    void resetArray();
+
     /**
      * save array with file name @c name
      * @param name
      */
-    void save(const std::string name) ;
+    void save(const std::string name) const;
+
+    /**
+     *  check if contains T obj
+     * @param obj object to checked
+     * @return true if contain, false if not
+     */
+    bool contain(const T obj) const;
 public:
     T* p;
     unsigned n;
