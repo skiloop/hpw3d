@@ -1013,6 +1013,7 @@ void fdtd::compute() {
             if (mIsUseDensity) {
                 Vz.save(Vz.nz / 2, 3, n, 3);
                 Vy.save(Vy.nz / 2, 3, n, 3);
+                saveCube(n);
             }
 #ifdef DEBUG 
             if (mUseConnectingInterface) {

@@ -314,7 +314,7 @@ private:
      * save data if time in mSaveTime
      * @param time what's time now
      */
-    void saveCube(MyDataF time);
+    void saveCube(unsigned time);
 
 
 
