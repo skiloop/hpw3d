@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# script file
+runscript=$HOME/workspace/hpw3d/run.sh
+
+# check script 
+[ ! -f $runscript -o ! -r $runscript ] && exit;
+
+
+# check input parameters
+[ ! -n $1 -o  ! -n $2 ] && exit;
+
+# prepare sed string
+eparam='s:^'$1'=\([ 0-9e-]*\):'$1'='$2' :';
+echo "#!/bin/sed -f" > param.sed
+echo $eparam >> param.sed
+
+# change parameters in script
+sed -f param.sed $runscript
+
+# remove tem file
+rm param.sed
