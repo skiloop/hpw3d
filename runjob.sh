@@ -24,7 +24,7 @@ case $num in
       mkdir -p fluidDt && cd fluidDt && { chparam "ftsize" "10" > run.sh; } && { sh run.sh; } && cd $oldir;
       ;;
    3)
-      mkdir -p mxwllDt && cd mxwllDt && { chparam "mtsize" "80" > run.sh; } && { sh run.sh; } && cd $oldir;
+      mkdir -p mxwllDt && cd mxwllDt && { chparam "mtsize" "180" > run.sh; } && { sh run.sh; } && cd $oldir;
       ;;
    4)
       mkdir -p fluidDs && cd fluidDs && { chparam "fgsize" "8" > run.sh; } && { sh run.sh; } && cd $oldir;

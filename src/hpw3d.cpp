@@ -91,17 +91,16 @@ int main(int argc, char*argv[]) {
     // decide save time
     int ns = 5;
     data1d<unsigned> saveTime(ns);
-    MyDataF t = 4.5 * tw;
-    MyDataF st = tw / ns;
-    MyDataF et = t + tw;
+    MyDataF t = 0.1 * tw;
+    MyDataF et = tw*checker.tZoneLen;
+    MyDataF st = et / ns;
     unsigned *np = saveTime.p;
     cout<<"save time:";
-    while (t <= et) {
+    while (t < et && np - saveTime.p <= saveTime.n) {
         *np = (unsigned) (t / dt);
         cout<<"\t"<<*np;
         t += st;
         np++;
-        if (np - saveTime.p >= saveTime.n)break;
     }
     cout<<endl;
     saveTime.save("saveTime.dat");

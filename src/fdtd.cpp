@@ -1059,9 +1059,7 @@ void fdtd::compute() {
 #endif
 
     if (USE_DENSITY == mIsUseDensity) {
-#ifdef DEBUG
         Ne.save();
-#endif
     }
 #ifdef DEBUG
     if (mOfNeCheck.is_open()) {
