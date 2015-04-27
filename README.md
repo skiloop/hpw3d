@@ -10,6 +10,17 @@ hpw3d
 	--openmp-thread=n	number of threads for openmp, n must be positive
 	--wave-type=[1,2]	source wave form type,1 for gaussian pulse,2 for sine wave
 	--fluid-grid-size=	how many fluid grid per Maxwell grid 
+	--maxwell-t=	how many Maxwell time steps per T
+	--fluid-t=	how many fluid time steps per T
+# Density parameters:
+	--max-ne=	set Ne max
+	--rei=	set recombinition coefficient
+	--pressure=	set air pressure
+	--nu-type=	set nu type
+	--use-density=	whether use density or not
+		1	use density
+		0	DO NOT use density(default)
+
 # FDTD parameters:
 	--pml-width=n	pml size for fdtd
 	--yc-size-x=	how many yee cells per wave length of pulse length in x direction
@@ -33,15 +44,4 @@ hpw3d
 	--zone-size=	zone size,in wave length,set x,y,z zone length together,setting yee cell cube
 	--simulation-time=	simulation time,in wave length size
 	--is-connecting=	1 if use connecting interface 
-# Density parameters:
-	--max-ne=	set Ne max
-	--rei=	set recombinition coefficient
-	--pressure=	set air pressure
-	--nu-type=	set nu type
-	--use-density=	whether use density or not
-		1	use density
-		0	DO NOT use density(default)
-# FDTD options:
-	--maxwell-t=	how many Maxwell time steps per T
-	--fluid-t=	how many fluid time steps per T
 
