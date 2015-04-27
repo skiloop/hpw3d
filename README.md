@@ -4,18 +4,18 @@ hpw3d
 
 # usage
 ./hpw3d [options]
-# options discriptions
+1 options discriptions
 	--help,-h	help
 	--openmp-thread=n	number of threads for openmp,n is positive
 	--wave-type=[1,2]	source wave form type,1 for gaussian pulse,2 for sine wave
 	--fluid-grid-size=	how many fluid grid size per Maxwell grid 
-# FDTD parameters:
+2 FDTD parameters:
 	--pml-width=n	pml size for fdtd
 	--yc-size-x=	how many yee cells per wave length of pulse length in x direction
 	--yc-size-y=	how many yee cells per wave length of pulse length in y direction
 	--yc-size-z=	how many yee cells per wave length of pulse length in z direction
 	--yee-cell-size=	how many yee cells per wave length of pulse length,setting yee cell cube
-# Gaussian pulse parameters:
+3 Gaussian pulse parameters:
 	--amptidute=	amptidute for source wave
 	--frequency=	wave frequency
 	--x-zone-length=	zone length in x-direction,in pulse width
@@ -23,7 +23,7 @@ hpw3d
 	--z-zone-length=	zone length in z-direction,in pulse width
 	--zone-size=	zone size,in pulse width,set x,y,z zone length together and ,setting yee cell cube
 	--simulation-time=	simulation time,in pulse width size
-# Sine wave parameters:
+4 Sine wave parameters:
 	--amptidute=	amptidute for source wave
 	--frequency=	wave frequency
 	--x-zone-length=	zone length in x-direction,in wave length
@@ -32,7 +32,7 @@ hpw3d
 	--zone-size=	zone size,in wave length,set x,y,z zone length together,setting yee cell cube
 	--simulation-time=	simulation time,in wave length size
 	--is-connecting=	1 if use connecting interface 
-# Density parameters:
+5 Density parameters:
 	--max-ne=	set Ne max
 	--rei=	set R_ei
 	--pressure=	set air pressure
@@ -40,7 +40,7 @@ hpw3d
 	--use-density=	whether use density or not
 		1	use density
 		0	DO NOT use density(default)
-# FDTD options:
+6 FDTD options:
 	--maxwell-t=	set Maxwell time number 
 	--fluid-t=	set fluid time number 
 
