@@ -5,7 +5,7 @@ hpw3d
 # USAGE
 ./hpw3d [options]
 
-# options discriptions
+# options descriptions
 	--help,-h	help
 	--openmp-thread=n	number of threads for openmp, n must be positive
 	--wave-type=[1,2]	source wave form type,1 for gaussian pulse,2 for sine wave
