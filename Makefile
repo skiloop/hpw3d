@@ -16,13 +16,15 @@ TEST:=sourceTest data3d
 PROJECTS=$(TEST) $(EXCUTABLE) #3DFormulaTransforming.pdf
 .PHONY:all clean test objs veryclean rebuild deps
 	
-all:$(PROJECTS) $(PDFS)
+all:$(PROJECTS)
 
 deps:$(DEPS)
 
 objs:$(OBJS)
 
 test:$(TEST)
+
+pdfs:$(PDFS)
 
 #This is the rule for creating the dependency files
 %.d:$(SRC_DIR)/%.cpp
